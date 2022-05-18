@@ -29,8 +29,8 @@ const contacts = [
 const Contact = () => {
   return (
     <Stack spacing={2} direction="row" justifyContent="center">
-      {contacts.map((c, key) => (
-        <Tooltip key={key} title={c.title}>
+      {contacts.map((c) => (
+        <Tooltip title={c.title}>
           <IconButton
             aria-label={c.title.toLowerCase()}
             size="large"

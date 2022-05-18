@@ -6,8 +6,8 @@ const navData = ["About", "Projects", "Skills"];
 const Navigation = ({ onClick }) => {
   return (
     <Stack spacing={2} direction="row" justifyContent="center" mt={5}>
-      {navData.map((nav, key) => (
-        <Button key={key} variant="contained" id={nav.toLowerCase()} onClick={onClick}>
+      {navData.map((nav) => (
+        <Button variant="contained" id={nav.toLowerCase()} onClick={onClick}>
           {nav}
         </Button>
       ))}

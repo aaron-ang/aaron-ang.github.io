@@ -23,7 +23,6 @@ const Home = ({ onClick }) => {
     <Stack
       direction="column"
       justifyContent="center"
-      alignItems="center"
       spacing={1}
       fontSize="x-large"
       height="100%"
