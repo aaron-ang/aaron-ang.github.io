@@ -1,14 +1,16 @@
 import "./App.css";
+import React, { Suspense } from "react";
 import Home from "./pages/Home/Home";
-import About from "./pages/About";
-import Projects from "./pages/Projects";
-import Skills from "./pages/Skills";
 import { useRef } from "react";
 // import {Routes, Route, Link } from "react-router-dom";
 import { Parallax, ParallaxLayer } from "@react-spring/parallax";
 
 function App() {
   const ref = useRef();
+
+  const About = React.lazy(() => import("./pages/About"));
+  const Projects = React.lazy(() => import("./pages/Projects"));
+  const Skills = React.lazy(() => import("./pages/Skills"));
 
   const handleClick = (e) => {
     const targetId = e.currentTarget.id;
@@ -28,11 +30,11 @@ function App() {
   };
 
   return (
-    <>
-      <Parallax pages={4} ref={ref}>
-        <ParallaxLayer>
-          <Home onClick={handleClick} />
-        </ParallaxLayer>
+    <Parallax pages={4} ref={ref}>
+      <ParallaxLayer>
+        <Home onClick={handleClick} />
+      </ParallaxLayer>
+      <Suspense>
         <ParallaxLayer offset={1}>
           <About />
         </ParallaxLayer>
@@ -42,8 +44,8 @@ function App() {
         <ParallaxLayer offset={3}>
           <Skills />
         </ParallaxLayer>
-      </Parallax>
-    </>
+      </Suspense>
+    </Parallax>
   );
 }
 

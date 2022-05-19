@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import TypeAnimation from "react-type-animation";
 import styled, { keyframes } from "styled-components";
 import { fadeInLeft, fadeInRight, fadeInUp } from "react-animations";
@@ -19,6 +20,13 @@ const FadeInUpDiv = styled.div`
 `;
 
 const Home = ({ onClick }) => {
+  const [isDisplayed, setIsDisplayed] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsDisplayed(true), 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <Stack
       direction="column"
@@ -32,15 +40,19 @@ const Home = ({ onClick }) => {
         sequence={["Hi, I'm Aaron Ang"]}
         wrapper="h1"
       />
-      <FadeInRightDiv>
-        <h2>An aspiring software developer</h2>
-      </FadeInRightDiv>
-      <FadeInLeftDiv>
-        <Contact />
-      </FadeInLeftDiv>
-      <FadeInUpDiv>
-        <Navigation onClick={onClick} />
-      </FadeInUpDiv>
+      {isDisplayed && (
+        <>
+          <FadeInRightDiv>
+            <h2>An aspiring software developer</h2>
+          </FadeInRightDiv>
+          <FadeInLeftDiv>
+            <Contact />
+          </FadeInLeftDiv>
+          <FadeInUpDiv>
+            <Navigation onClick={onClick} />
+          </FadeInUpDiv>
+        </>
+      )}
     </Stack>
   );
 };

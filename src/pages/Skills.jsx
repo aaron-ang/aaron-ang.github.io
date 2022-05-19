@@ -1,6 +1,10 @@
+import { useRef } from "react";
+import useOnScreen from "./isIntersecting";
 import Stack from "@mui/material/Stack";
 import CardMedia from "@mui/material/CardMedia";
 import { scale } from "react-animations/lib/utils";
+import styled, { keyframes } from "styled-components";
+import { fadeIn } from "react-animations";
 
 const skills = [
   {
@@ -17,6 +21,11 @@ const skills = [
   },
 ];
 
+const fadeInAnimation = keyframes`${fadeIn}`;
+const FadeInDiv = styled.div`
+  animation: 1s ${fadeInAnimation} ease-in;
+`;
+
 const Skill = ({ name }) => {
   return (
     <Stack direction="column">
@@ -24,10 +33,9 @@ const Skill = ({ name }) => {
         component="img"
         image={`/skills/${name}.png`}
         alt="skillIcon"
-        loading="lazy"
-        height="100em"
+        height="75em"
         sx={{
-          transition: "all .1s ease-in-out",
+          transition: "all .1s linear",
           ":hover": { transform: scale(1.1) },
         }}
       />
@@ -37,22 +45,34 @@ const Skill = ({ name }) => {
 };
 
 const Skills = () => {
+  const ref = useRef();
+  const isVisible = useOnScreen(ref);
+
   return (
-    <Stack direction="column" justifyContent="center" height="100%">
-      {skills.map((cat) => (
-        <Stack
-          direction="row"
-          justifyContent="center"
-          alignItems="center"
-          spacing={3}
-          margin={1}
-        >
-          <h1>{cat.title}</h1>
-          {cat.names.map((s) => (
-            <Skill name={s} />
+    <Stack
+      direction={{ sm: "row", md: "column" }}
+      justifyContent="center"
+      height="100%"
+      ref={ref}
+    >
+      {isVisible && (
+        <FadeInDiv>
+          {skills.map((cat) => (
+            <Stack
+              direction={{ sm: "column", md: "row" }}
+              justifyContent="center"
+              alignItems="center"
+              spacing={3}
+              margin={3}
+            >
+              <h2>{cat.title}</h2>
+              {cat.names.map((s) => (
+                <Skill name={s} />
+              ))}
+            </Stack>
           ))}
-        </Stack>
-      ))}
+        </FadeInDiv>
+      )}
     </Stack>
   );
 };
