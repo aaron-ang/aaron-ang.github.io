@@ -1,29 +1,14 @@
-import { useRef } from "react";
-import useOnScreen from "./isIntersecting";
 import Stack from "@mui/material/Stack";
 import CardMedia from "@mui/material/CardMedia";
 import { scale } from "react-animations/lib/utils";
 import styled, { keyframes } from "styled-components";
 import { fadeIn } from "react-animations";
-
-const skills = [
-  {
-    title: "Front-End",
-    names: ["HTML", "CSS", "JavaScript", "React"],
-  },
-  {
-    title: "Back-End",
-    names: ["SQL", "Node.js", "Flask"],
-  },
-  {
-    title: "Other",
-    names: ["Python", "Java", "Kotlin", "C++", "Git", "Matplotlib", "Numpy"],
-  },
-];
+import { useInView } from "react-intersection-observer";
+import { skills } from "../data/skills";
 
 const fadeInAnimation = keyframes`${fadeIn}`;
 const FadeInDiv = styled.div`
-  animation: 1s ${fadeInAnimation} ease-in;
+  animation: 0.75s ${fadeInAnimation} ease-in;
 `;
 
 const Skill = ({ name }) => {
@@ -31,7 +16,7 @@ const Skill = ({ name }) => {
     <Stack direction="column">
       <CardMedia
         component="img"
-        image={`/skills/${name}.png`}
+        image={`/images/${name}.png`}
         alt="skillIcon"
         height="75em"
         sx={{
@@ -45,8 +30,10 @@ const Skill = ({ name }) => {
 };
 
 const Skills = () => {
-  const ref = useRef();
-  const isVisible = useOnScreen(ref);
+  const { ref, inView, entry } = useInView({
+    triggerOnce: true,
+    threshold: 0.5,
+  });
 
   return (
     <Stack
@@ -55,19 +42,21 @@ const Skills = () => {
       height="100%"
       ref={ref}
     >
-      {isVisible && (
+      <h1>Skills</h1>
+      {inView && (
         <FadeInDiv>
-          {skills.map((cat) => (
+          {skills.map((cat, idx) => (
             <Stack
               direction={{ sm: "column", md: "row" }}
               justifyContent="center"
               alignItems="center"
               spacing={3}
               margin={3}
+              key={idx}
             >
               <h2>{cat.title}</h2>
-              {cat.names.map((s) => (
-                <Skill name={s} />
+              {cat.names.map((s, idx) => (
+                <Skill name={s} key={idx} />
               ))}
             </Stack>
           ))}
