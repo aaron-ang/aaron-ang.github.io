@@ -152,7 +152,7 @@ With vision integrated, the assistant begins to understand the driving environme
 
 ![Synthetic cabin view: the driver detected as a person](/images/building-an-on-device-automobile-assistant/hov-interior-cabin.jpg)
 
-![We use synthetically generated images to simulate what the Vision Agent observes from a car’s interior and exterior on a highway. In the example above, the assistant interprets the visual input, detects an HOV lane violation, and issues a safety/compliance warning.](/images/building-an-on-device-automobile-assistant/vision-hov-violation.png)
+![The Vision Agent reads synthetic interior and exterior views of the car and flags an HOV-lane violation.](/images/building-an-on-device-automobile-assistant/vision-hov-violation.png)
 
 #### Level 4: Visual-Informed Autonomous Action
 

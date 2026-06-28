@@ -27,7 +27,7 @@ enableRobotsTXT = true
 
 [markup]
   [markup.highlight]
-    style = 'friendly'
+    noClasses = false
   [markup.goldmark.extensions.passthrough]
     enable = true
     [markup.goldmark.extensions.passthrough.delimiters]
