@@ -24,6 +24,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       HUGO_VERSION: 0.163.3
+      HUGO_ENVIRONMENT: production
+      HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache
+      TZ: America/New_York
     steps:
       - name: Install Hugo CLI
         run: |
@@ -37,10 +40,13 @@ jobs:
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
+      - name: Cache Hugo resources
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/hugo_cache
+          key: hugo-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: hugo-${{ runner.os }}-
       - name: Build with Hugo
-        env:
-          HUGO_ENVIRONMENT: production
-          TZ: America/New_York
         run: hugo --gc --minify --baseURL "${{ steps.pages.outputs.base_url }}/"
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -56,4 +62,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
