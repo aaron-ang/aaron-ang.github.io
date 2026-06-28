@@ -12,6 +12,6 @@ I earned my MS in Computer Science & Engineering at [UC San Diego](https://cse.u
 
 This blog is where I think out loud about anything that keeps me up at night.
 
-**Work** — [Resume](https://docs.google.com/document/d/1XguBxV7IpDCNpFXH7zgH7jBGcRpnXTC9LRSlmx60a5o/edit?usp=sharing) • [LinkedIn](https://linkedin.com/in/aaron-ayd)
+**Work** — [Resume](https://docs.google.com/document/d/1XguBxV7IpDCNpFXH7zgH7jBGcRpnXTC9LRSlmx60a5o/template/preview) • [LinkedIn](https://linkedin.com/in/aaron-ayd)
 
 **Build** — [GitHub](https://github.com/aaron-ang) • [Open-Source Contributions](https://github.com/search?q=author%3Aaaron-ang+-user%3Aaaron-ang&type=pullrequests)
