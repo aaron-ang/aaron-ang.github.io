@@ -25,7 +25,6 @@ jobs:
     env:
       HUGO_VERSION: 0.163.3
       HUGO_ENVIRONMENT: production
-      HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache
       TZ: America/New_York
     steps:
       - name: Install Hugo CLI
@@ -47,6 +46,8 @@ jobs:
           key: hugo-${{ runner.os }}-${{ github.run_id }}
           restore-keys: hugo-${{ runner.os }}-
       - name: Build with Hugo
+        env:
+          HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache
         run: hugo --gc --minify --baseURL "${{ steps.pages.outputs.base_url }}/"
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
