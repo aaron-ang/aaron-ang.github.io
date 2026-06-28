@@ -17,8 +17,6 @@ SSTable is a **disk-based** data structure consisting of a **sorted**, **immutab
 
 ![Source: [ScyllaDB](https://www.scylladb.com/glossary/sstable/)](https://www.scylladb.com/wp-content/uploads/sstable-diagram.png)
 
-Source: [ScyllaDB](https://www.scylladb.com/glossary/sstable/)
-
 Initially, fresh write logs are buffered to an **in-memory** data structure called a [Memtable](https://github.com/facebook/rocksdb/wiki/MemTable). Once the Memtable reaches a configurable threshold, data is **sorted** and flushed to disk to become a new SSTable. In the diagram above, transactions are also appended to a Commit log or Write Ahead Log (WAL) file to recover from a crash and ensure durability. As more SSTables are added and a certain threshold is reached, the SSTables are **merged** via **compaction** to form a larger SSTable. Note that **updates** to a given key will just append the new key value. Older entries will eventually be removed during compaction.
 
 ## Compaction
@@ -31,8 +29,6 @@ In most implementations, a dedicated background thread is used to perform compac
 
 ![Source: [RocksDB](https://github.com/facebook/rocksdb/wiki/Leveled-Compaction)](https://github.com/facebook/rocksdb/raw/gh-pages-old/pictures/level_targets.png)
 
-Source: [RocksDB](https://github.com/facebook/rocksdb/wiki/Leveled-Compaction)
-
 - Each level is a sorted run consisting of multiple SSTables
 - When the run of **level $i$ is full**, it will flush and merge with the run of level **$i+1$**
 - Good read performance and lower space amplification since no duplicate keys are present in each level
@@ -40,8 +36,6 @@ Source: [RocksDB](https://github.com/facebook/rocksdb/wiki/Leveled-Compaction)
 ### Sized-Tiered Compaction
 
 ![Source: Alibaba Cloud](/images/intro-to-lsm-tree/sized-tiered-compaction.png)
-
-Source: Alibaba Cloud
 
 - Organizes SSTables into sorted runs based on their size
 - Every level must accumulate $T$ runs before they are sort-merged
@@ -52,21 +46,15 @@ Source: Alibaba Cloud
 
 ![Source: [*Monkey: Optimal Navigable Key-Value Store*](https://dl.acm.org/doi/10.1145/3035918.3064054)](/images/intro-to-lsm-tree/tiered-vs-leveled-compaction.png)
 
-Source: [*Monkey: Optimal Navigable Key-Value Store*](https://dl.acm.org/doi/10.1145/3035918.3064054)
-
 ### Partial Compaction
 
 ![Source: [Compactionary](https://disc-projects.bu.edu/compactionary/background.html)](https://disc-projects.bu.edu/compactionary/img/full-partial-compaction.png)
-
-Source: [Compactionary](https://disc-projects.bu.edu/compactionary/background.html)
 
 Leveled compaction can lead to cascading compactions, which results in high latency spikes, write stalls, and overall unpredictable system performance. Partial compaction aims to mitigate this by executing compaction with **file-level granularity**. The compaction condition/trigger remains unchanged. However, the compaction routine selects a subset of files from the current and next level with overlapping key ranges to merge. By breaking down compaction into smaller units, the cost is amortized, leading to more predictable and consistent system performance.
 
 #### Data Movement Policy
 
 ![Source: [*Constructing and Analyzing the LSM Compaction Design Space*](https://dl.acm.org/doi/pdf/10.14778/3476249.3476274)](/images/intro-to-lsm-tree/data-movement-policy.png)
-
-Source: [*Constructing and Analyzing the LSM Compaction Design Space*](https://dl.acm.org/doi/pdf/10.14778/3476249.3476274)
 
 When executing partial compaction, we need to decide which data files to compact. Here are several policies (non-exhaustive), each with its own strengths:
 
@@ -80,8 +68,6 @@ When executing partial compaction, we need to decide which data files to compact
 The two main compaction strategies discussed so far are *leveled* compaction, which is triggered when a level is saturated, and *tiered* compaction, which is triggered when the number of sorted runs exceeds a threshold $T$. However, modern storage engines support additional compaction triggers. For instance, RocksDB's [Universal Compaction](https://github.com/facebook/rocksdb/wiki/Universal-Compaction) stores an estimate of each level's space amplification and uses it to initiate compaction. Alternatively, compaction could be invoked based on the age of a file, i.e., how long it has existed in a particular level. This novel age-based compaction approach is an active area of research (more details in the last section). The table below summarizes the compaction algorithms employed by various research and industry storage engines.
 
 ![Source: [*Constructing and Analyzing the LSM Compaction Design Space*](https://dl.acm.org/doi/pdf/10.14778/3476249.3476274)](/images/intro-to-lsm-tree/compaction-triggers.png)
-
-Source: [*Constructing and Analyzing the LSM Compaction Design Space*](https://dl.acm.org/doi/pdf/10.14778/3476249.3476274)
 
 ## Reading data
 
@@ -105,13 +91,9 @@ The block cache stores metadata, including bloom filters and fence pointers, for
 
 ![Source: [*Optimizing Space Amplification in RocksDB*](https://www.semanticscholar.org/paper/Optimizing-Space-Amplification-in-RocksDB-Dong-Callaghan/9b90568faad1fd394737b79503571b7f5f0b2f4b)](/images/intro-to-lsm-tree/block-cache-manifest.png)
 
-Source: [*Optimizing Space Amplification in RocksDB*](https://www.semanticscholar.org/paper/Optimizing-Space-Amplification-in-RocksDB-Dong-Callaghan/9b90568faad1fd394737b79503571b7f5f0b2f4b)
-
 ## Deletion
 
 ![Source: [Lethe](https://disc-projects.bu.edu/lethe/)](https://disc-projects.bu.edu/lethe/images/figures/intro.png)
-
-Source: [Lethe](https://disc-projects.bu.edu/lethe/)
 
 Deletes in LSM-trees are realized by **inserting** a special type of key-value entry, known as a **tombstone**. Once inserted, a tombstone logically invalidates all entries in a tree that have a matching key, without necessarily disturbing the physical target data entries. The target entries are **persistently** deleted from the data store only after the corresponding tombstone reaches the **last level** of the tree through **compactions**.
 

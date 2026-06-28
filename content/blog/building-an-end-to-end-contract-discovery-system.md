@@ -17,8 +17,6 @@ This post will outline the development of RHContract.AI, including an overview o
 
 ![High-level Architecture of Document Processing Pipeline](/images/building-an-end-to-end-contract-discovery-system/pipeline-architecture.png)
 
-High-level Architecture of Document Processing Pipeline
-
 On a high level, our system processes document data through **three** main stages:
 
 1. Input: ingests a data dump of documents alongside predefined document type and attribute definitions.
@@ -64,8 +62,6 @@ Most documents were in PDF format, making text extraction relatively inexpensive
 
 ![Document Type Distribution](/images/building-an-end-to-end-contract-discovery-system/document-type-distribution.png)
 
-Document Type Distribution
-
 After filtering the subset of documents, nearly **50%** were deemed irrelevant, and **over 10%** were identified as duplicates. This resulted in removing more than half of the documents from the time-consuming attribute extraction process.
 
 Furthermore, after applying Optical Character Recognition (OCR) to image documents and reclassifying them, 50% of these documents were found to be relevant. This increased the overall proportion of relevant documents to **30%** of the total unprocessed set.
@@ -79,8 +75,6 @@ The InternVL2 model, particularly its text component InternLM2Chat, showed stron
 ## Signature Detection
 
 ![Text + Image → JSON](/images/building-an-end-to-end-contract-discovery-system/text-image-to-json.png)
-
-Text + Image → JSON
 
 Signature detection was another hurdle to overcome in our contract analysis process. Our task was to determine whether Red Hat or the client, or both parties, had signed the contract. Initial attempts yielded disappointing results, with accuracy hovering around 50%. We began by feeding the model the first page of the contract, which contained the main attributes, along with the signature page as an image. We identified the signature page through keyword searches in the document text. However, this approach provided too much information for the model to process effectively, as it ended up hallucinating results and misinterpreting the document (similar to that in attribute extraction).
 

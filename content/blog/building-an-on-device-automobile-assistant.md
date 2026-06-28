@@ -45,8 +45,6 @@ The assistant’s architecture is designed around modular agents that each handl
 
 ![High-level architecture of the agentic automobile assistant.](/images/building-an-on-device-automobile-assistant/architecture.png)
 
-High-level architecture of the agentic automobile assistant.
-
 ### Components
 
 **Input Module**
@@ -119,8 +117,6 @@ The following logs capture how the system executes the request in real time. Eac
 
 ![Agent logs showing voice transcription, agent handoff, and tool calling.](/images/building-an-on-device-automobile-assistant/agent-logs.png)
 
-Agent logs showing voice transcription, agent handoff, and tool calling.
-
 ### Model and Hardware Configuration
 
 The system runs with two models in memory:
@@ -158,8 +154,6 @@ With vision integrated, the assistant begins to understand the driving environme
 
 ![We use synthetically generated images to simulate what the Vision Agent observes from a car’s interior and exterior on a highway. In the example above, the assistant interprets the visual input, detects an HOV lane violation, and issues a safety/compliance warning.](/images/building-an-on-device-automobile-assistant/vision-hov-violation.png)
 
-We use synthetically generated images to simulate what the Vision Agent observes from a car’s interior and exterior on a highway. In the example above, the assistant interprets the visual input, detects an HOV lane violation, and issues a safety/compliance warning.
-
 #### Level 4: Visual-Informed Autonomous Action
 
 The assistant combines deep visual understanding with autonomous decision-making to deliver critical safety interventions. For instance, in the event of a detected crash, the assistant can autonomously contact emergency services, ensuring help is dispatched even if the driver is unable to respond.
@@ -171,8 +165,6 @@ This capability marks a shift from passive monitoring to active, situational res
 ![Synthetic cabin view: an unresponsive driver](/images/building-an-on-device-automobile-assistant/emergency-interior-cabin.jpg)
 
 ![The assistant detects an emergency based on the car’s synthetic interior and exterior point of view, and contacts emergency services.](/images/building-an-on-device-automobile-assistant/vision-emergency-alert.png)
-
-The assistant detects an emergency based on the car’s synthetic interior and exterior point of view, and contacts emergency services.
 
 Altogether, these progressive levels demonstrate a clear trajectory from simple sensor queries to autonomous, context-aware behavior. Each step brings us closer to in-vehicle assistants that can truly perceive, understand, and act within the vehicle environment, paving the way toward fully AI-defined mobility.
 
@@ -189,15 +181,11 @@ Internal evaluations indicate that the modular approach scales more effectively 
 
 ![Agentic architecture scalability—source: [LangChain](https://blog.langchain.com/benchmarking-multi-agent-architectures/).](/images/building-an-on-device-automobile-assistant/multi-agent-scalability.png)
 
-Agentic architecture scalability—source: [LangChain](https://blog.langchain.com/benchmarking-multi-agent-architectures/).
-
 #### Enabling Real-Time Inference on Constrained Hardware
 
 Running AI models on edge hardware is challenging due to tight compute and memory budgets. To address these constraints, we routed requests between the VLM and the compact LLM and applied 4-bit quantization to both. The larger VLM delivers strong multimodal reasoning but incurs higher latency, so non-vision tasks are routed to the LLM to maintain responsiveness. This division of labor achieves a balance between functionality and responsiveness, enabling real-time multimodal inference for automotive workloads on resource-constrained devices.
 
 ![Impact of KV cache warmup on end-to-end latency.](/images/building-an-on-device-automobile-assistant/kv-cache-warmup-latency.png)
-
-Impact of KV cache warmup on end-to-end latency.
 
 We further reduced latency by precomputing the KV cache for the system prompt because it is reused as the prefix for all conversations. In ablation tests, this warm-up procedure delivered an average **2x speedup** in end-to-end latency.
 
@@ -214,8 +202,6 @@ Integrating a vision component was pivotal. It transformed the assistant from ju
 We equipped the system with [MLflow](https://github.com/mlflow/mlflow) tracing to gain visibility into each agent's execution time, tool usage, and handoff flow. This observability accelerates debugging, performance tuning, and design improvements as the system matures.
 
 ![MLflow traces provide fine-grained visibility per request.](/images/building-an-on-device-automobile-assistant/mlflow-traces.png)
-
-MLflow traces provide fine-grained visibility per request.
 
 #### Constraining Agent Capabilities
 

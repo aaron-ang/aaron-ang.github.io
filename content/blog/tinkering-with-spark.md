@@ -40,8 +40,6 @@ The **ApplicationMaster** negotiates resources from the Scheduler, manages task 
 
 ![Hadoop MapReduce running on YARN](https://hadoop.apache.org/docs/stable/hadoop-yarn/hadoop-yarn-site/yarn_architecture.gif)
 
-Hadoop MapReduce running on YARN
-
 ## **Running Spark on YARN**
 
 Running Spark on YARN allows multiple frameworks (not just Spark) to dynamically share and centrally configure the same cluster resources. YARN’s schedulers handle **categorization**, **isolation**, and **prioritization of workloads**, ensuring resources are efficiently allocated instead of sitting idle. In short, YARN is one of the most widely used cluster managers for running large-scale Spark applications.
@@ -49,8 +47,6 @@ Running Spark on YARN allows multiple frameworks (not just Spark) to dynamically
 ### Components
 
 ![Spark on YARN architecture. Notice the similarities with the previous YARN diagram.](https://sujithjay.com/public/yarn/Yarn-Cluster-Mode.png)
-
-Spark on YARN architecture. Notice the similarities with the previous YARN diagram.
 
 #### Spark Driver
 
