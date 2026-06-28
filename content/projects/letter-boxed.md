@@ -2,17 +2,15 @@
 title = "Letter Boxed"
 slug = "letter-boxed"
 weight = 9
-links = ["https://github.com/aaron-ang/letter-boxed"]
+links = ["https://aaron-ang.github.io/letter-boxed", "https://github.com/aaron-ang/letter-boxed"]
 +++
 
-### Puzzle solver and visualizer for NYT’s [Letter Boxed](https://www.nytimes.com/puzzles/letter-boxed)
+### Puzzle solver and visualizer for NYT's [Letter Boxed](https://www.nytimes.com/puzzles/letter-boxed)
 
-This was initially a Java project for [CS 112: Introduction to Computer Science II](https://www.cs.bu.edu/courses/cs112/) taken in Spring 2022. In Summer 2022, I rewrote the recursive backtracking algorithm in [TypeScript](https://www.typescriptlang.org), used [React](https://react.dev) to implement a frontend visualizer, and deployed the app to [GitHub Pages](https://pages.github.com).
+It started as a Java project for [CS 112](https://www.cs.bu.edu/courses/cs112/) in Spring 2022. That summer I rewrote the recursive backtracking solver in [TypeScript](https://www.typescriptlang.org), built a [React](https://react.dev) frontend to visualize it, and deployed it to GitHub Pages.
 
-Since the client was doing all the heavy lifting, some randomly generated puzzles caused the app to freeze. A few optimizations were made over time to mitigate this issue that are documented in the repository’s README.
+The solver did all its work on the client, and heavy puzzles would freeze the UI. I chased that problem for a while: first I moved the algorithm to a Google Cloud Function (which stopped the freezing but added network latency), then rewrote that function in [Go](https://go.dev) to bring latency back down. Eventually I brought the solver home to the client for good — running it in a [Web Worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API) so the heavy computation never blocks the interface.
 
-In Summer 2023, I migrated the algorithm source code to a [Node.js Google Cloud HTTP Function](https://cloud.google.com/functions/docs/concepts/nodejs-runtime) and directed the client app to call that endpoint. Even though this change prevented client unresponsiveness, latency significantly increased.
+The current version leans into that client-side approach. The solver tracks a puzzle's twelve letters as a 12-bit bitmask, so checking whether a word chain uses every letter is a single bitwise comparison; it precomputes letter adjacency and filters the ~26K-word dictionary down to the few hundred words a given puzzle allows before searching. `Solve` returns the first valid answer, while `Find Best` searches for the optimal one — fewest words, then shortest total length — offloading that heavier combinatorial search to the GPU via [WebGPU](https://developer.mozilla.org/en-US/docs/Web/API/WebGPU_API) compute shaders that extend word chains in parallel across multiple passes, with a CPU fallback. A slider steps through each stage of the solution, and a generator produces random puzzles weighted by English letter frequency.
 
-In light of this, I rewrote the algorithm in [Go](https://go.dev) and created a new GCF endpoint. Migrating to Go significantly reduced latency such that it was comparable to that in the original thick client version.
-
-Tech stack: React, Typescript, [Material UI](https://mui.com/material-ui/), Node.js, Google Cloud, Golang.
+Tech stack: React, TypeScript, [Tailwind v4](https://tailwindcss.com/), [shadcn/ui](https://ui.shadcn.com/), [Zustand](https://zustand-demo.pmnd.rs/), [Vite](https://vite.dev/), [WebGPU](https://developer.mozilla.org/en-US/docs/Web/API/WebGPU_API) (WGSL), Web Workers, [Bun](https://bun.sh/), [Vitest](https://vitest.dev/).
