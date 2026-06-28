@@ -11,7 +11,7 @@ A century ago, sending word to another continent meant waiting weeks for a ship 
 
 Smartphones condensed cameras, maps, encyclopedias, music players, and libraries into devices that fit in our pockets, yet we're quicker to notice a low battery than to appreciate all other aspects of convenience they bring to our lives. Once something remarkable becomes routine, we stop noticing it at all.
 
-I think we've fallen into the same pattern with AI. The [“strawberry” meme](https://techcrunch.com/2024/08/27/why-ai-cant-spell-strawberry/) is a good example: we made fun of language models when they confidently miscount the number of **r**'s in the word *strawberry*. It became a simple, memorable way to argue that AI wasn't really intelligent. At the same time, those same models could explain advanced mathematics, summarize research papers, write working software, and help millions of people learn new skills. Somehow the mistake became more remarkable than the capabilities.
+I think we've fallen into the same pattern with AI. The [“strawberry” meme](https://techcrunch.com/2024/08/27/why-ai-cant-spell-strawberry/) is a good example: we ridiculed language models when they confidently miscount the number of **r**'s in the word *strawberry*. It became a simple, memorable way to argue that AI wasn't really intelligent. At the same time, those same models could explain advanced mathematics, summarize research papers, write working software, and help millions of people learn new skills. Somehow the mistake became more remarkable than the capabilities.
 
 But the joke is on us. We normalize competence almost instantly and grow increasingly sensitive to failure. Once something consistently exceeds our expectations, we stop rewarding it for doing so. We simply raise the bar and wait for the next mistake.
 
@@ -47,13 +47,13 @@ Even the most ambitious new architectures run into the same limit. Yann LeCun's 
 
 And understanding what *is* doesn't tell us what *ought* to be. A perfect prediction of every possible future still leaves open which future we should prefer. My experience with coding agents keeps bringing me back to the same point: optimization only works once the objective is defined. Programming gives us that objective. Nature often gives one to scientists. Life usually doesn't.
 
-That may be the real boundary: not today's language models, and not tomorrow's world models. The deeper challenge is that many of the questions we care about most aren't optimization problems waiting for better algorithms. Consciousness, beauty, purpose, morality, and meaning aren't things we discover the way we discover the speed of light. They are things we continually negotiate through experience, reflection, and relationships.
+That may be the wall, not just for today's language models but for tomorrow's world models too. Fundamentally, many of the questions we care about most aren't optimization problems waiting for better algorithms. Consciousness, beauty, purpose, morality, and meaning aren't things we discover the way we discover the speed of light. They are things we continually negotiate through experience, reflection, and relationships.
 
 ### **Maybe That's the Point**
 
 People often ask whether we'll eventually build artificial general intelligence (AGI). I suspect we're asking the wrong question.
 
-The older I get, the less interested I become in perfection and the more interested I become in judgment. Some of my favorite lessons don't provide answers. They leave room for interpretation. For me, that's where the meaning is. I find it in the quirks and diversity of human thought, and in the matters of taste and opinion each of us has to weigh for ourselves. The people I admire most are thoughtful not because they're always right, but because they're willing to wrestle with ambiguity. Much of what makes life meaningful exists precisely because reasonable people can disagree about it.
+I'm at a point in life where I am less interested in perfection and more interested in judgment. Some of my favorite lessons don't provide answers. They leave room for interpretation. For me, that's where the meaning is. I find it in the quirks and diversity of human thought, and in the matters of taste and opinion each of us has to weigh for ourselves. The people I admire most are thoughtful not because they're always right, but because they're willing to wrestle with ambiguity. Much of what makes life meaningful exists precisely because reasonable people can disagree about it.
 
 I don't think those ambiguities are flaws in human intelligence. I think they're part of what makes life worth living.
 
