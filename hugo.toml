@@ -1,0 +1,35 @@
+baseURL = 'https://aaron-ang.github.io'
+locale = 'en-us'
+title = 'Aaron Ang'
+theme = "hugo-bearblog"
+enableRobotsTXT = true
+
+[permalinks]
+  blog = "/:slug/"
+  tags = "/blog/:slug"
+
+[taxonomies]
+  tags = "tags"
+
+[[menu.main]]
+  name = "Blog"
+  url = "/"
+  weight = 1
+
+[[menu.main]]
+  name = "RSS"
+  url = "/blog/index.xml"
+  weight = 4
+
+[params]
+  description = "Data platform engineer writing about AI, data systems, and engineering."
+  # enablePostNavigator = true
+
+[markup]
+  [markup.highlight]
+    style = 'friendly'
+  [markup.goldmark.extensions.passthrough]
+    enable = true
+    [markup.goldmark.extensions.passthrough.delimiters]
+      block = [['$$', '$$'], ['\\[', '\\]']]
+      inline = [['$', '$'], ['\\(', '\\)']]

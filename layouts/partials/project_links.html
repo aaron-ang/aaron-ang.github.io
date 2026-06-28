@@ -1,0 +1,11 @@
+{{- range $i, $u := . -}}
+{{- if $i }} · {{ end -}}
+{{- $label := "Link" -}}
+{{- if in $u "github.com" }}{{ $label = "Code" }}
+{{- else if in $u "crates.io" }}{{ $label = "Crate" }}
+{{- else if in $u "pypi.org" }}{{ $label = "PyPI" }}
+{{- else if in $u "devpost.com" }}{{ $label = "Devpost" }}
+{{- else if or (in $u "youtube.com") (in $u "youtu.be") }}{{ $label = "Demo" }}
+{{- else }}{{ $label = "Live" }}{{ end -}}
+<a href="{{ $u }}" target="_blank" rel="noopener noreferrer">{{ $label }}</a>
+{{- end -}}
