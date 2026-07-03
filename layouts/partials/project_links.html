@@ -6,6 +6,7 @@
 {{- else if in $u "pypi.org" }}{{ $label = "PyPI" }}
 {{- else if in $u "devpost.com" }}{{ $label = "Devpost" }}
 {{- else if or (in $u "youtube.com") (in $u "youtu.be") }}{{ $label = "Demo" }}
+{{- else if in $u "drive.google.com" }}{{ $label = "Report" }}
 {{- else }}{{ $label = "Live" }}{{ end -}}
 <a href="{{ $u }}" target="_blank" rel="noopener noreferrer">{{ $label }}</a>
 {{- end -}}

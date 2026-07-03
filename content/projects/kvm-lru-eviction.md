@@ -2,7 +2,7 @@
 title = "KVM Approximate-LRU Page Eviction"
 slug = "kvm-lru-eviction"
 weight = 4
-links = ["https://github.com/aaron-ang/kvm"]
+links = ["https://github.com/aaron-ang/kvm", "https://drive.google.com/file/d/18Hb5Ug48UfW9TsPBnSU7noVIKErcJLc3/view"]
 +++
 
 Replaced the **FIFO** page-eviction policy in the Linux **KVM** hypervisor's shadow-paging MMU with an **approximate LRU** (second-chance clock) policy, so that frequently accessed guest pages stay resident and page faults drop.

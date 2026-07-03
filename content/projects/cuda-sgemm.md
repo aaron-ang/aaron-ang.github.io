@@ -2,7 +2,7 @@
 title = "CUDA SGEMM"
 slug = "cuda-sgemm"
 weight = 3
-links = ["https://github.com/aaron-ang/cuda-sgemm"]
+links = ["https://github.com/aaron-ang/cuda-sgemm", "https://drive.google.com/file/d/1xybMXLro7Vt3FSjm7Li9NY1Asmmbzd11/view"]
 +++
 
 A high-performance single-precision matrix-multiply (SGEMM) CUDA kernel tuned for the NVIDIA T4, reaching **4779.9 GFLOP/s at N = 2048** — approaching cuBLAS.
