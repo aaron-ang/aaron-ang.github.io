@@ -1,7 +1,7 @@
 +++
 title = "Threading Library"
 slug = "threading-library"
-weight = 5
+weight = 7
 links = ["https://github.com/aaron-ang/threading-lib"]
 +++
 

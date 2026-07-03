@@ -1,7 +1,7 @@
 +++
 title = "Unix File System"
 slug = "unix-file-system"
-weight = 4
+weight = 6
 links = ["https://github.com/aaron-ang/file-system"]
 +++
 

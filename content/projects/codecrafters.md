@@ -1,7 +1,7 @@
 +++
 title = "CodeCrafters Builds"
 slug = "codecrafters"
-weight = 3
+weight = 5
 +++
 
 Built-from-scratch reimplementations of real systems, following [CodeCrafters](https://codecrafters.io)’ “Build Your Own X” challenges — all in Rust. Each one meant working directly with a system’s wire format, on-disk format, or grammar: parsing protocols, byte layouts, B-trees, and event loops by hand.
