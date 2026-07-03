@@ -6,7 +6,7 @@ weight = 5
 
 Built-from-scratch reimplementations of real systems, following [CodeCrafters](https://codecrafters.io)’ “Build Your Own X” challenges — all in Rust. Each one meant working directly with a system’s wire format, on-disk format, or grammar: parsing protocols, byte layouts, B-trees, and event loops by hand.
 
-The ones I went deepest on:
+The most in-depth ones:
 
 - [BitTorrent](https://github.com/aaron-ang/bittorrent-rs) — bencode parsing, tracker communication, the peer handshake, and downloading and verifying file pieces over TCP
 - [Redis](https://github.com/aaron-ang/redis-rs) — a Redis server speaking the RESP protocol with core commands
