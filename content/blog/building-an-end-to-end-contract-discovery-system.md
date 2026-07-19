@@ -22,8 +22,8 @@ On a high level, our system processes document data through **three** main stage
 1. Input: ingests a data dump of documents alongside predefined document type and attribute definitions.
 2. Processing: analyzes and categorizes the documents based on the predefined types.
 3. Output: generates two key deliverables:
-    1. A structured directory of organized document types.
-    2. A DataFrame that maps file names to their extracted attributes.
+   1. A structured directory of organized document types.
+   2. A DataFrame that maps file names to their extracted attributes.
 
 ### Key Features
 
@@ -70,7 +70,7 @@ Furthermore, after applying Optical Character Recognition (OCR) to image documen
 
 Following document classification, we tackled the challenge of extracting relevant attributes from each document type. Our initial experiments with traditional LLMs did not yield promising results. The primary issue was the **distortion of document structure during PDF text extraction**, which led to mixed-up words and sentences, causing LLMs to misinterpret the content. To overcome this, we shifted our focus to multimodal LLMs, specifically [**InternVL2**](https://huggingface.co/OpenGVLab/InternVL2-26B) by OpenGVLab, an Apache 2.0 licensed model with 26 billion parameters. This approach was significantly more effective. By feeding both the document image and text into the model, we observed a huge increase in attribute extraction accuracy, often surpassing **90%** — an improvement of several orders of magnitude over our initial attempts.
 
-The InternVL2 model, particularly its text component InternLM2Chat, showed strong instruction comprehension compared to previous LLMs. Unlike our previous attempts, where we struggled to get clean JSON outputs, InternLM2Chat consistently delivered well-formed JSON that we could easily [parse with Pydantic classes](https://python.langchain.com/v0.1/docs/modules/model_io/output_parsers/types/pydantic/). Although inference latency increased slightly, the trade-off was worth it given the accuracy boost. Additionally, working with JSON made our lives easier down the line. We could quickly merge the output into Pandas DataFrames and export to CSV or other compatible formats.
+The InternVL2 model, particularly its text component InternLM2Chat, showed strong instruction comprehension compared to previous LLMs. Unlike our previous attempts, where we struggled to get clean JSON outputs, InternLM2Chat consistently delivered well-formed JSON that we could easily [parse with Pydantic Models](https://pydantic.dev/docs/validation/dev/concepts/models/). Although inference latency increased slightly, the trade-off was worth it given the accuracy boost. Additionally, working with JSON made our lives easier down the line. We could quickly merge the output into Pandas DataFrames and export to CSV or other compatible formats.
 
 ## Signature Detection
 
