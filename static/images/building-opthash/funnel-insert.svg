@@ -1,0 +1,232 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 345" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated Funnel insertion: a key falls through full buckets, level by level. A second key reaches the special area.">
+  <style>
+    :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #ddd; --muted: #999; --full: #555; --empty: #1e1e1e; --edge: #777; --probe: #ff8a4c; --ok: #69db7c; --chip: #2a2a2a; }
+    }
+    text { fill: var(--fg); font-size: 14px; }
+    .muted { fill: var(--muted); font-size: 12px; }
+    .title { font-weight: 600; font-size: 15px; }
+    .full { fill: var(--full); stroke: var(--edge); }
+    .empty { fill: var(--empty); stroke: var(--edge); }
+    .ring { fill: none; stroke: var(--probe); stroke-width: 3; }
+    .num { fill: var(--probe); font-weight: 600; font-size: 12px; }
+    .new { fill: var(--ok); }
+    .oktext { fill: var(--ok); font-weight: 600; }
+    .chip { fill: var(--chip); stroke: var(--edge); }
+    .yes { fill: var(--probe); font-weight: 600; }
+    .no { fill: var(--muted); font-weight: 600; }
+    .case { font-weight: 600; }
+    .bg { fill: var(--empty); }
+    .dim { fill-opacity: 0.65; }
+    .w { opacity: 0; animation: 21.0s linear infinite; }
+    .w1 { animation-name: w1; }
+    @keyframes w1 { 0%, 45.71% { opacity: 1 } 46.11%, 100% { opacity: 0 } }
+    .w2 { animation-name: w2; }
+    @keyframes w2 { 0%, 17.14% { opacity: 1 } 17.54%, 100% { opacity: 0 } }
+    .w3 { animation-name: w3; }
+    @keyframes w3 { 0%, 3.17% { opacity: 0 } 3.57%, 45.71% { opacity: 1 } 46.11%, 100% { opacity: 0 } }
+    .w4 { animation-name: w4; }
+    @keyframes w4 { 0%, 5.67% { opacity: 0 } 6.07%, 45.71% { opacity: 1 } 46.11%, 100% { opacity: 0 } }
+    .w5 { animation-name: w5; }
+    @keyframes w5 { 0%, 8.17% { opacity: 0 } 8.57%, 45.71% { opacity: 1 } 46.11%, 100% { opacity: 0 } }
+    .w6 { animation-name: w6; }
+    @keyframes w6 { 0%, 10.67% { opacity: 0 } 11.07%, 45.71% { opacity: 1 } 46.11%, 100% { opacity: 0 } }
+    .w7 { animation-name: w7; }
+    @keyframes w7 { 0%, 13.17% { opacity: 0 } 13.57%, 45.71% { opacity: 1 } 46.11%, 100% { opacity: 0 } }
+    .w8 { animation-name: w8; }
+    @keyframes w8 { 0%, 16.03% { opacity: 0 } 16.43%, 45.71% { opacity: 1 } 46.11%, 100% { opacity: 0 } }
+    .w9 { animation-name: w9; }
+    @keyframes w9 { 0%, 16.03% { opacity: 0 } 16.43%, 45.71% { opacity: 1 } 46.11%, 100% { opacity: 0 } }
+    .w10 { animation-name: w10; }
+    @keyframes w10 { 0%, 46.74% { opacity: 0 } 47.14%, 97.14% { opacity: 1 } 97.54%, 100% { opacity: 0 } }
+    .w11 { animation-name: w11; }
+    @keyframes w11 { 0%, 46.74% { opacity: 0 } 47.14%, 65.71% { opacity: 1 } 66.11%, 100% { opacity: 0 } }
+    .w12 { animation-name: w12; }
+    @keyframes w12 { 0%, 50.31% { opacity: 0 } 50.71%, 97.14% { opacity: 1 } 97.54%, 100% { opacity: 0 } }
+    .w13 { animation-name: w13; }
+    @keyframes w13 { 0%, 52.81% { opacity: 0 } 53.21%, 97.14% { opacity: 1 } 97.54%, 100% { opacity: 0 } }
+    .w14 { animation-name: w14; }
+    @keyframes w14 { 0%, 55.31% { opacity: 0 } 55.71%, 97.14% { opacity: 1 } 97.54%, 100% { opacity: 0 } }
+    .w15 { animation-name: w15; }
+    @keyframes w15 { 0%, 57.81% { opacity: 0 } 58.21%, 97.14% { opacity: 1 } 97.54%, 100% { opacity: 0 } }
+    .w16 { animation-name: w16; }
+    @keyframes w16 { 0%, 60.31% { opacity: 0 } 60.71%, 97.14% { opacity: 1 } 97.54%, 100% { opacity: 0 } }
+    .w17 { animation-name: w17; }
+    @keyframes w17 { 0%, 62.81% { opacity: 0 } 63.21%, 97.14% { opacity: 1 } 97.54%, 100% { opacity: 0 } }
+    .w18 { animation-name: w18; }
+    @keyframes w18 { 0%, 65.31% { opacity: 0 } 65.71%, 75.00% { opacity: 1 } 75.40%, 100% { opacity: 0 } }
+    .w19 { animation-name: w19; }
+    @keyframes w19 { 0%, 65.31% { opacity: 0 } 65.71%, 97.14% { opacity: 1 } 97.54%, 100% { opacity: 0 } }
+    .w20 { animation-name: w20; }
+    @keyframes w20 { 0%, 67.46% { opacity: 0 } 67.86%, 97.14% { opacity: 1 } 97.54%, 100% { opacity: 0 } }
+    .w21 { animation-name: w21; }
+    @keyframes w21 { 0%, 69.60% { opacity: 0 } 70.00%, 97.14% { opacity: 1 } 97.54%, 100% { opacity: 0 } }
+    .w22 { animation-name: w22; }
+    @keyframes w22 { 0%, 71.74% { opacity: 0 } 72.14%, 97.14% { opacity: 1 } 97.54%, 100% { opacity: 0 } }
+    .w23 { animation-name: w23; }
+    @keyframes w23 { 0%, 74.60% { opacity: 0 } 75.00%, 90.71% { opacity: 1 } 91.11%, 100% { opacity: 0 } }
+    .w24 { animation-name: w24; }
+    @keyframes w24 { 0%, 74.60% { opacity: 0 } 75.00%, 97.14% { opacity: 1 } 97.54%, 100% { opacity: 0 } }
+    .w25 { animation-name: w25; }
+    @keyframes w25 { 0%, 74.60% { opacity: 0 } 75.00%, 97.14% { opacity: 1 } 97.54%, 100% { opacity: 0 } }
+    .w26 { animation-name: w26; }
+    @keyframes w26 { 0%, 77.46% { opacity: 0 } 77.86%, 97.14% { opacity: 1 } 97.54%, 100% { opacity: 0 } }
+    .w27 { animation-name: w27; }
+    @keyframes w27 { 0%, 77.46% { opacity: 0 } 77.86%, 97.14% { opacity: 1 } 97.54%, 100% { opacity: 0 } }
+    .w28 { animation-name: w28; }
+    @keyframes w28 { 0%, 80.67% { opacity: 0 } 81.07%, 97.14% { opacity: 1 } 97.54%, 100% { opacity: 0 } }
+    .w29 { animation-name: w29; }
+    @keyframes w29 { 0%, 80.67% { opacity: 0 } 81.07%, 97.14% { opacity: 1 } 97.54%, 100% { opacity: 0 } }
+    .w30 { animation-name: w30; }
+    @keyframes w30 { 0%, 83.89% { opacity: 0 } 84.29%, 97.14% { opacity: 1 } 97.54%, 100% { opacity: 0 } }
+    .w31 { animation-name: w31; }
+    @keyframes w31 { 0%, 83.89% { opacity: 0 } 84.29%, 97.14% { opacity: 1 } 97.54%, 100% { opacity: 0 } }
+    .w32 { animation-name: w32; }
+    @keyframes w32 { 0%, 87.10% { opacity: 0 } 87.50%, 97.14% { opacity: 1 } 97.54%, 100% { opacity: 0 } }
+    .w33 { animation-name: w33; }
+    @keyframes w33 { 0%, 87.10% { opacity: 0 } 87.50%, 97.14% { opacity: 1 } 97.54%, 100% { opacity: 0 } }
+    .w34 { animation-name: w34; }
+    @keyframes w34 { 0%, 90.31% { opacity: 0 } 90.71%, 97.14% { opacity: 1 } 97.54%, 100% { opacity: 0 } }
+    .w35 { animation-name: w35; }
+    @keyframes w35 { 0%, 90.31% { opacity: 0 } 90.71%, 97.14% { opacity: 1 } 97.54%, 100% { opacity: 0 } }
+    @media (prefers-reduced-motion: reduce) {
+      .w { animation: none; opacity: 0; }
+      .w.fin { opacity: 1; }
+    }
+  </style>
+  <text x="20" y="88">Level 1</text>
+  <text x="20" y="143">Level 2</text>
+  <text x="20" y="198">Level 3</text>
+  <text x="20" y="268">Special B</text>
+  <text x="20" y="323">Special C</text>
+  <line x1="20" y1="222" x2="740" y2="222" stroke="var(--edge)" stroke-dasharray="4 4"/>
+  <text x="740" y="216" text-anchor="end" class="muted">main levels above, special area below</text>
+  <g class="w w1">
+    <rect x="150" y="70" width="26" height="26" rx="3" class="full"/>
+    <rect x="180" y="70" width="26" height="26" rx="3" class="full"/>
+    <rect x="210" y="70" width="26" height="26" rx="3" class="empty"/>
+    <rect x="262" y="70" width="26" height="26" rx="3" class="full"/>
+    <rect x="292" y="70" width="26" height="26" rx="3" class="full"/>
+    <rect x="322" y="70" width="26" height="26" rx="3" class="full"/>
+    <rect x="374" y="70" width="26" height="26" rx="3" class="full"/>
+    <rect x="404" y="70" width="26" height="26" rx="3" class="empty"/>
+    <rect x="434" y="70" width="26" height="26" rx="3" class="empty"/>
+    <rect x="486" y="70" width="26" height="26" rx="3" class="full"/>
+    <rect x="516" y="70" width="26" height="26" rx="3" class="full"/>
+    <rect x="546" y="70" width="26" height="26" rx="3" class="full"/>
+    <rect x="150" y="125" width="26" height="26" rx="3" class="full"/>
+    <rect x="180" y="125" width="26" height="26" rx="3" class="full"/>
+    <rect x="210" y="125" width="26" height="26" rx="3" class="full"/>
+    <rect x="262" y="125" width="26" height="26" rx="3" class="full"/>
+    <rect x="292" y="125" width="26" height="26" rx="3" class="empty"/>
+    <rect x="322" y="125" width="26" height="26" rx="3" class="empty"/>
+    <rect x="374" y="125" width="26" height="26" rx="3" class="full"/>
+    <rect x="404" y="125" width="26" height="26" rx="3" class="full"/>
+    <rect x="434" y="125" width="26" height="26" rx="3" class="empty"/>
+    <rect x="150" y="180" width="26" height="26" rx="3" class="full"/>
+    <rect x="180" y="180" width="26" height="26" rx="3" class="empty"/>
+    <rect x="210" y="180" width="26" height="26" rx="3" class="empty"/>
+    <rect x="262" y="180" width="26" height="26" rx="3" class="full"/>
+    <rect x="292" y="180" width="26" height="26" rx="3" class="empty"/>
+    <rect x="322" y="180" width="26" height="26" rx="3" class="empty"/>
+    <rect x="150" y="250" width="26" height="26" rx="3" class="full"/>
+    <rect x="190" y="250" width="26" height="26" rx="3" class="empty"/>
+    <rect x="230" y="250" width="26" height="26" rx="3" class="empty"/>
+    <rect x="270" y="250" width="26" height="26" rx="3" class="full"/>
+    <rect x="310" y="250" width="26" height="26" rx="3" class="empty"/>
+    <rect x="350" y="250" width="26" height="26" rx="3" class="empty"/>
+    <rect x="390" y="250" width="26" height="26" rx="3" class="empty"/>
+    <rect x="430" y="250" width="26" height="26" rx="3" class="empty"/>
+    <rect x="150" y="305" width="26" height="26" rx="3" class="full"/>
+    <rect x="180" y="305" width="26" height="26" rx="3" class="empty"/>
+    <rect x="210" y="305" width="26" height="26" rx="3" class="empty"/>
+    <rect x="262" y="305" width="26" height="26" rx="3" class="empty"/>
+    <rect x="292" y="305" width="26" height="26" rx="3" class="empty"/>
+    <rect x="322" y="305" width="26" height="26" rx="3" class="empty"/>
+    <rect x="374" y="305" width="26" height="26" rx="3" class="full"/>
+    <rect x="404" y="305" width="26" height="26" rx="3" class="empty"/>
+    <rect x="434" y="305" width="26" height="26" rx="3" class="empty"/>
+    <text x="20" y="30" class="title">Key 1 of 2</text>
+  </g>
+  <text x="130" y="30" class=" w w2">The key hashes to one bucket per level and checks its slots.</text>
+  <rect x="258" y="66" width="94" height="34" rx="5" class="ring w w3"/>
+  <text x="305.0" y="113" text-anchor="middle" class="num w w4">full ↓</text>
+  <rect x="146" y="121" width="94" height="34" rx="5" class="ring w w5"/>
+  <text x="193.0" y="168" text-anchor="middle" class="num w w6">full ↓</text>
+  <rect x="258" y="176" width="94" height="34" rx="5" class="ring w w7"/>
+  <rect x="297" y="185" width="16" height="16" rx="2" class="new w w8"/>
+  <text x="130" y="30" class="oktext w w9">Level 3's bucket has room: the key takes its first empty slot.</text>
+  <g class="w w10 fin">
+    <rect x="150" y="70" width="26" height="26" rx="3" class="full"/>
+    <rect x="180" y="70" width="26" height="26" rx="3" class="full"/>
+    <rect x="210" y="70" width="26" height="26" rx="3" class="full"/>
+    <rect x="262" y="70" width="26" height="26" rx="3" class="full"/>
+    <rect x="292" y="70" width="26" height="26" rx="3" class="full"/>
+    <rect x="322" y="70" width="26" height="26" rx="3" class="empty"/>
+    <rect x="374" y="70" width="26" height="26" rx="3" class="full"/>
+    <rect x="404" y="70" width="26" height="26" rx="3" class="empty"/>
+    <rect x="434" y="70" width="26" height="26" rx="3" class="full"/>
+    <rect x="486" y="70" width="26" height="26" rx="3" class="full"/>
+    <rect x="516" y="70" width="26" height="26" rx="3" class="full"/>
+    <rect x="546" y="70" width="26" height="26" rx="3" class="full"/>
+    <rect x="150" y="125" width="26" height="26" rx="3" class="full"/>
+    <rect x="180" y="125" width="26" height="26" rx="3" class="full"/>
+    <rect x="210" y="125" width="26" height="26" rx="3" class="empty"/>
+    <rect x="262" y="125" width="26" height="26" rx="3" class="full"/>
+    <rect x="292" y="125" width="26" height="26" rx="3" class="full"/>
+    <rect x="322" y="125" width="26" height="26" rx="3" class="full"/>
+    <rect x="374" y="125" width="26" height="26" rx="3" class="full"/>
+    <rect x="404" y="125" width="26" height="26" rx="3" class="full"/>
+    <rect x="434" y="125" width="26" height="26" rx="3" class="full"/>
+    <rect x="150" y="180" width="26" height="26" rx="3" class="full"/>
+    <rect x="180" y="180" width="26" height="26" rx="3" class="full"/>
+    <rect x="210" y="180" width="26" height="26" rx="3" class="full"/>
+    <rect x="262" y="180" width="26" height="26" rx="3" class="full"/>
+    <rect x="292" y="180" width="26" height="26" rx="3" class="full"/>
+    <rect x="322" y="180" width="26" height="26" rx="3" class="empty"/>
+    <rect x="150" y="250" width="26" height="26" rx="3" class="full"/>
+    <rect x="190" y="250" width="26" height="26" rx="3" class="full"/>
+    <rect x="230" y="250" width="26" height="26" rx="3" class="empty"/>
+    <rect x="270" y="250" width="26" height="26" rx="3" class="full"/>
+    <rect x="310" y="250" width="26" height="26" rx="3" class="full"/>
+    <rect x="350" y="250" width="26" height="26" rx="3" class="empty"/>
+    <rect x="390" y="250" width="26" height="26" rx="3" class="full"/>
+    <rect x="430" y="250" width="26" height="26" rx="3" class="empty"/>
+    <rect x="150" y="305" width="26" height="26" rx="3" class="full"/>
+    <rect x="180" y="305" width="26" height="26" rx="3" class="full"/>
+    <rect x="210" y="305" width="26" height="26" rx="3" class="empty"/>
+    <rect x="262" y="305" width="26" height="26" rx="3" class="full"/>
+    <rect x="292" y="305" width="26" height="26" rx="3" class="empty"/>
+    <rect x="322" y="305" width="26" height="26" rx="3" class="empty"/>
+    <rect x="374" y="305" width="26" height="26" rx="3" class="full"/>
+    <rect x="404" y="305" width="26" height="26" rx="3" class="empty"/>
+    <rect x="434" y="305" width="26" height="26" rx="3" class="empty"/>
+    <text x="20" y="30" class="title">Key 2 of 2</text>
+  </g>
+  <text x="130" y="30" class=" w w11">The key hashes to one bucket per level and checks its slots.</text>
+  <rect x="482" y="66" width="94" height="34" rx="5" class="ring w w12 fin"/>
+  <text x="529.0" y="113" text-anchor="middle" class="num w w13 fin">full ↓</text>
+  <rect x="370" y="121" width="94" height="34" rx="5" class="ring w w14 fin"/>
+  <text x="417.0" y="168" text-anchor="middle" class="num w w15 fin">full ↓</text>
+  <rect x="146" y="176" width="94" height="34" rx="5" class="ring w w16 fin"/>
+  <text x="193.0" y="223" text-anchor="middle" class="num w w17 fin">full ↓</text>
+  <text x="130" y="30" class=" w w18">Every bucket was full. Special area B: a few random single-slot tries.</text>
+  <rect x="187" y="247" width="32" height="32" rx="4" class="ring w w19 fin"/>
+  <text x="203.0" y="290" text-anchor="middle" class="num w w20 fin">full</text>
+  <rect x="307" y="247" width="32" height="32" rx="4" class="ring w w21 fin"/>
+  <text x="323.0" y="290" text-anchor="middle" class="num w w22 fin">full</text>
+  <text x="130" y="30" class=" w w23">Special area C: two buckets, a and b, checked slot by slot: a, b, a, b.</text>
+  <text x="142" y="323" text-anchor="end" class="num w w24 fin">a</text>
+  <text x="366" y="323" text-anchor="end" class="num w w25 fin">b</text>
+  <rect x="147" y="302" width="32" height="32" rx="4" class="ring w w26 fin"/>
+  <text x="163.0" y="345" text-anchor="middle" class="num w w27 fin">1</text>
+  <rect x="371" y="302" width="32" height="32" rx="4" class="ring w w28 fin"/>
+  <text x="387.0" y="345" text-anchor="middle" class="num w w29 fin">2</text>
+  <rect x="177" y="302" width="32" height="32" rx="4" class="ring w w30 fin"/>
+  <text x="193.0" y="345" text-anchor="middle" class="num w w31 fin">3</text>
+  <rect x="401" y="302" width="32" height="32" rx="4" class="ring w w32 fin"/>
+  <text x="417.0" y="345" text-anchor="middle" class="num w w33 fin">4</text>
+  <rect x="409" y="310" width="16" height="16" rx="2" class="new w w34 fin"/>
+  <text x="130" y="30" class="oktext w w35 fin">Slot 4 is free: the key lands in b, the emptier of the two buckets.</text>
+</svg>
