@@ -121,6 +121,12 @@ if free_current <= current_threshold {
 }
 ```
 
+The snippet is short, but three details in it explain why every optimization in the Removed column had to go:
+
+1. **Placement is deterministic.** Each branch depends only on two occupancy counts and the key itself, so the same inserts always produce the same placements. That is what lets the reference serve as a test.
+2. **Probes map to slots through exact sizes.** `vacancy(level, key, j)` checks the $j$-th slot in the key's probe sequence for a level, and `uniform_vacancy` tries $j = 0, 1, 2, \ldots$ until one is free. The slot for each $j$ is computed from the level's true size, so rounding sizes to a power of two sends keys to different slots.
+3. **Thresholds use integer rounding.** opthash keeps $\delta$ a power of two, so $\delta |A_i| / 2$ is a bit shift (`floor_div_pow2`). An optimized table has to round the same way, or a key near a threshold takes a different case.
+
 Because the reference decides where every probe lands, it doubles as a test oracle. Tests insert the same keys into both tables and check that every key lands in the same slot at the same probe position.
 
 ```mermaid {caption="The equivalence check. If a single key lands somewhere else, the optimization changed the algorithm."}
@@ -161,7 +167,25 @@ exact rewrite
         55,432,818  branch-misses
 ```
 
-The totals look alike because both ran for five seconds. Divide by the number of lookups each version completed in that window and the picture changes. Both versions take about one L1 miss per lookup and run at the same instructions per cycle. The exact version executes about 8x the instructions per lookup, roughly 590 against 70, and takes 13x the branch misses. On this fixture the exact hit path is not memory-bound. It is doing more work: walking the paper's interleaved probe order and doing [exact range reduction](https://arxiv.org/abs/1805.10941) on every candidate. Insert is different. There the exact version also takes about 10x the cache misses per operation. It visits far more slots before it settles, and those slots are spread across two arrays instead of one contiguous group.
+The totals look alike because both runs lasted five seconds. The exact version is slower, so it completed far fewer lookups in that window, and the counters only make sense per lookup. Dividing the five seconds by each version's time per lookup from the table above gives the number of lookups each one completed:
+
+$$
+\frac{5\ \text{s}}{3.7\ \text{ns}} \approx 1.35 \text{ billion (v0.10.3)} \qquad \frac{5\ \text{s}}{32\ \text{ns}} \approx 156 \text{ million (exact)}
+$$
+
+Dividing each counter by those counts gives the cost of a single lookup. These are estimates, since the benchmark loop adds a little work of its own, but the differences are large enough to read:
+
+| Per lookup             | v0.10.3 | Exact | Ratio          |
+| ---------------------- | ------: | ----: | -------------- |
+| Cycles                 |     ~15 |  ~125 | 8.4x           |
+| Instructions           |     ~71 |  ~590 | 8.4x           |
+| Instructions per cycle |    4.76 |  4.74 | about the same |
+| Cache misses           |    ~1.0 |  ~1.1 | about the same |
+| Branch misses          |   ~0.03 | ~0.35 | 13x            |
+
+Cycles and instructions grew by the same factor, and instructions per cycle barely moved. The processor runs the exact version's code just as efficiently, but there is about 8 times as much of it. Cache misses stayed near one per lookup, so on this fixture the exact hit path is not waiting on memory. The extra instructions come from following the paper: the exact version walks candidates in the paper's interleaved order across arrays and does [exact range reduction](https://arxiv.org/abs/1805.10941) on every candidate, where the old version probed power-of-two groups using bit masks. Branch misses grew 13 times, but at about 0.35 per lookup, and roughly 10 to 20 cycles each, they account for only a few of the 110 or so extra cycles.
+
+Insert behaves differently. There the exact version also takes about 10 times as many cache misses per operation, because it visits far more slots before it settles, and those slots are spread across two arrays instead of one contiguous group.
 
 I kept the slower, exact version anyway. A fast implementation of a different candidate order couldn't answer the question that started the project: how do the paper's algorithms behave on real hardware? From then on, the reference decided which optimizations were allowed: if an optimization disagrees with the reference about a single slot, it is changing the algorithm, not speeding it up.
 
@@ -178,17 +202,17 @@ flowchart TB
   e3 -. "cleanup, clear, or resize" .-> e4["Epoch N+3: paper rules"]
 ```
 
-Placement recovery is the one exception. The paper gives each key a finite list of slots it may use, and under heavy churn a real table can end up with every one of them taken. Rather than drop the key, opthash rebuilds the table at the same size and then places the key outside the paper's rules. So "paper-exact" describes normal operation, not recovery.[^hashing]
+Placement recovery is the one exception. The paper gives each key a finite list of slots it may use, and under heavy churn a real table can end up with every one of them taken. When that happens, opthash does not drop the key. It first rebuilds the table at the same size, reinserting every live key into a fresh layout, which also clears out tombstones, and then tries the paper's placement again. Only if the key still has no allowed slot does opthash put it in the first free slot it finds, a slot the paper would never have chosen for it. That placement sets a flag, so later lookups know to fall back to scanning the whole table. So "paper-exact" describes normal operation, not recovery.[^hashing]
 
 Keeping library code from changing the paper's placements took some fixes. Elastic used to pick its active batch from a running count of inserts. Under a steady mix of inserts and deletes, that count kept climbing even though the number of live keys stayed flat, so the batch index crept forward and new keys drifted into the smallest levels, where they quickly ran out of room and set off recovery. Counting live entries instead of total inserts fixed it.[^churn]
 
-The same split applies to benchmarks. Inserts and successful lookups are closest to what the paper analyzes, and Funnel's analysis also covers failed lookups. But Elastic misses, deletes, and growth measure the library around the paper. One combined score would hide where the time goes, so opthash reports them separately. Every run also includes `std::HashMap` and `hashbrown`, with `hashbrown` as a reference point, not a target.[^python]
+The same split applies to benchmarks. The paper's analysis covers inserts and successful lookups for both maps, and failed lookups for Funnel only. It doesn't cover failed lookups for Elastic, and deletes and growth aren't part of the paper at all, so benchmarks for those operations measure opthash's own library code. One combined score would mix the two and hide where the time goes, so opthash reports them separately. Every run also includes `std::HashMap` and `hashbrown`, which show how fast mature, general-purpose tables are on the same machine and workload, so opthash's numbers have something to be read against.[^python]
 
 ## Takeaways
 
 ### Pin Before You Believe
 
-The mini-hash experiment looked like a 33 to 39 percent win until both runs were pinned to the same core. The skewed fixture compared maps at different loads, and no number looked wrong. Pinning the core, fixing memory placement, and rerunning an unchanged baseline like `hashbrown` costs a few minutes per run. It is the most reliable way I know to tell a real speedup from a lucky one.
+The mini-hash experiment looked like a 33 to 39 percent win until both runs were pinned to the same core. The skewed fixture filled Elastic and `hashbrown` to 70 percent but Funnel to 100 percent, and nothing in the results pointed to it. Pinning the core, fixing memory placement, and rerunning an unchanged baseline like `hashbrown` costs a few minutes per run. It is the most reliable way I know to tell a real speedup from a lucky one.
 
 ### Build the Reference First
 
@@ -206,7 +230,7 @@ The paper analyzes inserts and lookups in a fixed-size table. Deletes, growth, a
 
 Later work kept the paper's slot order and made each probe cheaper. A membership filter, a small [Bloom filter](https://en.wikipedia.org/wiki/Bloom_filter) at the end of the arena, lets most failed lookups return without probing,[^filter] and probing itself got cheaper.[^probing] Both maps have recovered much of the speed the rewrite cost, but neither matches `hashbrown` yet.
 
-Deletes on a nearly full table are still slow. A delete-heavy workload keeps pushing Elastic into placement recovery, and each recovery rebuilds the whole table at the same size before placing the key outside the paper's rules. Paying for that rebuild repeatedly is what makes these deletes slow.
+Deletes on a nearly full table are still slow. A delete-heavy workload keeps pushing Elastic into placement recovery, and each recovery rebuilds the whole table at the same size, reinserting every live key, before it can place the new one. Paying for that rebuild repeatedly is what makes these deletes slow.
 
 The main question is still open: can the paper's probe bounds make opthash as fast as `hashbrown` in real use, without changing the algorithms again? If you would like to help answer it, the project is [open source](https://github.com/aaron-ang/opthash-rs) and welcomes contributions.
 
