@@ -33,15 +33,15 @@ Funnel also splits the table into levels that shrink, but each main level is div
 
 ![The first key hashes to one bucket per level and falls through full buckets until Level 3 has room. The second key finds every bucket full, gives up on special area B after a few single-slot tries, and lands in special area C, which uses the [power of two choices](https://www.eecs.harvard.edu/~michaelm/postscripts/handbook2001.pdf).](/images/building-opthash/funnel-insert.svg)
 
-My first version translated these rules as literally as I could. It was easy to check against the paper, and it was slow.
+My first version translated these rules as literally as I could. It was easy to check against the paper, but it was slow.
 
 ## Making It Fast
 
 Version 1 mapped the paper's structures straight onto Rust structs, with each region owning a `Vec<Option<Entry>>`. The code mirrored the paper's diagrams, but every region was its own allocation, every probe chased a pointer to reach it, and every slot the probe rejected had already pulled a full entry into cache just to read its tag.
 
-Version 1 set a pattern for the rest of the project: the number of probes the paper counts mattered less than what each probe made the processor do: which cache lines it pulled in, which branches it mispredicted, and whether it had to load a whole key just to learn that the slot was wrong.
+Version 1's problems set the pattern for the rest of the project. What mattered was not how many probes an operation made, which is what the paper counts, but what each probe cost the processor. That cost depended on which cache lines the probe pulled in, which branches it mispredicted, and whether it had to load a whole key just to learn the slot was wrong.
 
-The paper studies fixed-size, insertion-only tables, and a library needs more than that. None of that library work could be measured fairly while the basic tables were still slow for hardware reasons like cache misses and pointer chasing, so I worked on performance first.
+The paper studies fixed-size, insertion-only tables, and a library needs more features than that. Those features couldn't be measured fairly while the basic tables were still slow for hardware reasons like cache misses and pointer chasing, so I worked on performance first.
 
 [SwissTable](https://abseil.io/about/design/swisstables), the design behind Abseil's hash tables and `hashbrown`, was a natural model for making each probe cheaper. It stores a small hash fingerprint in each control byte and compares a whole group of them in one vector instruction, so one probe can rule out many slots.
 
@@ -83,7 +83,7 @@ A flat median wasn't worth 4 extra bytes per slot, so I dropped the idea. More i
 - reruns the unchanged `std` and `hashbrown` maps as controls for the noise floor
 - checks assembly and hardware counters to tell fewer instructions apart from better cache or branch behavior
 
-Smaller experiments kept confirming the need.[^small-experiments] Much later, I found the benchmark fixture itself was skewed: at 20,000 entries, Elastic and `hashbrown` were 70 percent full while Funnel was completely full. Now every map is filled to capacity before anything is measured.[^fixture]
+Smaller experiments went through the same checks.[^small-experiments] Much later, I found the benchmark fixture itself was skewed: at 20,000 entries, Elastic and `hashbrown` were 70 percent full while Funnel was completely full. Now every map is filled to capacity before anything is measured.[^fixture]
 
 Better measurement caught wins that were noise and wins that only held on one machine. It also exposed a bigger problem. Some optimizations that measured well, notably power-of-two geometry and changed probing arithmetic, had changed which slots the algorithms visited.
 
@@ -93,7 +93,7 @@ The maps were faster because they were no longer quite the paper's algorithms.
 
 Lining the code up against the paper showed the drift. It wasn't one bug: several optimizations had each nudged the probe sequence, and Funnel's bucket and overflow handling had mismatches of its own. Patching them one at a time wouldn't yield a trustworthy reference, because another optimization might still be changing geometry or probe order somewhere I hadn't looked.
 
-So the project got an exact-default rewrite around one fixed instantiation of the paper's constructions.[^exact] Every optimization faced one test: does it change which slots get probed, or only how each slot is checked?
+So I rewrote both maps to follow one fixed instantiation of the paper's constructions exactly, by default.[^exact] Every optimization faced one test: does it change which slots get probed, or only how each slot is checked?
 
 | Removed: changed which slots get probed | Kept: changes only how slots are checked |
 | --------------------------------------- | ---------------------------------------- |
@@ -102,7 +102,7 @@ So the project got an exact-default rewrite around one fixed instantiation of th
 | Altered probe budgets                   | SIMD control-byte scans                  |
 | Performance-oriented reserve policy     |                                          |
 
-Scalar reference implementations enforce the rule. They are written to be read, not to be fast: no SIMD, no cached state, just the paper's rules in the paper's order. Here is the reference's Elastic insertion rule for one batch, lightly trimmed, with the same three cases as the diagram above:
+To enforce that test, I wrote scalar reference implementations. Each one applies the paper's rules in the paper's order, without SIMD or cached state, so it is slow but easy to check line by line against the paper. Here is the reference's Elastic insertion rule for one batch, lightly trimmed, with the same three cases as the diagram above:
 
 ```rust
 // Batch i works across levels `current` (A_i) and `next` (A_{i+1}).
@@ -127,7 +127,7 @@ if free_current <= current_threshold {
 }
 ```
 
-The snippet is short, but three details in it explain why every optimization in the Removed column had to go:
+The snippet is short, but three details in it explain why we pruned those optimizations specifically:
 
 1. **Placement is deterministic.** Each branch depends only on two occupancy counts and the key itself, so the same inserts always produce the same placements. That is what lets the reference serve as a test.
 2. **Probes map to slots through exact sizes.** `vacancy(level, key, j)` checks the $j$-th slot in the key's probe sequence for a level, and `uniform_vacancy` tries $j = 0, 1, 2, \ldots$ until one is free. The slot for each $j$ is computed from the level's true size, so rounding sizes to a power of two sends keys to different slots.
@@ -181,7 +181,7 @@ $$
 \frac{5\ \text{s}}{3.7\ \text{ns}} \approx 1.35 \text{ billion (v0.10.3)} \qquad \frac{5\ \text{s}}{32\ \text{ns}} \approx 156 \text{ million (exact)}
 $$
 
-Dividing each counter by those counts gives the cost of a single lookup. These are estimates, since the benchmark loop adds a little work of its own, but the differences are large enough to read:
+Dividing each counter by those counts gives the cost of a single lookup. These are estimates, since the benchmark loop adds a little work of its own, but the differences are far larger than that overhead:
 
 | Per lookup             | v0.10.3 | Exact | Ratio          |
 | ---------------------- | ------: | ----: | -------------- |
@@ -199,7 +199,7 @@ The first round of tuning showed the exact version had room to improve. Streamli
 
 ## Beyond the Paper
 
-Keeping library features out of the way meant giving them a place of their own. A real library must delete, clear, grow, and handle a key running out of slots to try, all without changing how the paper places keys. So opthash splits a table's lifecycle into epochs. Inside an epoch, inserts and lookups follow the paper exactly. Everything else, from growth to cleanup after deletes, runs as separate library code between epochs, and each run starts a new epoch under the paper's rules.
+A real library must also delete, clear, grow, and handle a key running out of slots to try. To keep that code from changing how the paper places keys, opthash splits a table's lifecycle into epochs. Inside an epoch, inserts and lookups follow the paper exactly. Everything else, from growth to cleanup after deletes, runs as separate library code between epochs, and each run starts a new epoch under the paper's rules.
 
 ```mermaid {caption="Every epoch follows the same paper rules for inserts and lookups. Each dashed arrow is library code that runs out of band and starts a fresh epoch: growth when an insert finds the table full, placement recovery when a key has no allowed slot left, and cleanup, clear, or resize after deletes or on request. Only placement recovery puts a key where the paper wouldn't."}
 flowchart TB
@@ -216,13 +216,13 @@ The same split applies to benchmarks. The paper's analysis covers inserts and su
 
 ## Looking Back
 
-Most of what I learned came from being wrong about a number. The mini-hash experiment looked like a clear win until both runs were pinned to the same core, and the skewed fixture compared maps at different loads without any result looking off. Pinning the core, fixing memory placement, and rerunning an unchanged baseline like `hashbrown` costs a few minutes per run. It is the most reliable way I know to tell a real speedup from a lucky one.
+Several lessons came from numbers that turned out to be inaccurate. The mini-hash experiment looked like a clear win until both runs were pinned to the same core, and the skewed fixture compared maps at different loads without any result looking off. Pinning the core, fixing memory placement, and rerunning an unchanged baseline like `hashbrown` costs a few minutes per run. It is the most reliable way I know to tell a real speedup from a lucky one.
 
 Pinning made the numbers trustworthy, but it couldn't tell me whether they described the right algorithm. When the goal is to study an algorithm, a speedup counts only if the algorithm stays the same. Power-of-two geometry and triangular probing are good ideas for hash tables in general. They didn't fit here because they changed which slots get visited, and so which algorithm was measured. If I implement another paper, I will decide up front what it fixes and what it leaves open, and treat anything that moves the first as a different design.
 
-That rule is easiest to enforce with a reference in place from the start. I wrote mine only after the optimized code had drifted, and untangling the drift took a rewrite. Built first, it would have checked every optimization the day it was written, turning "is this still the algorithm?" into a failing test instead of an audit. A slow, obvious reference is more useful here than a clever one, because its job is to be easy to trust.
+That rule is easiest to enforce with a reference in place from the start. I wrote mine only after the optimized code had drifted, and untangling the drift took a rewrite. Built first, it would have checked every optimization the day it was written, turning "is this still the algorithm?" into a failing test instead of an audit. Speed doesn't matter for the reference. Its only job is to be easy to check against the paper, so simple code beats fast code.
 
-Keeping the paper's part separate from everything around it helped again in the library. Deletes, growth, and recovery can dominate a benchmark while saying nothing about the paper's bounds. Separate epochs and separate benchmark groups showed which part was slow, the first step toward fixing either.
+Separating the paper's rules from the rest of the library helped too. Deletes, growth, and recovery can dominate a benchmark while saying nothing about the paper's bounds. Separate epochs and separate benchmark groups showed which part was slow, the first step toward fixing either.
 
 ## What's Still Open
 
