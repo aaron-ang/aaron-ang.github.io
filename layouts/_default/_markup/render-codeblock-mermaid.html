@@ -1,0 +1,9 @@
+<figure class="mermaid-figure">
+<pre class="mermaid">
+{{- .Inner | htmlEscape | safeHTML }}
+</pre>
+{{- with .Attributes.caption }}
+<figcaption>{{ $.Page.RenderString . }}</figcaption>
+{{- end }}
+</figure>
+{{- .Page.Store.Set "hasMermaid" true }}
