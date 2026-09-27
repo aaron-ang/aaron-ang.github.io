@@ -7,19 +7,23 @@ tags = ["Design", "Research", "Engineering"]
 
 ## From Paper to Code
 
-Earlier this year, a [Quanta video about recent breakthroughs in computer science](https://www.quantamagazine.org/videos/2025s-biggest-breakthroughs-in-computer-science/) covered a theoretical result that stuck with me: a new way to build [open-addressed](https://en.wikipedia.org/wiki/Open_addressing) hash tables. In open addressing, every key and value lives directly in one array. When a key hashes to a slot that is already taken, the table walks a fixed sequence of other slots, called the _probe sequence_, until it finds an empty one. That walk is why tables slow down as they fill: the fuller the array, the more occupied slots a key steps past before it finds room.
+Earlier this year, I watched [Quanta's video on 2025's biggest breakthroughs in computer science](https://www.quantamagazine.org/videos/2025s-biggest-breakthroughs-in-computer-science/). One of them stuck with me: a paper that disproved a 40-year-old conjecture about open-addressed hash tables.
 
-The paper behind the result, [_Optimal Bounds for Open Addressing Without Reordering_](https://arxiv.org/abs/2501.02305), gives two constructions, Elastic Hashing and Funnel Hashing. Both keep insertions and successful lookups cheap even when the table is almost full, and neither ever moves an entry once placed. Elastic Hashing is the less conventional of the two. Classic schemes are greedy: they take the first empty slot their probe sequence reaches, and the paper proves a lower bound that applies to every greedy scheme. Elastic is not greedy, so that bound does not apply to it. It gives each array a probe budget, and once the budget runs out, it stops looking in that array and moves on to the next one, even if the array still has empty slots.[^budget]
+In [open addressing](https://en.wikipedia.org/wiki/Open_addressing), every key and value lives directly in one array. When a key hashes to a slot that is already taken, the table walks a fixed sequence of other slots, called the _probe sequence_, until it finds an empty one. That walk is why tables slow down as they fill: the fuller the array, the more occupied slots a key steps past before it finds room.
+
+The paper, [_Optimal Bounds for Open Addressing Without Reordering_](https://arxiv.org/abs/2501.02305), gives two constructions, Elastic Hashing and Funnel Hashing. Both keep insertions and successful lookups cheap even when the table is almost full, and neither moves an entry once placed.
+
+The main difference between them is whether they are _greedy_. Funnel, like most open-addressed tables, is greedy, meaning each key takes the first empty slot its probe sequence reaches. In 1985, Andrew Yao conjectured that uniform probing, the textbook greedy scheme, has close to the lowest worst-case insertion cost any greedy table can reach. Funnel's worst case is much lower, which disproves the conjecture.[^greedy] Elastic is not greedy, and that lets it get under a limit Yao did prove for greedy tables: its average insertion cost stays constant as the table fills, while a greedy table's must grow. It gives each array a probe budget, and once the budget runs out, it stops looking in that array and moves on to the next one, even if the array still has empty slots.[^budget]
 
 ![Both walks hit the same crowded array, and the third slot they probe is empty. Uniform probing takes it. Elastic has used up its budget of two probes here, so it never tries that slot and moves on to the next, emptier array.](/images/building-opthash/probe-walk.svg)
 
-I couldn't find an official implementation, so I wrote one. Building the algorithms seemed a better way to understand them than rereading the proofs, and Rust offered control over memory layout and SIMD, plus an excuse to learn more of the language.
+I couldn't find an official implementation, so I decided to write one. Building the algorithms seemed a better way to understand them than rereading the proofs, and Rust offered control over memory layout and SIMD, plus a great opportunity to learn more of the language.
 
-That became [opthash](https://github.com/aaron-ang/opthash-rs). It started as an [exploratory exercise](https://news.ycombinator.com/item?id=48365720). I was curious how these constructions would stack up against the tables most Rust code already relies on, like `std::HashMap` and [`hashbrown`](https://github.com/rust-lang/hashbrown), once caches, vector instructions, allocators, and the demands of a real library got involved. As I optimized them, a harder question came up: would the faster versions still be the algorithms from the paper?
+That became [opthash](https://github.com/aaron-ang/opthash-rs). It started as an [exploratory exercise](https://news.ycombinator.com/item?id=48365720), and I was curious how these constructions would stack up against the tables most Rust code already relies on, like `std::HashMap` and [`hashbrown`](https://github.com/rust-lang/hashbrown). To compete with them, opthash would have to make good use of caches, vector instructions, and allocators, and support what a general-purpose map does beyond the paper, such as deleting keys and growing the underlying array.
 
-Answering that question starts with what the paper fixes. Each construction decides which arrays a key may use and the order in which it tries their slots. How a slot is checked is left to the implementation.
+Before getting to the implementation, let's look at how each construction places keys. The paper specifies which slots a key may use and the order in which it tries them, but leaves how each slot is checked to the implementation.
 
-The two constructions make those choices differently. Elastic splits the table into a series of arrays, each half the size of the one before, and starts by filling the largest to about 75 percent. After that, insertions proceed in batches, each working on a pair of neighboring arrays, a larger $A_i$ and a smaller $A_{i+1}$. A batch tops up $A_i$ until only a small fraction of its slots are free and fills $A_{i+1}$ to 75 percent, setting up the next pair.
+The two constructions make those choices differently. Elastic splits the table into a series of arrays, each half the size of the one before, and starts by filling the largest to about 75 percent. After that, insertions proceed in batches, each working on a pair of neighboring arrays: a larger $A_i$ and a smaller $A_{i+1}$. A batch tops up $A_i$ until only a small fraction of its slots are free and fills $A_{i+1}$ to 75 percent, setting up the next pair.
 
 ![Elastic fills its arrays in batches. Each array fills to 75 percent while it is the smaller of its pair, then to nearly full while it is the larger. After that, the next batch moves one array down.](/images/building-opthash/elastic-fill.svg)
 
@@ -29,7 +33,7 @@ Within a batch, two checks pick one of three cases for each key:
 
 Lookups work differently: they don't use batches or cases. A lookup can't tell which batch placed a key, so it may have to check every array. It walks one global probe sequence that visits the arrays in a fixed, interleaved order until it finds the key.
 
-Funnel also splits the table into levels that shrink, but each main level is divided into buckets of one fixed width. A later level is smaller because it has fewer buckets, while each bucket keeps the same width. The paper derives the bucket width, level count, and shrink rate from the table's headroom.[^funnel-params] An insertion falls through the levels until it finds room, and a small special area at the bottom catches what the last level can't hold:
+Funnel also splits the table into shrinking levels, but each main level is divided into buckets of the same fixed width, so a later level is smaller only because it has fewer buckets. The paper derives the bucket width, level count, and shrink rate from the table's headroom.[^funnel-params] An insertion falls through the levels until it finds room, and a small special area at the bottom catches what the last level can't hold:
 
 ![The first key hashes to one bucket per level and falls through full buckets until Level 3 has room. The second key finds every bucket full, gives up on special area B after a few single-slot tries, and lands in special area C, which uses the [power of two choices](https://www.eecs.harvard.edu/~michaelm/postscripts/handbook2001.pdf).](/images/building-opthash/funnel-insert.svg)
 
@@ -39,11 +43,11 @@ My first version translated these rules as literally as I could. It was easy to 
 
 Version 1 mapped the paper's structures straight onto Rust structs, with each region owning a `Vec<Option<Entry>>`. The code mirrored the paper's diagrams, but every region was its own allocation, every probe chased a pointer to reach it, and every slot the probe rejected had already pulled a full entry into cache just to read its tag.
 
-Version 1's problems set the pattern for the rest of the project. What mattered was not how many probes an operation made, which is what the paper counts, but what each probe cost the processor. That cost depended on which cache lines the probe pulled in, which branches it mispredicted, and whether it had to load a whole key just to learn the slot was wrong.
+Version 1's problems set the pattern for the rest of the project. What mattered was not how many probes an operation made, which is what the paper counts, but what each probe cost the processor. That cost depended on which cache lines the probe pulled in, which branches it mispredicted, and whether it had to load a whole key just to find that the slot held a different key.
 
-The paper studies fixed-size, insertion-only tables, and a library needs more features than that. Those features couldn't be measured fairly while the basic tables were still slow for hardware reasons like cache misses and pointer chasing, so I worked on performance first.
+The paper studies fixed-size, insertion-only tables, and a library needs more features than that. Those features couldn't be measured fairly while the basic tables were still slow for hardware reasons like cache misses and pointer chasing, so I worked on improving performance first.
 
-[SwissTable](https://abseil.io/about/design/swisstables), the design behind Abseil's hash tables and `hashbrown`, was a natural model for making each probe cheaper. It stores a small hash fingerprint in each control byte and compares a whole group of them in one vector instruction, so one probe can rule out many slots.
+[SwissTable](https://abseil.io/about/design/swisstables), the design behind Abseil's hash tables and `hashbrown`, was a natural model for making each probe cheaper. It stores a small hash fingerprint in each control byte and compares a whole group of them in one vector instruction, so a single probe can rule out many slots.
 
 Version 2 took the first step toward that design. It kept the regions separate but moved control metadata out of the entries and into its own array, so a lookup could check a one-byte control value before loading any key or value, and most empty or non-matching slots never touched the payload. Version 3 put every region into one allocation, keeping the logical boundaries between levels while placing all their control bytes side by side in memory.[^arena]
 
@@ -62,11 +66,11 @@ block-beta
   class t1,t2,t3 title
 ```
 
-From there, opthash adopted SwissTable's seven-bit fingerprints and SIMD control-byte scans, and switched to the [`foldhash`](https://github.com/orlp/foldhash) hasher. Rounding sizes to powers of two turned some divisions into bit masks, and the single arena kept the hot control regions together and cut allocation traffic.
+From there, opthash adopted SwissTable's seven-bit fingerprints and SIMD control-byte scans, and switched to the [`foldhash`](https://github.com/orlp/foldhash) hasher. Rounding sizes to powers of two let the code map a hash to a slot with a bit mask (`hash & (size - 1)`) instead of a much slower division (`hash % size`), and the single arena layout kept the hot control regions together and cut allocation traffic.
 
-All of this made the maps faster and harder to measure. A layout change can shift a field or loop across a cache-line boundary, so a faster run alone doesn't tell you which change helped, or whether the gain will hold on another machine.
+All of this made the maps faster but harder to measure. A layout change can shift a field or loop across a cache-line boundary, so a faster run alone doesn't reveal which change helped, and re-running the same comparison can give a different answer.
 
-The lesson that stuck came from a mini-hash experiment that never merged.[^mini-hash] It stored 4 extra bytes of hash per slot so a lookup could reject more candidates before comparing keys. The first run showed three Funnel workloads in the Python bindings improving by 33 to 39 percent. It looked like a clear win until I noticed the two runs had landed on different classes of CPU core, one clocked a gigahertz faster than the other. Pinned to the same core, most of the win disappeared:
+A mini-hash experiment, which never made it into the code, showed how inconsistent those results could be.[^mini-hash] It stored 4 extra bytes of hash per slot so a lookup could reject more candidates before comparing keys. The first run showed three Funnel workloads in the Python bindings improving by 33 to 39 percent. It looked like a clear win until I noticed the two runs had landed on different classes of CPU core, one clocked a gigahertz faster than the other. Rerun with both pinned to the same core, most of the win disappeared:
 
 | Funnel workload (Python) |  First run | Pinned to one core |
 | ------------------------ | ---------: | -----------------: |
@@ -76,12 +80,14 @@ The lesson that stuck came from a mini-hash experiment that never merged.[^mini-
 | lookup hit               |          – |          4% slower |
 | median across the suite  |          – |               flat |
 
-A flat median wasn't worth 4 extra bytes per slot, so I dropped the idea. More importantly, I stopped trusting wall-clock numbers on their own. The local harness now:
+A flat median wasn't worth 4 extra bytes per slot, so I dropped the idea. More importantly, I stopped trusting any result I couldn't reproduce. The local harness now:
 
 - pins each run to one core and fixes memory placement
 - saves named baselines to compare against
 - reruns the unchanged `std` and `hashbrown` maps as controls for the noise floor
 - checks assembly and hardware counters to tell fewer instructions apart from better cache or branch behavior
+
+In CI, [CodSpeed](https://codspeed.io) runs the same suite on every pull request and reports changes against main.[^codspeed] It estimates run time from a simulated CPU, so results don't depend on the runner, but it can't see clock speed or core type, so it complements the pinned local runs.
 
 Smaller experiments went through the same checks.[^small-experiments] Much later, I found the benchmark fixture itself was skewed: at 20,000 entries, Elastic and `hashbrown` were 70 percent full while Funnel was completely full. Now every map is filled to capacity before anything is measured.[^fixture]
 
@@ -119,8 +125,13 @@ if free_current <= current_threshold {
 } else {
     // Case 1: a bounded budget of probes in A_i, computed from how
     // full it is, then fall through to the first free slot in A_{i+1}.
-    let budget = probe::elastic_dyadic_probe_budget(free_current, self.levels[current], reserve, C)
-        .expect("valid budget inputs");
+    let budget = probe::elastic_dyadic_probe_budget(
+        free_current,
+        self.levels[current],
+        reserve,
+        C,
+    )
+    .expect("valid budget inputs");
     (0..budget)
         .find_map(|j| self.vacancy(current, key, j))
         .unwrap_or_else(|| self.uniform_vacancy(next, key))
@@ -160,7 +171,8 @@ I kept the slower, exact version anyway. A fast implementation of a different ca
 Keeping it meant understanding where the time went, so I read the CPU's [hardware counters](https://www.brendangregg.com/perf.html) with `perf`. Each version ran successful Elastic lookups for five seconds on the same pinned core, old version first:
 
 ```
-$ perf stat -e cycles,instructions,cache-misses,branch-misses speedup --profile-time 5 '^get_hit/get_hit_elastic$'
+$ perf stat -e cycles,instructions,cache-misses,branch-misses \
+    speedup --profile-time 5 '^get_hit/get_hit_elastic$'
 
 v0.10.3
     20,136,315,080  cycles
@@ -234,7 +246,9 @@ opthash is licensed under Apache 2.0 and available on [PyPI](https://pypi.org/pr
 
 The question that started the project is still open: can the paper's probe bounds make opthash as fast as `hashbrown` in real use, without changing the algorithms again? If you would like to help answer it, the project is [open source](https://github.com/aaron-ang/opthash-rs) and welcomes contributions.
 
-[^budget]: With [uniform probing](https://doi.org/10.1145/3828.3836), the expected walk grows with $1/\varepsilon$, where $\varepsilon$ is the free fraction of the array. Elastic's budget is $c \cdot \min(\log^2(1/\varepsilon), \log(1/\delta))$, where $\delta$ is the free fraction of the whole table. That $\log(1/\delta)$ cap is how it beats the greedy bound.
+[^greedy]: Here $\delta$ is the fraction of the table left free. [Yao](https://doi.org/10.1145/3828.3836) proved that among greedy tables, uniform probing's average insertion cost of $\Theta(\log(1/\delta))$ probes is optimal, and conjectured that the worst-case insertion must cost about $1/\delta$. Funnel's worst case is $O(\log^2(1/\delta))$, and the paper proves that no greedy table can do better. Elastic's average cost is $O(1)$ and its worst case is $O(\log(1/\delta))$.
+
+[^budget]: With [uniform probing](https://doi.org/10.1145/3828.3836), the expected walk grows with $1/\varepsilon$, where $\varepsilon$ is the free fraction of the array. Elastic's budget is $c \cdot \min(\log^2(1/\varepsilon), \log(1/\delta))$, where $\delta$ is the free fraction of the whole table. That $\log(1/\delta)$ cap is what keeps Elastic's worst case at $O(\log(1/\delta))$, below the $\Omega(\log^2(1/\delta))$ lower bound for greedy tables.
 
 [^funnel-params]: opthash pins one such choice and treats any change to it as a different algorithm for trace purposes.
 
@@ -243,6 +257,8 @@ The question that started the project is still open: can the paper's probe bound
 [^mini-hash]: See [opthash#12](https://github.com/aaron-ang/opthash-rs/pull/12) for the full workload table, Elastic included.
 
 [^small-experiments]: Software prefetching did nothing or hurt, reordering fields sometimes produced worse codegen, and a 64-lane AVX-512 path was dropped for the existing 16-lane x86 scan once the generated code showed no gain. The ARM machine used here scans 8 lanes with NEON. One change, swapping a batch-plan `Vec` for a boxed slice, lost 6.5 percent on its own and was reverted, then came back without the slowdown as part of a later layout cleanup.
+
+[^codspeed]: See [opthash#36](https://github.com/aaron-ang/opthash-rs/pull/36). Both the Rust Criterion benchmarks and the Python pytest benchmarks run this way. CodSpeed's simulation later replaced a separate iai-callgrind instruction-count benchmark.
 
 [^fixture]: See [opthash#139](https://github.com/aaron-ang/opthash-rs/pull/139). The fixture grew from 20,000 to 28,672 entries, the most every map can hold.
 
