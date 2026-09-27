@@ -17,17 +17,17 @@ Before we dive into the issue, I will first introduce the key technologies invol
 
 ## **What is Spark?**
 
-Apache Spark, originally developed as a research project in UC Berkeley and now maintained by the Apache Software Foundation, is an open-source distributed processing framework for large-scale data workloads. It leverages **in-memory caching** and **optimized query execution** to deliver high performance for analytic queries across massive datasets.
+Apache Spark, originally developed as a research project at UC Berkeley's AMPLab and now maintained by the Apache Software Foundation, is an open-source distributed processing framework for large-scale data workloads. It leverages **in-memory caching** and **optimized query execution** to deliver high performance for analytic queries across massive datasets.
 
-Spark was designed to overcome the limitations of MapReduce, which relies on a sequential, multi-step process susceptible to disk I/O latency. With Spark, data is read into memory, operations are performed, and results are written back—all in a streamlined process that avoids repeated disk access. The performance gains come primarily from Spark’s efficient use of in-memory data structures, such as [Resilient Distributed Datasets (RDDs)](https://spark.apache.org/docs/latest/rdd-programming-guide.html#resilient-distributed-datasets-rdds) and later [DataFrames](https://spark.apache.org/docs/latest/sql-programming-guide.html#datasets-and-dataframes).
+Spark was designed to overcome the limitations of MapReduce, which relies on a sequential, multi-step process susceptible to disk I/O latency. With Spark, data is read into memory, operations are performed, and results are written back—all in a streamlined process that avoids repeated disk access. The performance gains come from keeping intermediate data in memory where possible and from abstractions like [Resilient Distributed Datasets (RDDs)](https://spark.apache.org/docs/latest/rdd-programming-guide.html#resilient-distributed-datasets-rdds) and later [DataFrames](https://spark.apache.org/docs/latest/sql-programming-guide.html#datasets-and-dataframes), which let Spark plan and optimize whole pipelines instead of writing to disk between every step.
 
 Today, Spark is widely used for machine learning, real-time analytics, interactive queries, and graph processing, making it a cornerstone of modern data engineering and analytics.
 
 ## **What is YARN?**
 
-[YARN](https://hadoop.apache.org/docs/stable/hadoop-yarn/hadoop-yarn-site/YARN.html), short for *Yet Another Resource Negotiator*, is Hadoop’s cluster resource management framework. Fun fact: “Yet Another” is an idiomatic qualifier programmers often use to acknowledge that many systems are incremental variations of existing ones—other examples include Yacc (Yet Another Compiler-Compiler) and YAML (Yet Another Markup Language).
+[YARN](https://hadoop.apache.org/docs/stable/hadoop-yarn/hadoop-yarn-site/YARN.html), short for *Yet Another Resource Negotiator*, is Hadoop’s cluster resource management framework. Fun fact: “Yet Another” is an idiomatic qualifier programmers often use to acknowledge that many systems are incremental variations of existing ones—other examples include Yacc (Yet Another Compiler-Compiler) and YAML (originally Yet Another Markup Language).
 
-Although I will not discuss YARN optimization in detail here, it is important to understand its role. Modern data architectures often run on clusters with thousands of nodes, where a single centralized controller cannot effectively manage the scale and complexity of resource allocation. YARN addresses this by **separating** resource management from job scheduling and monitoring.
+Although I will not discuss YARN optimization in detail here, it is important to understand its role. Modern data architectures often run on clusters with thousands of nodes, where a single master that handles both resource allocation and every job's scheduling (like MapReduce's original JobTracker) becomes a bottleneck. YARN addresses this by **separating** resource management from per-application job scheduling and monitoring.
 
 At its core, YARN consists of a **global** ResourceManager (RM) and **per-node** NodeManagers (NMs).
 
@@ -38,7 +38,9 @@ The **ResourceManager** contains two key components:
 
 The **ApplicationMaster** negotiates resources from the Scheduler, manages task execution, and handles application-level fault tolerance and recovery in coordination with the NodeManagers.
 
-![Hadoop MapReduce running on YARN](https://hadoop.apache.org/docs/stable/hadoop-yarn/hadoop-yarn-site/yarn_architecture.gif)
+Here's how these components work together when a client submits a job:
+
+![A client submits a job to the ApplicationsManager inside the ResourceManager, which launches an ApplicationMaster in a container on a NodeManager. The ApplicationMaster asks the Scheduler for resources, receives containers on other NodeManagers, and launches a task in each, while every NodeManager keeps reporting its node status to the ResourceManager. Adapted from [Apache Hadoop YARN](https://hadoop.apache.org/docs/stable/hadoop-yarn/hadoop-yarn-site/YARN.html).](/images/tinkering-with-spark/yarn-architecture.svg)
 
 ## **Running Spark on YARN**
 
@@ -46,11 +48,13 @@ Running Spark on YARN allows multiple frameworks (not just Spark) to dynamically
 
 ### Components
 
-![Spark on YARN architecture. Notice the similarities with the previous YARN diagram.](https://sujithjay.com/public/yarn/Yarn-Cluster-Mode.png)
+Running a Spark application in cluster mode follows the same flow, with a few differences (highlighted in blue):
+
+![The same flow in cluster mode, with the differences highlighted in blue. spark-submit submits the application, and the ApplicationMaster it launches also runs the Spark Driver. The containers the Scheduler grants become Spark Executors, and the driver sends them tasks, several at a time, which report their results back. Adapted from [Sujith Jay](https://sujithjay.com/spark/with-yarn).](/images/tinkering-with-spark/spark-on-yarn.svg)
 
 #### Spark Driver
 
-Each Spark application has a single driver, which runs within the ApplicationMaster for the duration of the job. The driver coordinates the entire application lifecycle: it manages job flow, schedules tasks, and translates the program into a directed acyclic graph (DAG) of execution steps across the cluster.
+Each Spark application has a single driver. In cluster mode (shown above), it runs within the ApplicationMaster for the duration of the job; in client mode, it runs on the submitting machine instead. The driver coordinates the entire application lifecycle: it manages job flow, schedules tasks, and translates the program into a directed acyclic graph (DAG) of execution steps across the cluster.
 
 #### Spark Executor
 
@@ -58,7 +62,7 @@ Spark executors run inside YARN containers. Each executor:
 
 - Executes multiple tasks over its lifetime (potentially in parallel).
 - Resides on a node, with each node potentially hosting multiple executors.
-- Is provisioned with fixed resources (CPU cores and memory) determined at application launch.
+- Is provisioned with a fixed amount of CPU cores and memory, though the number of executors can grow and shrink at runtime when dynamic allocation is enabled.
 
 #### Cores
 
@@ -69,9 +73,9 @@ Cores represent CPU resources allocated to the driver and executors. Increasing 
 Memory allocations are split into two segments: 
 
 1. **On-heap process memory** – for objects, data structures, and operations.
-2. **Off-heap (non-heap) memory** – for JVM overhead, native libraries, and other system uses.
+2. **Overhead (non-heap) memory** (`memoryOverhead`) – for JVM overhead, interned strings, native libraries, and other non-heap uses. This is separate from Spark's own off-heap memory setting (`spark.memory.offHeap.size`).
 
-Thus, total memory requested for a driver or executor is calculated as: `memory + memoryOverhead`
+Thus, the container size requested for a driver or executor is roughly `memory + memoryOverhead` (executors also add `spark.memory.offHeap.size` and `spark.executor.pyspark.memory` if set).
 
 ## **The Issue**
 
@@ -105,11 +109,27 @@ I reviewed the [Spark configuration documentation](https://spark.apache.org/docs
 
 Closer inspection of the logs revealed a clear pattern: **driver OOM errors consistently occurred during Broadcast Joins**. Further research pointed me to a [reported Spark Issue](https://issues.apache.org/jira/browse/SPARK-17556) describing this exact behavior. In short, before broadcasting, the driver must collect results from executors, and in some cases the returned data exceeded the driver’s working memory (5GiB), causing the OOM crash.
 
+Here's what that failure looks like with the default 5GiB driver:
+
+![With the default 5 GiB of driver memory, the driver collects results from each executor until the data outgrows its memory, and it crashes with an OutOfMemoryError before the broadcast can happen.](/images/tinkering-with-spark/broadcast-oom.svg)
+
 ## **The Fix**
 
-For processing speed, the solution appeared straightforward: increase the number of cores per executor to improve throughput by spawning more threads. Most sources suggested a range between **2 and 5**, so I chose **4**, an arbitrary but reasonable middle ground. While this increased memory consumption, the default 16GiB of executor memory handled the added concurrency well in trial runs.
+For processing speed, the solution appeared straightforward: increase the number of cores per executor so each executor could run more tasks concurrently. Most sources suggested a range between **2 and 5**, so I chose **4**, an arbitrary but reasonable middle ground. While this increased memory consumption, the default 16GiB of executor memory handled the added concurrency well in trial runs.
 
-Next, I addressed driver OOM errors by increasing driver memory. The challenge was determining an appropriate limit. With container memory at 102GiB, subtracting a 10% overhead left roughly 92GiB of working memory. To stay safe, I capped the driver allocation at about 50% of that, or 48GiB. I began conservatively with **16GiB**, mirroring the executor memory, and found that OOM errors disappeared in subsequent runs—so I retained that value.
+To see why more cores per executor shortens a stage, compare the two setups below:
+
+![The same stage of 8 tasks runs on one executor with 16 GiB of memory. With one core, the executor has a single task slot, so the tasks run one at a time and take 8 waves. With four cores, four tasks run at once, sharing the same 16 GiB heap, and the stage finishes in 2 waves while the single-core executor is still working.](/images/tinkering-with-spark/executor-cores.svg)
+
+Next, I addressed driver OOM errors by increasing driver memory. The challenge was determining an appropriate limit. With container memory at 102GiB and memory overhead defaulting to about 10% of the requested memory, the driver could request up to roughly 92GiB. To stay safe, I capped the driver allocation at about half of that, or 48GiB. I began conservatively with **16GiB**, mirroring the executor memory, and found that OOM errors disappeared in subsequent runs—so I retained that value.
+
+With 16GiB, the same broadcast join from earlier now completes:
+
+![With 16 GiB of driver memory, the same data fits, collection finishes, and the driver broadcasts the table to every executor so the broadcast join can run.](/images/tinkering-with-spark/broadcast-fix.svg)
+
+To put these memory numbers into perspective, here they are on a single scale:
+
+![The driver starts with the default 5g of memory plus 2g of memoryOverhead. Raising driver memory to 16g grows it to 18 GiB, still well under the 48 GiB safety cap in a 102 GiB container that must also fit roughly 10% of overhead. The executor keeps its 16g plus 4g, while its cores go from 1 to 4.](/images/tinkering-with-spark/memory-budget.svg)
 
 In the end, the effective configuration overrides were: 
 
@@ -122,9 +142,9 @@ In the end, the effective configuration overrides were:
 
 I also experimented with other default parameters mentioned earlier. After many iterations with different combinations, I discarded most of them since they did not produce meaningful improvements. For example, adjusting `spark.sql.shuffle.partitions` and `spark.default.parallelism` only benefited a small subset of jobs, as their effectiveness depended heavily on factors like data skew and the number of joins in each query.
 
-Another case was the number of executors (`--num-executors`). In theory, specifying this value should have forced YARN to allocate executors consistently and reduced idle wait times. In practice, however, the YARN queues were so congested during peak hours that executors were often reallocated from ongoing runs to higher-priority workloads, such as ML experiments.
+Another case was the number of executors (`--num-executors`). In theory, specifying this value would give each job a head start and reduce idle wait times. But with dynamic allocation enabled, it only sets the *initial* number of executors (and our config already set it to 10), so it guarantees nothing afterwards. In practice, the YARN queues were so congested during peak hours that YARN often preempted (killed) executors from ongoing runs to free resources for higher-priority workloads, such as ML experiments.
 
-Finally, in rare situations where increasing driver memory still led to crashes, I found that raising the number of driver cores (e.g., `--driver-cores 4`) mitigated the issue. I cannot fully explain why this worked, but it appeared to stabilize execution in those cases.
+Finally, in rare situations where increasing driver memory still led to crashes, I found that raising the number of driver cores (e.g., `--driver-cores 4`) mitigated the issue. I cannot fully explain why this worked, but it appeared to stabilize execution in those cases. (Note that `spark.driver.cores` only takes effect in cluster mode.)
 
 ### Room for Improvement
 
@@ -132,7 +152,7 @@ Although I followed an iterative cycle of consolidating evidence, forming hypoth
 
 ## Closing Thoughts
 
-This endeavor was a valuable learning experience. Although fixing Spark pipelines was outside the scope of my responsibilities as a product analyst intern, I recognized the significant operational impact of leaving the issue unresolved and proposed addressing it. I’m grateful to my team and manager for granting me the flexibility and trust to pursue this side project. Given my limited understanding of systems at that time, I had to learn everything from scratch. While I achieved tangible results, progress came through continuous iteration and learning from mistakes. I also discovered that there is is no one-size-fits-all solution—each Spark job or query is inherently unique, so improvements varied across jobs. Despite the challenges, I thoroughly enjoyed the process. I embraced failure as part of the norm, stayed open to experimentation, and ultimately developed an interest in systems that I pursued further in subsequent college semesters.
+This endeavor was a valuable learning experience. Although fixing Spark pipelines was outside the scope of my responsibilities as a product analyst intern, I recognized the significant operational impact of leaving the issue unresolved and proposed addressing it. I’m grateful to my team and manager for granting me the flexibility and trust to pursue this side project. Given my limited understanding of systems at that time, I had to learn everything from scratch. While I achieved tangible results, progress came through continuous iteration and learning from mistakes. I also discovered that there is no one-size-fits-all solution—each Spark job or query is inherently unique, so improvements varied across jobs. Despite the challenges, I thoroughly enjoyed the process. I embraced failure as part of the norm, stayed open to experimentation, and ultimately developed an interest in systems that I pursued further in subsequent college semesters.
 
 ## References
 

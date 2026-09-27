@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 176" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated broadcast join with 16 GiB of driver memory: collection finishes, and the driver broadcasts the table to every executor.">
+  <style>
+    :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #ddd; --muted: #999; --full: #555; --empty: #1e1e1e; --edge: #777; --probe: #ff8a4c; --ok: #69db7c; --chip: #2a2a2a; }
+    }
+    text { fill: var(--fg); font-size: 14px; }
+    .muted { fill: var(--muted); font-size: 12px; }
+    .title { font-weight: 600; font-size: 15px; }
+    .label { font-weight: 600; }
+    .box { fill: var(--chip); stroke: var(--edge); }
+    .empty { fill: var(--empty); stroke: var(--edge); }
+    .chunk, .seg { fill: var(--full); stroke: var(--edge); }
+    .over { fill: var(--probe); stroke: var(--probe); }
+    .limit { fill: none; stroke: var(--fg); stroke-width: 1.5; }
+    .limitline { stroke: var(--fg); stroke-width: 2; }
+    .new { fill: var(--ok); }
+    .num { fill: var(--probe); font-weight: 600; font-size: 12px; }
+    .bad { fill: var(--probe); font-weight: 600; font-size: 15px; }
+    .oktext { fill: var(--ok); font-weight: 600; }
+    .garrow { fill: none; stroke: var(--edge); stroke-width: 1.5; }
+    .ghead { fill: var(--edge); }
+    .okarrow { fill: none; stroke: var(--ok); stroke-width: 2; }
+    .okhead { fill: var(--ok); }
+
+    /* 16s loop. Row A (5g) runs 0.5s to 4.3s, row B (16g) runs 4.6s to 10.2s, hold, fade out 14.7s to 15.4s. */
+    .w { opacity: 0; animation: 12.8s linear infinite; }
+    .mv { animation: 12.8s linear infinite; }
+    .w10 { animation-name: w10; }  /* B collect arrows: 0.0s to 8.0s */
+    @keyframes w10 { 0.00%, 48.75% { opacity: 1 } 49.25%, 94.46% { opacity: 0 } 100.00% { opacity: 1 } }
+    .m11 { animation-name: m11; }  /* B chunk 1: 4.6s to 5.4s */
+    @keyframes m11 { 0.00%, 4.09% { opacity: 1; transform: translate(0px, 0px) } 4.69% { opacity: 1; transform: translate(194px, 46px) } 5.19%, 94.46% { opacity: 0; transform: translate(194px, 46px) } 94.47% { opacity: 0; transform: translate(0px, 0px) } 100.00% { opacity: 1; transform: translate(0px, 0px) } }
+    .m12 { animation-name: m12; }  /* B chunk 2: 5.4s to 6.2s */
+    @keyframes m12 { 0.00%, 4.69% { opacity: 1; transform: translate(0px, 0px) } 18.86% { opacity: 1; transform: translate(194px, 14px) } 19.36%, 94.46% { opacity: 0; transform: translate(194px, 14px) } 94.47% { opacity: 0; transform: translate(0px, 0px) } 100.00% { opacity: 1; transform: translate(0px, 0px) } }
+    .m13 { animation-name: m13; }  /* B chunk 3: 6.2s to 7.0s */
+    @keyframes m13 { 0.00%, 18.86% { opacity: 1; transform: translate(0px, 0px) } 33.04% { opacity: 1; transform: translate(194px, -18px) } 33.52%, 94.46% { opacity: 0; transform: translate(194px, -18px) } 94.47% { opacity: 0; transform: translate(0px, 0px) } 100.00% { opacity: 1; transform: translate(0px, 0px) } }
+    .m14 { animation-name: m14; }  /* B chunk 4: 7.0s to 7.8s */
+    @keyframes m14 { 0.00%, 33.04% { opacity: 1; transform: translate(0px, 0px) } 47.20% { opacity: 1; transform: translate(194px, -50px) } 47.70%, 94.46% { opacity: 0; transform: translate(194px, -50px) } 94.47% { opacity: 0; transform: translate(0px, 0px) } 100.00% { opacity: 1; transform: translate(0px, 0px) } }
+    .w15 { animation-name: w15; }  /* B bar segment 1: 5.4s to 14.7s */
+    @keyframes w15 { 0.00%, 4.64% { opacity: 0 } 4.69%, 89.90% { opacity: 1 } 94.46%, 100.00% { opacity: 0 } }
+    .w16 { animation-name: w16; }  /* B bar segment 2: 6.2s to 14.7s */
+    @keyframes w16 { 0.00%, 17.70% { opacity: 0 } 18.86%, 89.90% { opacity: 1 } 94.46%, 100.00% { opacity: 0 } }
+    .w17 { animation-name: w17; }  /* B bar segment 3: 7.0s to 14.7s */
+    @keyframes w17 { 0.00%, 31.85% { opacity: 0 } 33.04%, 89.90% { opacity: 1 } 94.46%, 100.00% { opacity: 0 } }
+    .w18 { animation-name: w18; }  /* B bar segment 4: 7.8s to 14.7s */
+    @keyframes w18 { 0.00%, 46.01% { opacity: 0 } 47.20%, 89.90% { opacity: 1 } 94.46%, 100.00% { opacity: 0 } }
+    .w19 { animation-name: w19; }  /* B collected text: 7.8s to 14.7s */
+    @keyframes w19 { 0.00%, 46.01% { opacity: 0 } 47.20%, 89.90% { opacity: 1 } 94.46%, 100.00% { opacity: 0 } }
+    .w20 { animation-name: w20; }  /* B broadcast arrow: 8.2s to 14.7s */
+    @keyframes w20 { 0.00%, 49.82% { opacity: 0 } 50.32%, 89.90% { opacity: 1 } 94.46%, 100.00% { opacity: 0 } }
+    .m21 { animation-name: m21; }  /* B broadcast block: 8.3s to 9.5s */
+    @keyframes m21 { 0.00%, 50.61% { opacity: 0; transform: translate(0px, 0px) } 51.11% { opacity: 1; transform: translate(0px, 0px) } 64.78% { opacity: 1; transform: translate(-194px, -46px) } 65.29%, 100.00% { opacity: 0; transform: translate(-194px, -46px) } }
+    .w22 { animation-name: w22; }  /* B broadcast copy: 9.5s to 14.7s */
+    @keyframes w22 { 0.00%, 64.05% { opacity: 0 } 64.78%, 89.90% { opacity: 1 } 94.46%, 100.00% { opacity: 0 } }
+    .w23 { animation-name: w23; }  /* B broadcast arrow: 8.2s to 14.7s */
+    @keyframes w23 { 0.00%, 49.82% { opacity: 0 } 50.32%, 89.90% { opacity: 1 } 94.46%, 100.00% { opacity: 0 } }
+    .m24 { animation-name: m24; }  /* B broadcast block: 8.3s to 9.5s */
+    @keyframes m24 { 0.00%, 50.61% { opacity: 0; transform: translate(0px, 0px) } 51.11% { opacity: 1; transform: translate(0px, 0px) } 64.78% { opacity: 1; transform: translate(-194px, -14px) } 65.29%, 100.00% { opacity: 0; transform: translate(-194px, -14px) } }
+    .w25 { animation-name: w25; }  /* B broadcast copy: 9.5s to 14.7s */
+    @keyframes w25 { 0.00%, 64.05% { opacity: 0 } 64.78%, 89.90% { opacity: 1 } 94.46%, 100.00% { opacity: 0 } }
+    .w26 { animation-name: w26; }  /* B broadcast arrow: 8.2s to 14.7s */
+    @keyframes w26 { 0.00%, 49.82% { opacity: 0 } 50.32%, 89.90% { opacity: 1 } 94.46%, 100.00% { opacity: 0 } }
+    .m27 { animation-name: m27; }  /* B broadcast block: 8.3s to 9.5s */
+    @keyframes m27 { 0.00%, 50.61% { opacity: 0; transform: translate(0px, 0px) } 51.11% { opacity: 1; transform: translate(0px, 0px) } 64.78% { opacity: 1; transform: translate(-194px, 18px) } 65.29%, 100.00% { opacity: 0; transform: translate(-194px, 18px) } }
+    .w28 { animation-name: w28; }  /* B broadcast copy: 9.5s to 14.7s */
+    @keyframes w28 { 0.00%, 64.05% { opacity: 0 } 64.78%, 89.90% { opacity: 1 } 94.46%, 100.00% { opacity: 0 } }
+    .w29 { animation-name: w29; }  /* B broadcast arrow: 8.2s to 14.7s */
+    @keyframes w29 { 0.00%, 49.82% { opacity: 0 } 50.32%, 89.90% { opacity: 1 } 94.46%, 100.00% { opacity: 0 } }
+    .m30 { animation-name: m30; }  /* B broadcast block: 8.3s to 9.5s */
+    @keyframes m30 { 0.00%, 50.61% { opacity: 0; transform: translate(0px, 0px) } 51.11% { opacity: 1; transform: translate(0px, 0px) } 64.78% { opacity: 1; transform: translate(-194px, 50px) } 65.29%, 100.00% { opacity: 0; transform: translate(-194px, 50px) } }
+    .w31 { animation-name: w31; }  /* B broadcast copy: 9.5s to 14.7s */
+    @keyframes w31 { 0.00%, 64.05% { opacity: 0 } 64.78%, 89.90% { opacity: 1 } 94.46%, 100.00% { opacity: 0 } }
+    .w32 { animation-name: w32; }  /* B done text: 9.8s to 14.7s */
+    @keyframes w32 { 0.00%, 66.61% { opacity: 0 } 67.11%, 89.90% { opacity: 1 } 94.46%, 100.00% { opacity: 0 } }
+    @media (prefers-reduced-motion: reduce) {
+      .w, .mv { animation: none; opacity: 0; }
+      .w.fin { opacity: 1; }
+    }
+  </style>
+  <g transform="translate(0,-190)">
+  <text x="20" y="216" class="title">--driver-memory 16g</text>
+  <rect x="300" y="245" width="210" height="100" rx="6" class="box"/>
+  <text x="316" y="270" class="label">Driver</text>
+  <rect x="316" y="282" width="150" height="22" rx="3" class="empty"/>
+  <text x="316" y="326" class="muted">driver memory: 16 GiB</text>
+  <g class="w w10"><path d="M 154 249 L 289.4 292.3" class="garrow"/><polygon points="287.0,296.7 298,295 290.0,287.2" class="ghead"/></g>
+  <g class="w w10"><path d="M 154 281 L 289.0 294.1" class="garrow"/><polygon points="287.6,299.0 298,295 288.5,289.1" class="ghead"/></g>
+  <g class="w w10"><path d="M 154 313 L 289.1 296.1" class="garrow"/><polygon points="288.7,301.2 298,295 287.5,291.3" class="ghead"/></g>
+  <g class="w w10"><path d="M 154 345 L 289.5 298.0" class="garrow"/><polygon points="290.2,303.0 298,295 286.9,293.6" class="ghead"/></g>
+  <rect x="30" y="236" width="120" height="26" rx="4" class="box"/>
+  <text x="40" y="254" style="font-size:13px">Executor 1</text>
+  <rect x="30" y="268" width="120" height="26" rx="4" class="box"/>
+  <text x="40" y="286" style="font-size:13px">Executor 2</text>
+  <rect x="30" y="300" width="120" height="26" rx="4" class="box"/>
+  <text x="40" y="318" style="font-size:13px">Executor 3</text>
+  <rect x="30" y="332" width="120" height="26" rx="4" class="box"/>
+  <text x="40" y="350" style="font-size:13px">Executor 4</text>
+  <rect x="128" y="241" width="16" height="16" rx="2" class="chunk mv m11"/>
+  <rect x="128" y="273" width="16" height="16" rx="2" class="chunk mv m12"/>
+  <rect x="128" y="305" width="16" height="16" rx="2" class="chunk mv m13"/>
+  <rect x="128" y="337" width="16" height="16" rx="2" class="chunk mv m14"/>
+  <rect x="316.00" y="282" width="18.75" height="22" class="seg w w15 fin"/>
+  <rect x="334.75" y="282" width="18.75" height="22" class="seg w w16 fin"/>
+  <rect x="353.50" y="282" width="18.75" height="22" class="seg w w17 fin"/>
+  <rect x="372.25" y="282" width="18.75" height="22" class="seg w w18 fin"/>
+  <text x="535" y="288" class="w w19 fin">collected data fits in memory</text>
+  <g class="w w20 fin"><path d="M 298 295 L 162.6 251.7" class="okarrow"/><polygon points="165.0,247.3 154,249 162.0,256.8" class="okhead"/></g>
+  <rect x="322" y="287" width="16" height="16" rx="2" class="new mv m21"/>
+  <rect x="128" y="241" width="16" height="16" rx="2" class="new w w22 fin"/>
+  <g class="w w23 fin"><path d="M 298 295 L 163.0 281.9" class="okarrow"/><polygon points="164.4,277.0 154,281 163.5,286.9" class="okhead"/></g>
+  <rect x="322" y="287" width="16" height="16" rx="2" class="new mv m24"/>
+  <rect x="128" y="273" width="16" height="16" rx="2" class="new w w25 fin"/>
+  <g class="w w26 fin"><path d="M 298 295 L 162.9 311.9" class="okarrow"/><polygon points="163.3,306.8 154,313 164.5,316.7" class="okhead"/></g>
+  <rect x="322" y="287" width="16" height="16" rx="2" class="new mv m27"/>
+  <rect x="128" y="305" width="16" height="16" rx="2" class="new w w28 fin"/>
+  <g class="w w29 fin"><path d="M 298 295 L 162.5 342.0" class="okarrow"/><polygon points="161.8,337.0 154,345 165.1,346.4" class="okhead"/></g>
+  <rect x="322" y="287" width="16" height="16" rx="2" class="new mv m30"/>
+  <rect x="128" y="337" width="16" height="16" rx="2" class="new w w31 fin"/>
+  <text x="535" y="310" class="oktext w w32 fin">broadcast join runs</text>
+  <text x="535" y="326" class="muted w w32 fin">table sent to every executor</text>
+  </g>
+</svg>

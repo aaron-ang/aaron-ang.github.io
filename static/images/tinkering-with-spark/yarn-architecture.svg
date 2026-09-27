@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 410" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated YARN architecture: a client submits a job to the ResourceManager, the ApplicationsManager launches an ApplicationMaster in a container, the ApplicationMaster requests resources from the Scheduler, receives containers on NodeManagers, and launches tasks in them.">
+  <style>
+    :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #ddd; --muted: #999; --full: #555; --empty: #1e1e1e; --edge: #777; --probe: #ff8a4c; --ok: #69db7c; --chip: #2a2a2a; }
+    }
+    text { fill: var(--fg); font-size: 14px; }
+    .muted { fill: var(--muted); font-size: 12px; }
+    .title { font-weight: 600; font-size: 15px; }
+    .inner { font-size: 13px; }
+    .b { font-weight: 600; }
+    .notehead { font-weight: 600; font-size: 12px; }
+    .box { fill: none; stroke: var(--edge); stroke-width: 1.5; }
+    .chip { fill: var(--chip); stroke: var(--edge); }
+    .note { fill: none; stroke: var(--edge); stroke-dasharray: 3 3; }
+    .cont { fill: var(--empty); stroke: var(--edge); }
+    .task { fill: var(--ok); }
+    .tasktext { fill: var(--empty); font-size: 11px; font-weight: 600; }
+    .lbl { font-size: 12px; }
+    .k { fill: var(--probe); font-weight: 700; }
+    .narr { font-size: 14px; }
+    .cur path { fill: none; stroke: var(--probe); stroke-width: 2.5; }
+    .cur polygon { fill: var(--probe); }
+    .done path { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+    .done polygon { fill: var(--muted); }
+    .dash path { stroke-dasharray: 5 4; }
+
+    /* 16s loop. Each class shows its element during one time window; all fade out 92% to 96%. */
+    .a { opacity: 0; animation: 13.7s linear infinite; }
+    .n1 { animation-name: n1; }  /* narration 1: 0.80s to 2.72s */
+    @keyframes n1 { 0.00%, 5.26% { opacity: 0 } 5.84%, 18.08% { opacity: 1 } 18.61%, 100.00% { opacity: 0 } }
+    .n2 { animation-name: n2; }  /* narration 2: 2.72s to 4.64s */
+    @keyframes n2 { 0.00%, 18.08% { opacity: 0 } 18.61%, 30.85% { opacity: 1 } 31.38%, 100.00% { opacity: 0 } }
+    .n3 { animation-name: n3; }  /* narration 3: 4.64s to 6.56s */
+    @keyframes n3 { 0.00%, 30.85% { opacity: 0 } 31.38%, 43.63% { opacity: 1 } 44.16%, 100.00% { opacity: 0 } }
+    .n4 { animation-name: n4; }  /* narration 4: 6.56s to 8.48s */
+    @keyframes n4 { 0.00%, 43.63% { opacity: 0 } 44.16%, 56.40% { opacity: 1 } 56.93%, 100.00% { opacity: 0 } }
+    .n5 { animation-name: n5; }  /* narration 5: 8.48s to 10.40s */
+    @keyframes n5 { 0.00%, 56.40% { opacity: 0 } 56.93%, 69.18% { opacity: 1 } 69.71%, 100.00% { opacity: 0 } }
+    .n6 { animation-name: n6; }  /* narration 6: 10.40s onward */
+    @keyframes n6 { 0.00%, 69.18% { opacity: 0 } 69.71%, 91.93% { opacity: 1 } 95.25%, 100.00% { opacity: 0 } }
+    .s1c { animation-name: s1c; }  /* s1: 0.80s to 2.72s */
+    @keyframes s1c { 0.00%, 5.26% { opacity: 0 } 5.84%, 18.08% { opacity: 1 } 18.61%, 100.00% { opacity: 0 } }
+    .s1d { animation-name: s1d; }  /* s1: 2.72s onward */
+    @keyframes s1d { 0.00%, 18.08% { opacity: 0 } 18.61%, 91.93% { opacity: 1 } 95.25%, 100.00% { opacity: 0 } }
+    .l1 { animation-name: l1; }  /* label 1: 0.80s onward */
+    @keyframes l1 { 0.00%, 5.26% { opacity: 0 } 5.84%, 91.93% { opacity: 1 } 95.25%, 100.00% { opacity: 0 } }
+    .s2c { animation-name: s2c; }  /* s2: 2.72s to 4.64s */
+    @keyframes s2c { 0.00%, 18.08% { opacity: 0 } 18.61%, 30.85% { opacity: 1 } 31.38%, 100.00% { opacity: 0 } }
+    .s2d { animation-name: s2d; }  /* s2: 4.64s onward */
+    @keyframes s2d { 0.00%, 30.85% { opacity: 0 } 31.38%, 91.93% { opacity: 1 } 95.25%, 100.00% { opacity: 0 } }
+    .l2 { animation-name: l2; }  /* label 2: 2.72s onward */
+    @keyframes l2 { 0.00%, 18.08% { opacity: 0 } 18.61%, 91.93% { opacity: 1 } 95.25%, 100.00% { opacity: 0 } }
+    .am { animation-name: am; }  /* AM container: 2.72s onward */
+    @keyframes am { 0.00%, 18.08% { opacity: 0 } 18.61%, 91.93% { opacity: 1 } 95.25%, 100.00% { opacity: 0 } }
+    .s3c { animation-name: s3c; }  /* s3: 4.64s to 6.56s */
+    @keyframes s3c { 0.00%, 30.85% { opacity: 0 } 31.38%, 43.63% { opacity: 1 } 44.16%, 100.00% { opacity: 0 } }
+    .s3d { animation-name: s3d; }  /* s3: 6.56s onward */
+    @keyframes s3d { 0.00%, 43.63% { opacity: 0 } 44.16%, 91.93% { opacity: 1 } 95.25%, 100.00% { opacity: 0 } }
+    .l3 { animation-name: l3; }  /* label 3: 4.64s onward */
+    @keyframes l3 { 0.00%, 30.85% { opacity: 0 } 31.38%, 91.93% { opacity: 1 } 95.25%, 100.00% { opacity: 0 } }
+    .s4c { animation-name: s4c; }  /* s4: 6.56s to 8.48s */
+    @keyframes s4c { 0.00%, 43.63% { opacity: 0 } 44.16%, 56.40% { opacity: 1 } 56.93%, 100.00% { opacity: 0 } }
+    .s4d { animation-name: s4d; }  /* s4: 8.48s onward */
+    @keyframes s4d { 0.00%, 56.40% { opacity: 0 } 56.93%, 91.93% { opacity: 1 } 95.25%, 100.00% { opacity: 0 } }
+    .l4 { animation-name: l4; }  /* label 4: 6.56s onward */
+    @keyframes l4 { 0.00%, 43.63% { opacity: 0 } 44.16%, 91.93% { opacity: 1 } 95.25%, 100.00% { opacity: 0 } }
+    .ct { animation-name: ct; }  /* granted containers: 6.56s onward */
+    @keyframes ct { 0.00%, 43.63% { opacity: 0 } 44.16%, 91.93% { opacity: 1 } 95.25%, 100.00% { opacity: 0 } }
+    .s5c { animation-name: s5c; }  /* s5: 8.48s to 10.40s */
+    @keyframes s5c { 0.00%, 56.40% { opacity: 0 } 56.93%, 69.18% { opacity: 1 } 69.71%, 100.00% { opacity: 0 } }
+    .s5d { animation-name: s5d; }  /* s5: 10.40s onward */
+    @keyframes s5d { 0.00%, 69.18% { opacity: 0 } 69.71%, 91.93% { opacity: 1 } 95.25%, 100.00% { opacity: 0 } }
+    .tk { animation-name: tk; }  /* one task per container: 8.48s onward */
+    @keyframes tk { 0.00%, 56.40% { opacity: 0 } 56.93%, 91.93% { opacity: 1 } 95.25%, 100.00% { opacity: 0 } }
+    .l5 { animation-name: l5; }  /* label 5: 8.48s onward */
+    @keyframes l5 { 0.00%, 56.40% { opacity: 0 } 56.93%, 91.93% { opacity: 1 } 95.25%, 100.00% { opacity: 0 } }
+    .nsc { animation-name: nsc; }  /* ns: 10.40s onward */
+    @keyframes nsc { 0.00%, 69.18% { opacity: 0 } 69.71%, 91.93% { opacity: 1 } 95.25%, 100.00% { opacity: 0 } }
+    .lns { animation-name: lns; }  /* node status labels: 10.40s onward */
+    @keyframes lns { 0.00%, 69.18% { opacity: 0 } 69.71%, 91.93% { opacity: 1 } 95.25%, 100.00% { opacity: 0 } }
+    @media (prefers-reduced-motion: reduce) {
+      .a { animation: none; opacity: 0; }
+      .a.fin, .nsf { opacity: 1; }
+    }
+  </style>
+  <rect x="20" y="86" width="130" height="50" rx="6" class="chip"/>
+  <text x="85" y="106" text-anchor="middle" class="title">Client</text>
+  <text x="85" y="125" text-anchor="middle" class="muted">e.g. MapReduce</text>
+  <rect x="240" y="48" width="360" height="108" rx="8" class="box"/>
+  <text x="420" y="70" text-anchor="middle" class="title">ResourceManager</text>
+  <rect x="256" y="80" width="160" height="60" rx="5" class="chip"/>
+  <text x="336" y="115" text-anchor="middle" class="inner">ApplicationsManager</text>
+  <rect x="424" y="80" width="160" height="60" rx="5" class="chip"/>
+  <text x="504" y="115" text-anchor="middle" class="inner">Scheduler</text>
+  <rect x="608" y="48" width="144" height="136" rx="6" class="note"/>
+  <text x="618" y="68" class="notehead" xml:space="preserve">YARN separates</text>
+  <text x="618" y="83" class="muted" xml:space="preserve">resource management</text>
+  <text x="618" y="98" class="muted" xml:space="preserve">(ResourceManager)</text>
+  <text x="618" y="113" class="muted" xml:space="preserve">from per-app job</text>
+  <text x="618" y="128" class="muted" xml:space="preserve">scheduling and</text>
+  <text x="618" y="143" class="muted" xml:space="preserve">monitoring</text>
+  <text x="618" y="158" class="muted" xml:space="preserve">(ApplicationMaster)</text>
+  <rect x="20" y="262" width="230" height="136" rx="8" class="box"/>
+  <text x="32" y="280" class="title">NodeManager</text>
+  <rect x="265" y="262" width="230" height="136" rx="8" class="box"/>
+  <text x="277" y="280" class="title">NodeManager</text>
+  <rect x="510" y="262" width="230" height="136" rx="8" class="box"/>
+  <text x="522" y="280" class="title">NodeManager</text>
+  <text x="20" y="28" class="a n1 narr">1. The client submits a job to the ApplicationsManager.</text>
+  <text x="20" y="28" class="a n2 narr">2. The ApplicationsManager launches an ApplicationMaster in a container on a NodeManager.</text>
+  <text x="20" y="28" class="a n3 narr">3. The ApplicationMaster asks the Scheduler for resources.</text>
+  <text x="20" y="28" class="a n4 narr">4. The Scheduler grants containers on NodeManagers.</text>
+  <text x="20" y="28" class="a n5 narr">5. The ApplicationMaster launches tasks in those containers.</text>
+  <text x="20" y="28" class="a n6 narr fin">NodeManagers report node status to the ResourceManager throughout.</text>
+  <g class="a s1c cur"><path d="M 150 111 H 252"/><polygon points="244,106 254,111 244,116"/></g>
+  <g class="a s1d done fin"><path d="M 150 111 H 252"/><polygon points="244,106 254,111 244,116"/></g>
+  <text x="195" y="103" text-anchor="middle" class="a l1 lbl fin"><tspan class="k">1</tspan> submit job</text>
+  <g class="a s2c cur"><path d="M 290 140 V 200 H 135 V 280"/><polygon points="130,280 135,290 140,280"/></g>
+  <g class="a s2d done fin"><path d="M 290 140 V 200 H 135 V 280"/><polygon points="130,280 135,290 140,280"/></g>
+  <text x="282" y="194" text-anchor="end" class="a l2 lbl fin"><tspan class="k">2</tspan> launch AM</text>
+  <g class="a am fin"><rect x="32" y="290" width="140" height="64" rx="5" class="cont"/><text x="102" y="306" text-anchor="middle" class="muted">Container</text><text x="102" y="324" text-anchor="middle" class="inner b">ApplicationMaster</text></g>
+  <g class="a s3c cur"><path d="M 150 290 V 222 H 440 V 152"/><polygon points="435,152 440,142 445,152"/></g>
+  <g class="a s3d done fin"><path d="M 150 290 V 222 H 440 V 152"/><polygon points="435,152 440,142 445,152"/></g>
+  <text x="300" y="215" class="a l3 lbl fin"><tspan class="k">3</tspan> request containers</text>
+  <g class="a s4c cur"><path d="M 456 142 V 236 H 165 V 280"/><polygon points="160,280 165,290 170,280"/></g>
+  <g class="a s4d done fin"><path d="M 456 142 V 236 H 165 V 280"/><polygon points="160,280 165,290 170,280"/></g>
+  <text x="300" y="252" class="a l4 lbl fin"><tspan class="k">4</tspan> grant containers</text>
+  <g class="a ct fin"><rect x="273" y="290" width="104" height="64" rx="5" class="cont"/><text x="325" y="306" text-anchor="middle" class="muted">Container</text><rect x="383" y="290" width="104" height="64" rx="5" class="cont"/><text x="435" y="306" text-anchor="middle" class="muted">Container</text><rect x="518" y="290" width="104" height="64" rx="5" class="cont"/><text x="570" y="306" text-anchor="middle" class="muted">Container</text><rect x="628" y="290" width="104" height="64" rx="5" class="cont"/><text x="680" y="306" text-anchor="middle" class="muted">Container</text></g>
+  <g class="a s5c cur"><path d="M 102 354 V 370 H 680 M 325 370 V 364 M 435 370 V 364 M 570 370 V 364 M 680 370 V 364"/><polygon points="320,364 325,354 330,364"/><polygon points="430,364 435,354 440,364"/><polygon points="565,364 570,354 575,364"/><polygon points="675,364 680,354 685,364"/></g>
+  <g class="a s5d done fin"><path d="M 102 354 V 370 H 680 M 325 370 V 364 M 435 370 V 364 M 570 370 V 364 M 680 370 V 364"/><polygon points="320,364 325,354 330,364"/><polygon points="430,364 435,354 440,364"/><polygon points="565,364 570,354 575,364"/><polygon points="675,364 680,354 685,364"/></g>
+  <text x="112" y="388" class="a l5 lbl fin"><tspan class="k">5</tspan> launch tasks</text>
+  <g class="a tk fin"><rect x="305" y="330" width="40" height="16" rx="3" class="task"/><text x="325" y="342" text-anchor="middle" class="tasktext">task</text><rect x="415" y="330" width="40" height="16" rx="3" class="task"/><text x="435" y="342" text-anchor="middle" class="tasktext">task</text><rect x="550" y="330" width="40" height="16" rx="3" class="task"/><text x="570" y="342" text-anchor="middle" class="tasktext">task</text><rect x="660" y="330" width="40" height="16" rx="3" class="task"/><text x="680" y="342" text-anchor="middle" class="tasktext">task</text></g>
+  <g class="a nsc cur dash"><path d="M 50 262 V 150 H 230 M 480 262 V 166 M 570 262 V 166"/><polygon points="230,145 240,150 230,155"/><polygon points="475,166 480,156 485,166"/><polygon points="565,166 570,156 575,166"/></g>
+  <g class="a nsf done dash"><path d="M 50 262 V 150 H 230 M 480 262 V 166 M 570 262 V 166"/><polygon points="230,145 240,150 230,155"/><polygon points="475,166 480,156 485,166"/><polygon points="565,166 570,156 575,166"/></g>
+  <text x="60" y="176" class="a lns lbl fin">node status</text>
+  <text x="580" y="215" class="a lns lbl fin">node status</text>
+</svg>

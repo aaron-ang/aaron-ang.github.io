@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 360" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated memory budget: the driver starts with the default 5g memory plus 2g memoryOverhead, then --driver-memory 16g grows it to 16g plus 2g, still well under the 48 GiB safety cap of a 102 GiB container. The executor keeps 16g plus 4g while its cores go from 1 to 4.">
+  <style>
+    :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; --accent: #1971c2; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #ddd; --muted: #999; --full: #555; --empty: #1e1e1e; --edge: #777; --probe: #ff8a4c; --ok: #69db7c; --chip: #2a2a2a; --accent: #74c0fc; }
+    }
+    text { fill: var(--fg); font-size: 14px; }
+    .muted { fill: var(--muted); font-size: 12px; }
+    .title { font-weight: 600; font-size: 15px; }
+    .row { font-weight: 600; }
+    .val { font-size: 13px; }
+    .heap { fill: var(--accent); stroke: var(--edge); }
+    .ovh { fill: var(--full); stroke: var(--edge); }
+    .usable { fill: var(--empty); stroke: var(--edge); }
+    .reserved { fill: var(--chip); stroke: var(--edge); stroke-dasharray: 4 3; }
+    .cap { stroke: var(--probe); stroke-width: 2; stroke-dasharray: 6 4; }
+    .captext { fill: var(--probe); font-weight: 600; font-size: 12px; }
+    .axis { stroke: var(--edge); }
+    .chip { fill: var(--chip); stroke: var(--probe); stroke-width: 1.5; }
+    .cmd { fill: var(--probe); font-weight: 600; font-size: 13px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ring { fill: none; stroke: var(--probe); stroke-width: 3; }
+    .oktext { fill: var(--ok); font-weight: 600; font-size: 13px; }
+    .hot { fill: var(--probe); font-weight: 600; }
+
+    /* 14s loop. Each class shows its element during one time window. */
+    .a1, .a2, .a3, .a4, .a5, .a6, .a7 { opacity: 0; animation: 13.6s linear infinite; }
+    .a1 { animation-name: a1; }  /* defaults (driver 5g + 2g, 1 core): 0s to 5.7s, back in 13.4s */
+    .a2 { animation-name: a2; }  /* caption "Defaults": 0s to 4.1s */
+    .a3 { animation-name: a3; }  /* override flags appear: from 4.2s */
+    .a4 { animation-name: a4; }  /* driver grows to 16g, executor 4 cores: from 5.7s */
+    .a5 { animation-name: a5; }  /* ring on the added 11 GiB: 5.7s to 8.4s */
+    .a6 { animation-name: a6; }  /* caption "Override": 4.2s to 7.6s */
+    .a7 { animation-name: a7; }  /* check + result caption: from 7.7s */
+    @keyframes a1 { 0.00%, 42.58% { opacity: 1 } 43.75%, 91.92% { opacity: 0 } 95.22%, 100.00% { opacity: 1 } }
+    @keyframes a2 { 0.00%, 29.85% { opacity: 1 } 30.89%, 100.00% { opacity: 0 } }
+    @keyframes a3 { 0.00%, 29.85% { opacity: 0 } 30.89%, 91.92% { opacity: 1 } 95.22%, 100.00% { opacity: 0 } }
+    @keyframes a4 { 0.00%, 42.58% { opacity: 0 } 43.75%, 91.92% { opacity: 1 } 95.22%, 100.00% { opacity: 0 } }
+    @keyframes a5 { 0.00%, 42.58% { opacity: 0 } 43.75%, 67.36% { opacity: 1 } 69.49%, 100.00% { opacity: 0 } }
+    @keyframes a6 { 0.00%, 29.85% { opacity: 0 } 30.89%, 55.70% { opacity: 1 } 56.62%, 100.00% { opacity: 0 } }
+    @keyframes a7 { 0.00%, 55.70% { opacity: 0 } 56.62%, 91.92% { opacity: 1 } 95.22%, 100.00% { opacity: 0 } }
+    @media (prefers-reduced-motion: reduce) {
+      .a1, .a2, .a5, .a6 { animation: none; opacity: 0; }
+      .a3, .a4, .a7 { animation: none; opacity: 1; }
+    }
+  </style>
+
+  <!-- scale: x = 130 + 6 * GiB (0 to 102 GiB spans 130 to 742) -->
+  <text x="20" y="28" class="title">Memory (GiB)</text>
+  <text x="130" y="28" class="a2">Defaults: driver 5g memory + 2g memoryOverhead, 1 core per executor.</text>
+  <text x="130" y="28" class="a6">Override: <tspan class="hot">--driver-memory 16g</tspan> and <tspan class="hot">--executor-cores 4</tspan>.</text>
+  <text x="130" y="28" class="oktext a7" style="font-size:14px">Driver gets 16g, well under the 48 GiB cap. The OOM errors disappeared.</text>
+
+  <!-- ===== Container ===== -->
+  <text x="20" y="84" class="row">Container</text>
+  <rect x="130" y="64" width="552" height="30" class="usable"/>
+  <rect x="682" y="64" width="60" height="30" class="reserved"/>
+  <text x="138" y="84" class="muted">up to ~92 GiB memory</text>
+  <text x="712" y="84" text-anchor="middle" class="muted">10%</text>
+  <text x="742" y="112" text-anchor="end" class="muted">container memory 102 GiB = memory + ~10% overhead</text>
+
+  <!-- safety cap at 48 GiB (x = 418), spans container and driver rows -->
+  <line x1="418" y1="58" x2="418" y2="200" class="cap"/>
+  <text x="426" y="84" class="captext">safety cap ~48 GiB</text>
+
+  <!-- ===== Driver ===== -->
+  <text x="20" y="159" class="row">Driver</text>
+  <!-- default: 5g + 2g = 7 GiB -->
+  <g class="a1">
+    <rect x="130" y="140" width="30" height="28" class="heap"/>
+    <rect x="160" y="140" width="12" height="28" class="ovh"/>
+    <text x="180" y="159" class="val">5g + 2g = 7 GiB</text>
+  </g>
+  <!-- fixed: 16g + 2g = 18 GiB -->
+  <g class="a4">
+    <rect x="130" y="140" width="96" height="28" class="heap"/>
+    <rect x="226" y="140" width="12" height="28" class="ovh"/>
+    <text x="246" y="159" class="val">16g + 2g = 18 GiB</text>
+    <text x="130" y="188" class="muted">memoryOverhead stays 2g (unchanged default)</text>
+  </g>
+  <rect x="158" y="137" width="70" height="34" rx="3" class="ring a5"/>
+  <g class="a3">
+    <rect x="440" y="140" width="170" height="28" rx="4" class="chip"/>
+    <text x="525" y="159" text-anchor="middle" class="cmd">--driver-memory 16g</text>
+  </g>
+  <text x="440" y="190" class="oktext a7">✓ well under the cap</text>
+
+  <!-- ===== Executor ===== -->
+  <text x="20" y="245" class="row">Executor</text>
+  <text x="20" y="262" class="muted">×10 instances</text>
+  <rect x="130" y="226" width="96" height="28" class="heap"/>
+  <rect x="226" y="226" width="24" height="28" class="ovh"/>
+  <text x="258" y="245" class="val">16g + 4g = 20 GiB</text>
+  <text x="130" y="274" class="muted a1">1 core</text>
+  <text x="130" y="274" class="muted a4">4 cores, memory unchanged</text>
+  <g class="a3">
+    <rect x="440" y="226" width="170" height="28" rx="4" class="chip"/>
+    <text x="525" y="245" text-anchor="middle" class="cmd">--executor-cores 4</text>
+  </g>
+
+  <!-- ===== Axis ===== -->
+  <line x1="130" y1="292" x2="742" y2="292" class="axis"/>
+  <g class="axis">
+    <line x1="130" y1="292" x2="130" y2="297"/><line x1="250" y1="292" x2="250" y2="297"/>
+    <line x1="370" y1="292" x2="370" y2="297"/><line x1="490" y1="292" x2="490" y2="297"/>
+    <line x1="610" y1="292" x2="610" y2="297"/><line x1="730" y1="292" x2="730" y2="297"/>
+  </g>
+  <text x="130" y="311" text-anchor="middle" class="muted">0</text>
+  <text x="250" y="311" text-anchor="middle" class="muted">20</text>
+  <text x="370" y="311" text-anchor="middle" class="muted">40</text>
+  <text x="490" y="311" text-anchor="middle" class="muted">60</text>
+  <text x="610" y="311" text-anchor="middle" class="muted">80</text>
+  <text x="730" y="311" text-anchor="middle" class="muted">100 GiB</text>
+
+  <!-- ===== Legend ===== -->
+  <rect x="130" y="332" width="14" height="14" class="heap"/>
+  <text x="150" y="344" class="muted">memory (on-heap)</text>
+  <rect x="270" y="332" width="14" height="14" class="ovh"/>
+  <text x="290" y="344" class="muted">memoryOverhead (non-heap)</text>
+  <text x="742" y="344" text-anchor="end" class="val">total = memory + memoryOverhead</text>
+</svg>

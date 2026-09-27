@@ -1,0 +1,221 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 380" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated comparison of --executor-cores 1 and --executor-cores 4: the same 8 tasks run one at a time in 8 waves on a single-core executor, but four at a time in 2 waves on a four-core executor whose 16 GiB heap is shared by the concurrent tasks">
+  <style>
+    :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #ddd; --muted: #999; --full: #555; --empty: #1e1e1e; --edge: #777; --probe: #ff8a4c; --ok: #69db7c; --chip: #2a2a2a; }
+    }
+    text { fill: var(--fg); font-size: 14px; }
+    .muted { fill: var(--muted); font-size: 12px; }
+    .title { font-weight: 600; font-size: 15px; }
+    .status { font-size: 13px; }
+    .oktext { fill: var(--ok); font-weight: 600; font-size: 13px; }
+    .empty { fill: var(--empty); stroke: var(--edge); }
+    .exec { fill: var(--chip); stroke: var(--edge); }
+    .slotbg { fill: none; stroke: var(--edge); stroke-dasharray: 3 3; }
+    .mem { fill: var(--full); stroke: var(--edge); }
+    .memt { font-size: 12px; }
+    .div { stroke: var(--fg); stroke-width: 1.5; stroke-dasharray: 3 2; }
+    .sep { stroke: var(--edge); stroke-dasharray: 4 4; }
+    .q { fill: var(--full); stroke: var(--edge); }
+    .qt { text-anchor: middle; font-size: 12px; }
+    .run { fill: var(--empty); stroke: var(--probe); stroke-width: 3; }
+    .runt { text-anchor: middle; fill: var(--probe); font-weight: 600; font-size: 12px; }
+    .done { fill: var(--ok); }
+    .donet { text-anchor: middle; fill: var(--empty); font-weight: 600; font-size: 12px; }
+    .cur { fill: var(--probe); }
+    .el { fill: var(--edge); }
+
+    /* 16s loop, both rows on one shared clock. Wave k runs from 0.8 + 1.4(k-1) s for 1.4 s.
+       Top row: waves 1-8 (0.8s to 12.0s). Bottom row: waves 1-2 (0.8s to 3.6s), then idle.
+       Hold final frame until 92%, fade out 92% to 96%, restart. */
+    .w { opacity: 0; animation: 19.7s linear infinite; }
+    .a1 { animation-name: a1; }  /* 0s to 0.8s */
+    .a2 { animation-name: a2; }  /* 0.8s to 2.2s */
+    .a3 { animation-name: a3; }  /* 2.2s to end */
+    .a4 { animation-name: a4; }  /* 0s to 2.2s */
+    .a5 { animation-name: a5; }  /* 2.2s to 3.6s */
+    .a6 { animation-name: a6; }  /* 3.6s to end */
+    .a7 { animation-name: a7; }  /* 0s to 3.6s */
+    .a8 { animation-name: a8; }  /* 3.6s to 5.0s */
+    .a9 { animation-name: a9; }  /* 5.0s to end */
+    .a10 { animation-name: a10; }  /* 0s to 5.0s */
+    .a11 { animation-name: a11; }  /* 5.0s to 6.4s */
+    .a12 { animation-name: a12; }  /* 6.4s to end */
+    .a13 { animation-name: a13; }  /* 0s to 6.4s */
+    .a14 { animation-name: a14; }  /* 6.4s to 7.8s */
+    .a15 { animation-name: a15; }  /* 7.8s to end */
+    .a16 { animation-name: a16; }  /* 0s to 7.8s */
+    .a17 { animation-name: a17; }  /* 7.8s to 9.2s */
+    .a18 { animation-name: a18; }  /* 9.2s to end */
+    .a19 { animation-name: a19; }  /* 0s to 9.2s */
+    .a20 { animation-name: a20; }  /* 9.2s to 10.6s */
+    .a21 { animation-name: a21; }  /* 10.6s to end */
+    .a22 { animation-name: a22; }  /* 0s to 10.6s */
+    .a23 { animation-name: a23; }  /* 10.6s to 12.0s */
+    .a24 { animation-name: a24; }  /* 12.0s to end */
+    .a25 { animation-name: a25; }  /* 3.6s to 5.0s */
+    .a26 { animation-name: a26; }  /* 5.0s to 6.4s */
+    .a27 { animation-name: a27; }  /* 6.4s to 7.8s */
+    .a28 { animation-name: a28; }  /* 7.8s to 9.2s */
+    @keyframes a1 { 0.00%, 4.06% { opacity: 1 } 4.38%, 100.00% { opacity: 0 } }
+    @keyframes a2 { 0.00%, 3.74% { opacity: 0 } 4.06%, 13.27% { opacity: 1 } 13.60%, 100.00% { opacity: 0 } }
+    @keyframes a3 { 0.00%, 12.84% { opacity: 0 } 13.27%, 92.72% { opacity: 1 } 95.81%, 100.00% { opacity: 0 } }
+    @keyframes a4 { 0.00%, 13.27% { opacity: 1 } 13.60%, 100.00% { opacity: 0 } }
+    @keyframes a5 { 0.00%, 12.84% { opacity: 0 } 13.27%, 22.48% { opacity: 1 } 22.80%, 100.00% { opacity: 0 } }
+    @keyframes a6 { 0.00%, 22.05% { opacity: 0 } 22.48%, 92.72% { opacity: 1 } 95.81%, 100.00% { opacity: 0 } }
+    @keyframes a7 { 0.00%, 22.48% { opacity: 1 } 22.80%, 100.00% { opacity: 0 } }
+    @keyframes a8 { 0.00%, 22.05% { opacity: 0 } 22.48%, 31.69% { opacity: 1 } 32.01%, 100.00% { opacity: 0 } }
+    @keyframes a9 { 0.00%, 31.26% { opacity: 0 } 31.69%, 92.72% { opacity: 1 } 95.81%, 100.00% { opacity: 0 } }
+    @keyframes a10 { 0.00%, 31.69% { opacity: 1 } 32.01%, 100.00% { opacity: 0 } }
+    @keyframes a11 { 0.00%, 31.26% { opacity: 0 } 31.69%, 40.89% { opacity: 1 } 41.21%, 100.00% { opacity: 0 } }
+    @keyframes a12 { 0.00%, 40.47% { opacity: 0 } 40.89%, 92.72% { opacity: 1 } 95.81%, 100.00% { opacity: 0 } }
+    @keyframes a13 { 0.00%, 40.89% { opacity: 1 } 41.21%, 100.00% { opacity: 0 } }
+    @keyframes a14 { 0.00%, 40.47% { opacity: 0 } 40.89%, 50.09% { opacity: 1 } 50.41%, 100.00% { opacity: 0 } }
+    @keyframes a15 { 0.00%, 49.66% { opacity: 0 } 50.09%, 92.72% { opacity: 1 } 95.81%, 100.00% { opacity: 0 } }
+    @keyframes a16 { 0.00%, 50.09% { opacity: 1 } 50.41%, 100.00% { opacity: 0 } }
+    @keyframes a17 { 0.00%, 49.66% { opacity: 0 } 50.09%, 59.30% { opacity: 1 } 59.63%, 100.00% { opacity: 0 } }
+    @keyframes a18 { 0.00%, 58.87% { opacity: 0 } 59.30%, 92.72% { opacity: 1 } 95.81%, 100.00% { opacity: 0 } }
+    @keyframes a19 { 0.00%, 59.30% { opacity: 1 } 59.63%, 100.00% { opacity: 0 } }
+    @keyframes a20 { 0.00%, 58.87% { opacity: 0 } 59.30%, 68.51% { opacity: 1 } 68.84%, 100.00% { opacity: 0 } }
+    @keyframes a21 { 0.00%, 68.10% { opacity: 0 } 68.51%, 92.72% { opacity: 1 } 95.81%, 100.00% { opacity: 0 } }
+    @keyframes a22 { 0.00%, 68.51% { opacity: 1 } 68.84%, 100.00% { opacity: 0 } }
+    @keyframes a23 { 0.00%, 68.10% { opacity: 0 } 68.51%, 77.73% { opacity: 1 } 78.04%, 100.00% { opacity: 0 } }
+    @keyframes a24 { 0.00%, 77.30% { opacity: 0 } 77.73%, 92.72% { opacity: 1 } 95.81%, 100.00% { opacity: 0 } }
+    @keyframes a25 { 0.00%, 22.05% { opacity: 0 } 22.48%, 31.69% { opacity: 1 } 32.01%, 100.00% { opacity: 0 } }
+    @keyframes a26 { 0.00%, 31.26% { opacity: 0 } 31.69%, 40.89% { opacity: 1 } 41.21%, 100.00% { opacity: 0 } }
+    @keyframes a27 { 0.00%, 40.47% { opacity: 0 } 40.89%, 50.09% { opacity: 1 } 50.41%, 100.00% { opacity: 0 } }
+    @keyframes a28 { 0.00%, 49.66% { opacity: 0 } 50.09%, 59.30% { opacity: 1 } 59.63%, 100.00% { opacity: 0 } }
+    @media (prefers-reduced-motion: reduce) {
+      .w { animation: none; opacity: 0; }
+      .w.fin { opacity: 1; }
+    }
+  </style>
+
+  <!-- 1 core row -->
+  <text x="20" y="28" class="title">--executor-cores 1 (default)</text>
+  <text x="20" y="54" class="muted">queued tasks (8 partitions)</text>
+  <text x="210" y="54" class="muted">executor: 1 core, 16 GiB executor memory</text>
+  <text x="560" y="54" class="muted">finished tasks</text>
+  <rect x="210" y="62" width="320" height="100" rx="6" class="exec"/>
+  <path d="M20 64h34v26h-34zM60 64h34v26h-34zM100 64h34v26h-34zM140 64h34v26h-34zM20 96h34v26h-34zM60 96h34v26h-34zM100 96h34v26h-34zM140 96h34v26h-34z" class="slotbg"/>
+  <path d="M560 64h34v26h-34zM600 64h34v26h-34zM640 64h34v26h-34zM680 64h34v26h-34zM560 96h34v26h-34zM600 96h34v26h-34zM640 96h34v26h-34zM680 96h34v26h-34z" class="slotbg"/>
+  <rect x="227" y="70" width="64" height="32" rx="4" class="empty"/>
+  <text x="259" y="116" text-anchor="middle" class="muted">core 1</text>
+  <text x="305" y="91" class="muted">1 core = 1 task slot</text>
+  <rect x="227" y="124" width="286" height="22" rx="3" class="mem"/>
+  <text x="370" y="140" text-anchor="middle" class="memt">16 GiB heap, all for 1 running task</text>
+  <text x="560" y="136" class="muted">waves elapsed</text>
+  <path d="M560 144h16v14h-16zM579 144h16v14h-16zM598 144h16v14h-16zM617 144h16v14h-16zM636 144h16v14h-16zM655 144h16v14h-16zM674 144h16v14h-16zM693 144h16v14h-16z" class="slotbg"/>
+  <line x1="20" y1="178" x2="740" y2="178" class="sep"/>
+  <!-- 4 core row -->
+  <text x="20" y="214" class="title">--executor-cores 4 (the fix)</text>
+  <text x="20" y="240" class="muted">queued tasks (8 partitions)</text>
+  <text x="210" y="240" class="muted">executor: 4 cores, 16 GiB executor memory</text>
+  <text x="560" y="240" class="muted">finished tasks</text>
+  <rect x="210" y="248" width="320" height="100" rx="6" class="exec"/>
+  <path d="M20 250h34v26h-34zM60 250h34v26h-34zM100 250h34v26h-34zM140 250h34v26h-34zM20 282h34v26h-34zM60 282h34v26h-34zM100 282h34v26h-34zM140 282h34v26h-34z" class="slotbg"/>
+  <path d="M560 250h34v26h-34zM600 250h34v26h-34zM640 250h34v26h-34zM680 250h34v26h-34zM560 282h34v26h-34zM600 282h34v26h-34zM640 282h34v26h-34zM680 282h34v26h-34z" class="slotbg"/>
+  <rect x="227" y="256" width="64" height="32" rx="4" class="empty"/>
+  <text x="259" y="302" text-anchor="middle" class="muted">core 1</text>
+  <rect x="301" y="256" width="64" height="32" rx="4" class="empty"/>
+  <text x="333" y="302" text-anchor="middle" class="muted">core 2</text>
+  <rect x="375" y="256" width="64" height="32" rx="4" class="empty"/>
+  <text x="407" y="302" text-anchor="middle" class="muted">core 3</text>
+  <rect x="449" y="256" width="64" height="32" rx="4" class="empty"/>
+  <text x="481" y="302" text-anchor="middle" class="muted">core 4</text>
+  <rect x="227" y="310" width="286" height="22" rx="3" class="mem"/>
+  <text x="370" y="326" text-anchor="middle" class="memt">16 GiB heap, shared by 4 running tasks</text>
+  <text x="560" y="322" class="muted">waves elapsed</text>
+  <path d="M560 330h16v14h-16zM579 330h16v14h-16zM598 330h16v14h-16zM617 330h16v14h-16zM636 330h16v14h-16zM655 330h16v14h-16zM674 330h16v14h-16zM693 330h16v14h-16z" class="slotbg"/>
+  <text x="370" y="366" text-anchor="middle" class="muted">4 concurrent tasks share one 16 GiB heap, which increases memory requirements</text>
+  <g class="w a1"><rect x="20" y="64" width="34" height="26" rx="4" class="q"/><text x="37" y="82" class="qt">T1</text></g>
+  <g class="w a2"><rect x="242" y="73" width="34" height="26" rx="4" class="run"/><text x="259" y="91" class="runt">T1</text></g>
+  <g class="w a3 fin"><rect x="560" y="64" width="34" height="26" rx="4" class="done"/><text x="577" y="82" class="donet">T1</text></g>
+  <rect x="560" y="144" width="16" height="14" rx="2" class="cur w a2"/>
+  <rect x="560" y="144" width="16" height="14" rx="2" class="el w a3 fin"/>
+  <g class="w a4"><rect x="60" y="64" width="34" height="26" rx="4" class="q"/><text x="77" y="82" class="qt">T2</text></g>
+  <g class="w a5"><rect x="242" y="73" width="34" height="26" rx="4" class="run"/><text x="259" y="91" class="runt">T2</text></g>
+  <g class="w a6 fin"><rect x="600" y="64" width="34" height="26" rx="4" class="done"/><text x="617" y="82" class="donet">T2</text></g>
+  <rect x="579" y="144" width="16" height="14" rx="2" class="cur w a5"/>
+  <rect x="579" y="144" width="16" height="14" rx="2" class="el w a6 fin"/>
+  <g class="w a7"><rect x="100" y="64" width="34" height="26" rx="4" class="q"/><text x="117" y="82" class="qt">T3</text></g>
+  <g class="w a8"><rect x="242" y="73" width="34" height="26" rx="4" class="run"/><text x="259" y="91" class="runt">T3</text></g>
+  <g class="w a9 fin"><rect x="640" y="64" width="34" height="26" rx="4" class="done"/><text x="657" y="82" class="donet">T3</text></g>
+  <rect x="598" y="144" width="16" height="14" rx="2" class="cur w a8"/>
+  <rect x="598" y="144" width="16" height="14" rx="2" class="el w a9 fin"/>
+  <g class="w a10"><rect x="140" y="64" width="34" height="26" rx="4" class="q"/><text x="157" y="82" class="qt">T4</text></g>
+  <g class="w a11"><rect x="242" y="73" width="34" height="26" rx="4" class="run"/><text x="259" y="91" class="runt">T4</text></g>
+  <g class="w a12 fin"><rect x="680" y="64" width="34" height="26" rx="4" class="done"/><text x="697" y="82" class="donet">T4</text></g>
+  <rect x="617" y="144" width="16" height="14" rx="2" class="cur w a11"/>
+  <rect x="617" y="144" width="16" height="14" rx="2" class="el w a12 fin"/>
+  <g class="w a13"><rect x="20" y="96" width="34" height="26" rx="4" class="q"/><text x="37" y="114" class="qt">T5</text></g>
+  <g class="w a14"><rect x="242" y="73" width="34" height="26" rx="4" class="run"/><text x="259" y="91" class="runt">T5</text></g>
+  <g class="w a15 fin"><rect x="560" y="96" width="34" height="26" rx="4" class="done"/><text x="577" y="114" class="donet">T5</text></g>
+  <rect x="636" y="144" width="16" height="14" rx="2" class="cur w a14"/>
+  <rect x="636" y="144" width="16" height="14" rx="2" class="el w a15 fin"/>
+  <g class="w a16"><rect x="60" y="96" width="34" height="26" rx="4" class="q"/><text x="77" y="114" class="qt">T6</text></g>
+  <g class="w a17"><rect x="242" y="73" width="34" height="26" rx="4" class="run"/><text x="259" y="91" class="runt">T6</text></g>
+  <g class="w a18 fin"><rect x="600" y="96" width="34" height="26" rx="4" class="done"/><text x="617" y="114" class="donet">T6</text></g>
+  <rect x="655" y="144" width="16" height="14" rx="2" class="cur w a17"/>
+  <rect x="655" y="144" width="16" height="14" rx="2" class="el w a18 fin"/>
+  <g class="w a19"><rect x="100" y="96" width="34" height="26" rx="4" class="q"/><text x="117" y="114" class="qt">T7</text></g>
+  <g class="w a20"><rect x="242" y="73" width="34" height="26" rx="4" class="run"/><text x="259" y="91" class="runt">T7</text></g>
+  <g class="w a21 fin"><rect x="640" y="96" width="34" height="26" rx="4" class="done"/><text x="657" y="114" class="donet">T7</text></g>
+  <rect x="674" y="144" width="16" height="14" rx="2" class="cur w a20"/>
+  <rect x="674" y="144" width="16" height="14" rx="2" class="el w a21 fin"/>
+  <g class="w a22"><rect x="140" y="96" width="34" height="26" rx="4" class="q"/><text x="157" y="114" class="qt">T8</text></g>
+  <g class="w a23"><rect x="242" y="73" width="34" height="26" rx="4" class="run"/><text x="259" y="91" class="runt">T8</text></g>
+  <g class="w a24 fin"><rect x="680" y="96" width="34" height="26" rx="4" class="done"/><text x="697" y="114" class="donet">T8</text></g>
+  <rect x="693" y="144" width="16" height="14" rx="2" class="cur w a23"/>
+  <rect x="693" y="144" width="16" height="14" rx="2" class="el w a24 fin"/>
+  <text x="259" y="91" text-anchor="middle" class="muted w a1">idle</text>
+  <text x="259" y="91" text-anchor="middle" class="muted w a24 fin">idle</text>
+  <text x="740" y="28" text-anchor="end" class="status w a4">tasks done 0/8 · 0 waves</text>
+  <text x="740" y="28" text-anchor="end" class="status w a5">tasks done 1/8 · 1 wave</text>
+  <text x="740" y="28" text-anchor="end" class="status w a25">tasks done 2/8 · 2 waves</text>
+  <text x="740" y="28" text-anchor="end" class="status w a26">tasks done 3/8 · 3 waves</text>
+  <text x="740" y="28" text-anchor="end" class="status w a27">tasks done 4/8 · 4 waves</text>
+  <text x="740" y="28" text-anchor="end" class="status w a28">tasks done 5/8 · 5 waves</text>
+  <text x="740" y="28" text-anchor="end" class="status w a20">tasks done 6/8 · 6 waves</text>
+  <text x="740" y="28" text-anchor="end" class="status w a23">tasks done 7/8 · 7 waves</text>
+  <text x="740" y="28" text-anchor="end" class="oktext w a24 fin">done: 8/8 tasks in 8 waves</text>
+  <g class="w a1"><rect x="20" y="250" width="34" height="26" rx="4" class="q"/><text x="37" y="268" class="qt">T1</text></g>
+  <g class="w a2"><rect x="242" y="259" width="34" height="26" rx="4" class="run"/><text x="259" y="277" class="runt">T1</text></g>
+  <g class="w a3 fin"><rect x="560" y="250" width="34" height="26" rx="4" class="done"/><text x="577" y="268" class="donet">T1</text></g>
+  <g class="w a1"><rect x="60" y="250" width="34" height="26" rx="4" class="q"/><text x="77" y="268" class="qt">T2</text></g>
+  <g class="w a2"><rect x="316" y="259" width="34" height="26" rx="4" class="run"/><text x="333" y="277" class="runt">T2</text></g>
+  <g class="w a3 fin"><rect x="600" y="250" width="34" height="26" rx="4" class="done"/><text x="617" y="268" class="donet">T2</text></g>
+  <g class="w a1"><rect x="100" y="250" width="34" height="26" rx="4" class="q"/><text x="117" y="268" class="qt">T3</text></g>
+  <g class="w a2"><rect x="390" y="259" width="34" height="26" rx="4" class="run"/><text x="407" y="277" class="runt">T3</text></g>
+  <g class="w a3 fin"><rect x="640" y="250" width="34" height="26" rx="4" class="done"/><text x="657" y="268" class="donet">T3</text></g>
+  <g class="w a1"><rect x="140" y="250" width="34" height="26" rx="4" class="q"/><text x="157" y="268" class="qt">T4</text></g>
+  <g class="w a2"><rect x="464" y="259" width="34" height="26" rx="4" class="run"/><text x="481" y="277" class="runt">T4</text></g>
+  <g class="w a3 fin"><rect x="680" y="250" width="34" height="26" rx="4" class="done"/><text x="697" y="268" class="donet">T4</text></g>
+  <rect x="560" y="330" width="16" height="14" rx="2" class="cur w a2"/>
+  <rect x="560" y="330" width="16" height="14" rx="2" class="el w a3 fin"/>
+  <g class="w a4"><rect x="20" y="282" width="34" height="26" rx="4" class="q"/><text x="37" y="300" class="qt">T5</text></g>
+  <g class="w a5"><rect x="242" y="259" width="34" height="26" rx="4" class="run"/><text x="259" y="277" class="runt">T5</text></g>
+  <g class="w a6 fin"><rect x="560" y="282" width="34" height="26" rx="4" class="done"/><text x="577" y="300" class="donet">T5</text></g>
+  <g class="w a4"><rect x="60" y="282" width="34" height="26" rx="4" class="q"/><text x="77" y="300" class="qt">T6</text></g>
+  <g class="w a5"><rect x="316" y="259" width="34" height="26" rx="4" class="run"/><text x="333" y="277" class="runt">T6</text></g>
+  <g class="w a6 fin"><rect x="600" y="282" width="34" height="26" rx="4" class="done"/><text x="617" y="300" class="donet">T6</text></g>
+  <g class="w a4"><rect x="100" y="282" width="34" height="26" rx="4" class="q"/><text x="117" y="300" class="qt">T7</text></g>
+  <g class="w a5"><rect x="390" y="259" width="34" height="26" rx="4" class="run"/><text x="407" y="277" class="runt">T7</text></g>
+  <g class="w a6 fin"><rect x="640" y="282" width="34" height="26" rx="4" class="done"/><text x="657" y="300" class="donet">T7</text></g>
+  <g class="w a4"><rect x="140" y="282" width="34" height="26" rx="4" class="q"/><text x="157" y="300" class="qt">T8</text></g>
+  <g class="w a5"><rect x="464" y="259" width="34" height="26" rx="4" class="run"/><text x="481" y="277" class="runt">T8</text></g>
+  <g class="w a6 fin"><rect x="680" y="282" width="34" height="26" rx="4" class="done"/><text x="697" y="300" class="donet">T8</text></g>
+  <rect x="579" y="330" width="16" height="14" rx="2" class="cur w a5"/>
+  <rect x="579" y="330" width="16" height="14" rx="2" class="el w a6 fin"/>
+  <text x="259" y="277" text-anchor="middle" class="muted w a1">idle</text>
+  <text x="259" y="277" text-anchor="middle" class="muted w a6 fin">idle</text>
+  <text x="333" y="277" text-anchor="middle" class="muted w a1">idle</text>
+  <text x="333" y="277" text-anchor="middle" class="muted w a6 fin">idle</text>
+  <text x="407" y="277" text-anchor="middle" class="muted w a1">idle</text>
+  <text x="407" y="277" text-anchor="middle" class="muted w a6 fin">idle</text>
+  <text x="481" y="277" text-anchor="middle" class="muted w a1">idle</text>
+  <text x="481" y="277" text-anchor="middle" class="muted w a6 fin">idle</text>
+  <text x="740" y="214" text-anchor="end" class="status w a4">tasks done 0/8 · 0 waves</text>
+  <text x="740" y="214" text-anchor="end" class="status w a5">tasks done 4/8 · 1 wave</text>
+  <text x="740" y="214" text-anchor="end" class="oktext w a6 fin">done: 8/8 tasks in 2 waves</text>
+</svg>
