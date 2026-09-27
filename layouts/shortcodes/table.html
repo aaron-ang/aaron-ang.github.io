@@ -1,0 +1,9 @@
+<figure class="table-figure">
+  {{- with .Get "title" }}
+  <div class="table-title">{{ . | $.Page.RenderString }}</div>
+  {{- end }}
+  {{ .Page.RenderString (dict "display" "block") .Inner }}
+  {{- with .Get "caption" }}
+  <figcaption>{{ . | $.Page.RenderString }}</figcaption>
+  {{- end }}
+</figure>

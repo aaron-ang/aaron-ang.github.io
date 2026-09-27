@@ -1,0 +1,201 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 380" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated LSM tree write path: writes are appended to the commit log and inserted into a sorted Memtable, the full Memtable is flushed to disk as an immutable SSTable, and three SSTables are compacted into one where older values are dropped">
+  <style>
+    :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #ddd; --muted: #999; --full: #555; --empty: #1e1e1e; --edge: #777; --probe: #ff8a4c; --ok: #69db7c; --chip: #2a2a2a; }
+    }
+    text { fill: var(--fg); font-size: 14px; }
+    .muted { fill: var(--muted); font-size: 12px; }
+    .title { font-weight: 600; font-size: 15px; }
+    .code { font-size: 13px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .cap { font-size: 14px; }
+    .full { fill: var(--full); stroke: var(--edge); }
+    .empty { fill: var(--empty); stroke: var(--edge); }
+    .chip { fill: var(--chip); stroke: var(--edge); }
+    .box { fill: none; stroke: var(--edge); }
+    .dashbox { stroke-dasharray: 4 3; }
+    .okbox { fill: none; stroke: var(--ok); stroke-width: 2.5; }
+    .ring { fill: none; stroke: var(--probe); stroke-width: 3; }
+    .num { fill: var(--probe); font-weight: 600; font-size: 12px; }
+    .oktext { fill: var(--ok); font-weight: 600; }
+    .gauge { fill: var(--full); }
+    .gaugefull { fill: var(--probe); }
+    .arrow { fill: none; stroke: var(--probe); stroke-width: 2; }
+    .arrowhead { fill: var(--probe); }
+    .sarrow { fill: none; stroke: var(--edge); stroke-width: 1.5; }
+    .sarrowhead { fill: var(--edge); }
+    .veil { fill: var(--empty); fill-opacity: 0.5; }
+    .strike { stroke: var(--probe); stroke-width: 2.5; }
+    /* 20s loop. Each wN shows its element during one time window; ALL timing is in keyframes. */
+    .w { opacity: 0; animation: 26.5s linear infinite; }
+    .w1 { animation-name: w1; }  /* 0.5s to 1.7s */
+    @keyframes w1 { 0.00%, 1.59% { opacity: 0 } 1.88%, 8.49% { opacity: 1 } 8.78%, 100.00% { opacity: 0 } }
+    .w2 { animation-name: w2; }  /* 1.7s to 2.9s */
+    @keyframes w2 { 0.00%, 8.04% { opacity: 0 } 8.49%, 14.94% { opacity: 1 } 15.39%, 100.00% { opacity: 0 } }
+    .w3 { animation-name: w3; }  /* 4.2s to 5.4s */
+    @keyframes w3 { 0.00%, 22.54% { opacity: 0 } 23.12%, 30.03% { opacity: 1 } 30.33%, 100.00% { opacity: 0 } }
+    .w4 { animation-name: w4; }  /* 5.4s to 6.6s */
+    @keyframes w4 { 0.00%, 29.56% { opacity: 0 } 30.03%, 36.48% { opacity: 1 } 36.93%, 100.00% { opacity: 0 } }
+    .w5 { animation-name: w5; }  /* 7.9s to 9.1s */
+    @keyframes w5 { 0.00%, 44.10% { opacity: 0 } 44.66%, 51.57% { opacity: 1 } 51.86%, 100.00% { opacity: 0 } }
+    .w6 { animation-name: w6; }  /* 9.1s to 10.3s */
+    @keyframes w6 { 0.00%, 51.09% { opacity: 0 } 51.57%, 58.03% { opacity: 1 } 58.47%, 100.00% { opacity: 0 } }
+    .w7 { animation-name: w7; }  /* from 0.5s */
+    @keyframes w7 { 0.00%, 1.59% { opacity: 0 } 1.88%, 93.22% { opacity: 1 } 96.00%, 100.00% { opacity: 0 } }
+    .w8 { animation-name: w8; }  /* from 1.7s */
+    @keyframes w8 { 0.00%, 8.04% { opacity: 0 } 8.49%, 93.22% { opacity: 1 } 96.00%, 100.00% { opacity: 0 } }
+    .w9 { animation-name: w9; }  /* from 4.2s */
+    @keyframes w9 { 0.00%, 22.54% { opacity: 0 } 23.12%, 93.22% { opacity: 1 } 96.00%, 100.00% { opacity: 0 } }
+    .w10 { animation-name: w10; }  /* from 5.4s */
+    @keyframes w10 { 0.00%, 29.56% { opacity: 0 } 30.03%, 93.22% { opacity: 1 } 96.00%, 100.00% { opacity: 0 } }
+    .w11 { animation-name: w11; }  /* from 7.9s */
+    @keyframes w11 { 0.00%, 44.10% { opacity: 0 } 44.66%, 93.22% { opacity: 1 } 96.00%, 100.00% { opacity: 0 } }
+    .w12 { animation-name: w12; }  /* from 9.1s */
+    @keyframes w12 { 0.00%, 51.09% { opacity: 0 } 51.57%, 93.22% { opacity: 1 } 96.00%, 100.00% { opacity: 0 } }
+    .w13 { animation-name: w13; }  /* 1.7s to 3.2s */
+    @keyframes w13 { 0.00%, 8.04% { opacity: 0 } 8.49%, 16.21% { opacity: 1 } 16.51%, 100.00% { opacity: 0 } }
+    .w14 { animation-name: w14; }  /* 5.4s to 6.9s */
+    @keyframes w14 { 0.00%, 29.56% { opacity: 0 } 30.03%, 37.76% { opacity: 1 } 38.06%, 100.00% { opacity: 0 } }
+    .w15 { animation-name: w15; }  /* 9.1s to 10.6s */
+    @keyframes w15 { 0.00%, 51.09% { opacity: 0 } 51.57%, 59.29% { opacity: 1 } 59.60%, 100.00% { opacity: 0 } }
+    .w16 { animation-name: w16; }  /* 3.2s to 4.2s */
+    @keyframes w16 { 0.00%, 15.91% { opacity: 0 } 16.21%, 23.12% { opacity: 1 } 23.43%, 100.00% { opacity: 0 } }
+    .w17 { animation-name: w17; }  /* from 3.2s */
+    @keyframes w17 { 0.00%, 15.91% { opacity: 0 } 16.21%, 93.22% { opacity: 1 } 96.00%, 100.00% { opacity: 0 } }
+    .w18 { animation-name: w18; }  /* 6.9s to 7.9s */
+    @keyframes w18 { 0.00%, 37.45% { opacity: 0 } 37.76%, 44.66% { opacity: 1 } 44.97%, 100.00% { opacity: 0 } }
+    .w19 { animation-name: w19; }  /* from 6.9s */
+    @keyframes w19 { 0.00%, 37.45% { opacity: 0 } 37.76%, 93.22% { opacity: 1 } 96.00%, 100.00% { opacity: 0 } }
+    .w20 { animation-name: w20; }  /* 10.6s to 11.6s */
+    @keyframes w20 { 0.00%, 58.98% { opacity: 0 } 59.29%, 65.68% { opacity: 1 } 66.20%, 100.00% { opacity: 0 } }
+    .w21 { animation-name: w21; }  /* from 10.6s */
+    @keyframes w21 { 0.00%, 58.98% { opacity: 0 } 59.29%, 93.22% { opacity: 1 } 96.00%, 100.00% { opacity: 0 } }
+    .w22 { animation-name: w22; }  /* 6.9s to 12s */
+    @keyframes w22 { 0.00%, 37.45% { opacity: 0 } 37.76%, 67.41% { opacity: 1 } 67.71%, 100.00% { opacity: 0 } }
+    .w23 { animation-name: w23; }  /* 12s to 14s */
+    @keyframes w23 { 0.00%, 67.11% { opacity: 0 } 67.41%, 80.92% { opacity: 1 } 81.21%, 100.00% { opacity: 0 } }
+    .w24 { animation-name: w24; }  /* from 12s */
+    @keyframes w24 { 0.00%, 67.11% { opacity: 0 } 67.41%, 93.22% { opacity: 1 } 96.00%, 100.00% { opacity: 0 } }
+    .w25 { animation-name: w25; }  /* from 13s */
+    @keyframes w25 { 0.00%, 73.74% { opacity: 0 } 74.31%, 93.22% { opacity: 1 } 96.00%, 100.00% { opacity: 0 } }
+    .w26 { animation-name: w26; }  /* from 14.5s */
+    @keyframes w26 { 0.00%, 82.49% { opacity: 0 } 82.80%, 93.22% { opacity: 1 } 96.00%, 100.00% { opacity: 0 } }
+    .w27 { animation-name: w27; }  /* from 14s */
+    @keyframes w27 { 0.00%, 80.38% { opacity: 0 } 80.92%, 93.22% { opacity: 1 } 96.00%, 100.00% { opacity: 0 } }
+    .w28 { animation-name: w28; }  /* 0.5s to 3.2s */
+    @keyframes w28 { 0.00%, 1.59% { opacity: 0 } 1.88%, 16.21% { opacity: 1 } 16.51%, 100.00% { opacity: 0 } }
+    .w29 { animation-name: w29; }  /* 4.2s to 6.9s */
+    @keyframes w29 { 0.00%, 22.54% { opacity: 0 } 23.12%, 37.76% { opacity: 1 } 38.06%, 100.00% { opacity: 0 } }
+    .w30 { animation-name: w30; }  /* 7.9s to 10.6s */
+    @keyframes w30 { 0.00%, 44.10% { opacity: 0 } 44.66%, 59.29% { opacity: 1 } 59.60%, 100.00% { opacity: 0 } }
+    .w31 { animation-name: w31; }  /* 10.6s to 12s */
+    @keyframes w31 { 0.00%, 58.98% { opacity: 0 } 59.29%, 67.41% { opacity: 1 } 67.71%, 100.00% { opacity: 0 } }
+    @media (prefers-reduced-motion: reduce) {
+      .w { animation: none; opacity: 0; }
+      .w.fin { opacity: 1; }
+    }
+  </style>
+  <line x1="160" y1="165" x2="740" y2="165" stroke="var(--edge)" stroke-dasharray="4 4"/>
+  <text x="740" y="157" text-anchor="end" class="muted">memory ↑</text>
+  <text x="740" y="182" text-anchor="end" class="muted">disk ↓</text>
+  <text x="20" y="64" class="title">Writes</text>
+  <rect x="20" y="76" width="96" height="22" rx="3" class="chip"/>
+  <text x="68" y="92" text-anchor="middle" class="code">put(b,1)</text>
+  <rect x="20" y="104" width="96" height="22" rx="3" class="chip"/>
+  <text x="68" y="120" text-anchor="middle" class="code">put(a,2)</text>
+  <rect x="20" y="132" width="96" height="22" rx="3" class="chip"/>
+  <text x="68" y="148" text-anchor="middle" class="code">put(b,3)</text>
+  <rect x="20" y="160" width="96" height="22" rx="3" class="chip"/>
+  <text x="68" y="176" text-anchor="middle" class="code">put(c,4)</text>
+  <rect x="20" y="188" width="96" height="22" rx="3" class="chip"/>
+  <text x="68" y="204" text-anchor="middle" class="code">put(d,5)</text>
+  <rect x="20" y="216" width="96" height="22" rx="3" class="chip"/>
+  <text x="68" y="232" text-anchor="middle" class="code">put(a,6)</text>
+  <path d="M 124 118 L 352 94" class="sarrow"/><polygon points="351,88 362,93 352,99" class="sarrowhead"/>
+  <text x="236" y="96" text-anchor="middle" class="muted">insert</text>
+  <path d="M 124 150 Q 150 150 150 180 L 150 224 L 168 224" class="sarrow"/><polygon points="166,218 177,224 166,230" class="sarrowhead"/>
+  <text x="128" y="143" class="muted">append</text>
+  <text x="364" y="64" class="title">Memtable (sorted)</text>
+  <rect x="364" y="72" width="158" height="42" rx="5" class="box"/>
+  <rect x="370" y="78" width="70" height="30" rx="3" class="empty"/>
+  <rect x="446" y="78" width="70" height="30" rx="3" class="empty"/>
+  <text x="556" y="112" class="muted">threshold: 2</text>
+  <rect x="534" y="72" width="14" height="42" rx="2" class="empty"/>
+  <text x="180" y="192" class="title">Commit log / WAL</text>
+  <text x="180" y="208" class="muted">append-only</text>
+  <rect x="345" y="211" width="82" height="66" rx="5" class="box dashbox"/>
+  <text x="386" y="296" text-anchor="middle" class="muted">SSTable 1</text>
+  <rect x="435" y="211" width="82" height="66" rx="5" class="box dashbox"/>
+  <text x="476" y="296" text-anchor="middle" class="muted">SSTable 2</text>
+  <rect x="525" y="211" width="82" height="66" rx="5" class="box dashbox"/>
+  <text x="566" y="296" text-anchor="middle" class="muted">SSTable 3</text>
+  <text x="345" y="318" class="muted">immutable, sorted; newest on the right</text>
+  <rect x="17" y="73" width="102" height="28" rx="5" class="ring w w1"/>
+  <rect x="17" y="101" width="102" height="28" rx="5" class="ring w w2"/>
+  <rect x="17" y="129" width="102" height="28" rx="5" class="ring w w3"/>
+  <rect x="17" y="157" width="102" height="28" rx="5" class="ring w w4"/>
+  <rect x="17" y="185" width="102" height="28" rx="5" class="ring w w5"/>
+  <rect x="17" y="213" width="102" height="28" rx="5" class="ring w w6"/>
+  <g class="w w7 fin"><rect x="180" y="216" width="80" height="22" rx="3" class="chip"/><text x="220" y="232" text-anchor="middle" class="code">b=1</text></g>
+  <g class="w w8 fin"><rect x="180" y="242" width="80" height="22" rx="3" class="chip"/><text x="220" y="258" text-anchor="middle" class="code">a=2</text></g>
+  <g class="w w9 fin"><rect x="180" y="268" width="80" height="22" rx="3" class="chip"/><text x="220" y="284" text-anchor="middle" class="code">b=3</text></g>
+  <g class="w w10 fin"><rect x="180" y="294" width="80" height="22" rx="3" class="chip"/><text x="220" y="310" text-anchor="middle" class="code">c=4</text></g>
+  <g class="w w11 fin"><rect x="180" y="320" width="80" height="22" rx="3" class="chip"/><text x="220" y="336" text-anchor="middle" class="code">d=5</text></g>
+  <g class="w w12 fin"><rect x="180" y="346" width="80" height="22" rx="3" class="chip"/><text x="220" y="362" text-anchor="middle" class="code">a=6</text></g>
+  <g class="w w1"><rect x="370" y="78" width="70" height="30" rx="3" class="full"/><text x="405" y="98" text-anchor="middle" class="code">b=1</text></g>
+  <rect x="536" y="94" width="10" height="18" rx="1" class="gauge w w1"/>
+  <text x="556" y="98" class="muted w w1">fill 1/2</text>
+  <g class="w w13"><rect x="370" y="78" width="70" height="30" rx="3" class="full"/><text x="405" y="98" text-anchor="middle" class="code">a=2</text></g>
+  <g class="w w13"><rect x="446" y="78" width="70" height="30" rx="3" class="full"/><text x="481" y="98" text-anchor="middle" class="code">b=1</text></g>
+  <rect x="536" y="74" width="10" height="38" rx="1" class="gaugefull w w13"/>
+  <text x="556" y="98" class="num w w13">full: flush</text>
+  <g class="w w3"><rect x="370" y="78" width="70" height="30" rx="3" class="full"/><text x="405" y="98" text-anchor="middle" class="code">b=3</text></g>
+  <rect x="536" y="94" width="10" height="18" rx="1" class="gauge w w3"/>
+  <text x="556" y="98" class="muted w w3">fill 1/2</text>
+  <g class="w w14"><rect x="370" y="78" width="70" height="30" rx="3" class="full"/><text x="405" y="98" text-anchor="middle" class="code">b=3</text></g>
+  <g class="w w14"><rect x="446" y="78" width="70" height="30" rx="3" class="full"/><text x="481" y="98" text-anchor="middle" class="code">c=4</text></g>
+  <rect x="536" y="74" width="10" height="38" rx="1" class="gaugefull w w14"/>
+  <text x="556" y="98" class="num w w14">full: flush</text>
+  <g class="w w5"><rect x="370" y="78" width="70" height="30" rx="3" class="full"/><text x="405" y="98" text-anchor="middle" class="code">d=5</text></g>
+  <rect x="536" y="94" width="10" height="18" rx="1" class="gauge w w5"/>
+  <text x="556" y="98" class="muted w w5">fill 1/2</text>
+  <g class="w w15"><rect x="370" y="78" width="70" height="30" rx="3" class="full"/><text x="405" y="98" text-anchor="middle" class="code">a=6</text></g>
+  <g class="w w15"><rect x="446" y="78" width="70" height="30" rx="3" class="full"/><text x="481" y="98" text-anchor="middle" class="code">d=5</text></g>
+  <rect x="536" y="74" width="10" height="38" rx="1" class="gaugefull w w15"/>
+  <text x="556" y="98" class="num w w15">full: flush</text>
+  <g class="w w16"><path d="M 443 118 L 386 203" class="arrow"/><circle cx="386" cy="205" r="4" class="arrowhead"/></g>
+  <g class="w w17 fin"><rect x="350" y="216" width="72" height="26" rx="3" class="chip"/><text x="386" y="234" text-anchor="middle" class="code">a=2</text></g>
+  <g class="w w17 fin"><rect x="350" y="246" width="72" height="26" rx="3" class="chip"/><text x="386" y="264" text-anchor="middle" class="code">b=1</text></g>
+  <g class="w w18"><path d="M 443 118 L 476 203" class="arrow"/><circle cx="476" cy="205" r="4" class="arrowhead"/></g>
+  <g class="w w19 fin"><rect x="440" y="216" width="72" height="26" rx="3" class="chip"/><text x="476" y="234" text-anchor="middle" class="code">b=3</text></g>
+  <g class="w w19 fin"><rect x="440" y="246" width="72" height="26" rx="3" class="chip"/><text x="476" y="264" text-anchor="middle" class="code">c=4</text></g>
+  <g class="w w20"><path d="M 443 118 L 566 203" class="arrow"/><circle cx="566" cy="205" r="4" class="arrowhead"/></g>
+  <g class="w w21 fin"><rect x="530" y="216" width="72" height="26" rx="3" class="chip"/><text x="566" y="234" text-anchor="middle" class="code">a=6</text></g>
+  <g class="w w21 fin"><rect x="530" y="246" width="72" height="26" rx="3" class="chip"/><text x="566" y="264" text-anchor="middle" class="code">d=5</text></g>
+  <text x="436" y="144" class="num w w16">flush</text>
+  <text x="444" y="144" text-anchor="end" class="num w w18">flush</text>
+  <text x="467" y="144" text-anchor="end" class="num w w20">flush</text>
+  <text x="345" y="340" class="num w w22">b=3 is a new entry; the old b=1 stays in SSTable 1</text>
+  <rect x="340" y="206" width="276" height="76" rx="7" class="ring w w23"/>
+  <g class="w w24 fin"><path d="M 614 244 L 638 244" class="arrow"/><polygon points="636,238 647,244 636,250" class="arrowhead"/></g>
+  <text x="629" y="202" text-anchor="middle" class="num w w24 fin">merge</text>
+  <line x1="356" y1="229" x2="416" y2="229" class="strike w w25 fin"/>
+  <line x1="356" y1="259" x2="416" y2="259" class="strike w w25 fin"/>
+  <text x="345" y="340" class="num w w25 fin">older a=2 and b=1 dropped (newest wins)</text>
+  <text x="345" y="358" class="muted w w26 fin">input SSTables are deleted after the merge</text>
+  <rect x="645" y="211" width="96" height="126" rx="5" class="okbox w w27 fin"/>
+  <text x="693" y="354" text-anchor="middle" class="muted w w27 fin">compacted SSTable</text>
+  <rect x="340" y="206" width="272" height="76" class="veil w w26 fin"/>
+  <g class="w w27 fin"><rect x="650" y="216" width="86" height="26" rx="3" class="chip"/><text x="693" y="234" text-anchor="middle" class="code">a=6</text></g>
+  <g class="w w27 fin"><rect x="650" y="246" width="86" height="26" rx="3" class="chip"/><text x="693" y="264" text-anchor="middle" class="code">b=3</text></g>
+  <g class="w w27 fin"><rect x="650" y="276" width="86" height="26" rx="3" class="chip"/><text x="693" y="294" text-anchor="middle" class="code">c=4</text></g>
+  <g class="w w27 fin"><rect x="650" y="306" width="86" height="26" rx="3" class="chip"/><text x="693" y="324" text-anchor="middle" class="code">d=5</text></g>
+  <text x="20" y="28" class="cap  w w28">Each write is appended to the WAL on disk and inserted into the Memtable in memory.</text>
+  <text x="20" y="28" class="cap  w w16">Memtable full: flush it to disk as a new sorted, immutable SSTable.</text>
+  <text x="20" y="28" class="cap  w w29">put(b,3) adds a new entry. Nothing is updated in place.</text>
+  <text x="20" y="28" class="cap  w w18">Second flush: the older b=1 is still in SSTable 1.</text>
+  <text x="20" y="28" class="cap  w w30">More writes fill the Memtable again.</text>
+  <text x="20" y="28" class="cap  w w31">Third flush: three SSTables now on disk.</text>
+  <text x="20" y="28" class="cap  w w23">Compaction merges the SSTables; the newest value of each key wins.</text>
+  <text x="20" y="28" class="cap oktext w w27 fin">Result: one larger sorted SSTable without the stale a=2 and b=1.</text>
+</svg>

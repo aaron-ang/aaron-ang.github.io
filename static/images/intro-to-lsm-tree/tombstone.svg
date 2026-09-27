@@ -1,0 +1,181 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 325" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated tombstone deletion: delete(7) inserts a tombstone into the memtable, get(7) returns null while the old value is still in the last level, and compactions carry the tombstone down over minutes, hours, and days until it reaches the last level and both entries are physically deleted">
+  <style>
+    :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #ddd; --muted: #999; --full: #555; --empty: #1e1e1e; --edge: #777; --probe: #ff8a4c; --ok: #69db7c; --chip: #2a2a2a; }
+    }
+    text { fill: var(--fg); font-size: 14px; }
+    .muted { fill: var(--muted); font-size: 12px; }
+    .title { font-weight: 600; font-size: 15px; }
+    .full { fill: var(--full); stroke: var(--edge); }
+    .empty { fill: var(--empty); stroke: var(--edge); }
+    .tomb { fill: var(--probe); stroke: var(--probe); }
+    .tombtext { fill: var(--empty); font-weight: 600; font-size: 13px; }
+    .key { font-weight: 600; font-size: 13px; }
+    .ghost { fill: none; stroke: var(--muted); stroke-dasharray: 4 3; }
+    .ghosttext { fill: var(--muted); font-size: 13px; }
+    .ring { fill: none; stroke: var(--probe); stroke-width: 3; }
+    .dring { fill: none; stroke: var(--probe); stroke-width: 2; stroke-dasharray: 5 4; }
+    .okring { fill: none; stroke: var(--ok); stroke-width: 2; stroke-dasharray: 5 4; }
+    .num { fill: var(--probe); font-weight: 600; font-size: 13px; }
+    .oktext { fill: var(--ok); font-weight: 600; font-size: 13px; }
+    .arrow { fill: none; stroke: var(--probe); stroke-width: 2; }
+    .arrowhead { fill: var(--probe); }
+
+    /* 18s loop. Each class shows its element during one time window. */
+    .a { opacity: 0; animation: 13.8s linear infinite; }
+    .c0 { animation-name: c0; }  /* caption, old value: 0s to 1s */
+    .c1 { animation-name: c1; }  /* caption + tombstone insert: 1s to 3s */
+    .c2 { animation-name: c2; }  /* caption, get(7): 3s to 5.5s */
+    .c3 { animation-name: c3; }  /* caption, compactions: 5.5s to 11.5s */
+    .c4 { animation-name: c4; }  /* caption, merge in last level: 11.5s to 14s */
+    .t0 { animation-name: t0; }  /* tombstone in memtable: 1s to 5.5s */
+    .t1 { animation-name: t1; }  /* tombstone in L1: 5.5s to 8.5s */
+    .t2 { animation-name: t2; }  /* tombstone in L2: 8.5s to 14s */
+    .d { animation-name: d; }    /* delete(7) label: 1s onward */
+    .g { animation-name: g; }    /* get(7) -> null + ring: 3s onward */
+    .gr { animation-name: gr; }  /* get(7) probe ring: 3s to 5.5s */
+    .lg { animation-name: lg; }  /* logically deleted, still on disk: 3s to 14s */
+    .k1 { animation-name: k1; }  /* compaction 1 (minutes) + ghost in memtable: 5.5s onward */
+    .k2 { animation-name: k2; }  /* compaction 2 (hours) + ghost in L1: 8.5s onward */
+    .k3 { animation-name: k3; }  /* compaction 3 (days) arrow: 11.5s onward */
+    .mr { animation-name: mr; }  /* merge ring on 7: v: 11.5s to 14s */
+    .v { animation-name: v; }    /* old entry 7: v: 0s to 14s */
+    .p { animation-name: p; }    /* physically deleted + ghost in L2: 14s onward */
+    .e0 { animation-name: e0; }  /* elapsed: just now, 0s to 5.5s */
+    .e1 { animation-name: e1; }  /* elapsed: minutes, 5.5s to 8.5s */
+    .e2 { animation-name: e2; }  /* elapsed: hours, 8.5s to 11.5s */
+    .e3 { animation-name: e3; }  /* elapsed: days, 11.5s onward */
+    @keyframes c0 { 0.00%, 6.52% { opacity: 1 } 7.30%, 100.00% { opacity: 0 } }
+    @keyframes c1 { 0.00%, 6.52% { opacity: 0 } 7.30%, 19.30% { opacity: 1 } 19.98%, 100.00% { opacity: 0 } }
+    @keyframes c2 { 0.00%, 19.30% { opacity: 0 } 19.98%, 32.11% { opacity: 1 } 32.67%, 100.00% { opacity: 0 } }
+    @keyframes c3 { 0.00%, 32.11% { opacity: 0 } 32.67%, 57.57% { opacity: 1 } 58.03%, 100.00% { opacity: 0 } }
+    @keyframes c4 { 0.00%, 57.57% { opacity: 0 } 58.03%, 70.17% { opacity: 1 } 70.71%, 100.00% { opacity: 0 } }
+    @keyframes t0 { 0.00%, 6.52% { opacity: 0 } 7.30%, 32.11% { opacity: 1 } 32.67%, 100.00% { opacity: 0 } }
+    @keyframes t1 { 0.00%, 32.11% { opacity: 0 } 32.67%, 44.96% { opacity: 1 } 45.35%, 100.00% { opacity: 0 } }
+    @keyframes t2 { 0.00%, 44.96% { opacity: 0 } 45.35%, 70.17% { opacity: 1 } 70.71%, 100.00% { opacity: 0 } }
+    @keyframes d { 0.00%, 6.52% { opacity: 0 } 7.30%, 92.71% { opacity: 1 } 96.07%, 100.00% { opacity: 0 } }
+    @keyframes g { 0.00%, 19.30% { opacity: 0 } 19.98%, 92.71% { opacity: 1 } 96.07%, 100.00% { opacity: 0 } }
+    @keyframes gr { 0.00%, 19.30% { opacity: 0 } 19.98%, 32.11% { opacity: 1 } 32.67%, 100.00% { opacity: 0 } }
+    @keyframes lg { 0.00%, 19.30% { opacity: 0 } 19.98%, 70.17% { opacity: 1 } 70.71%, 100.00% { opacity: 0 } }
+    @keyframes k1 { 0.00%, 32.11% { opacity: 0 } 32.67%, 92.71% { opacity: 1 } 96.07%, 100.00% { opacity: 0 } }
+    @keyframes k2 { 0.00%, 44.96% { opacity: 0 } 45.35%, 92.71% { opacity: 1 } 96.07%, 100.00% { opacity: 0 } }
+    @keyframes k3 { 0.00%, 57.57% { opacity: 0 } 58.03%, 92.71% { opacity: 1 } 96.07%, 100.00% { opacity: 0 } }
+    @keyframes mr { 0.00%, 57.57% { opacity: 0 } 58.03%, 70.17% { opacity: 1 } 70.71%, 100.00% { opacity: 0 } }
+    @keyframes v { 0.00%, 70.17% { opacity: 1 } 70.71%, 100.00% { opacity: 0 } }
+    @keyframes p { 0.00%, 70.17% { opacity: 0 } 70.71%, 92.71% { opacity: 1 } 96.07%, 100.00% { opacity: 0 } }
+    @keyframes e0 { 0.00%, 32.11% { opacity: 1 } 32.67%, 100.00% { opacity: 0 } }
+    @keyframes e1 { 0.00%, 32.11% { opacity: 0 } 32.67%, 44.96% { opacity: 1 } 45.35%, 100.00% { opacity: 0 } }
+    @keyframes e2 { 0.00%, 44.96% { opacity: 0 } 45.35%, 57.57% { opacity: 1 } 58.03%, 100.00% { opacity: 0 } }
+    @keyframes e3 { 0.00%, 57.57% { opacity: 0 } 58.03%, 92.71% { opacity: 1 } 96.07%, 100.00% { opacity: 0 } }
+    @media (prefers-reduced-motion: reduce) {
+      .a { animation: none; opacity: 0; }
+      .a.fin { opacity: 1; }
+    }
+  </style>
+
+  <!-- captions -->
+  <text x="20" y="30" class="a c0">Key 7's value sits in L3, the last level.</text>
+  <text x="20" y="30" class="a c1">delete(7) inserts a tombstone into the memtable.</text>
+  <text x="20" y="30" class="a c2">A read finds the tombstone first, so key 7 is logically deleted.</text>
+  <text x="20" y="30" class="a c3">Compactions carry the tombstone down, one level at a time.</text>
+  <text x="20" y="30" class="a c4">The tombstone reaches the last level and meets 7: v.</text>
+  <text x="20" y="30" class="oktext a p fin" style="font-size:14px">Both entries are dropped: key 7 is physically deleted.</text>
+
+  <!-- elapsed counter -->
+  <text x="740" y="74" text-anchor="end" class="muted">elapsed since delete(7)</text>
+  <text x="740" y="96" text-anchor="end" class="title a e0">just now</text>
+  <text x="740" y="96" text-anchor="end" class="title a e1">minutes</text>
+  <text x="740" y="96" text-anchor="end" class="title a e2">hours</text>
+  <text x="740" y="96" text-anchor="end" class="title a e3 fin">days…</text>
+
+  <!-- level labels; column k at x = 150 + 56k, tombstone column k = 2 -->
+  <text x="20" y="82">Memtable</text>
+  <text x="20" y="146">L1</text>
+  <text x="20" y="210">L2</text>
+  <text x="20" y="274">L3 (last level)</text>
+
+  <!-- Memtable: 3 slots -->
+  <rect x="150" y="60" width="48" height="34" rx="4" class="full"/>
+  <rect x="206" y="60" width="48" height="34" rx="4" class="full"/>
+  <rect x="262" y="60" width="48" height="34" rx="4" class="empty"/>
+  <!-- L1: 4 slots -->
+  <rect x="150" y="124" width="48" height="34" rx="4" class="full"/>
+  <rect x="206" y="124" width="48" height="34" rx="4" class="full"/>
+  <rect x="262" y="124" width="48" height="34" rx="4" class="empty"/>
+  <rect x="318" y="124" width="48" height="34" rx="4" class="full"/>
+  <!-- L2: 6 slots -->
+  <rect x="150" y="188" width="48" height="34" rx="4" class="full"/>
+  <rect x="206" y="188" width="48" height="34" rx="4" class="full"/>
+  <rect x="262" y="188" width="48" height="34" rx="4" class="empty"/>
+  <rect x="318" y="188" width="48" height="34" rx="4" class="full"/>
+  <rect x="374" y="188" width="48" height="34" rx="4" class="full"/>
+  <rect x="430" y="188" width="48" height="34" rx="4" class="full"/>
+  <!-- L3: 8 slots, slot 2 holds the old entry 7: v -->
+  <rect x="150" y="252" width="48" height="34" rx="4" class="full"/>
+  <rect x="206" y="252" width="48" height="34" rx="4" class="full"/>
+  <rect x="262" y="252" width="48" height="34" rx="4" class="empty"/>
+  <rect x="318" y="252" width="48" height="34" rx="4" class="full"/>
+  <rect x="374" y="252" width="48" height="34" rx="4" class="full"/>
+  <rect x="430" y="252" width="48" height="34" rx="4" class="full"/>
+  <rect x="486" y="252" width="48" height="34" rx="4" class="full"/>
+  <rect x="542" y="252" width="48" height="34" rx="4" class="full"/>
+  <g class="a v">
+    <rect x="262" y="252" width="48" height="34" rx="4" class="full"/>
+    <text x="286" y="274" text-anchor="middle" class="key">7: v</text>
+  </g>
+
+  <!-- vacated slots: where the tombstone has been -->
+  <g class="a k1 fin">
+    <rect x="265" y="63" width="42" height="28" rx="3" class="ghost"/>
+  </g>
+  <g class="a k2 fin">
+    <rect x="265" y="127" width="42" height="28" rx="3" class="ghost"/>
+  </g>
+  <g class="a p fin">
+    <rect x="265" y="191" width="42" height="28" rx="3" class="ghost"/>
+  </g>
+
+  <!-- the tombstone, one copy per level -->
+  <g class="a t0">
+    <rect x="262" y="60" width="48" height="34" rx="4" class="tomb"/>
+    <text x="286" y="82" text-anchor="middle" class="tombtext">7 ✝</text>
+  </g>
+  <g class="a t1">
+    <rect x="262" y="124" width="48" height="34" rx="4" class="tomb"/>
+    <text x="286" y="146" text-anchor="middle" class="tombtext">7 ✝</text>
+  </g>
+  <g class="a t2">
+    <rect x="262" y="188" width="48" height="34" rx="4" class="tomb"/>
+    <text x="286" y="210" text-anchor="middle" class="tombtext">7 ✝</text>
+  </g>
+
+  <!-- delete and get -->
+  <text x="334" y="82" class="num a d fin">delete(7)</text>
+  <text x="430" y="82" class="oktext a g fin">get(7) → null</text>
+  <rect x="258" y="56" width="56" height="42" rx="6" class="ring a gr"/>
+  <rect x="258" y="248" width="56" height="42" rx="6" class="dring a lg"/>
+  <text x="150" y="310" class="num a lg">logically deleted, still on disk</text>
+
+  <!-- compactions -->
+  <g class="a k1 fin">
+    <path d="M 286 97 L 286 114" class="arrow"/>
+    <polygon points="280,112 286,122 292,112" class="arrowhead"/>
+    <text x="300" y="113" class="muted">compaction · minutes later</text>
+  </g>
+  <g class="a k2 fin">
+    <path d="M 286 161 L 286 178" class="arrow"/>
+    <polygon points="280,176 286,186 292,176" class="arrowhead"/>
+    <text x="300" y="177" class="muted">compaction · hours later</text>
+  </g>
+  <g class="a k3 fin">
+    <path d="M 286 225 L 286 242" class="arrow"/>
+    <polygon points="280,240 286,250 292,240" class="arrowhead"/>
+    <text x="300" y="241" class="muted">compaction · days later</text>
+  </g>
+
+  <!-- merge in the last level, then both entries are gone -->
+  <rect x="258" y="248" width="56" height="42" rx="6" class="ring a mr"/>
+  <rect x="258" y="248" width="56" height="42" rx="6" class="okring a p fin"/>
+  <text x="150" y="310" class="oktext a p fin">physically deleted: 7 ✝ and 7: v both dropped</text>
+</svg>

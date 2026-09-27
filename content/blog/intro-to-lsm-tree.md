@@ -15,9 +15,11 @@ On a high level, LSM appends all incoming data then uses merge sort to handle de
 
 SSTable is a **disk-based** data structure consisting of a **sorted**, **immutable** sequence of **key-value pairs**. The sortedness allows for efficient data retrieval using algorithms like binary search.
 
-![Source: [ScyllaDB](https://www.scylladb.com/glossary/sstable/)](https://www.scylladb.com/wp-content/uploads/sstable-diagram.png)
+Initially, incoming writes are buffered in a **sorted**, **in-memory** data structure called a [Memtable](https://github.com/facebook/rocksdb/wiki/MemTable). Once the Memtable reaches a configurable threshold, it is flushed to disk to become a new SSTable. Transactions are also appended to a Commit log or Write Ahead Log (WAL) file to recover from a crash and ensure durability. As more SSTables are added and a certain threshold is reached, the SSTables are **merged** via **compaction** to form a larger SSTable. Note that **updates** to a given key will just append the new key value. Older entries will eventually be removed during compaction.
 
-Initially, fresh write logs are buffered to an **in-memory** data structure called a [Memtable](https://github.com/facebook/rocksdb/wiki/MemTable). Once the Memtable reaches a configurable threshold, data is **sorted** and flushed to disk to become a new SSTable. In the diagram above, transactions are also appended to a Commit log or Write Ahead Log (WAL) file to recover from a crash and ensure durability. As more SSTables are added and a certain threshold is reached, the SSTables are **merged** via **compaction** to form a larger SSTable. Note that **updates** to a given key will just append the new key value. Older entries will eventually be removed during compaction.
+Here's how a handful of writes flow through this path, from the WAL and Memtable all the way to SSTables and compaction:
+
+![Each write is appended to the Commit log / WAL on disk and inserted into the in-memory Memtable, which keeps its keys sorted. When the Memtable reaches its threshold, it is flushed to disk as a new immutable, sorted SSTable, so the update put(b,3) becomes a new entry while the older b=1 stays in SSTable 1. Once three SSTables pile up, compaction merges them into one larger sorted SSTable and drops the stale a=2 and b=1. Adapted from [ScyllaDB](https://www.scylladb.com/glossary/sstable/).](/images/intro-to-lsm-tree/write-path.svg)
 
 ## Compaction
 
@@ -27,75 +29,125 @@ In most implementations, a dedicated background thread is used to perform compac
 
 ### Leveled Compaction
 
-![Source: [RocksDB](https://github.com/facebook/rocksdb/wiki/Leveled-Compaction)](https://github.com/facebook/rocksdb/raw/gh-pages-old/pictures/level_targets.png)
-
 - Each level is a sorted run consisting of multiple SSTables
-- When the run of **level $i$ is full**, it will flush and merge with the run of level **$i+1$**
+- When the run of **level $i$ is full**, it is merged into the run of level **$i+1$**
 - Good read performance and lower space amplification since no duplicate keys are present in each level
 
-### Sized-Tiered Compaction
-
-![Source: Alibaba Cloud](/images/intro-to-lsm-tree/sized-tiered-compaction.png)
+### Size-Tiered Compaction
 
 - Organizes SSTables into sorted runs based on their size
 - Every level must accumulate $T$ runs before they are sort-merged
-- When the number of **runs $\geq T$**, the whole level is merged to become a **larger SSTable** and flushed to the next tier
+- When the number of **runs $\geq T$**, the whole level is merged into a single **larger sorted run** in the next tier
 - Good ingestion performance since runs are lazily merged
 
 ### Tiered vs Leveled Compaction
 
-![Source: [*Monkey: Optimal Navigable Key-Value Store*](https://dl.acm.org/doi/10.1145/3035918.3064054)](/images/intro-to-lsm-tree/tiered-vs-leveled-compaction.png)
+To see where each strategy spends its merging effort, below is the same three flushes fed into a leveled tree and a tiered tree side by side:
+
+![Both trees take the same three flushes with size ratio T = 3. The leveled tree keeps one sorted run per level: it merges each flush into L1's run, and when L1 fills it merges into L2, rewriting L2's run. The tiered tree stacks the flushes as separate runs in L1. At T runs it merges them into one new run in L2 and leaves the old run untouched, so it merges less but a lookup has more runs to check. Adapted from [RocksDB](https://github.com/facebook/rocksdb/wiki/Leveled-Compaction), [Alibaba Cloud](https://www.alibabacloud.com/blog/an-in-depth-discussion-on-the-lsm-compaction-mechanism_596780), and [*Monkey: Optimal Navigable Key-Value Store*](https://nivdayan.github.io/monkeykeyvaluestore.pdf).](/images/intro-to-lsm-tree/leveled-vs-tiered.svg)
 
 ### Partial Compaction
 
-![Source: [Compactionary](https://disc-projects.bu.edu/compactionary/background.html)](https://disc-projects.bu.edu/compactionary/img/full-partial-compaction.png)
-
 Leveled compaction can lead to cascading compactions, which results in high latency spikes, write stalls, and overall unpredictable system performance. Partial compaction aims to mitigate this by executing compaction with **file-level granularity**. The compaction condition/trigger remains unchanged. However, the compaction routine selects a subset of files from the current and next level with overlapping key ranges to merge. By breaking down compaction into smaller units, the cost is amortized, leading to more predictable and consistent system performance.
+
+A comparison of full and partial compaction (starting from the same full level) is shown below:
+
+![Both panels start from the same full level Lᵢ. Full compaction merges every file in Lᵢ and Lᵢ₊₁, rewriting 9 files at once. Partial compaction picks a single file from Lᵢ, here [g-m], and merges it only with the two Lᵢ₊₁ files whose key ranges overlap it, rewriting 3 files: a smaller unit of work. Adapted from [Compactionary](https://disc-projects.bu.edu/compactionary/background.html).](/images/intro-to-lsm-tree/partial-compaction.svg)
+
+The table below shows the compaction granularity used by several production storage engines. Leveled engines typically compact at file granularity, while tiered engines merge whole sorted runs.
+
+{{< table title="Compaction granularity by engine" caption="Adapted from [*Constructing and Analyzing the LSM Compaction Design Space*](https://vldb.org/pvldb/vol14/p2216-sarkar.pdf)." >}}
+| Engine | Data layout | Level | Sorted run | File (single) | File (multiple) |
+| --- | --- | :-: | :-: | :-: | :-: |
+| RocksDB | Leveling | | | ✓ | ✓ |
+|  | Tiering | | ✓ | | |
+| LevelDB | Leveling | | | ✓ | |
+| Cassandra | Tiering | | ✓ | | |
+|  | Leveling | | | ✓ | ✓ |
+| ScyllaDB | Tiering | | ✓ | | |
+|  | Leveling | | | ✓ | ✓ |
+| HBase | Tiering | | ✓ | | |
+| WiredTiger | Leveling | ✓ | | | |
+{{< /table >}}
 
 #### Data Movement Policy
 
-![Source: [*Constructing and Analyzing the LSM Compaction Design Space*](https://dl.acm.org/doi/pdf/10.14778/3476249.3476274)](/images/intro-to-lsm-tree/data-movement-policy.png)
+![Source: [*Constructing and Analyzing the LSM Compaction Design Space*](https://vldb.org/pvldb/vol14/p2216-sarkar.pdf)](/images/intro-to-lsm-tree/data-movement-policy.png)
 
 When executing partial compaction, we need to decide which data files to compact. Here are several policies (non-exhaustive), each with its own strengths:
 
-1. Round robin (default)
-2. Minimum overlap with parent level (improve write amplication)
-3. Coldest File (improve point query performance)
+1. Round robin (LevelDB's approach)
+2. Least overlap with the next level (improve write amplification)
+3. Coldest file (improve read throughput)
 4. File with most tombstones (improve space amplification)
+
+The table below shows which policies several production storage engines use. Engines that compact an entire level or sorted run at once have no file to choose.
+
+{{< table title="Data movement policy by engine" caption="Adapted from [*Constructing and Analyzing the LSM Compaction Design Space*](https://vldb.org/pvldb/vol14/p2216-sarkar.pdf). Least overlap combines the paper's least overlap with the next level (+1) and the level after (+2)." >}}
+| Engine | Data layout | Round robin | Least overlap | Coldest file | Oldest file | Tombstone density | Expired TTL | Entire level |
+| --- | --- | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
+| RocksDB | Leveling | | ✓ | ✓ | ✓ | ✓ | | |
+|  | Tiering | | | | | | | ✓ |
+| LevelDB | Leveling | ✓ | ✓ | | | | | |
+| Cassandra | Tiering | | | | | | | ✓ |
+|  | Leveling | | ✓ | | | ✓ | ✓ | |
+| ScyllaDB | Tiering | | | | | | | ✓ |
+|  | Leveling | | ✓ | | | ✓ | ✓ | |
+| HBase | Tiering | | | | | | | ✓ |
+| WiredTiger | Leveling | | | | | | | ✓ |
+{{< /table >}}
 
 ### Compaction Triggers
 
-The two main compaction strategies discussed so far are *leveled* compaction, which is triggered when a level is saturated, and *tiered* compaction, which is triggered when the number of sorted runs exceeds a threshold $T$. However, modern storage engines support additional compaction triggers. For instance, RocksDB's [Universal Compaction](https://github.com/facebook/rocksdb/wiki/Universal-Compaction) stores an estimate of each level's space amplification and uses it to initiate compaction. Alternatively, compaction could be invoked based on the age of a file, i.e., how long it has existed in a particular level. This novel age-based compaction approach is an active area of research (more details in the last section). The table below summarizes the compaction algorithms employed by various research and industry storage engines.
+The two main compaction strategies discussed so far are *leveled* compaction, which is triggered when a level is saturated, and *tiered* compaction, which is triggered when the number of sorted runs exceeds a threshold $T$. However, modern storage engines support additional compaction triggers. For instance, RocksDB's [Universal Compaction](https://github.com/facebook/rocksdb/wiki/Universal-Compaction) estimates the tree's overall space amplification and triggers compaction when it exceeds a threshold. Alternatively, compaction could be invoked based on the age of a file, i.e., how long it has existed in a particular level. Age-based triggers already exist in production engines, and delete-aware variants based on tombstone age are an active area of research (more details in the last section). The table below summarizes the compaction triggers used by several production storage engines.
 
-![Source: [*Constructing and Analyzing the LSM Compaction Design Space*](https://dl.acm.org/doi/pdf/10.14778/3476249.3476274)](/images/intro-to-lsm-tree/compaction-triggers.png)
+{{< table title="Compaction triggers by engine" caption="Adapted from [*Constructing and Analyzing the LSM Compaction Design Space*](https://vldb.org/pvldb/vol14/p2216-sarkar.pdf), which also covers research storage engines." >}}
+| Engine | Data layout | Level saturation | # Sorted runs | File staleness | Space amp. | Tombstone TTL |
+| --- | --- | :-: | :-: | :-: | :-: | :-: |
+| RocksDB | Leveling | ✓ | | ✓ | | |
+|  | Tiering | | ✓ | | ✓ | ✓ |
+| LevelDB | Leveling | ✓ | | | | |
+| Cassandra | Tiering | | ✓ | ✓ | | ✓ |
+|  | Leveling | ✓ | | | | ✓ |
+| ScyllaDB | Tiering | | ✓ | ✓ | | ✓ |
+|  | Leveling | ✓ | | | | ✓ |
+| HBase | Tiering | | ✓ | | | |
+| WiredTiger | Leveling | ✓ | | | | |
+{{< /table >}}
 
 ## Reading data
 
 All reads in an LSM Tree are first served from the Memtable. If the key is not found, it is then looked up in SSTables by level until the key is found. Otherwise, a **null** value is returned.
 
-Since duplicate keys may exist in the tree before compaction occurs, reads may require extraneous I/Os. Below are two main strategies to **optimize read performance**.
+Since a key may live in any of several sorted runs, a read may need to probe multiple SSTables, leading to extraneous I/Os. Below are two main strategies to **optimize read performance**.
 
 ### Bloom Filter
 
-A Bloom filter is a **probabilistic** data structure that provides an efficient way to verify that an entry is **certainly not** in a set. A detailed explanation of how bloom filters work under the hood can be found [here](https://www.educative.io/answers/what-is-a-bloom-filter). Essentially, bloom filters sit between RAM and disk to reduce the amount of (expensive) disk reads. The SSTable will only be scanned if the bloom filter indicates that the key is **likely to be present**. Note that bloom filters by design only work for point queries, i.e., getting the value of a specific key, and cannot determine the presence of a key range.
+A Bloom filter is a **probabilistic** data structure that provides an efficient way to verify that an entry is **certainly not** in a set. A detailed explanation of how bloom filters work under the hood can be found [here](https://www.educative.io/answers/what-is-a-bloom-filter). Essentially, bloom filters are kept in memory and checked before touching disk to reduce the amount of (expensive) disk reads. The SSTable will only be searched if the bloom filter indicates that the key **may be present**. Note that standard bloom filters only help point queries, i.e., getting the value of a specific key, and cannot determine the presence of a key range. Variants exist for these cases: RocksDB's [prefix Bloom filters](https://github.com/facebook/rocksdb/wiki/Prefix-Seek) speed up scans over keys sharing a prefix, and range filters like [SuRF](https://www.cs.cmu.edu/~huanche1/publications/surf_paper.pdf) can answer "is any key in this range present?"
 
 ### Sparse Index / Fence Pointers
 
-As the size of deeper levels increases, even using binary search to find a key can become expensive. To put this into perspective, RocksDB reports that on average, nearly **90%** of storage data resides in the last level ([Dong et. al, 2017](https://www.cidrdb.org/cidr2017/papers/p82-dong-cidr17.pdf)). To mitigate the potentially large read cost, a **subset of keys** in each SSTable is **mapped in-memory**. With this key mapping, ranges can be quickly skipped, narrowing the search space and significantly reducing lookup time.
+As the size of deeper levels increases, even using binary search to find a key can become expensive, since each step of a binary search on disk costs an I/O. To put this into perspective, RocksDB reports that close to **90%** of storage data resides in the last level ([Dong et al., 2017](https://www.cidrdb.org/cidr2017/papers/p82-dong-cidr17.pdf)). To mitigate the potentially large read cost, a **subset of keys** in each SSTable is **mapped in-memory**. With this key mapping, ranges can be quickly skipped, narrowing the search space and significantly reducing lookup time.
 
-The sparse index, containing the key mapping, is typically encoded at the end of the file or as a separate index file. When an SSTable is read, its sparse index is loaded into memory and subsequently used for key lookups during read operations. Whenever compaction occurs, the sparse indexes are also updated.
+The sparse index, containing the key mapping, is typically encoded at the end of the file or as a separate index file. When an SSTable is read, its sparse index is loaded into memory and subsequently used for key lookups during read operations. Since SSTables are immutable, compaction writes fresh sparse indexes for the new SSTables it produces.
+
+Putting the two together, below are two lookups: one key that costs a single disk read, and one that the bloom filters rule out without ever touching disk:
+
+![get(42) misses the Memtable. The L0 Bloom filter says the key is certainly not there, so L0 is skipped. The L1 filter says it may be present, and the fence pointers narrow the search to one block, so the lookup costs one disk read. get(57) is ruled out by every Bloom filter and returns null without touching disk.](/images/intro-to-lsm-tree/read-path.svg)
 
 ### Block Cache
 
-The block cache stores metadata, including bloom filters and fence pointers, for the most relevant keys. These metadata structures are organized into pages within each sorted run on disk. When the block cache is initially empty, it fetches the necessary metadata pages from the on-disk files. It may also prefetch data pages to improve read performance. During read operations, the block cache is consulted first; if the requested key's metadata or data is not found in the cache, disk I/O is performed. During compaction, all cached pages from the previous sorted run are invalidated to maintain consistency. Production systems like RocksDB implement a block cache, referred to as a *Manifest File*, as shown below.
+The block cache keeps recently read data blocks in memory and, optionally, metadata blocks such as bloom filters and fence pointers. When the block cache is initially empty, it fetches the necessary pages from the on-disk files. It may also prefetch data pages to improve read performance. During read operations, the block cache is consulted first; if the requested block is not found in the cache, disk I/O is performed. Because compaction deletes its input SSTables, their cached pages become useless, so reads may miss the cache until it warms up again. Separately, production systems like RocksDB keep a *Manifest File*, a log of which SSTables live at each level and their key ranges, as shown below.
 
 ![Source: [*Optimizing Space Amplification in RocksDB*](https://www.semanticscholar.org/paper/Optimizing-Space-Amplification-in-RocksDB-Dong-Callaghan/9b90568faad1fd394737b79503571b7f5f0b2f4b)](/images/intro-to-lsm-tree/block-cache-manifest.png)
 
 ## Deletion
 
-![Source: [Lethe](https://disc-projects.bu.edu/lethe/)](https://disc-projects.bu.edu/lethe/images/figures/intro.png)
+Deletes in LSM-trees are realized by **inserting** a special type of key-value entry, known as a **tombstone**. Once inserted, a tombstone logically invalidates all entries in a tree that have a matching key, without necessarily disturbing the physical target data entries. The target entries are only guaranteed to be **persistently** deleted from the data store once the corresponding tombstone reaches the **last level** of the tree through **compactions**.
 
-Deletes in LSM-trees are realized by **inserting** a special type of key-value entry, known as a **tombstone**. Once inserted, a tombstone logically invalidates all entries in a tree that have a matching key, without necessarily disturbing the physical target data entries. The target entries are **persistently** deleted from the data store only after the corresponding tombstone reaches the **last level** of the tree through **compactions**.
+Here's the journey of a single delete, from the Memtable down to the last level:
+
+![delete(7) inserts a tombstone into the Memtable, and from then on get(7) returns null, even though the old value is still on disk in L3. Compactions carry the tombstone down one level at a time, over minutes, then hours, then days. Only when it reaches the last level and merges with the old entry are both physically deleted. Adapted from [Lethe](https://disc-projects.bu.edu/lethe/).](/images/intro-to-lsm-tree/tombstone.svg)
 
 ## Research @ [DiSC Lab](https://disc.bu.edu)
 
@@ -111,17 +163,17 @@ Write amplification refers to the **ratio** of the amount of physical data **wri
 
 ### Space Amplification
 
-Space amplification refers to the **ratio** of the amount of physical data stored on the **storage device** to the amount of logical data in the **database**. Similar to write amplification, the compaction strategy employed significantly impacts space amplification. Size-tiered compaction generally results in **higher space amplification** compared to leveled compaction. In size-tiered compaction, when an SSTable in the deepest tier becomes very large, compaction requires substantial temporary space as the new, larger SSTable is written before duplicates are purged. Moreover, overwritten or deleted keys persist in the SSTable until it is eventually merged, leading to wasted space.
+Space amplification refers to the **ratio** of the amount of physical data stored on the **storage device** to the amount of logical data in the **database**. Similar to write amplification, the compaction strategy employed significantly impacts space amplification. Size-tiered compaction generally results in **higher space amplification** compared to leveled compaction. In size-tiered compaction, when an SSTable in the deepest tier becomes very large, compaction requires substantial temporary space, since the input SSTables can only be deleted after the new, larger SSTable is fully written. Moreover, overwritten or deleted keys persist in the SSTable until it is eventually merged, leading to wasted space.
 
 ### Tradeoffs
 
-There are often trade-offs between different amplification metrics. For instance, introducing additional metadata to optimize write or read amplification can lead to increased space amplification. Compression techniques, employed by most storage solutions, help mitigate space amplification. Ultimately, the acceptable trade-offs depend on the system's use case. Write-heavy workloads might prioritize minimizing write amplification and space amplification at the expense of higher read amplification. Conversely, read-intensive workloads may favor optimizing read amplification over the other metrics.
+There are often trade-offs between different amplification metrics. For instance, introducing additional metadata to optimize read amplification can lead to increased space amplification. Compression techniques, employed by most storage solutions, help mitigate space amplification. Ultimately, the acceptable trade-offs depend on the system's use case. Write-heavy workloads might prioritize minimizing write amplification at the expense of higher read and space amplification. Conversely, read-intensive workloads may favor optimizing read amplification over the other metrics.
 
 ### What I’m working on
 
 At the DiSC Lab, I’m working on extending [MySQL](https://github.com/mysql/mysql-server) to incorporate application support for a novel LSM delete engine called [Lethe](https://disc-projects.bu.edu/lethe/). Lethe provides persistence guarantees for primary delete operations. A write-up of the motivations of the project and current progress can be found [here](https://docs.google.com/document/d/1B6eS_YCTRvrcCuAtHlK42Kctx354K5_YqQoqAWimAV4/edit?usp=sharing). I will also provide a concise summary below.
 
-We previously discussed that deletions in LSM are “lazily” materialized, meaning the “deleted” key is logically removed from the system only during compactions. Furthermore, a tombstone might need to be propagated through the last level of the LSM tree for the associated key to be physically removed, thus necessitating a full compaction. As the size of the tree grows, compaction might be delayed, and the process itself could be time-consuming. This introduces a significant challenge, as the duration between a deletion request from the client and the actual physical key deletion could extend to days or even months. Such a delay poses a considerable privacy risk for companies, particularly those committed to specific turnaround times for personal data removal (e.g., 30 days). In cases where company data is compromised, the persistence of user data beyond the stipulated period could result in legal complications for these organizations.
+We previously discussed that deletions in LSM are “lazily” materialized, meaning the “deleted” key is physically removed from the system only during compactions. Furthermore, a tombstone might need to reach the last level of the LSM tree for the associated key to be physically removed, requiring compactions through every level. As the size of the tree grows, compaction might be delayed, and the process itself could be time-consuming. This introduces a significant challenge, as the duration between a deletion request from the client and the actual physical key deletion could extend to days or even months. Such a delay poses a considerable privacy risk for companies, particularly those committed to specific turnaround times for personal data removal (e.g., 30 days). In cases where company data is compromised, the persistence of user data beyond the stipulated period could result in legal complications for these organizations.
 
 The envisioned long-term outcome of this project is to advocate for integrating the new SQL syntax into [ANSI](https://blog.ansi.org/sql-standard-iso-iec-9075-2023-ansi-x3-135/#gref) standards, **establishing persistent deletes as a foundational capability in SQL**. This paradigm shift aims to compel Database Management Systems (DBMS) vendors to natively implement persistent delete functionality. We hope to empower not only database engineers but also SQL users with greater control over their data lifecycles. This increased agency will enable them to meet Service Level Agreements (SLAs) and address various business requirements more effectively, particularly those related to data privacy and protection.
 

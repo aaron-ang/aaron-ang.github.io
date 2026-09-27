@@ -1,0 +1,181 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 412" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated LSM tree point lookups: get(42) misses the Memtable, is skipped by the L0 Bloom filter, gets a maybe from the L1 Bloom filter, and fence pointers narrow the read to one block (1 disk read). get(57) is rejected by every Bloom filter and returns null with 0 disk reads.">
+  <style>
+    :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #ddd; --muted: #999; --full: #555; --empty: #1e1e1e; --edge: #777; --probe: #ff8a4c; --ok: #69db7c; --chip: #2a2a2a; }
+    }
+    text { fill: var(--fg); font-size: 14px; }
+    .muted { fill: var(--muted); font-size: 12px; }
+    .title { font-weight: 600; font-size: 15px; }
+    .chip { fill: var(--chip); stroke: var(--edge); }
+    .blk { fill: var(--full); stroke: var(--edge); }
+    .bt { font-size: 12px; }
+    .ring { fill: none; stroke: var(--probe); stroke-width: 3; }
+    .okring { fill: none; stroke: var(--ok); stroke-width: 3; }
+    .yes { fill: var(--probe); font-weight: 600; font-size: 13px; }
+    .no { fill: var(--muted); font-weight: 600; font-size: 13px; }
+    .num { fill: var(--probe); font-weight: 600; font-size: 12px; }
+    .oktext { fill: var(--ok); font-weight: 600; font-size: 13px; }
+    .cnt { font-weight: 600; font-size: 13px; }
+    .div { stroke: var(--edge); stroke-dasharray: 4 4; }
+
+    /* 18s loop. Walk 1 (get 42) runs 0.5s to 4.5s, walk 2 (get 57) runs 8.5s to 12.5s.
+       Everything fades out 16.6s to 17.3s, then the loop restarts. */
+    .w { opacity: 0; animation: 20.6s linear infinite; }
+    .r1 { animation-name: r1; }   /* 0.5s to 1.5s: Memtable probe (walk 1) */
+    .r2 { animation-name: r2; }   /* 1.5s to 2.5s: L0 Bloom filter probe (walk 1) */
+    .r3 { animation-name: r3; }   /* 2.5s to 3.5s: L1 Bloom filter probe (walk 1) */
+    .r4 { animation-name: r4; }   /* 3.5s to 4.5s: read one block from disk (walk 1) */
+    .p1 { animation-name: p1; }   /* from 0.5s: Memtable miss (walk 1) */
+    .p2 { animation-name: p2; }   /* from 1.5s: L0 says no (walk 1) */
+    .p3 { animation-name: p3; }   /* from 2.5s: L1 says maybe (walk 1) */
+    .p4 { animation-name: p4; }   /* from 3.5s: fence pointers pick a block, disk reads = 1 */
+    .p5 { animation-name: p5; }   /* from 4.5s: found in L1, L2 not checked */
+    .c0 { animation-name: c0; }   /* 0s to 3.5s: walk 1 counter at 0 */
+    .r6 { animation-name: r6; }   /* 8.5s to 9.5s: Memtable probe (walk 2) */
+    .r7 { animation-name: r7; }   /* 9.5s to 10.5s: L0 Bloom filter probe (walk 2) */
+    .r8 { animation-name: r8; }   /* 10.5s to 11.5s: L1 Bloom filter probe (walk 2) */
+    .r9 { animation-name: r9; }   /* 11.5s to 12.5s: L2 Bloom filter probe (walk 2) */
+    .p6 { animation-name: p6; }   /* from 8.5s: Memtable miss (walk 2) */
+    .p7 { animation-name: p7; }   /* from 9.5s: L0 says no (walk 2) */
+    .p8 { animation-name: p8; }   /* from 10.5s: L1 says no (walk 2) */
+    .p9 { animation-name: p9; }   /* from 11.5s: L2 says no (walk 2) */
+    .p10 { animation-name: p10; } /* from 12.5s: return null, 0 disk reads */
+    .c1 { animation-name: c1; }   /* 0s to 12.5s: walk 2 counter, plain */
+    @keyframes r1 { 0.00%, 2.08% { opacity: 0 } 2.42%, 10.31% { opacity: 1 } 10.92%, 100.00% { opacity: 0 } }
+    @keyframes r2 { 0.00%, 10.31% { opacity: 0 } 10.92%, 18.81% { opacity: 1 } 19.41%, 100.00% { opacity: 0 } }
+    @keyframes r3 { 0.00%, 18.81% { opacity: 0 } 19.41%, 27.30% { opacity: 1 } 27.91%, 100.00% { opacity: 0 } }
+    @keyframes r4 { 0.00%, 27.30% { opacity: 0 } 27.91%, 35.80% { opacity: 1 } 36.40%, 100.00% { opacity: 0 } }
+    @keyframes p1 { 0.00%, 2.08% { opacity: 0 } 2.42%, 92.75% { opacity: 1 } 95.87%, 100.00% { opacity: 0 } }
+    @keyframes p2 { 0.00%, 10.31% { opacity: 0 } 10.92%, 92.75% { opacity: 1 } 95.87%, 100.00% { opacity: 0 } }
+    @keyframes p3 { 0.00%, 18.81% { opacity: 0 } 19.41%, 92.75% { opacity: 1 } 95.87%, 100.00% { opacity: 0 } }
+    @keyframes p4 { 0.00%, 27.30% { opacity: 0 } 27.91%, 92.75% { opacity: 1 } 95.87%, 100.00% { opacity: 0 } }
+    @keyframes p5 { 0.00%, 35.80% { opacity: 0 } 36.40%, 92.75% { opacity: 1 } 95.87%, 100.00% { opacity: 0 } }
+    @keyframes c0 { 0.00%, 27.30% { opacity: 1 } 27.91%, 100.00% { opacity: 0 } }
+    @keyframes r6 { 0.00%, 44.75% { opacity: 0 } 44.90%, 52.79% { opacity: 1 } 53.40%, 100.00% { opacity: 0 } }
+    @keyframes r7 { 0.00%, 52.79% { opacity: 0 } 53.40%, 61.28% { opacity: 1 } 61.89%, 100.00% { opacity: 0 } }
+    @keyframes r8 { 0.00%, 61.28% { opacity: 0 } 61.89%, 69.78% { opacity: 1 } 70.39%, 100.00% { opacity: 0 } }
+    @keyframes r9 { 0.00%, 69.78% { opacity: 0 } 70.39%, 78.27% { opacity: 1 } 78.88%, 100.00% { opacity: 0 } }
+    @keyframes p6 { 0.00%, 44.75% { opacity: 0 } 44.90%, 92.75% { opacity: 1 } 95.87%, 100.00% { opacity: 0 } }
+    @keyframes p7 { 0.00%, 52.79% { opacity: 0 } 53.40%, 92.75% { opacity: 1 } 95.87%, 100.00% { opacity: 0 } }
+    @keyframes p8 { 0.00%, 61.28% { opacity: 0 } 61.89%, 92.75% { opacity: 1 } 95.87%, 100.00% { opacity: 0 } }
+    @keyframes p9 { 0.00%, 69.78% { opacity: 0 } 70.39%, 92.75% { opacity: 1 } 95.87%, 100.00% { opacity: 0 } }
+    @keyframes p10 { 0.00%, 78.27% { opacity: 0 } 78.88%, 92.75% { opacity: 1 } 95.87%, 100.00% { opacity: 0 } }
+    @keyframes c1 { 0.00%, 78.27% { opacity: 1 } 78.88%, 100.00% { opacity: 0 } }
+    @media (prefers-reduced-motion: reduce) {
+      .w { animation: none; opacity: 0; }
+      .w.fin { opacity: 1; }
+    }
+  </style>
+
+  <!-- ===== column headers ===== -->
+  <text x="237" y="22" text-anchor="middle" class="title">memory</text>
+  <text x="497" y="22" text-anchor="middle" class="title">disk</text>
+  <text x="150" y="44" text-anchor="middle" class="muted">Bloom filter</text>
+  <text x="300" y="44" text-anchor="middle" class="muted">fence pointers</text>
+  <text x="497" y="44" text-anchor="middle" class="muted">SSTable blocks</text>
+  <line x1="398" y1="8" x2="398" y2="376" class="div"/>
+  <line x1="20" y1="222" x2="740" y2="222" stroke="var(--edge)" stroke-opacity="0.5"/>
+
+  <!-- ===== Walk 1: get(42), present in L1 ===== -->
+  <text x="20" y="76" class="title">get(42)</text>
+  <text x="740" y="76" text-anchor="end" class="cnt w c0">disk reads: 0</text>
+  <text x="740" y="76" text-anchor="end" class="cnt w p4 fin" style="fill: var(--probe)">disk reads: 1</text>
+  <text x="95" y="76" class="oktext w p5 fin">found in L1, so L2 is never checked</text>
+
+  <text x="20" y="105">Memtable</text>
+  <text x="20" y="137">L0</text>
+  <text x="20" y="169">L1</text>
+  <text x="20" y="201">L2</text>
+
+  <!-- Memtable -->
+  <rect x="95" y="88" width="283" height="24" rx="4" class="chip"/>
+  <text x="236" y="105" text-anchor="middle" class="muted">7 · 23 · 88 · 95</text>
+  <!-- Bloom filters -->
+  <rect x="95" y="120" width="110" height="24" rx="4" class="chip"/>
+  <rect x="95" y="152" width="110" height="24" rx="4" class="chip"/>
+  <rect x="95" y="184" width="110" height="24" rx="4" class="chip"/>
+  <!-- fence pointers (sparse index), one cell per block start key -->
+  <rect x="222" y="120" width="156" height="24" rx="4" class="chip"/>
+  <text x="248" y="137" text-anchor="middle" class="bt">12</text><text x="300" y="137" text-anchor="middle" class="bt">55</text><text x="352" y="137" text-anchor="middle" class="bt">81</text>
+  <rect x="222" y="152" width="156" height="24" rx="4" class="chip"/>
+  <text x="248" y="169" text-anchor="middle" class="bt">10</text><text x="300" y="169" text-anchor="middle" class="bt">40</text><text x="352" y="169" text-anchor="middle" class="bt">70</text>
+  <rect x="222" y="184" width="156" height="24" rx="4" class="chip"/>
+  <text x="248" y="201" text-anchor="middle" class="bt">0</text><text x="300" y="201" text-anchor="middle" class="bt">35</text><text x="352" y="201" text-anchor="middle" class="bt">68</text>
+  <!-- SSTable blocks -->
+  <rect x="413" y="120" width="54" height="24" rx="3" class="blk"/><text x="440" y="137" text-anchor="middle" class="bt">12–54</text>
+  <rect x="471" y="120" width="54" height="24" rx="3" class="blk"/><text x="498" y="137" text-anchor="middle" class="bt">55–80</text>
+  <rect x="529" y="120" width="54" height="24" rx="3" class="blk"/><text x="556" y="137" text-anchor="middle" class="bt">81–99</text>
+  <rect x="413" y="152" width="54" height="24" rx="3" class="blk"/><text x="440" y="169" text-anchor="middle" class="bt">10–39</text>
+  <rect x="471" y="152" width="54" height="24" rx="3" class="blk"/><text x="498" y="169" text-anchor="middle" class="bt">40–69</text>
+  <rect x="529" y="152" width="54" height="24" rx="3" class="blk"/><text x="556" y="169" text-anchor="middle" class="bt">70–99</text>
+  <rect x="413" y="184" width="54" height="24" rx="3" class="blk"/><text x="440" y="201" text-anchor="middle" class="bt">0–34</text>
+  <rect x="471" y="184" width="54" height="24" rx="3" class="blk"/><text x="498" y="201" text-anchor="middle" class="bt">35–67</text>
+  <rect x="529" y="184" width="54" height="24" rx="3" class="blk"/><text x="556" y="201" text-anchor="middle" class="bt">68–99</text>
+
+  <!-- step 1: Memtable miss -->
+  <rect x="92" y="85" width="289" height="30" rx="6" class="ring w r1"/>
+  <text x="598" y="105" class="muted w p1 fin">miss</text>
+  <!-- step 2: L0 Bloom filter says no -->
+  <rect x="92" y="117" width="116" height="30" rx="6" class="ring w r2"/>
+  <text x="150" y="137" text-anchor="middle" class="no w p2 fin">no</text>
+  <text x="598" y="137" class="muted w p2 fin">definitely not: skip</text>
+  <!-- step 3: L1 Bloom filter says maybe -->
+  <rect x="92" y="149" width="116" height="30" rx="6" class="ring w r3"/>
+  <text x="150" y="169" text-anchor="middle" class="yes w p3 fin">maybe</text>
+  <text x="598" y="169" class="num w r3">maybe present</text>
+  <!-- step 4: fence pointers narrow to block 40-69, read it -->
+  <rect x="282" y="150" width="88" height="28" rx="6" class="ring w p4 fin"/>
+  <rect x="468" y="149" width="60" height="30" rx="5" class="ring w r4"/>
+  <text x="598" y="169" class="num w r4">40 ≤ 42 &lt; 70: read</text>
+  <!-- step 5: found -->
+  <rect x="468" y="149" width="60" height="30" rx="5" class="okring w p5 fin"/>
+  <text x="598" y="169" class="oktext w p5 fin">found 42</text>
+  <text x="598" y="201" class="muted w p5 fin">not checked</text>
+
+  <!-- ===== Walk 2: get(57), absent ===== -->
+  <text x="20" y="250" class="title">get(57)</text>
+  <text x="740" y="250" text-anchor="end" class="cnt w c1">disk reads: 0</text>
+  <text x="740" y="250" text-anchor="end" class="oktext w p10 fin">0 disk reads</text>
+  <text x="95" y="250" class="oktext w p10 fin">every filter says no: return null</text>
+
+  <text x="20" y="279">Memtable</text>
+  <text x="20" y="311">L0</text>
+  <text x="20" y="343">L1</text>
+  <text x="20" y="375">L2</text>
+
+  <rect x="95" y="262" width="283" height="24" rx="4" class="chip"/>
+  <text x="236" y="279" text-anchor="middle" class="muted">7 · 23 · 88 · 95</text>
+  <rect x="95" y="294" width="110" height="24" rx="4" class="chip"/>
+  <rect x="95" y="326" width="110" height="24" rx="4" class="chip"/>
+  <rect x="95" y="358" width="110" height="24" rx="4" class="chip"/>
+  <rect x="222" y="294" width="156" height="24" rx="4" class="chip"/>
+  <text x="248" y="311" text-anchor="middle" class="bt">12</text><text x="300" y="311" text-anchor="middle" class="bt">55</text><text x="352" y="311" text-anchor="middle" class="bt">81</text>
+  <rect x="222" y="326" width="156" height="24" rx="4" class="chip"/>
+  <text x="248" y="343" text-anchor="middle" class="bt">10</text><text x="300" y="343" text-anchor="middle" class="bt">40</text><text x="352" y="343" text-anchor="middle" class="bt">70</text>
+  <rect x="222" y="358" width="156" height="24" rx="4" class="chip"/>
+  <text x="248" y="375" text-anchor="middle" class="bt">0</text><text x="300" y="375" text-anchor="middle" class="bt">35</text><text x="352" y="375" text-anchor="middle" class="bt">68</text>
+  <rect x="413" y="294" width="54" height="24" rx="3" class="blk"/><text x="440" y="311" text-anchor="middle" class="bt">12–54</text>
+  <rect x="471" y="294" width="54" height="24" rx="3" class="blk"/><text x="498" y="311" text-anchor="middle" class="bt">55–80</text>
+  <rect x="529" y="294" width="54" height="24" rx="3" class="blk"/><text x="556" y="311" text-anchor="middle" class="bt">81–99</text>
+  <rect x="413" y="326" width="54" height="24" rx="3" class="blk"/><text x="440" y="343" text-anchor="middle" class="bt">10–39</text>
+  <rect x="471" y="326" width="54" height="24" rx="3" class="blk"/><text x="498" y="343" text-anchor="middle" class="bt">40–69</text>
+  <rect x="529" y="326" width="54" height="24" rx="3" class="blk"/><text x="556" y="343" text-anchor="middle" class="bt">70–99</text>
+  <rect x="413" y="358" width="54" height="24" rx="3" class="blk"/><text x="440" y="375" text-anchor="middle" class="bt">0–34</text>
+  <rect x="471" y="358" width="54" height="24" rx="3" class="blk"/><text x="498" y="375" text-anchor="middle" class="bt">35–67</text>
+  <rect x="529" y="358" width="54" height="24" rx="3" class="blk"/><text x="556" y="375" text-anchor="middle" class="bt">68–99</text>
+
+  <rect x="92" y="259" width="289" height="30" rx="6" class="ring w r6"/>
+  <text x="598" y="279" class="muted w p6 fin">miss</text>
+  <rect x="92" y="291" width="116" height="30" rx="6" class="ring w r7"/>
+  <text x="150" y="311" text-anchor="middle" class="no w p7 fin">no</text>
+  <text x="598" y="311" class="muted w p7 fin">definitely not: skip</text>
+  <rect x="92" y="323" width="116" height="30" rx="6" class="ring w r8"/>
+  <text x="150" y="343" text-anchor="middle" class="no w p8 fin">no</text>
+  <text x="598" y="343" class="muted w p8 fin">definitely not: skip</text>
+  <rect x="92" y="355" width="116" height="30" rx="6" class="ring w r9"/>
+  <text x="150" y="375" text-anchor="middle" class="no w p9 fin">no</text>
+  <text x="598" y="375" class="muted w p9 fin">definitely not: skip</text>
+
+  <text x="20" y="404" class="muted">Bloom filter: "no" means certainly not present; "maybe" means possibly present (false positives happen).</text>
+</svg>

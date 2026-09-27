@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 392" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated full versus partial compaction: full compaction merges every file of level i and level i+1, rewriting 9 files. Partial compaction picks one file from level i and merges it only with the 2 overlapping files in level i+1, rewriting 3 files.">
+  <style>
+    :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #ddd; --muted: #999; --full: #555; --empty: #1e1e1e; --edge: #777; --probe: #ff8a4c; --ok: #69db7c; --chip: #2a2a2a; }
+    }
+    text { fill: var(--fg); font-size: 14px; }
+    .muted { fill: var(--muted); font-size: 12px; }
+    .title { font-weight: 600; font-size: 15px; }
+    .full { fill: var(--full); stroke: var(--edge); }
+    .new { fill: var(--empty); stroke: var(--ok); stroke-width: 2.5; }
+    .newtext { fill: var(--ok); font-weight: 600; }
+    .gone { fill: none; stroke: var(--edge); stroke-dasharray: 5 4; }
+    .ring { fill: none; stroke: var(--probe); stroke-width: 3; }
+    .num { fill: var(--probe); font-weight: 600; font-size: 12px; }
+    .cost { fill: var(--probe); font-weight: 600; }
+    .oktext { fill: var(--ok); font-weight: 600; }
+    .arrow { fill: none; stroke: var(--probe); stroke-width: 2; }
+    .arrowhead { fill: var(--probe); }
+
+    /* 16s loop: full compaction 0.8s-3.8s, partial compaction 6.0s-9.8s, hold, fade 14.7s-15.4s. */
+    .f1, .f2, .f3, .f4, .f6, .f7, .p1, .p2, .p3, .p4, .p5, .p7, .p8 { opacity: 0; animation: 21.1s linear infinite; }
+    .f5, .p6 { opacity: 1; animation: 21.1s linear infinite; }
+    .f1 { animation-name: f1; }  /* full: trigger text, from 0.8s */
+    @keyframes f1 { 0.00%, 3.79% { opacity: 0 } 4.09%, 92.24% { opacity: 1 } 95.33%, 100.00% { opacity: 0 } }
+    .f2 { animation-name: f2; }  /* full: ring all L_i files, 0.8s to 3.2s */
+    @keyframes f2 { 0.00%, 3.79% { opacity: 0 } 4.09%, 28.10% { opacity: 1 } 28.98%, 100.00% { opacity: 0 } }
+    .f3 { animation-name: f3; }  /* full: ring all L_i+1 files, 1.8s to 3.2s */
+    @keyframes f3 { 0.00%, 11.86% { opacity: 0 } 12.39%, 28.10% { opacity: 1 } 28.98%, 100.00% { opacity: 0 } }
+    .f4 { animation-name: f4; }  /* full: merge arrows, from 2.6s */
+    @keyframes f4 { 0.00%, 20.01% { opacity: 0 } 20.68%, 92.24% { opacity: 1 } 95.33%, 100.00% { opacity: 0 } }
+    .f5 { animation-name: f5; }  /* full: old files gone, 3.2s to 14.7s */
+    @keyframes f5 { 0.00%, 28.10% { opacity: 1 } 28.98%, 92.24% { opacity: 0 } 95.33%, 100.00% { opacity: 1 } }
+    .f6 { animation-name: f6; }  /* full: new L_i+1 files, empty L_i, from 3.2s */
+    @keyframes f6 { 0.00%, 28.10% { opacity: 0 } 28.98%, 92.24% { opacity: 1 } 95.33%, 100.00% { opacity: 0 } }
+    .f7 { animation-name: f7; }  /* full: cost label, from 3.8s */
+    @keyframes f7 { 0.00%, 36.40% { opacity: 0 } 37.27%, 92.24% { opacity: 1 } 95.33%, 100.00% { opacity: 0 } }
+    .p1 { animation-name: p1; }  /* partial: trigger + policy label, from 6.0s */
+    @keyframes p1 { 0.00%, 45.33% { opacity: 0 } 45.56%, 92.24% { opacity: 1 } 95.33%, 100.00% { opacity: 0 } }
+    .p2 { animation-name: p2; }  /* partial: ring picked file, 6.0s to 9.0s */
+    @keyframes p2 { 0.00%, 45.33% { opacity: 0 } 45.56%, 69.79% { opacity: 1 } 70.44%, 100.00% { opacity: 0 } }
+    .p3 { animation-name: p3; }  /* partial: ring overlapping files, 7.2s to 9.0s */
+    @keyframes p3 { 0.00%, 53.42% { opacity: 0 } 53.86%, 69.79% { opacity: 1 } 70.44%, 100.00% { opacity: 0 } }
+    .p4 { animation-name: p4; }  /* partial: overlap label, from 7.2s */
+    @keyframes p4 { 0.00%, 53.42% { opacity: 0 } 53.86%, 92.24% { opacity: 1 } 95.33%, 100.00% { opacity: 0 } }
+    .p5 { animation-name: p5; }  /* partial: merge arrow, from 8.2s */
+    @keyframes p5 { 0.00%, 61.62% { opacity: 0 } 62.15%, 92.24% { opacity: 1 } 95.33%, 100.00% { opacity: 0 } }
+    .p6 { animation-name: p6; }  /* partial: old files gone, 9.0s to 14.7s */
+    @keyframes p6 { 0.00%, 69.79% { opacity: 1 } 70.44%, 92.24% { opacity: 0 } 95.33%, 100.00% { opacity: 1 } }
+    .p7 { animation-name: p7; }  /* partial: new files, from 9.0s */
+    @keyframes p7 { 0.00%, 69.79% { opacity: 0 } 70.44%, 92.24% { opacity: 1 } 95.33%, 100.00% { opacity: 0 } }
+    .p8 { animation-name: p8; }  /* partial: cost label, from 9.8s */
+    @keyframes p8 { 0.00%, 78.07% { opacity: 0 } 78.74%, 92.24% { opacity: 1 } 95.33%, 100.00% { opacity: 0 } }
+    @media (prefers-reduced-motion: reduce) {
+      .f2, .f3, .f5, .p2, .p3, .p6 { animation: none; opacity: 0; }
+      .f1, .f4, .f6, .f7, .p1, .p4, .p5, .p7, .p8 { animation: none; opacity: 1; }
+    }
+  </style>
+  <text x="20" y="24" class="title">Full compaction</text>
+  <text x="20" y="79">L<tspan baseline-shift="sub" font-size="11">i</tspan></text>
+  <text x="20" y="143">L<tspan baseline-shift="sub" font-size="11">i+1</tspan></text>
+  <text x="530" y="79" class="muted f1">trigger: L<tspan baseline-shift="sub" font-size="11">i</tspan> full</text>
+  <g class="f6">
+  <rect x="129" y="56" width="70" height="36" rx="4" class="gone"/>
+  <rect x="285" y="56" width="70" height="36" rx="4" class="gone"/>
+  <rect x="441" y="56" width="70" height="36" rx="4" class="gone"/>
+  </g>
+  <g class="f5"><rect x="129" y="56" width="70" height="36" rx="4" class="full"/><text x="164" y="79" text-anchor="middle">[a-f]</text><rect x="285" y="56" width="70" height="36" rx="4" class="full"/><text x="320" y="79" text-anchor="middle">[g-m]</text><rect x="441" y="56" width="70" height="36" rx="4" class="full"/><text x="476" y="79" text-anchor="middle">[n-z]</text><rect x="90" y="120" width="70" height="36" rx="4" class="full"/><text x="125" y="143" text-anchor="middle">[a-b]</text><rect x="168" y="120" width="70" height="36" rx="4" class="full"/><text x="203" y="143" text-anchor="middle">[c-e]</text><rect x="246" y="120" width="70" height="36" rx="4" class="full"/><text x="281" y="143" text-anchor="middle">[f-i]</text><rect x="324" y="120" width="70" height="36" rx="4" class="full"/><text x="359" y="143" text-anchor="middle">[j-n]</text><rect x="402" y="120" width="70" height="36" rx="4" class="full"/><text x="437" y="143" text-anchor="middle">[o-s]</text><rect x="480" y="120" width="70" height="36" rx="4" class="full"/><text x="515" y="143" text-anchor="middle">[t-z]</text></g>
+  <g class="f6"><rect x="90" y="120" width="70" height="36" rx="4" class="new"/><text x="125" y="143" text-anchor="middle" class="newtext">[a-d]</text><rect x="168" y="120" width="70" height="36" rx="4" class="new"/><text x="203" y="143" text-anchor="middle" class="newtext">[e-h]</text><rect x="246" y="120" width="70" height="36" rx="4" class="new"/><text x="281" y="143" text-anchor="middle" class="newtext">[i-l]</text><rect x="324" y="120" width="70" height="36" rx="4" class="new"/><text x="359" y="143" text-anchor="middle" class="newtext">[m-p]</text><rect x="402" y="120" width="70" height="36" rx="4" class="new"/><text x="437" y="143" text-anchor="middle" class="newtext">[q-t]</text><rect x="480" y="120" width="70" height="36" rx="4" class="new"/><text x="515" y="143" text-anchor="middle" class="newtext">[u-z]</text></g>
+  <rect x="126" y="53" width="76" height="42" rx="6" class="ring f2"/>
+  <rect x="282" y="53" width="76" height="42" rx="6" class="ring f2"/>
+  <rect x="438" y="53" width="76" height="42" rx="6" class="ring f2"/>
+  <rect x="87" y="117" width="76" height="42" rx="6" class="ring f3"/>
+  <rect x="165" y="117" width="76" height="42" rx="6" class="ring f3"/>
+  <rect x="243" y="117" width="76" height="42" rx="6" class="ring f3"/>
+  <rect x="321" y="117" width="76" height="42" rx="6" class="ring f3"/>
+  <rect x="399" y="117" width="76" height="42" rx="6" class="ring f3"/>
+  <rect x="477" y="117" width="76" height="42" rx="6" class="ring f3"/>
+  <path d="M 164 95 L 164 110" class="arrow f4"/><polygon points="159,109 169,109 164,117" class="arrowhead f4"/>
+  <path d="M 320 95 L 320 110" class="arrow f4"/><polygon points="315,109 325,109 320,117" class="arrowhead f4"/>
+  <path d="M 476 95 L 476 110" class="arrow f4"/><polygon points="471,109 481,109 476,117" class="arrowhead f4"/>
+  <text x="570" y="130" class="cost f7">rewrites 9 files</text>
+  <text x="570" y="148" class="muted f7">all of L<tspan baseline-shift="sub" font-size="11">i</tspan> and L<tspan baseline-shift="sub" font-size="11">i+1</tspan></text>
+  <text x="570" y="166" class="muted f7">one big unit of work</text>
+  <line x1="20" y1="197" x2="740" y2="197" stroke="var(--edge)" stroke-dasharray="4 4"/>
+  <text x="20" y="224" class="title">Partial compaction</text>
+  <text x="20" y="279">L<tspan baseline-shift="sub" font-size="11">i</tspan></text>
+  <text x="20" y="343">L<tspan baseline-shift="sub" font-size="11">i+1</tspan></text>
+  <text x="530" y="279" class="muted p1">trigger: L<tspan baseline-shift="sub" font-size="11">i</tspan> full</text>
+  <text x="320" y="246" text-anchor="middle" class="num p1">picked by policy, e.g. round robin</text>
+  <g class="p7"><rect x="285" y="256" width="70" height="36" rx="4" class="gone"/></g>
+  <rect x="129" y="256" width="70" height="36" rx="4" class="full"/><text x="164" y="279" text-anchor="middle">[a-f]</text><rect x="441" y="256" width="70" height="36" rx="4" class="full"/><text x="476" y="279" text-anchor="middle">[n-z]</text>
+  <rect x="90" y="320" width="70" height="36" rx="4" class="full"/><text x="125" y="343" text-anchor="middle">[a-b]</text>
+  <rect x="168" y="320" width="70" height="36" rx="4" class="full"/><text x="203" y="343" text-anchor="middle">[c-e]</text>
+  <rect x="402" y="320" width="70" height="36" rx="4" class="full"/><text x="437" y="343" text-anchor="middle">[o-s]</text>
+  <rect x="480" y="320" width="70" height="36" rx="4" class="full"/><text x="515" y="343" text-anchor="middle">[t-z]</text>
+  <g class="p6"><rect x="285" y="256" width="70" height="36" rx="4" class="full"/><text x="320" y="279" text-anchor="middle">[g-m]</text><rect x="246" y="320" width="70" height="36" rx="4" class="full"/><text x="281" y="343" text-anchor="middle">[f-i]</text><rect x="324" y="320" width="70" height="36" rx="4" class="full"/><text x="359" y="343" text-anchor="middle">[j-n]</text></g>
+  <g class="p7"><rect x="246" y="320" width="70" height="36" rx="4" class="new"/><text x="281" y="343" text-anchor="middle" class="newtext">[f-j]</text><rect x="324" y="320" width="70" height="36" rx="4" class="new"/><text x="359" y="343" text-anchor="middle" class="newtext">[k-n]</text></g>
+  <rect x="282" y="253" width="76" height="42" rx="6" class="ring p2"/>
+  <rect x="243" y="317" width="76" height="42" rx="6" class="ring p3"/>
+  <rect x="321" y="317" width="76" height="42" rx="6" class="ring p3"/>
+  <path d="M 320 295 L 320 310" class="arrow p5"/><polygon points="315,309 325,309 320,317" class="arrowhead p5"/>
+  <text x="320" y="376" text-anchor="middle" class="num p4">key ranges overlap [g-m]</text>
+  <text x="570" y="330" class="oktext p8">rewrites 3 files</text>
+  <text x="570" y="348" class="muted p8">1 from L<tspan baseline-shift="sub" font-size="11">i</tspan>, 2 from L<tspan baseline-shift="sub" font-size="11">i+1</tspan></text>
+  <text x="570" y="366" class="muted p8">smaller unit of work</text>
+</svg>
