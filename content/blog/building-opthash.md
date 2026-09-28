@@ -7,13 +7,13 @@ tags = ["Design", "Research", "Engineering"]
 
 ## From Paper to Code
 
-Earlier this year, I watched [Quanta's video on 2025's biggest breakthroughs in computer science](https://www.quantamagazine.org/videos/2025s-biggest-breakthroughs-in-computer-science/). One of them stuck with me: a paper that disproved a 40-year-old conjecture about open-addressed hash tables.
+Earlier this year, I watched [Quanta's video on 2025's biggest breakthroughs in computer science](https://www.quantamagazine.org/videos/2025s-biggest-breakthroughs-in-computer-science/). The one that stuck with me was a paper that disproved a 40-year-old conjecture about open-addressed hash tables.
 
 In [open addressing](https://en.wikipedia.org/wiki/Open_addressing), every key and value lives directly in one array. When a key hashes to a slot that is already taken, the table walks a fixed sequence of other slots, called the _probe sequence_, until it finds an empty one. That walk is why tables slow down as they fill: the fuller the array, the more occupied slots a key steps past before it finds room.
 
 The paper, [_Optimal Bounds for Open Addressing Without Reordering_](https://arxiv.org/abs/2501.02305), gives two constructions, Elastic Hashing and Funnel Hashing. Both keep insertions and successful lookups cheap even when the table is almost full, and neither moves an entry once placed.
 
-The main difference between them is whether they are _greedy_. Funnel, like most open-addressed tables, is greedy, meaning each key takes the first empty slot its probe sequence reaches. In 1985, Andrew Yao conjectured that uniform probing, the textbook greedy scheme, has close to the lowest worst-case insertion cost any greedy table can reach. Funnel's worst case is much lower, which disproves the conjecture.[^greedy] Elastic is not greedy, and that lets it get under a limit Yao did prove for greedy tables: its average insertion cost stays constant as the table fills, while a greedy table's must grow. It gives each array a probe budget, and once the budget runs out, it stops looking in that array and moves on to the next one, even if the array still has empty slots.[^budget]
+The main difference between them is whether they are _greedy_. Funnel (like most open-addressed tables) is greedy, meaning each key takes the first empty slot its probe sequence reaches. In 1985, Andrew Yao conjectured that uniform probing, the textbook greedy scheme, has close to the lowest worst-case insertion cost any greedy table can reach. Funnel's worst case is much lower, which disproves the conjecture.[^greedy] Elastic is not greedy, and that lets it get under a limit Yao did prove for greedy tables: its average insertion cost stays constant as the table fills, while that of a greedy table must grow. It gives each array a probe budget, and once the budget runs out, it stops looking in that array and moves on to the next one, even if the array still has empty slots.[^budget]
 
 ![Both walks hit the same crowded array, and the third slot they probe is empty. Uniform probing takes it. Elastic has used up its budget of two probes here, so it never tries that slot and moves on to the next, emptier array.](/images/building-opthash/probe-walk.svg)
 
@@ -21,23 +21,27 @@ I couldn't find an official implementation, so I decided to write one. Building 
 
 That became [opthash](https://github.com/aaron-ang/opthash-rs). It started as an [exploratory exercise](https://news.ycombinator.com/item?id=48365720), and I was curious how these constructions would stack up against the tables most Rust code already relies on, like `std::HashMap` and [`hashbrown`](https://github.com/rust-lang/hashbrown). To compete with them, opthash would have to make good use of caches, vector instructions, and allocators, and support what a general-purpose map does beyond the paper, such as deleting keys and growing the underlying array.
 
-Before getting to the implementation, let's look at how each construction places keys. The paper specifies which slots a key may use and the order in which it tries them, but leaves how each slot is checked to the implementation.
+Before getting to the implementation, let's look at how each construction places keys. The paper specifies which slots a key may use and the order in which it tries them, but leaves how each slot is checked to the implementation. The two constructions make those choices differently.
 
-The two constructions make those choices differently. Elastic splits the table into a series of arrays, each half the size of the one before, and starts by filling the largest to about 75 percent. After that, insertions proceed in batches, each working on a pair of neighboring arrays: a larger $A_i$ and a smaller $A_{i+1}$. A batch tops up $A_i$ until only a small fraction of its slots are free and fills $A_{i+1}$ to 75 percent, setting up the next pair.
+### Elastic Hashing
+
+Elastic splits the table into a series of arrays, each half the size of the one before, and starts by filling the largest to about 75 percent. After that, insertions proceed in batches, each working on a pair of neighboring arrays: a larger $A_i$ and a smaller $A_{i+1}$. A batch tops up $A_i$ until only a small fraction of its slots are free and fills $A_{i+1}$ to 75 percent, setting up the next pair.
 
 ![Elastic fills its arrays in batches. Each array fills to 75 percent while it is the smaller of its pair, then to nearly full while it is the larger. After that, the next batch moves one array down.](/images/building-opthash/elastic-fill.svg)
 
 Within a batch, two checks pick one of three cases for each key:
 
-![Three keys, one per case. Two checks pick the case: if Aᵢ is nearly full, go to Aᵢ₊₁ (Case 2). If Aᵢ₊₁ is already 3/4 full, stay in Aᵢ (Case 3). Otherwise probe Aᵢ up to a budget that grows as Aᵢ fills, then fall back to Aᵢ₊₁ (Case 1).](/images/building-opthash/elastic-insert.svg)
+![Elastic insertion: three keys, one per case. Two checks pick the case: if Aᵢ is nearly full, go to Aᵢ₊₁ (Case 2). If Aᵢ₊₁ is already 3/4 full, stay in Aᵢ (Case 3). Otherwise probe Aᵢ up to a budget that grows as Aᵢ fills, then fall back to Aᵢ₊₁ (Case 1).](/images/building-opthash/elastic-insert.svg)
 
-Lookups work differently: they don't use batches or cases. A lookup can't tell which batch placed a key, so it may have to check every array. It walks one global probe sequence that visits the arrays in a fixed, interleaved order until it finds the key.
+Lookups don't use batches or cases, because a lookup can't tell which batch placed a key and may have to check every array. Instead, it walks one global probe sequence that visits the arrays in a fixed, interleaved order until it finds the key.
+
+### Funnel Hashing
 
 Funnel also splits the table into shrinking levels, but each main level is divided into buckets of the same fixed width, so a later level is smaller only because it has fewer buckets. The paper derives the bucket width, level count, and shrink rate from the table's headroom.[^funnel-params] An insertion falls through the levels until it finds room, and a small special area at the bottom catches what the last level can't hold:
 
-![The first key hashes to one bucket per level and falls through full buckets until Level 3 has room. The second key finds every bucket full, gives up on special area B after a few single-slot tries, and lands in special area C, which uses the [power of two choices](https://www.eecs.harvard.edu/~michaelm/postscripts/handbook2001.pdf).](/images/building-opthash/funnel-insert.svg)
+![Funnel insertion: the first key hashes to one bucket per level and falls through full buckets until Level 3 has room. The second key finds every bucket full, gives up on special area B after a few single-slot tries, and lands in special area C, which uses the [power of two choices](https://www.eecs.harvard.edu/~michaelm/postscripts/handbook2001.pdf): the key hashes to two buckets, a and b, and alternates between their slots, so it lands in the emptier one.](/images/building-opthash/funnel-insert.svg)
 
-My first version translated these rules as literally as I could. It was easy to check against the paper, but it was slow.
+My first version translated both constructions as literally as I could. It was easy to check against the paper, but it was slow.
 
 ## Making It Fast
 
@@ -91,15 +95,13 @@ In CI, [CodSpeed](https://codspeed.io) runs the same suite on every pull request
 
 Smaller experiments went through the same checks.[^small-experiments] Much later, I found the benchmark fixture itself was skewed: at 20,000 entries, Elastic and `hashbrown` were 70 percent full while Funnel was completely full. Now every map is filled to capacity before anything is measured.[^fixture]
 
-Better measurement caught wins that were noise and wins that only held on one machine. It also exposed a bigger problem. Some optimizations that measured well, notably power-of-two geometry and changed probing arithmetic, had changed which slots the algorithms visited.
-
-The maps were faster because they were no longer quite the paper's algorithms.
+Better measurement caught wins that were noise and wins that only held on one machine. It also exposed a bigger problem, because some optimizations that measured well, notably power-of-two geometry and changed probing arithmetic, had changed which slots the algorithms visited, so the maps were faster because they were no longer quite the paper's algorithms.
 
 ## Returning to the Paper
 
-Lining the code up against the paper showed the drift. It wasn't one bug: several optimizations had each nudged the probe sequence, and Funnel's bucket and overflow handling had mismatches of its own. Patching them one at a time wouldn't yield a trustworthy reference, because another optimization might still be changing geometry or probe order somewhere I hadn't looked.
+Lining the code up against the paper showed that the drift had more than one cause. Several optimizations had each nudged the probe sequence, and Funnel's bucket and overflow handling had mismatches of its own. Patching them one at a time wouldn't yield a trustworthy reference, because another optimization might still be changing geometry or probe order somewhere I hadn't looked.
 
-So I rewrote both maps to follow one fixed instantiation of the paper's constructions exactly, by default.[^exact] Every optimization faced one test: does it change which slots get probed, or only how each slot is checked?
+So I rewrote both maps to follow one fixed instantiation of the paper's constructions exactly, by default.[^exact] After that, I judged every optimization by whether it changed which slots get probed or only how each slot is checked.
 
 | Removed: changed which slots get probed | Kept: changes only how slots are checked |
 | --------------------------------------- | ---------------------------------------- |
@@ -140,7 +142,7 @@ if free_current <= current_threshold {
 
 The snippet is short, but three details in it explain why we pruned those optimizations specifically:
 
-1. **Placement is deterministic.** Each branch depends only on two occupancy counts and the key itself, so the same inserts always produce the same placements. That is what lets the reference serve as a test.
+1. **Placement is deterministic.** Each branch depends only on two occupancy counts and the key itself, so the same inserts always produce the same placements, which is what lets the reference serve as a test.
 2. **Probes map to slots through exact sizes.** `vacancy(level, key, j)` checks the $j$-th slot in the key's probe sequence for a level, and `uniform_vacancy` tries $j = 0, 1, 2, \ldots$ until one is free. The slot for each $j$ is computed from the level's true size, so rounding sizes to a power of two sends keys to different slots.
 3. **Thresholds use integer rounding.** opthash keeps $\delta$ a power of two, so $\delta |A_i| / 2$ is a bit shift (`floor_div_pow2`). An optimized table has to round the same way, or a key near a threshold takes a different case.
 
@@ -166,11 +168,11 @@ The rewrite made both maps much slower. Here is the cost on a 20,000-entry map o
 
 These numbers compare two versions of opthash, so they show how much slower exactness made this implementation. They don't test the paper's bounds, which count probes rather than nanoseconds.[^controls]
 
-I kept the slower, exact version anyway. A fast implementation of a different candidate order couldn't answer the question that started the project: how do the paper's algorithms behave on real hardware? From then on, the reference decided which optimizations were allowed.
+I kept the slower, exact version anyway, because a fast implementation of a different candidate order couldn't answer the question that started the project, which was how the paper's algorithms behave on real hardware. From then on, the reference decided which optimizations were allowed.
 
 Keeping it meant understanding where the time went, so I read the CPU's [hardware counters](https://www.brendangregg.com/perf.html) with `perf`. Each version ran successful Elastic lookups for five seconds on the same pinned core, old version first:
 
-```
+```text
 $ perf stat -e cycles,instructions,cache-misses,branch-misses \
     speedup --profile-time 5 '^get_hit/get_hit_elastic$'
 
@@ -203,11 +205,11 @@ Dividing each counter by those counts gives the cost of a single lookup. These a
 | Cache misses           |    ~1.0 |  ~1.1 | about the same |
 | Branch misses          |   ~0.03 | ~0.35 | 13x            |
 
-Cycles and instructions grew by the same factor, and instructions per cycle barely moved. The processor runs the exact version's code just as efficiently, but there is about 8 times as much of it. Cache misses stayed near one per lookup, so on this fixture the exact hit path is not waiting on memory. The extra instructions come from following the paper: the exact version walks candidates in the paper's interleaved order across arrays and does [exact range reduction](https://arxiv.org/abs/1805.10941) on every candidate, where the old version probed power-of-two groups using bit masks. Branch misses grew 13 times, but at about 0.35 per lookup, and roughly 10 to 20 cycles each, they account for only a few of the 110 or so extra cycles.
+Cycles and instructions grew by the same factor, and instructions per cycle barely moved. The processor runs the exact version's code just as efficiently, but there is about 8 times as much of it. Cache misses stayed near one per lookup, so on this fixture the exact hit path is not waiting on memory. The extra instructions come from following the paper, since the exact version walks candidates in the paper's interleaved order across arrays and does [exact range reduction](https://arxiv.org/abs/1805.10941) on every candidate, where the old version probed power-of-two groups using bit masks. Branch misses grew 13 times, but at about 0.35 per lookup, and roughly 10 to 20 cycles each, they account for only a few of the 110 or so extra cycles.
 
-Insert behaves differently. There the exact version also takes about 10 times as many cache misses per operation, because it visits far more slots before it settles, and those slots are spread across two arrays instead of one contiguous group.
+Insert behaves differently, because there the exact version also takes about 10 times as many cache misses per operation. It visits far more slots before it settles, and those slots are spread across two arrays instead of one contiguous group.
 
-The first round of tuning showed the exact version had room to improve. Streamlining the hot paths made Elastic insertion about 4x faster without changing which slots it visits.[^hot-paths] That narrowed the project's question to this: how fast can the paper's design get on its own, with the library features kept out of the way?
+The first round of tuning showed the exact version had room to improve. Streamlining the hot paths made Elastic insertion about 4x faster without changing which slots it visits.[^hot-paths] That narrowed the project's question to how fast the paper's design can get on its own, with the library features kept out of the way.
 
 ## Beyond the Paper
 
@@ -220,7 +222,7 @@ flowchart TB
   e3 -. "cleanup, clear, or resize" .-> e4["Epoch N+3: paper rules"]
 ```
 
-Placement recovery is the one exception. The paper gives each key a finite list of slots it may use, and under heavy churn a real table can end up with every one of them taken. When that happens, opthash does not drop the key. It first rebuilds the table at the same size, reinserting every live key into a fresh layout, which also clears out tombstones, and then tries the paper's placement again. Only if the key still has no allowed slot does opthash put it in the first free slot it finds, a slot the paper would never have chosen for it. That placement sets a flag, so later lookups know to fall back to scanning the whole table. So "paper-exact" describes normal operation, not recovery.[^hashing]
+Placement recovery is the one exception, and it exists because the paper gives each key a finite list of slots it may use, and under heavy churn a real table can end up with every one of them taken. When that happens, opthash does not drop the key but first rebuilds the table at the same size, reinserting every live key into a fresh layout (which also clears out tombstones) and then tries the paper's placement again. Only if the key still has no allowed slot does opthash put it in the first free slot it finds, a slot the paper would never have chosen for it. That placement sets a flag so later lookups know to fall back to scanning the whole table, and it is why "paper-exact" describes normal operation rather than recovery.[^hashing]
 
 Keeping library code from changing the paper's placements took some fixes. Elastic used to pick its active batch from a running count of inserts. Under a steady mix of inserts and deletes, that count kept climbing even though the number of live keys stayed flat, so the batch index crept forward and new keys drifted into the smallest levels, where they quickly ran out of room and set off recovery. Counting live entries instead of total inserts fixed it.[^churn]
 
@@ -228,23 +230,23 @@ The same split applies to benchmarks. The paper's analysis covers inserts and su
 
 ## Looking Back
 
-Several lessons came from numbers that turned out to be inaccurate. The mini-hash experiment looked like a clear win until both runs were pinned to the same core, and the skewed fixture compared maps at different loads without any result looking off. Pinning the core, fixing memory placement, and rerunning an unchanged baseline like `hashbrown` costs a few minutes per run. It is the most reliable way I know to tell a real speedup from a lucky one.
+Several lessons came from numbers that turned out to be inaccurate. The mini-hash experiment looked like a clear win until both runs were pinned to the same core, and the skewed fixture compared maps at different loads without any result looking off. Pinning the core, fixing memory placement, and rerunning an unchanged baseline like `hashbrown` costs a few minutes per run, and it is the most reliable way I know to tell a real speedup from a lucky one.
 
-Pinning made the numbers trustworthy, but it couldn't tell me whether they described the right algorithm. When the goal is to study an algorithm, a speedup counts only if the algorithm stays the same. Power-of-two geometry and triangular probing are good ideas for hash tables in general. They didn't fit here because they changed which slots get visited, and so which algorithm was measured. If I implement another paper, I will decide up front what it fixes and what it leaves open, and treat anything that moves the first as a different design.
+Pinning made the numbers trustworthy, but it couldn't tell me whether they described the right algorithm. When the goal is to study an algorithm, a speedup counts only if the algorithm stays the same. Power-of-two geometry and triangular probing are good ideas for hash tables in general, but they didn't fit here because they changed which slots get visited, and so which algorithm was measured. If I implement another paper, I will decide up front what it fixes and what it leaves open, and treat anything that moves the first as a different design.
 
-That rule is easiest to enforce with a reference in place from the start. I wrote mine only after the optimized code had drifted, and untangling the drift took a rewrite. Built first, it would have checked every optimization the day it was written, turning "is this still the algorithm?" into a failing test instead of an audit. Speed doesn't matter for the reference. Its only job is to be easy to check against the paper, so simple code beats fast code.
+That rule is easiest to enforce with a reference in place from the start. I wrote mine only after the optimized code had drifted, and untangling the drift took a rewrite. Built first, it would have checked every optimization the day it was written, turning "is this still the algorithm?" into a failing test instead of an audit. The reference doesn't need to be fast, only easy to check against the paper, so simple code is the better choice there.
 
-Separating the paper's rules from the rest of the library helped too. Deletes, growth, and recovery can dominate a benchmark while saying nothing about the paper's bounds. Separate epochs and separate benchmark groups showed which part was slow, the first step toward fixing either.
+Separating the paper's rules from the rest of the library helped too, because deletes, growth, and recovery can dominate a benchmark while saying nothing about the paper's bounds. Keeping them in separate epochs and benchmark groups showed which part was slow, which is the first step toward fixing either.
 
 ## What's Still Open
 
 Later work kept the paper's slot order and made each probe cheaper. A membership filter, a small [Bloom filter](https://en.wikipedia.org/wiki/Bloom_filter) at the end of the arena, lets most failed lookups return without probing,[^filter] and probing itself got cheaper.[^probing] Both maps have recovered much of the speed the rewrite cost, but neither matches `hashbrown` yet.
 
-Deletes on a nearly full table are still slow. A delete-heavy workload keeps pushing Elastic into placement recovery, and each recovery rebuilds the whole table at the same size, reinserting every live key, before it can place the new one. Paying for that rebuild repeatedly is what makes these deletes slow.
+Deletes on a nearly full table are still slow. A delete-heavy workload keeps pushing Elastic into placement recovery, and each recovery rebuilds the whole table at the same size, reinserting every live key, before it can place the new one, so the table ends up paying for that rebuild repeatedly.
 
 opthash is licensed under Apache 2.0 and available on [PyPI](https://pypi.org/project/opthash/) (`pip install opthash`) and [crates.io](https://crates.io/crates/opthash) (the Rust crate also builds without `std`).
 
-The question that started the project is still open: can the paper's probe bounds make opthash as fast as `hashbrown` in real use, without changing the algorithms again? If you would like to help answer it, the project is [open source](https://github.com/aaron-ang/opthash-rs) and welcomes contributions.
+The question that started the project, whether the paper's probe bounds can make opthash as fast as `hashbrown` in real use without changing the algorithms again, is still open. If you would like to help answer it, the project is [open source](https://github.com/aaron-ang/opthash-rs) and welcomes contributions.
 
 [^greedy]: Here $\delta$ is the fraction of the table left free. [Yao](https://doi.org/10.1145/3828.3836) proved that among greedy tables, uniform probing's average insertion cost of $\Theta(\log(1/\delta))$ probes is optimal, and conjectured that the worst-case insertion must cost about $1/\delta$. Funnel's worst case is $O(\log^2(1/\delta))$, and the paper proves that no greedy table can do better. Elastic's average cost is $O(1)$ and its worst case is $O(\log(1/\delta))$.
 
