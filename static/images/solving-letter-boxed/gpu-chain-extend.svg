@@ -1,0 +1,178 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 452" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated GPU chain extension with a word limit of 2: each grid cell is one GPU thread pairing a chain with a candidate word. In one dispatch, threads whose letters do not link return, full masks claim a solutions slot with atomicAdd, and partial chains are dropped because a third word would pass the limit, so no second pass runs and the CPU picks the solution with the fewest letters, MORPHS SINGLED">
+  <style>
+    :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; --accent: #1971c2; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #ddd; --muted: #999; --full: #555; --empty: #1e1e1e; --edge: #777; --probe: #ff8a4c; --ok: #69db7c; --chip: #2a2a2a; --accent: #74c0fc; }
+    }
+    text { fill: var(--fg); font-size: 14px; }
+    .muted { fill: var(--muted); font-size: 12px; }
+    .title { font-weight: 600; font-size: 15px; }
+    .word { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; font-weight: 600; }
+    .hl { fill: var(--probe); font-weight: 800; }
+    .cell { fill: var(--empty); stroke: var(--edge); }
+    .gcell { fill: var(--full); stroke: var(--edge); }
+    .gt { fill: var(--muted); font-size: 12px; }
+    .okcell { fill: var(--ok); stroke: var(--ok); }
+    .okct { fill: var(--empty); font-size: 12px; font-weight: 700; }
+    .nxcell { fill: var(--empty); stroke: var(--accent); stroke-width: 2; }
+    .nxt { fill: var(--accent); font-size: 12px; font-weight: 600; }
+    .solbox { fill: none; stroke: var(--ok); stroke-width: 2; }
+    .nxbox { fill: none; stroke: var(--accent); stroke-width: 2; }
+    .okb { fill: var(--ok); font-weight: 600; font-size: 13px; }
+    .nxb { fill: var(--accent); font-weight: 600; font-size: 13px; }
+    .small { font-size: 13px; font-family: ui-monospace, Menlo, Consolas, monospace; }
+    .pick { fill: none; stroke: var(--ok); stroke-width: 2.5; }
+    .dropcell { fill: var(--empty); stroke: var(--probe); stroke-width: 1.5; stroke-dasharray: 4 3; }
+    .dropt { fill: var(--probe); font-size: 11px; font-weight: 600; }
+    /* 42.87s loop, 5 steps starting at 0.5, 6.98, 20.81, 29.8, 34.53 s; final frame holds 7.59s, then fades. */
+    .a { opacity: 0; animation: 42.87s linear infinite; }
+    .w1 { animation-name: w1; }  /* 0.50s to 6.98s */
+    @keyframes w1 { 0.00%, 16.28% { opacity: 1 } 16.63%, 98.25% { opacity: 0 } 98.60%, 100.00% { opacity: 1 } }
+    .w2 { animation-name: w2; }  /* 6.98s to end */
+    @keyframes w2 { 0.00%, 16.28% { opacity: 0 } 16.63%, 98.25% { opacity: 1 } 98.60%, 100.00% { opacity: 0 } }
+    .w3 { animation-name: w3; }  /* 20.81s to end */
+    @keyframes w3 { 0.00%, 48.54% { opacity: 0 } 48.89%, 98.25% { opacity: 1 } 98.60%, 100.00% { opacity: 0 } }
+    .w4 { animation-name: w4; }  /* 29.80s to end */
+    @keyframes w4 { 0.00%, 69.51% { opacity: 0 } 69.86%, 98.25% { opacity: 1 } 98.60%, 100.00% { opacity: 0 } }
+    .w5 { animation-name: w5; }  /* 34.53s to end */
+    @keyframes w5 { 0.00%, 80.55% { opacity: 0 } 80.90%, 98.25% { opacity: 1 } 98.60%, 100.00% { opacity: 0 } }
+    .w6 { animation-name: w6; }  /* 6.98s to 20.81s */
+    @keyframes w6 { 0.00%, 16.28% { opacity: 0 } 16.63%, 48.54% { opacity: 1 } 48.89%, 100.00% { opacity: 0 } }
+    .w7 { animation-name: w7; }  /* 20.81s to 29.80s */
+    @keyframes w7 { 0.00%, 48.54% { opacity: 0 } 48.89%, 69.51% { opacity: 1 } 69.86%, 100.00% { opacity: 0 } }
+    @media (prefers-reduced-motion: reduce) {
+      .a { animation: none; opacity: 0; }
+      .a.fin { opacity: 1; }
+    }
+  </style>
+  <text x="20" y="26" class="title">Find Best on the GPU, pass 1: one thread per (chain, word) pair</text>
+  <text x="20" y="48" class="muted">Rows are chains so far, columns are candidate words. Word limit: 2, the length of Solve's answer.</text>
+  <text x="20" y="76" class="muted">chains ↓   words →</text>
+  <text x="200" y="76" text-anchor="middle" class="word"><tspan class="hl">S</tspan>INGLED</text>
+  <text x="316" y="76" text-anchor="middle" class="word"><tspan class="hl">S</tspan>HIELDING</text>
+  <text x="432" y="76" text-anchor="middle" class="word"><tspan class="hl">S</tspan>HRED</text>
+  <text x="548" y="76" text-anchor="middle" class="word"><tspan class="hl">I</tspan>MPRISONING</text>
+  <text x="664" y="76" text-anchor="middle" class="word"><tspan class="hl">D</tspan>ROPS</text>
+  <text x="20" y="107" class="word">MORPH<tspan class="hl">S</tspan></text>
+  <rect x="150" y="86" width="100" height="32" rx="4" class="cell"/>
+  <rect x="266" y="86" width="100" height="32" rx="4" class="cell"/>
+  <rect x="382" y="86" width="100" height="32" rx="4" class="cell"/>
+  <rect x="498" y="86" width="100" height="32" rx="4" class="cell"/>
+  <rect x="614" y="86" width="100" height="32" rx="4" class="cell"/>
+  <text x="20" y="147" class="word">HELP<tspan class="hl">S</tspan></text>
+  <rect x="150" y="126" width="100" height="32" rx="4" class="cell"/>
+  <rect x="266" y="126" width="100" height="32" rx="4" class="cell"/>
+  <rect x="382" y="126" width="100" height="32" rx="4" class="cell"/>
+  <rect x="498" y="126" width="100" height="32" rx="4" class="cell"/>
+  <rect x="614" y="126" width="100" height="32" rx="4" class="cell"/>
+  <text x="20" y="187" class="word">PROMISE<tspan class="hl">S</tspan></text>
+  <rect x="150" y="166" width="100" height="32" rx="4" class="cell"/>
+  <rect x="266" y="166" width="100" height="32" rx="4" class="cell"/>
+  <rect x="382" y="166" width="100" height="32" rx="4" class="cell"/>
+  <rect x="498" y="166" width="100" height="32" rx="4" class="cell"/>
+  <rect x="614" y="166" width="100" height="32" rx="4" class="cell"/>
+  <text x="20" y="227" class="word">HEL<tspan class="hl">D</tspan></text>
+  <rect x="150" y="206" width="100" height="32" rx="4" class="cell"/>
+  <rect x="266" y="206" width="100" height="32" rx="4" class="cell"/>
+  <rect x="382" y="206" width="100" height="32" rx="4" class="cell"/>
+  <rect x="498" y="206" width="100" height="32" rx="4" class="cell"/>
+  <rect x="614" y="206" width="100" height="32" rx="4" class="cell"/>
+  <g class="a w1">
+    <text x="200" y="107" text-anchor="middle" class="muted">thread</text>
+    <text x="316" y="107" text-anchor="middle" class="muted">thread</text>
+    <text x="432" y="107" text-anchor="middle" class="muted">thread</text>
+    <text x="548" y="107" text-anchor="middle" class="muted">thread</text>
+    <text x="664" y="107" text-anchor="middle" class="muted">thread</text>
+    <text x="200" y="147" text-anchor="middle" class="muted">thread</text>
+    <text x="316" y="147" text-anchor="middle" class="muted">thread</text>
+    <text x="432" y="147" text-anchor="middle" class="muted">thread</text>
+    <text x="548" y="147" text-anchor="middle" class="muted">thread</text>
+    <text x="664" y="147" text-anchor="middle" class="muted">thread</text>
+    <text x="200" y="187" text-anchor="middle" class="muted">thread</text>
+    <text x="316" y="187" text-anchor="middle" class="muted">thread</text>
+    <text x="432" y="187" text-anchor="middle" class="muted">thread</text>
+    <text x="548" y="187" text-anchor="middle" class="muted">thread</text>
+    <text x="664" y="187" text-anchor="middle" class="muted">thread</text>
+    <text x="200" y="227" text-anchor="middle" class="muted">thread</text>
+    <text x="316" y="227" text-anchor="middle" class="muted">thread</text>
+    <text x="432" y="227" text-anchor="middle" class="muted">thread</text>
+    <text x="548" y="227" text-anchor="middle" class="muted">thread</text>
+    <text x="664" y="227" text-anchor="middle" class="muted">thread</text>
+  </g>
+  <g class="a w2 fin">
+    <rect x="150" y="86" width="100" height="32" rx="4" class="okcell"/>
+    <text x="200" y="107" text-anchor="middle" class="okct">OR = full ✓</text>
+    <rect x="266" y="86" width="100" height="32" rx="4" class="okcell"/>
+    <text x="316" y="107" text-anchor="middle" class="okct">OR = full ✓</text>
+    <rect x="382" y="86" width="100" height="32" rx="4" class="dropcell"/>
+    <text x="432" y="100" text-anchor="middle" class="dropt">limit reached:</text>
+    <text x="432" y="113" text-anchor="middle" class="dropt">dropped</text>
+    <rect x="498" y="86" width="100" height="32" rx="4" class="gcell"/>
+    <text x="548" y="107" text-anchor="middle" class="gt">S ≠ I: return</text>
+    <rect x="614" y="86" width="100" height="32" rx="4" class="gcell"/>
+    <text x="664" y="107" text-anchor="middle" class="gt">S ≠ D: return</text>
+    <rect x="150" y="126" width="100" height="32" rx="4" class="dropcell"/>
+    <text x="200" y="140" text-anchor="middle" class="dropt">limit reached:</text>
+    <text x="200" y="153" text-anchor="middle" class="dropt">dropped</text>
+    <rect x="266" y="126" width="100" height="32" rx="4" class="dropcell"/>
+    <text x="316" y="140" text-anchor="middle" class="dropt">limit reached:</text>
+    <text x="316" y="153" text-anchor="middle" class="dropt">dropped</text>
+    <rect x="382" y="126" width="100" height="32" rx="4" class="dropcell"/>
+    <text x="432" y="140" text-anchor="middle" class="dropt">limit reached:</text>
+    <text x="432" y="153" text-anchor="middle" class="dropt">dropped</text>
+    <rect x="498" y="126" width="100" height="32" rx="4" class="gcell"/>
+    <text x="548" y="147" text-anchor="middle" class="gt">S ≠ I: return</text>
+    <rect x="614" y="126" width="100" height="32" rx="4" class="gcell"/>
+    <text x="664" y="147" text-anchor="middle" class="gt">S ≠ D: return</text>
+    <rect x="150" y="166" width="100" height="32" rx="4" class="dropcell"/>
+    <text x="200" y="180" text-anchor="middle" class="dropt">limit reached:</text>
+    <text x="200" y="193" text-anchor="middle" class="dropt">dropped</text>
+    <rect x="266" y="166" width="100" height="32" rx="4" class="okcell"/>
+    <text x="316" y="187" text-anchor="middle" class="okct">OR = full ✓</text>
+    <rect x="382" y="166" width="100" height="32" rx="4" class="dropcell"/>
+    <text x="432" y="180" text-anchor="middle" class="dropt">limit reached:</text>
+    <text x="432" y="193" text-anchor="middle" class="dropt">dropped</text>
+    <rect x="498" y="166" width="100" height="32" rx="4" class="gcell"/>
+    <text x="548" y="187" text-anchor="middle" class="gt">S ≠ I: return</text>
+    <rect x="614" y="166" width="100" height="32" rx="4" class="gcell"/>
+    <text x="664" y="187" text-anchor="middle" class="gt">S ≠ D: return</text>
+    <rect x="150" y="206" width="100" height="32" rx="4" class="gcell"/>
+    <text x="200" y="227" text-anchor="middle" class="gt">D ≠ S: return</text>
+    <rect x="266" y="206" width="100" height="32" rx="4" class="gcell"/>
+    <text x="316" y="227" text-anchor="middle" class="gt">D ≠ S: return</text>
+    <rect x="382" y="206" width="100" height="32" rx="4" class="gcell"/>
+    <text x="432" y="227" text-anchor="middle" class="gt">D ≠ S: return</text>
+    <rect x="498" y="206" width="100" height="32" rx="4" class="gcell"/>
+    <text x="548" y="227" text-anchor="middle" class="gt">D ≠ I: return</text>
+    <rect x="614" y="206" width="100" height="32" rx="4" class="dropcell"/>
+    <text x="664" y="220" text-anchor="middle" class="dropt">limit reached:</text>
+    <text x="664" y="233" text-anchor="middle" class="dropt">dropped</text>
+  </g>
+  <g class="a w3 fin">
+    <rect x="20" y="260" width="350" height="110" rx="6" class="solbox"/>
+    <text x="32" y="280" class="okb">solutions (atomicAdd a slot)</text>
+    <text x="358" y="280" text-anchor="end" class="muted">4 found</text>
+    <text x="32" y="302" class="small">MORPHS SINGLED</text>
+    <text x="358" y="302" text-anchor="end" class="muted">13 letters</text>
+    <text x="32" y="322" class="small">MORPHS SHIELDING</text>
+    <text x="358" y="322" text-anchor="end" class="muted">15 letters</text>
+    <text x="32" y="342" class="small" style="fill: var(--muted)">DELHI IMPRISONING</text>
+    <text x="358" y="342" text-anchor="end" class="muted">16 letters, not drawn</text>
+    <text x="32" y="362" class="small">PROMISES SHIELDING</text>
+    <text x="358" y="362" text-anchor="end" class="muted">17 letters</text>
+  </g>
+  <g class="a w4 fin">
+    <rect x="390" y="260" width="350" height="110" rx="6" class="nxbox"/>
+    <text x="402" y="280" class="nxb">next chains</text>
+    <text x="402" y="304" class="muted">0 written: the word limit is 2</text>
+    <text x="402" y="324" class="muted">so no pass 2 follows</text>
+  </g>
+  <g class="a w5 fin">
+    <rect x="26" y="287" width="338" height="20" rx="4" class="pick"/>
+    <text x="20" y="392" class="okb">CPU picks the fewest letters</text>
+  </g>
+  <text x="20" y="436" class="a w1">A pair links only if the chain ends with the letter the word starts with.</text>
+  <text x="20" y="436" class="a w6">All threads finish in the same dispatch. A partial chain would need a third word, so it is dropped.</text>
+  <text x="20" y="436" class="a w7">atomicAdd hands each thread its own slot, so no two writes collide.</text>
+  <text x="20" y="436" class="title a w5 fin">The GPU only extends chains; picking the winner stays on the CPU.</text>
+</svg>

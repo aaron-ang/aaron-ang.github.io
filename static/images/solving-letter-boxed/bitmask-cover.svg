@@ -1,0 +1,211 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 350" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated bitmask check: MORPHS and SINGLED each light the bits of the letters they use, sharing S, and OR-ing the two masks lights all 12 bits, so (a | b) === 0xFFF">
+  <style>
+    :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; --accent: #1971c2; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #ddd; --muted: #999; --full: #555; --empty: #1e1e1e; --edge: #777; --probe: #ff8a4c; --ok: #69db7c; --chip: #2a2a2a; --accent: #74c0fc; }
+    }
+    text { fill: var(--fg); font-size: 14px; }
+    .muted { fill: var(--muted); font-size: 12px; }
+    .title { font-weight: 600; font-size: 15px; }
+    .let { font-weight: 600; font-size: 15px; }
+    .rowlab { font-weight: 600; }
+    .empty { fill: var(--empty); stroke: var(--edge); }
+    .chip { fill: var(--chip); stroke: var(--edge); }
+    .zero { fill: var(--muted); font-size: 13px; }
+    .one { fill: var(--empty); font-size: 13px; font-weight: 700; }
+    .c1 { fill: var(--probe); stroke: var(--probe); }
+    .c2 { fill: var(--accent); stroke: var(--accent); }
+    .c3 { fill: var(--ok); stroke: var(--ok); }
+    .rule { stroke: var(--fg); stroke-width: 1.5; }
+    .okb { fill: var(--ok); font-weight: 600; }
+    .hl { fill: none; stroke: var(--fg); stroke-width: 2.5; stroke-dasharray: 5 3; }
+    .code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 15px; font-weight: 600; }
+    /* 33.87s loop, 6 steps starting at 0.5, 5.33, 11.5, 15.2, 19.52, 26.99 s; final frame holds 6.13s, then fades. */
+    .a { opacity: 0; animation: 33.87s linear infinite; }
+    .w1 { animation-name: w1; }  /* 5.33s to end */
+    @keyframes w1 { 0.00%, 15.74% { opacity: 0 } 16.18%, 97.79% { opacity: 1 } 98.23%, 100.00% { opacity: 0 } }
+    .w2 { animation-name: w2; }  /* 11.50s to end */
+    @keyframes w2 { 0.00%, 33.95% { opacity: 0 } 34.40%, 97.79% { opacity: 1 } 98.23%, 100.00% { opacity: 0 } }
+    .w3 { animation-name: w3; }  /* 15.20s to end */
+    @keyframes w3 { 0.00%, 44.88% { opacity: 0 } 45.32%, 97.79% { opacity: 1 } 98.23%, 100.00% { opacity: 0 } }
+    .w4 { animation-name: w4; }  /* 19.52s to end */
+    @keyframes w4 { 0.00%, 57.63% { opacity: 0 } 58.07%, 97.79% { opacity: 1 } 98.23%, 100.00% { opacity: 0 } }
+    .w5 { animation-name: w5; }  /* 26.99s to end */
+    @keyframes w5 { 0.00%, 79.69% { opacity: 0 } 80.13%, 97.79% { opacity: 1 } 98.23%, 100.00% { opacity: 0 } }
+    .w6 { animation-name: w6; }  /* 0.50s to 5.33s */
+    @keyframes w6 { 0.00%, 15.74% { opacity: 1 } 16.18%, 97.79% { opacity: 0 } 98.23%, 100.00% { opacity: 1 } }
+    .w7 { animation-name: w7; }  /* 5.33s to 11.50s */
+    @keyframes w7 { 0.00%, 15.74% { opacity: 0 } 16.18%, 33.95% { opacity: 1 } 34.40%, 100.00% { opacity: 0 } }
+    .w8 { animation-name: w8; }  /* 15.20s to 19.52s */
+    @keyframes w8 { 0.00%, 44.88% { opacity: 0 } 45.32%, 57.63% { opacity: 1 } 58.07%, 100.00% { opacity: 0 } }
+    .w9 { animation-name: w9; }  /* 19.52s to 26.99s */
+    @keyframes w9 { 0.00%, 57.63% { opacity: 0 } 58.07%, 79.69% { opacity: 1 } 80.13%, 100.00% { opacity: 0 } }
+    @media (prefers-reduced-motion: reduce) {
+      .a { animation: none; opacity: 0; }
+      .a.fin { opacity: 1; }
+    }
+  </style>
+  <text x="20" y="28" class="title">Each word as a 12-bit mask: bit i is set if the word uses letter i</text>
+  <text x="205" y="54" text-anchor="middle" class="muted">top side</text>
+  <text x="329" y="54" text-anchor="middle" class="muted">right side</text>
+  <text x="453" y="54" text-anchor="middle" class="muted">bottom side</text>
+  <text x="577" y="54" text-anchor="middle" class="muted">left side</text>
+  <text x="167" y="80" text-anchor="middle" class="let">S</text>
+  <text x="205" y="80" text-anchor="middle" class="let">R</text>
+  <text x="243" y="80" text-anchor="middle" class="let">G</text>
+  <text x="291" y="80" text-anchor="middle" class="let">M</text>
+  <text x="329" y="80" text-anchor="middle" class="let">D</text>
+  <text x="367" y="80" text-anchor="middle" class="let">H</text>
+  <text x="415" y="80" text-anchor="middle" class="let">I</text>
+  <text x="453" y="80" text-anchor="middle" class="let">O</text>
+  <text x="491" y="80" text-anchor="middle" class="let">L</text>
+  <text x="539" y="80" text-anchor="middle" class="let">E</text>
+  <text x="577" y="80" text-anchor="middle" class="let">N</text>
+  <text x="615" y="80" text-anchor="middle" class="let">P</text>
+  <text x="20" y="80" class="muted">bit 0 → bit 11</text>
+  <text x="20" y="114" class="rowlab">a = MORPHS</text>
+  <rect x="150" y="92" width="34" height="34" rx="4" class="empty"/>
+  <text x="167" y="114" text-anchor="middle" class="zero">0</text>
+  <rect x="188" y="92" width="34" height="34" rx="4" class="empty"/>
+  <text x="205" y="114" text-anchor="middle" class="zero">0</text>
+  <rect x="226" y="92" width="34" height="34" rx="4" class="empty"/>
+  <text x="243" y="114" text-anchor="middle" class="zero">0</text>
+  <rect x="274" y="92" width="34" height="34" rx="4" class="empty"/>
+  <text x="291" y="114" text-anchor="middle" class="zero">0</text>
+  <rect x="312" y="92" width="34" height="34" rx="4" class="empty"/>
+  <text x="329" y="114" text-anchor="middle" class="zero">0</text>
+  <rect x="350" y="92" width="34" height="34" rx="4" class="empty"/>
+  <text x="367" y="114" text-anchor="middle" class="zero">0</text>
+  <rect x="398" y="92" width="34" height="34" rx="4" class="empty"/>
+  <text x="415" y="114" text-anchor="middle" class="zero">0</text>
+  <rect x="436" y="92" width="34" height="34" rx="4" class="empty"/>
+  <text x="453" y="114" text-anchor="middle" class="zero">0</text>
+  <rect x="474" y="92" width="34" height="34" rx="4" class="empty"/>
+  <text x="491" y="114" text-anchor="middle" class="zero">0</text>
+  <rect x="522" y="92" width="34" height="34" rx="4" class="empty"/>
+  <text x="539" y="114" text-anchor="middle" class="zero">0</text>
+  <rect x="560" y="92" width="34" height="34" rx="4" class="empty"/>
+  <text x="577" y="114" text-anchor="middle" class="zero">0</text>
+  <rect x="598" y="92" width="34" height="34" rx="4" class="empty"/>
+  <text x="615" y="114" text-anchor="middle" class="zero">0</text>
+  <g class="a w1 fin">
+    <rect x="150" y="92" width="34" height="34" rx="4" class="c1"/>
+    <text x="167" y="114" text-anchor="middle" class="one">1</text>
+    <rect x="188" y="92" width="34" height="34" rx="4" class="c1"/>
+    <text x="205" y="114" text-anchor="middle" class="one">1</text>
+    <rect x="274" y="92" width="34" height="34" rx="4" class="c1"/>
+    <text x="291" y="114" text-anchor="middle" class="one">1</text>
+    <rect x="350" y="92" width="34" height="34" rx="4" class="c1"/>
+    <text x="367" y="114" text-anchor="middle" class="one">1</text>
+    <rect x="436" y="92" width="34" height="34" rx="4" class="c1"/>
+    <text x="453" y="114" text-anchor="middle" class="one">1</text>
+    <rect x="598" y="92" width="34" height="34" rx="4" class="c1"/>
+    <text x="615" y="114" text-anchor="middle" class="one">1</text>
+  </g>
+  <text x="648" y="114" class="muted a w1 fin">uses 6</text>
+  <text x="20" y="162" class="rowlab">b = SINGLED</text>
+  <rect x="150" y="140" width="34" height="34" rx="4" class="empty"/>
+  <text x="167" y="162" text-anchor="middle" class="zero">0</text>
+  <rect x="188" y="140" width="34" height="34" rx="4" class="empty"/>
+  <text x="205" y="162" text-anchor="middle" class="zero">0</text>
+  <rect x="226" y="140" width="34" height="34" rx="4" class="empty"/>
+  <text x="243" y="162" text-anchor="middle" class="zero">0</text>
+  <rect x="274" y="140" width="34" height="34" rx="4" class="empty"/>
+  <text x="291" y="162" text-anchor="middle" class="zero">0</text>
+  <rect x="312" y="140" width="34" height="34" rx="4" class="empty"/>
+  <text x="329" y="162" text-anchor="middle" class="zero">0</text>
+  <rect x="350" y="140" width="34" height="34" rx="4" class="empty"/>
+  <text x="367" y="162" text-anchor="middle" class="zero">0</text>
+  <rect x="398" y="140" width="34" height="34" rx="4" class="empty"/>
+  <text x="415" y="162" text-anchor="middle" class="zero">0</text>
+  <rect x="436" y="140" width="34" height="34" rx="4" class="empty"/>
+  <text x="453" y="162" text-anchor="middle" class="zero">0</text>
+  <rect x="474" y="140" width="34" height="34" rx="4" class="empty"/>
+  <text x="491" y="162" text-anchor="middle" class="zero">0</text>
+  <rect x="522" y="140" width="34" height="34" rx="4" class="empty"/>
+  <text x="539" y="162" text-anchor="middle" class="zero">0</text>
+  <rect x="560" y="140" width="34" height="34" rx="4" class="empty"/>
+  <text x="577" y="162" text-anchor="middle" class="zero">0</text>
+  <rect x="598" y="140" width="34" height="34" rx="4" class="empty"/>
+  <text x="615" y="162" text-anchor="middle" class="zero">0</text>
+  <g class="a w2 fin">
+    <rect x="150" y="140" width="34" height="34" rx="4" class="c2"/>
+    <text x="167" y="162" text-anchor="middle" class="one">1</text>
+    <rect x="226" y="140" width="34" height="34" rx="4" class="c2"/>
+    <text x="243" y="162" text-anchor="middle" class="one">1</text>
+    <rect x="312" y="140" width="34" height="34" rx="4" class="c2"/>
+    <text x="329" y="162" text-anchor="middle" class="one">1</text>
+    <rect x="398" y="140" width="34" height="34" rx="4" class="c2"/>
+    <text x="415" y="162" text-anchor="middle" class="one">1</text>
+    <rect x="474" y="140" width="34" height="34" rx="4" class="c2"/>
+    <text x="491" y="162" text-anchor="middle" class="one">1</text>
+    <rect x="522" y="140" width="34" height="34" rx="4" class="c2"/>
+    <text x="539" y="162" text-anchor="middle" class="one">1</text>
+    <rect x="560" y="140" width="34" height="34" rx="4" class="c2"/>
+    <text x="577" y="162" text-anchor="middle" class="one">1</text>
+  </g>
+  <text x="648" y="162" class="muted a w2 fin">uses 7</text>
+  <rect x="145" y="87" width="44" height="92" rx="6" class="hl a w3 fin"/>
+  <line x1="150" y1="190" x2="632" y2="190" class="rule"/>
+  <text x="20" y="228" class="rowlab">a | b</text>
+  <rect x="150" y="206" width="34" height="34" rx="4" class="empty"/>
+  <text x="167" y="228" text-anchor="middle" class="zero">0</text>
+  <rect x="188" y="206" width="34" height="34" rx="4" class="empty"/>
+  <text x="205" y="228" text-anchor="middle" class="zero">0</text>
+  <rect x="226" y="206" width="34" height="34" rx="4" class="empty"/>
+  <text x="243" y="228" text-anchor="middle" class="zero">0</text>
+  <rect x="274" y="206" width="34" height="34" rx="4" class="empty"/>
+  <text x="291" y="228" text-anchor="middle" class="zero">0</text>
+  <rect x="312" y="206" width="34" height="34" rx="4" class="empty"/>
+  <text x="329" y="228" text-anchor="middle" class="zero">0</text>
+  <rect x="350" y="206" width="34" height="34" rx="4" class="empty"/>
+  <text x="367" y="228" text-anchor="middle" class="zero">0</text>
+  <rect x="398" y="206" width="34" height="34" rx="4" class="empty"/>
+  <text x="415" y="228" text-anchor="middle" class="zero">0</text>
+  <rect x="436" y="206" width="34" height="34" rx="4" class="empty"/>
+  <text x="453" y="228" text-anchor="middle" class="zero">0</text>
+  <rect x="474" y="206" width="34" height="34" rx="4" class="empty"/>
+  <text x="491" y="228" text-anchor="middle" class="zero">0</text>
+  <rect x="522" y="206" width="34" height="34" rx="4" class="empty"/>
+  <text x="539" y="228" text-anchor="middle" class="zero">0</text>
+  <rect x="560" y="206" width="34" height="34" rx="4" class="empty"/>
+  <text x="577" y="228" text-anchor="middle" class="zero">0</text>
+  <rect x="598" y="206" width="34" height="34" rx="4" class="empty"/>
+  <text x="615" y="228" text-anchor="middle" class="zero">0</text>
+  <g class="a w4 fin">
+    <rect x="150" y="206" width="34" height="34" rx="4" class="c3"/>
+    <text x="167" y="228" text-anchor="middle" class="one">1</text>
+    <rect x="188" y="206" width="34" height="34" rx="4" class="c3"/>
+    <text x="205" y="228" text-anchor="middle" class="one">1</text>
+    <rect x="226" y="206" width="34" height="34" rx="4" class="c3"/>
+    <text x="243" y="228" text-anchor="middle" class="one">1</text>
+    <rect x="274" y="206" width="34" height="34" rx="4" class="c3"/>
+    <text x="291" y="228" text-anchor="middle" class="one">1</text>
+    <rect x="312" y="206" width="34" height="34" rx="4" class="c3"/>
+    <text x="329" y="228" text-anchor="middle" class="one">1</text>
+    <rect x="350" y="206" width="34" height="34" rx="4" class="c3"/>
+    <text x="367" y="228" text-anchor="middle" class="one">1</text>
+    <rect x="398" y="206" width="34" height="34" rx="4" class="c3"/>
+    <text x="415" y="228" text-anchor="middle" class="one">1</text>
+    <rect x="436" y="206" width="34" height="34" rx="4" class="c3"/>
+    <text x="453" y="228" text-anchor="middle" class="one">1</text>
+    <rect x="474" y="206" width="34" height="34" rx="4" class="c3"/>
+    <text x="491" y="228" text-anchor="middle" class="one">1</text>
+    <rect x="522" y="206" width="34" height="34" rx="4" class="c3"/>
+    <text x="539" y="228" text-anchor="middle" class="one">1</text>
+    <rect x="560" y="206" width="34" height="34" rx="4" class="c3"/>
+    <text x="577" y="228" text-anchor="middle" class="one">1</text>
+    <rect x="598" y="206" width="34" height="34" rx="4" class="c3"/>
+    <text x="615" y="228" text-anchor="middle" class="one">1</text>
+  </g>
+  <text x="648" y="228" class="okb a w4 fin">all 12</text>
+  <rect x="150" y="262" width="180" height="40" rx="6" class="chip"/>
+  <text x="20" y="287" class="muted">the whole check</text>
+  <text x="166" y="288" class="code">(a | b) === 0xFFF</text>
+  <text x="344" y="288" class="okb a w5 fin">→ true ✓</text>
+  <text x="20" y="334" class="a w6">Each of the puzzle's 12 letters gets one bit. Every bit starts at 0.</text>
+  <text x="20" y="334" class="a w7">A word sets one bit per distinct letter, in any order.</text>
+  <text x="20" y="334" class="a w8">Both words use S, so both set the S bit.</text>
+  <text x="20" y="334" class="a w9">OR keeps a bit if either word sets it.</text>
+  <text x="20" y="334" class="title a w5 fin">One OR and one compare replace searching every word for every letter.</text>
+</svg>

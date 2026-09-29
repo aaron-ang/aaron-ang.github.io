@@ -1,0 +1,268 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 386" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated dead-end memo in the CPU search: the chain ARC → CAME ends in E covering 5 letters with one word left. None of the 7 words starting with E completes it, so the position is marked dead. Later CREAM → MARE reaches the same position through different words and is skipped by a single lookup, as is any later chain in that position.">
+  <style>
+    :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; --accent: #1971c2; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #ddd; --muted: #999; --full: #555; --empty: #1e1e1e; --edge: #777; --probe: #ff8a4c; --ok: #69db7c; --chip: #2a2a2a; --accent: #74c0fc; }
+    }
+    text { fill: var(--fg); font-size: 14px; }
+    .muted { fill: var(--muted); font-size: 12px; }
+    .title { font-weight: 600; font-size: 15px; }
+    .let { font-weight: 600; font-size: 14px; }
+    .word { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; font-weight: 600; }
+    .cell { fill: var(--empty); stroke: var(--edge); }
+    .on { fill: var(--accent); stroke: var(--accent); }
+    .one { fill: var(--empty); font-size: 12px; font-weight: 700; }
+    .chip { fill: var(--chip); stroke: var(--edge); }
+    .box { fill: var(--chip); stroke: var(--edge); }
+    .miss { fill: var(--probe); font-weight: 600; font-size: 12px; }
+    .dead { fill: var(--probe); font-weight: 700; font-size: 13px; }
+    .okb { fill: var(--ok); font-weight: 600; font-size: 13px; }
+    .cur { fill: none; stroke: var(--fg); stroke-width: 1.5; stroke-dasharray: 4 3; }
+    .try { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+    .add { fill: var(--accent); fill-opacity: 0.3; stroke: var(--accent); stroke-dasharray: 3 2; }
+    .addt { fill: var(--accent); font-size: 12px; font-weight: 700; }
+    .look { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+    /* 81.01s loop, 18 steps starting at 0.5, 4.77, 9.09, 12.35, 16.62, 23.23, 29.43, 32.43, 35.43, 38.43, 41.43, 44.43, 48.33, 56.33, 59.79, 64.2, 68.72, 73.39 s; final frame holds 6.83s, then fades. */
+    .a { opacity: 0; animation: 81.01s linear infinite; }
+    .w1 { animation-name: w1; }  /* 0.50s to end */
+    @keyframes w1 { 0.00%, 100.00% { opacity: 1 } }
+    .w2 { animation-name: w2; }  /* 4.77s to end */
+    @keyframes w2 { 0.00%, 5.89% { opacity: 0 } 6.09%, 99.03% { opacity: 1 } 99.22%, 100.00% { opacity: 0 } }
+    .w3 { animation-name: w3; }  /* 9.09s to end */
+    @keyframes w3 { 0.00%, 11.22% { opacity: 0 } 11.42%, 99.03% { opacity: 1 } 99.22%, 100.00% { opacity: 0 } }
+    .w4 { animation-name: w4; }  /* 12.35s to end */
+    @keyframes w4 { 0.00%, 15.25% { opacity: 0 } 15.45%, 99.03% { opacity: 1 } 99.22%, 100.00% { opacity: 0 } }
+    .w5 { animation-name: w5; }  /* 16.62s to end */
+    @keyframes w5 { 0.00%, 20.52% { opacity: 0 } 20.72%, 99.03% { opacity: 1 } 99.22%, 100.00% { opacity: 0 } }
+    .w6 { animation-name: w6; }  /* 23.23s to end */
+    @keyframes w6 { 0.00%, 28.68% { opacity: 0 } 28.88%, 99.03% { opacity: 1 } 99.22%, 100.00% { opacity: 0 } }
+    .w7 { animation-name: w7; }  /* 29.43s to end */
+    @keyframes w7 { 0.00%, 36.33% { opacity: 0 } 36.53%, 99.03% { opacity: 1 } 99.22%, 100.00% { opacity: 0 } }
+    .w8 { animation-name: w8; }  /* 32.43s to end */
+    @keyframes w8 { 0.00%, 40.03% { opacity: 0 } 40.23%, 99.03% { opacity: 1 } 99.22%, 100.00% { opacity: 0 } }
+    .w9 { animation-name: w9; }  /* 35.43s to end */
+    @keyframes w9 { 0.00%, 43.74% { opacity: 0 } 43.94%, 99.03% { opacity: 1 } 99.22%, 100.00% { opacity: 0 } }
+    .w10 { animation-name: w10; }  /* 38.43s to end */
+    @keyframes w10 { 0.00%, 47.44% { opacity: 0 } 47.64%, 99.03% { opacity: 1 } 99.22%, 100.00% { opacity: 0 } }
+    .w11 { animation-name: w11; }  /* 41.43s to end */
+    @keyframes w11 { 0.00%, 51.14% { opacity: 0 } 51.34%, 99.03% { opacity: 1 } 99.22%, 100.00% { opacity: 0 } }
+    .w12 { animation-name: w12; }  /* 44.43s to end */
+    @keyframes w12 { 0.00%, 54.85% { opacity: 0 } 55.05%, 99.03% { opacity: 1 } 99.22%, 100.00% { opacity: 0 } }
+    .w13 { animation-name: w13; }  /* 0.50s to 48.33s */
+    @keyframes w13 { 0.00%, 59.66% { opacity: 1 } 59.86%, 99.03% { opacity: 0 } 99.22%, 100.00% { opacity: 1 } }
+    .w14 { animation-name: w14; }  /* 48.33s to end */
+    @keyframes w14 { 0.00%, 59.66% { opacity: 0 } 59.86%, 99.03% { opacity: 1 } 99.22%, 100.00% { opacity: 0 } }
+    .w15 { animation-name: w15; }  /* 68.72s to end */
+    @keyframes w15 { 0.00%, 84.83% { opacity: 0 } 85.03%, 99.03% { opacity: 1 } 99.22%, 100.00% { opacity: 0 } }
+    .w16 { animation-name: w16; }  /* 73.39s to end */
+    @keyframes w16 { 0.00%, 90.59% { opacity: 0 } 90.79%, 99.03% { opacity: 1 } 99.22%, 100.00% { opacity: 0 } }
+    .w17 { animation-name: w17; }  /* 56.33s to end */
+    @keyframes w17 { 0.00%, 69.53% { opacity: 0 } 69.73%, 99.03% { opacity: 1 } 99.22%, 100.00% { opacity: 0 } }
+    .w18 { animation-name: w18; }  /* 59.79s to end */
+    @keyframes w18 { 0.00%, 73.81% { opacity: 0 } 74.01%, 99.03% { opacity: 1 } 99.22%, 100.00% { opacity: 0 } }
+    .w19 { animation-name: w19; }  /* 64.20s to end */
+    @keyframes w19 { 0.00%, 79.25% { opacity: 0 } 79.45%, 99.03% { opacity: 1 } 99.22%, 100.00% { opacity: 0 } }
+    .w20 { animation-name: w20; }  /* 0.50s to 4.77s */
+    @keyframes w20 { 0.00%, 5.89% { opacity: 1 } 6.09%, 99.03% { opacity: 0 } 99.22%, 100.00% { opacity: 1 } }
+    .w21 { animation-name: w21; }  /* 4.77s to 9.09s */
+    @keyframes w21 { 0.00%, 5.89% { opacity: 0 } 6.09%, 11.22% { opacity: 1 } 11.42%, 100.00% { opacity: 0 } }
+    .w22 { animation-name: w22; }  /* 9.09s to 12.35s */
+    @keyframes w22 { 0.00%, 11.22% { opacity: 0 } 11.42%, 15.25% { opacity: 1 } 15.45%, 100.00% { opacity: 0 } }
+    .w23 { animation-name: w23; }  /* 12.35s to 16.62s */
+    @keyframes w23 { 0.00%, 15.25% { opacity: 0 } 15.45%, 20.52% { opacity: 1 } 20.72%, 100.00% { opacity: 0 } }
+    .w24 { animation-name: w24; }  /* 16.62s to 23.23s */
+    @keyframes w24 { 0.00%, 20.52% { opacity: 0 } 20.72%, 28.68% { opacity: 1 } 28.88%, 100.00% { opacity: 0 } }
+    .w25 { animation-name: w25; }  /* 23.23s to 29.43s */
+    @keyframes w25 { 0.00%, 28.68% { opacity: 0 } 28.88%, 36.33% { opacity: 1 } 36.53%, 100.00% { opacity: 0 } }
+    .w26 { animation-name: w26; }  /* 44.43s to 48.33s */
+    @keyframes w26 { 0.00%, 54.85% { opacity: 0 } 55.05%, 59.66% { opacity: 1 } 59.86%, 100.00% { opacity: 0 } }
+    .w27 { animation-name: w27; }  /* 48.33s to 56.33s */
+    @keyframes w27 { 0.00%, 59.66% { opacity: 0 } 59.86%, 69.53% { opacity: 1 } 69.73%, 100.00% { opacity: 0 } }
+    .w28 { animation-name: w28; }  /* 56.33s to 59.79s */
+    @keyframes w28 { 0.00%, 69.53% { opacity: 0 } 69.73%, 73.81% { opacity: 1 } 74.01%, 100.00% { opacity: 0 } }
+    .w29 { animation-name: w29; }  /* 59.79s to 64.20s */
+    @keyframes w29 { 0.00%, 73.81% { opacity: 0 } 74.01%, 79.25% { opacity: 1 } 79.45%, 100.00% { opacity: 0 } }
+    .w30 { animation-name: w30; }  /* 64.20s to 68.72s */
+    @keyframes w30 { 0.00%, 79.25% { opacity: 0 } 79.45%, 84.83% { opacity: 1 } 85.03%, 100.00% { opacity: 0 } }
+    .c0 { animation-name: c0; }  /* 23.23s to 29.43s */
+    @keyframes c0 { 0.00%, 28.68% { opacity: 0 } 28.88%, 36.33% { opacity: 1 } 36.53%, 100.00% { opacity: 0 } }
+    .c1 { animation-name: c1; }  /* 29.43s to 32.43s */
+    @keyframes c1 { 0.00%, 36.33% { opacity: 0 } 36.53%, 40.03% { opacity: 1 } 40.23%, 100.00% { opacity: 0 } }
+    .c2 { animation-name: c2; }  /* 32.43s to 35.43s */
+    @keyframes c2 { 0.00%, 40.03% { opacity: 0 } 40.23%, 43.74% { opacity: 1 } 43.94%, 100.00% { opacity: 0 } }
+    .c3 { animation-name: c3; }  /* 35.43s to 38.43s */
+    @keyframes c3 { 0.00%, 43.74% { opacity: 0 } 43.94%, 47.44% { opacity: 1 } 47.64%, 100.00% { opacity: 0 } }
+    .c4 { animation-name: c4; }  /* 38.43s to 41.43s */
+    @keyframes c4 { 0.00%, 47.44% { opacity: 0 } 47.64%, 51.14% { opacity: 1 } 51.34%, 100.00% { opacity: 0 } }
+    .c5 { animation-name: c5; }  /* 41.43s to 44.43s */
+    @keyframes c5 { 0.00%, 51.14% { opacity: 0 } 51.34%, 54.85% { opacity: 1 } 55.05%, 100.00% { opacity: 0 } }
+    .c6 { animation-name: c6; }  /* 44.43s to 48.33s */
+    @keyframes c6 { 0.00%, 54.85% { opacity: 0 } 55.05%, 59.66% { opacity: 1 } 59.86%, 100.00% { opacity: 0 } }
+    @media (prefers-reduced-motion: reduce) {
+      .a { animation: none; opacity: 0; }
+      .a.fin { opacity: 1; }
+    }
+  </style>
+  <text x="20" y="26" class="title">Find Best on the CPU: remembering dead ends</text>
+  <text x="20" y="48" class="muted">Puzzle DCE/AUB/HMW/RNF, 255 valid words. Level 3: every chain of 3 words.</text>
+  <text x="20" y="80" class="muted">covered letters</text>
+  <text x="159" y="80" text-anchor="middle" class="let">D</text>
+  <text x="193" y="80" text-anchor="middle" class="let">C</text>
+  <text x="227" y="80" text-anchor="middle" class="let">E</text>
+  <text x="273" y="80" text-anchor="middle" class="let">A</text>
+  <text x="307" y="80" text-anchor="middle" class="let">U</text>
+  <text x="341" y="80" text-anchor="middle" class="let">B</text>
+  <text x="387" y="80" text-anchor="middle" class="let">H</text>
+  <text x="421" y="80" text-anchor="middle" class="let">M</text>
+  <text x="455" y="80" text-anchor="middle" class="let">W</text>
+  <text x="501" y="80" text-anchor="middle" class="let">R</text>
+  <text x="535" y="80" text-anchor="middle" class="let">N</text>
+  <text x="569" y="80" text-anchor="middle" class="let">F</text>
+  <text x="20" y="112" class="word a w1 fin">ARC → CAME</text>
+  <g class="a w1 fin">
+    <rect x="144" y="92" width="30" height="30" rx="4" class="cell"/>
+    <rect x="178" y="92" width="30" height="30" rx="4" class="cell"/>
+    <rect x="212" y="92" width="30" height="30" rx="4" class="cell"/>
+    <rect x="258" y="92" width="30" height="30" rx="4" class="cell"/>
+    <rect x="292" y="92" width="30" height="30" rx="4" class="cell"/>
+    <rect x="326" y="92" width="30" height="30" rx="4" class="cell"/>
+    <rect x="372" y="92" width="30" height="30" rx="4" class="cell"/>
+    <rect x="406" y="92" width="30" height="30" rx="4" class="cell"/>
+    <rect x="440" y="92" width="30" height="30" rx="4" class="cell"/>
+    <rect x="486" y="92" width="30" height="30" rx="4" class="cell"/>
+    <rect x="520" y="92" width="30" height="30" rx="4" class="cell"/>
+    <rect x="554" y="92" width="30" height="30" rx="4" class="cell"/>
+  </g>
+  <g class="a w2 fin">
+    <rect x="178" y="92" width="30" height="30" rx="4" class="on"/>
+    <text x="193" y="112" text-anchor="middle" class="one">1</text>
+    <rect x="258" y="92" width="30" height="30" rx="4" class="on"/>
+    <text x="273" y="112" text-anchor="middle" class="one">1</text>
+    <rect x="486" y="92" width="30" height="30" rx="4" class="on"/>
+    <text x="501" y="112" text-anchor="middle" class="one">1</text>
+  </g>
+  <g class="a w3 fin">
+    <rect x="212" y="92" width="30" height="30" rx="4" class="on"/>
+    <text x="227" y="112" text-anchor="middle" class="one">1</text>
+    <rect x="406" y="92" width="30" height="30" rx="4" class="on"/>
+    <text x="421" y="112" text-anchor="middle" class="one">1</text>
+  </g>
+  <text x="600" y="105" class="a w4 fin">ends in E</text>
+  <text x="600" y="121" class="muted a w4 fin">1 word left</text>
+  <rect x="12" y="87" width="736" height="40" rx="6" class="cur a w1 fin"/>
+  <text x="20" y="156" class="muted a w5 fin">7 words start</text>
+  <text x="20" y="172" class="muted a w5 fin">with E</text>
+  <rect x="144" y="138" width="80" height="44" rx="4" class="chip a w5 fin"/>
+  <text x="184" y="156" text-anchor="middle" class="word a w5 fin">EACH</text>
+  <text x="184" y="174" text-anchor="middle" class="miss a w6 fin">6 of 12 ✗</text>
+  <rect x="230" y="138" width="80" height="44" rx="4" class="chip a w5 fin"/>
+  <text x="270" y="156" text-anchor="middle" class="word a w5 fin">EAR</text>
+  <text x="270" y="174" text-anchor="middle" class="miss a w7 fin">5 of 12 ✗</text>
+  <rect x="316" y="138" width="80" height="44" rx="4" class="chip a w5 fin"/>
+  <text x="356" y="156" text-anchor="middle" class="word a w5 fin">EMBER</text>
+  <text x="356" y="174" text-anchor="middle" class="miss a w8 fin">6 of 12 ✗</text>
+  <rect x="402" y="138" width="80" height="44" rx="4" class="chip a w5 fin"/>
+  <text x="442" y="156" text-anchor="middle" class="word a w5 fin">ENCUMBER</text>
+  <text x="442" y="174" text-anchor="middle" class="miss a w9 fin">8 of 12 ✗</text>
+  <rect x="488" y="138" width="80" height="44" rx="4" class="chip a w5 fin"/>
+  <text x="528" y="156" text-anchor="middle" class="word a w5 fin">END</text>
+  <text x="528" y="174" text-anchor="middle" class="miss a w10 fin">7 of 12 ✗</text>
+  <rect x="574" y="138" width="80" height="44" rx="4" class="chip a w5 fin"/>
+  <text x="614" y="156" text-anchor="middle" class="word a w5 fin">ENDURE</text>
+  <text x="614" y="174" text-anchor="middle" class="miss a w11 fin">8 of 12 ✗</text>
+  <rect x="660" y="138" width="80" height="44" rx="4" class="chip a w5 fin"/>
+  <text x="700" y="156" text-anchor="middle" class="word a w5 fin">ERA</text>
+  <text x="700" y="174" text-anchor="middle" class="miss a w12 fin">5 of 12 ✗</text>
+  <g class="a c0">
+    <rect x="141" y="135" width="86" height="50" rx="6" class="try"/>
+    <rect x="372" y="92" width="30" height="30" rx="4" class="add"/>
+    <text x="387" y="112" text-anchor="middle" class="addt">1</text>
+  </g>
+  <g class="a c1">
+    <rect x="227" y="135" width="86" height="50" rx="6" class="try"/>
+  </g>
+  <g class="a c2">
+    <rect x="313" y="135" width="86" height="50" rx="6" class="try"/>
+    <rect x="326" y="92" width="30" height="30" rx="4" class="add"/>
+    <text x="341" y="112" text-anchor="middle" class="addt">1</text>
+  </g>
+  <g class="a c3">
+    <rect x="399" y="135" width="86" height="50" rx="6" class="try"/>
+    <rect x="292" y="92" width="30" height="30" rx="4" class="add"/>
+    <text x="307" y="112" text-anchor="middle" class="addt">1</text>
+    <rect x="326" y="92" width="30" height="30" rx="4" class="add"/>
+    <text x="341" y="112" text-anchor="middle" class="addt">1</text>
+    <rect x="520" y="92" width="30" height="30" rx="4" class="add"/>
+    <text x="535" y="112" text-anchor="middle" class="addt">1</text>
+  </g>
+  <g class="a c4">
+    <rect x="485" y="135" width="86" height="50" rx="6" class="try"/>
+    <rect x="144" y="92" width="30" height="30" rx="4" class="add"/>
+    <text x="159" y="112" text-anchor="middle" class="addt">1</text>
+    <rect x="520" y="92" width="30" height="30" rx="4" class="add"/>
+    <text x="535" y="112" text-anchor="middle" class="addt">1</text>
+  </g>
+  <g class="a c5">
+    <rect x="571" y="135" width="86" height="50" rx="6" class="try"/>
+    <rect x="144" y="92" width="30" height="30" rx="4" class="add"/>
+    <text x="159" y="112" text-anchor="middle" class="addt">1</text>
+    <rect x="292" y="92" width="30" height="30" rx="4" class="add"/>
+    <text x="307" y="112" text-anchor="middle" class="addt">1</text>
+    <rect x="520" y="92" width="30" height="30" rx="4" class="add"/>
+    <text x="535" y="112" text-anchor="middle" class="addt">1</text>
+  </g>
+  <g class="a c6">
+    <rect x="657" y="135" width="86" height="50" rx="6" class="try"/>
+  </g>
+  <rect x="12" y="198" width="736" height="60" rx="6" class="box"/>
+  <text x="26" y="218" class="muted">dead ends, keyed by (last letter, covered letters, words left)</text>
+  <text x="26" y="244" class="muted a w13">none yet</text>
+  <text x="26" y="244" class="word a w14 fin">(E, C E A M R, 1)</text>
+  <text x="200" y="244" class="dead a w14 fin">dead</text>
+  <text x="244" y="244" class="muted a w14 fin">no single word finishes it</text>
+  <rect x="20" y="228" width="170" height="23" rx="4" class="look a w15 fin"/>
+  <text x="736" y="244" text-anchor="end" class="okb a w16 fin">reused by every later arrival</text>
+  <text x="20" y="298" class="word a w17 fin">CREAM → MARE</text>
+  <g class="a w17 fin">
+    <rect x="144" y="278" width="30" height="30" rx="4" class="cell"/>
+    <rect x="178" y="278" width="30" height="30" rx="4" class="cell"/>
+    <rect x="212" y="278" width="30" height="30" rx="4" class="cell"/>
+    <rect x="258" y="278" width="30" height="30" rx="4" class="cell"/>
+    <rect x="292" y="278" width="30" height="30" rx="4" class="cell"/>
+    <rect x="326" y="278" width="30" height="30" rx="4" class="cell"/>
+    <rect x="372" y="278" width="30" height="30" rx="4" class="cell"/>
+    <rect x="406" y="278" width="30" height="30" rx="4" class="cell"/>
+    <rect x="440" y="278" width="30" height="30" rx="4" class="cell"/>
+    <rect x="486" y="278" width="30" height="30" rx="4" class="cell"/>
+    <rect x="520" y="278" width="30" height="30" rx="4" class="cell"/>
+    <rect x="554" y="278" width="30" height="30" rx="4" class="cell"/>
+  </g>
+  <g class="a w18 fin">
+    <rect x="178" y="278" width="30" height="30" rx="4" class="on"/>
+    <text x="193" y="298" text-anchor="middle" class="one">1</text>
+    <rect x="212" y="278" width="30" height="30" rx="4" class="on"/>
+    <text x="227" y="298" text-anchor="middle" class="one">1</text>
+    <rect x="258" y="278" width="30" height="30" rx="4" class="on"/>
+    <text x="273" y="298" text-anchor="middle" class="one">1</text>
+    <rect x="406" y="278" width="30" height="30" rx="4" class="on"/>
+    <text x="421" y="298" text-anchor="middle" class="one">1</text>
+    <rect x="486" y="278" width="30" height="30" rx="4" class="on"/>
+    <text x="501" y="298" text-anchor="middle" class="one">1</text>
+  </g>
+  <text x="600" y="291" class="a w19 fin">ends in E</text>
+  <text x="600" y="307" class="muted a w19 fin">1 word left</text>
+  <rect x="12" y="273" width="736" height="40" rx="6" class="cur a w17 fin"/>
+  <text x="20" y="336" class="okb a w15 fin">lookup: position already dead → skipped, 0 of 7 words tried</text>
+  <text x="20" y="370" class="a w20">Level 3 builds chains one word at a time.</text>
+  <text x="20" y="370" class="a w21">ARC sets its letters in the covered mask.</text>
+  <text x="20" y="370" class="a w22">CAME adds M and E.</text>
+  <text x="20" y="370" class="a w23">Only a word starting with E can come next.</text>
+  <text x="20" y="370" class="a w24">The first-letter index lists them directly.</text>
+  <text x="20" y="370" class="a w25">OR in each word in turn; 12 of 12 would finish the puzzle.</text>
+  <text x="20" y="370" class="a w26">No word finishes this chain.</text>
+  <text x="20" y="370" class="a w27">The memo stores the position, not the chain that reached it.</text>
+  <text x="20" y="370" class="a w28">Later, the search arrives through different words.</text>
+  <text x="20" y="370" class="a w29">It covers the same 5 letters.</text>
+  <text x="20" y="370" class="a w30">Same last letter, letters, and words left: the same position.</text>
+  <text x="20" y="370" class="title a w16 fin">Each dead position is searched once, however many paths reach it.</text>
+</svg>

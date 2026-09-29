@@ -1,0 +1,191 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 400" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated GPU passes: after finding no 1-word solution, the CPU allocates empty buffers, then uploads the words and one-word chains once. Each pass is one dispatch that reads one chains buffer and writes new chains to the other, plus solutions and two counters. After each pass the CPU reads back the counters and solutions in one copy. Pass 1 finds no solution, so the buffers swap and pass 2 runs; it finds 8, and the CPU ranks them and picks CHAMBER REFUND DAWN.">
+  <style>
+    :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; --accent: #1971c2; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #ddd; --muted: #999; --full: #555; --empty: #1e1e1e; --edge: #777; --probe: #ff8a4c; --ok: #69db7c; --chip: #2a2a2a; --accent: #74c0fc; }
+    }
+    text { fill: var(--fg); font-size: 14px; }
+    .muted { fill: var(--muted); font-size: 12px; }
+    .title { font-weight: 600; font-size: 15px; }
+    .b { font-weight: 600; font-size: 13px; }
+    .word { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; font-weight: 600; }
+    .dev { fill: var(--chip); stroke: var(--edge); }
+    .buf { fill: var(--empty); stroke: var(--edge); }
+    .inb { fill: none; stroke: var(--probe); stroke-width: 2.5; }
+    .outb { fill: none; stroke: var(--accent); stroke-width: 2.5; }
+    .solb { fill: none; stroke: var(--ok); stroke-width: 2.5; }
+    .tin { fill: var(--probe); font-weight: 600; font-size: 12px; }
+    .tout { fill: var(--accent); font-weight: 600; font-size: 12px; }
+    .dec { fill: var(--probe); font-weight: 600; font-size: 13px; }
+    .okb { fill: var(--ok); font-weight: 600; font-size: 13px; }
+    .line { stroke: var(--edge); stroke-width: 1.5; }
+    .head { fill: var(--edge); }
+    .aline { stroke: var(--probe); stroke-width: 2.5; }
+    .ahead { fill: var(--probe); }
+    .pick { fill: none; stroke: var(--ok); stroke-width: 2.5; }
+    /* 80.54s loop, 15 steps starting at 0.5, 7.94, 14.22, 20.75, 29.14, 31.94, 38.22, 44.16, 49.02, 53.79, 56.29, 59.3, 62.51, 68.2, 73.21 s; final frame holds 6.58s, then fades. */
+    .a { opacity: 0; animation: 80.54s linear infinite; }
+    .w1 { animation-name: w1; }  /* 0.50s to 7.94s */
+    @keyframes w1 { 0.00%, 9.86% { opacity: 1 } 10.04%, 99.07% { opacity: 0 } 99.26%, 100.00% { opacity: 1 } }
+    .w2 { animation-name: w2; }  /* 7.94s to end */
+    @keyframes w2 { 0.00%, 9.86% { opacity: 0 } 10.04%, 99.07% { opacity: 1 } 99.26%, 100.00% { opacity: 0 } }
+    .w3 { animation-name: w3; }  /* 0.50s to 29.14s */
+    @keyframes w3 { 0.00%, 36.18% { opacity: 1 } 36.37%, 99.07% { opacity: 0 } 99.26%, 100.00% { opacity: 1 } }
+    .w4 { animation-name: w4; }  /* 7.94s to 44.16s */
+    @keyframes w4 { 0.00%, 9.86% { opacity: 0 } 10.04%, 54.83% { opacity: 1 } 55.02%, 100.00% { opacity: 0 } }
+    .w5 { animation-name: w5; }  /* 44.16s to 56.29s */
+    @keyframes w5 { 0.00%, 54.83% { opacity: 0 } 55.02%, 69.89% { opacity: 1 } 70.08%, 100.00% { opacity: 0 } }
+    .w6 { animation-name: w6; }  /* 56.29s to end */
+    @keyframes w6 { 0.00%, 69.89% { opacity: 0 } 70.08%, 99.07% { opacity: 1 } 99.26%, 100.00% { opacity: 0 } }
+    .w7 { animation-name: w7; }  /* 14.22s to end */
+    @keyframes w7 { 0.00%, 17.66% { opacity: 0 } 17.84%, 99.07% { opacity: 1 } 99.26%, 100.00% { opacity: 0 } }
+    .w8 { animation-name: w8; }  /* 7.94s to 14.22s */
+    @keyframes w8 { 0.00%, 9.86% { opacity: 0 } 10.04%, 17.66% { opacity: 1 } 17.84%, 100.00% { opacity: 0 } }
+    .w9 { animation-name: w9; }  /* 29.14s to end */
+    @keyframes w9 { 0.00%, 36.18% { opacity: 0 } 36.37%, 99.07% { opacity: 1 } 99.26%, 100.00% { opacity: 0 } }
+    .w10 { animation-name: w10; }  /* 14.22s to 44.16s */
+    @keyframes w10 { 0.00%, 17.66% { opacity: 0 } 17.84%, 54.83% { opacity: 1 } 55.02%, 100.00% { opacity: 0 } }
+    .w11 { animation-name: w11; }  /* 44.16s to end */
+    @keyframes w11 { 0.00%, 54.83% { opacity: 0 } 55.02%, 99.07% { opacity: 1 } 99.26%, 100.00% { opacity: 0 } }
+    .w12 { animation-name: w12; }  /* 0.50s to 20.75s */
+    @keyframes w12 { 0.00%, 25.76% { opacity: 1 } 25.95%, 99.07% { opacity: 0 } 99.26%, 100.00% { opacity: 1 } }
+    .w13 { animation-name: w13; }  /* 20.75s to 49.02s */
+    @keyframes w13 { 0.00%, 25.76% { opacity: 0 } 25.95%, 60.86% { opacity: 1 } 61.05%, 100.00% { opacity: 0 } }
+    .w14 { animation-name: w14; }  /* 49.02s to end */
+    @keyframes w14 { 0.00%, 60.86% { opacity: 0 } 61.05%, 99.07% { opacity: 1 } 99.26%, 100.00% { opacity: 0 } }
+    .w15 { animation-name: w15; }  /* 20.75s to 31.94s, 49.02s to 59.30s */
+    @keyframes w15 { 0.00%, 25.76% { opacity: 0 } 25.95%, 39.66% { opacity: 1 } 39.84%, 60.86% { opacity: 0 } 61.05%, 73.63% { opacity: 1 } 73.81%, 100.00% { opacity: 0 } }
+    .w16 { animation-name: w16; }  /* 0.50s to 53.79s */
+    @keyframes w16 { 0.00%, 66.79% { opacity: 1 } 66.97%, 99.07% { opacity: 0 } 99.26%, 100.00% { opacity: 1 } }
+    .w17 { animation-name: w17; }  /* 53.79s to end */
+    @keyframes w17 { 0.00%, 66.79% { opacity: 0 } 66.97%, 99.07% { opacity: 1 } 99.26%, 100.00% { opacity: 0 } }
+    .w18 { animation-name: w18; }  /* 20.75s to 53.79s */
+    @keyframes w18 { 0.00%, 25.76% { opacity: 0 } 25.95%, 66.79% { opacity: 1 } 66.97%, 100.00% { opacity: 0 } }
+    .w19 { animation-name: w19; }  /* 20.75s to 29.14s, 49.02s to 56.29s */
+    @keyframes w19 { 0.00%, 25.76% { opacity: 0 } 25.95%, 36.18% { opacity: 1 } 36.37%, 60.86% { opacity: 0 } 61.05%, 69.89% { opacity: 1 } 70.08%, 100.00% { opacity: 0 } }
+    .w20 { animation-name: w20; }  /* 29.14s to 49.02s */
+    @keyframes w20 { 0.00%, 36.18% { opacity: 0 } 36.37%, 60.86% { opacity: 1 } 61.05%, 100.00% { opacity: 0 } }
+    .w21 { animation-name: w21; }  /* 31.94s to 49.02s, 59.30s to end */
+    @keyframes w21 { 0.00%, 39.66% { opacity: 0 } 39.84%, 60.86% { opacity: 1 } 61.05%, 73.63% { opacity: 0 } 73.81%, 99.07% { opacity: 1 } 99.26%, 100.00% { opacity: 0 } }
+    .w22 { animation-name: w22; }  /* 31.94s to end */
+    @keyframes w22 { 0.00%, 39.66% { opacity: 0 } 39.84%, 99.07% { opacity: 1 } 99.26%, 100.00% { opacity: 0 } }
+    .w23 { animation-name: w23; }  /* 38.22s to end */
+    @keyframes w23 { 0.00%, 47.45% { opacity: 0 } 47.64%, 99.07% { opacity: 1 } 99.26%, 100.00% { opacity: 0 } }
+    .w24 { animation-name: w24; }  /* 59.30s to end */
+    @keyframes w24 { 0.00%, 73.63% { opacity: 0 } 73.81%, 99.07% { opacity: 1 } 99.26%, 100.00% { opacity: 0 } }
+    .w25 { animation-name: w25; }  /* 62.51s to end */
+    @keyframes w25 { 0.00%, 77.61% { opacity: 0 } 77.80%, 99.07% { opacity: 1 } 99.26%, 100.00% { opacity: 0 } }
+    .w26 { animation-name: w26; }  /* 68.20s to end */
+    @keyframes w26 { 0.00%, 84.68% { opacity: 0 } 84.86%, 99.07% { opacity: 1 } 99.26%, 100.00% { opacity: 0 } }
+    .w27 { animation-name: w27; }  /* 73.21s to end */
+    @keyframes w27 { 0.00%, 90.90% { opacity: 0 } 91.09%, 99.07% { opacity: 1 } 99.26%, 100.00% { opacity: 0 } }
+    .w28 { animation-name: w28; }  /* 14.22s to 20.75s */
+    @keyframes w28 { 0.00%, 17.66% { opacity: 0 } 17.84%, 25.76% { opacity: 1 } 25.95%, 100.00% { opacity: 0 } }
+    .w29 { animation-name: w29; }  /* 20.75s to 29.14s */
+    @keyframes w29 { 0.00%, 25.76% { opacity: 0 } 25.95%, 36.18% { opacity: 1 } 36.37%, 100.00% { opacity: 0 } }
+    .w30 { animation-name: w30; }  /* 31.94s to 38.22s */
+    @keyframes w30 { 0.00%, 39.66% { opacity: 0 } 39.84%, 47.45% { opacity: 1 } 47.64%, 100.00% { opacity: 0 } }
+    .w31 { animation-name: w31; }  /* 38.22s to 44.16s */
+    @keyframes w31 { 0.00%, 47.45% { opacity: 0 } 47.64%, 54.83% { opacity: 1 } 55.02%, 100.00% { opacity: 0 } }
+    .w32 { animation-name: w32; }  /* 44.16s to 49.02s */
+    @keyframes w32 { 0.00%, 54.83% { opacity: 0 } 55.02%, 60.86% { opacity: 1 } 61.05%, 100.00% { opacity: 0 } }
+    .w33 { animation-name: w33; }  /* 62.51s to 68.20s */
+    @keyframes w33 { 0.00%, 77.61% { opacity: 0 } 77.80%, 84.68% { opacity: 1 } 84.86%, 100.00% { opacity: 0 } }
+    @media (prefers-reduced-motion: reduce) {
+      .a { animation: none; opacity: 0; }
+      .a.fin { opacity: 1; }
+    }
+  </style>
+  <text x="20" y="26" class="title">Pass by pass: the GPU extends chains, the CPU decides</text>
+  <text x="20" y="48" class="muted">Puzzle DCE/AUB/HMW/RNF: 255 valid words. Word limit 3, the length of Solve's answer.</text>
+  <rect x="20" y="62" width="380" height="294" rx="8" class="dev"/>
+  <text x="34" y="84" class="title">GPU</text>
+  <text x="386" y="84" text-anchor="end" class="muted">buffers stay here between passes</text>
+  <rect x="500" y="62" width="240" height="294" rx="8" class="dev"/>
+  <text x="514" y="84" class="title">CPU</text>
+  <rect x="34" y="96" width="352" height="30" rx="4" class="buf"/>
+  <text x="46" y="116" class="b">words</text>
+  <text x="374" y="116" text-anchor="end" class="muted a w1">empty</text>
+  <text x="374" y="116" text-anchor="end" class="muted a w2 fin">255, with letter masks</text>
+  <rect x="34" y="154" width="168" height="54" rx="4" class="buf"/>
+  <text x="46" y="176" class="b">chains A</text>
+  <rect x="218" y="154" width="168" height="54" rx="4" class="buf"/>
+  <text x="230" y="176" class="b">chains B</text>
+  <text x="46" y="196" class="muted a w1">empty</text>
+  <text x="230" y="196" class="muted a w3">empty</text>
+  <text x="46" y="196" class="muted a w4">255 one-word chains</text>
+  <text x="46" y="196" class="muted a w5">old chains, ignored</text>
+  <text x="46" y="196" class="muted a w6 fin">nothing new written</text>
+  <rect x="34" y="96" width="352" height="30" rx="4" class="inb a w2 fin"/>
+  <text x="100" y="116" class="tin a w7 fin">read by every pass</text>
+  <rect x="34" y="154" width="168" height="54" rx="4" class="inb a w8"/>
+  <text x="230" y="196" class="muted a w9 fin">5,140 two-word chains</text>
+  <rect x="34" y="154" width="168" height="54" rx="4" class="inb a w10"/>
+  <text x="36" y="146" class="tin a w10">input (read)</text>
+  <rect x="218" y="154" width="168" height="54" rx="4" class="outb a w10"/>
+  <text x="220" y="146" class="tout a w10">output (next chains)</text>
+  <rect x="218" y="154" width="168" height="54" rx="4" class="inb a w11 fin"/>
+  <text x="220" y="146" class="tin a w11 fin">input (read)</text>
+  <rect x="34" y="154" width="168" height="54" rx="4" class="outb a w11 fin"/>
+  <text x="36" y="146" class="tout a w11 fin">output (next chains)</text>
+  <rect x="34" y="222" width="352" height="46" rx="4" class="buf"/>
+  <text x="46" y="241" class="b a w12">extendChains shader</text>
+  <text x="46" y="259" class="muted a w12">idle until the CPU dispatches a pass</text>
+  <text x="46" y="241" class="b a w13">extendChains, pass 1</text>
+  <text x="46" y="259" class="muted a w13">one thread per pair: 255 chains × 255 words</text>
+  <text x="46" y="241" class="b a w14 fin">extendChains, pass 2</text>
+  <text x="46" y="259" class="muted a w14 fin">one thread per pair: 5,140 chains × 255 words</text>
+  <rect x="34" y="222" width="352" height="46" rx="4" class="inb a w15"/>
+  <rect x="34" y="282" width="168" height="62" rx="4" class="buf"/>
+  <text x="46" y="302" class="b">solutions</text>
+  <rect x="218" y="282" width="168" height="62" rx="4" class="buf"/>
+  <text x="230" y="302" class="b">counters (atomic)</text>
+  <text x="46" y="322" class="muted a w16">none</text>
+  <text x="46" y="322" class="okb a w17 fin">8 three-word chains</text>
+  <rect x="34" y="282" width="168" height="62" rx="4" class="solb a w17 fin"/>
+  <text x="230" y="322" class="muted a w18">solutions: 0</text>
+  <text x="230" y="338" class="muted a w19">next chains: 0</text>
+  <text x="230" y="338" class="muted a w20">next chains: 5,140</text>
+  <text x="230" y="322" class="muted a w17 fin">solutions: 8</text>
+  <text x="230" y="338" class="muted a w6 fin">next chains: 0 (limit)</text>
+  <line x1="500" y1="111" x2="404" y2="111" class="line"/>
+  <polygon points="400,111 410,105 410,117" class="head"/>
+  <text x="450" y="103" text-anchor="middle" class="muted">upload once</text>
+  <line x1="500" y1="111" x2="404" y2="111" class="aline a w8"/>
+  <polygon points="400,111 410,105 410,117" class="ahead a w8"/>
+  <line x1="500" y1="245" x2="404" y2="245" class="line"/>
+  <polygon points="400,245 410,239 410,251" class="head"/>
+  <text x="450" y="237" text-anchor="middle" class="muted">dispatch</text>
+  <line x1="500" y1="245" x2="404" y2="245" class="aline a w15"/>
+  <polygon points="400,245 410,239 410,251" class="ahead a w15"/>
+  <line x1="400" y1="313" x2="496" y2="313" class="line"/>
+  <polygon points="500,313 490,307 490,319" class="head"/>
+  <text x="450" y="305" text-anchor="middle" class="muted">readback</text>
+  <line x1="400" y1="313" x2="496" y2="313" class="aline a w21 fin"/>
+  <polygon points="500,313 490,307 490,319" class="ahead a w21 fin"/>
+  <text x="514" y="106" class="muted">no 1-word solution</text>
+  <text x="514" y="128" class="a w22 fin">pass 1: 0 solutions,</text>
+  <text x="514" y="146" class="a w22 fin">5,140 next chains</text>
+  <text x="514" y="168" class="dec a w23 fin">→ no solution: run pass 2</text>
+  <text x="514" y="196" class="a w24 fin">pass 2: 8 solutions,</text>
+  <text x="514" y="214" class="a w24 fin">0 next chains</text>
+  <text x="514" y="238" class="okb a w25 fin">→ stop and rank on the CPU</text>
+  <text x="514" y="260" class="word a w26 fin">CHAMBER REFUND DAWN</text>
+  <text x="728" y="260" text-anchor="end" class="muted a w26 fin">17 letters</text>
+  <text x="514" y="280" class="word a w26 fin">CHAMBER REFUND DRAW</text>
+  <text x="728" y="280" text-anchor="end" class="muted a w26 fin">17 letters</text>
+  <text x="514" y="300" class="word a w26 fin">CHAMBER REFUND DREW</text>
+  <text x="728" y="300" text-anchor="end" class="muted a w26 fin">17 letters</text>
+  <text x="514" y="320" class="muted a w26 fin">top 3 of 8</text>
+  <text x="514" y="340" class="muted a w27 fin">fewest letters, ties alphabetical</text>
+  <rect x="508" y="245" width="226" height="21" rx="4" class="pick a w27 fin"/>
+  <text x="20" y="384" class="a w1">The CPU checks for 1-word solutions first, then allocates GPU buffers.</text>
+  <text x="20" y="384" class="a w8">Uploading once means later passes pay no transfer for their input.</text>
+  <text x="20" y="384" class="a w28">Two chain buffers let a pass read one while writing the other.</text>
+  <text x="20" y="384" class="a w29">Counters restart at 0, so each pass counts only its own output.</text>
+  <text x="20" y="384" class="a w30">Chains stay on the GPU; only counts and solutions cross over.</text>
+  <text x="20" y="384" class="a w31">The word limit of 3 still leaves room for a third word.</text>
+  <text x="20" y="384" class="a w32">Swapping roles avoids copying chains between buffers.</text>
+  <text x="20" y="384" class="a w33">The first level with any solution has the fewest words.</text>
+  <text x="20" y="384" class="title a w27 fin">Each extra word costs one more pass and one more readback.</text>
+</svg>

@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 402" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated dictionary filter: 26,648 words pass three filters (3+ letters, only puzzle letters, no same-side neighbors), rejecting GO, SNOW and GRID, leaving 565 valid words including MORPHS">
+  <style>
+    :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; --accent: #1971c2; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #ddd; --muted: #999; --full: #555; --empty: #1e1e1e; --edge: #777; --probe: #ff8a4c; --ok: #69db7c; --chip: #2a2a2a; --accent: #74c0fc; }
+    }
+    text { fill: var(--fg); font-size: 14px; }
+    .muted { fill: var(--muted); font-size: 12px; }
+    .title { font-weight: 600; font-size: 15px; }
+    .box { fill: var(--full); stroke: var(--edge); }
+    .okbox { fill: var(--empty); stroke: var(--ok); stroke-width: 2.5; }
+    .wall { fill: var(--chip); stroke: var(--edge); stroke-dasharray: 3 3; }
+    .cnt { font-weight: 600; }
+    .flt { fill: var(--probe); font-weight: 600; font-size: 13px; }
+    .okb { fill: var(--ok); font-weight: 600; }
+    .kick { stroke: var(--probe); stroke-width: 2; }
+    .kickhead { fill: var(--probe); }
+    .rej { fill: var(--empty); stroke: var(--probe); stroke-width: 2; }
+    .rejw { fill: var(--probe); font-weight: 700; font-family: ui-monospace, Menlo, Consolas, monospace; }
+    .strike { stroke: var(--probe); stroke-width: 2; }
+    .rejwhy { fill: var(--muted); font-size: 13px; }
+    .pass { fill: var(--empty); stroke: var(--ok); stroke-width: 2; }
+    .passw { fill: var(--ok); font-weight: 700; font-family: ui-monospace, Menlo, Consolas, monospace; }
+    /* 39.03s loop, 8 steps starting at 0.5, 4.17, 9.7, 11.4, 18.69, 20.39, 27.43, 30.89 s; final frame holds 7.39s, then fades. */
+    .a { opacity: 0; animation: 39.03s linear infinite; }
+    .w1 { animation-name: w1; }  /* 4.17s to end */
+    @keyframes w1 { 0.00%, 10.68% { opacity: 0 } 11.07%, 98.08% { opacity: 1 } 98.46%, 100.00% { opacity: 0 } }
+    .w2 { animation-name: w2; }  /* 11.40s to end */
+    @keyframes w2 { 0.00%, 29.21% { opacity: 0 } 29.59%, 98.08% { opacity: 1 } 98.46%, 100.00% { opacity: 0 } }
+    .w3 { animation-name: w3; }  /* 20.39s to end */
+    @keyframes w3 { 0.00%, 52.24% { opacity: 0 } 52.63%, 98.08% { opacity: 1 } 98.46%, 100.00% { opacity: 0 } }
+    .w4 { animation-name: w4; }  /* 9.70s to end */
+    @keyframes w4 { 0.00%, 24.85% { opacity: 0 } 25.24%, 98.08% { opacity: 1 } 98.46%, 100.00% { opacity: 0 } }
+    .w5 { animation-name: w5; }  /* 18.69s to end */
+    @keyframes w5 { 0.00%, 47.89% { opacity: 0 } 48.27%, 98.08% { opacity: 1 } 98.46%, 100.00% { opacity: 0 } }
+    .w6 { animation-name: w6; }  /* 27.43s to end */
+    @keyframes w6 { 0.00%, 70.28% { opacity: 0 } 70.66%, 98.08% { opacity: 1 } 98.46%, 100.00% { opacity: 0 } }
+    .w7 { animation-name: w7; }  /* 30.89s to end */
+    @keyframes w7 { 0.00%, 79.14% { opacity: 0 } 79.53%, 98.08% { opacity: 1 } 98.46%, 100.00% { opacity: 0 } }
+    .w8 { animation-name: w8; }  /* 0.50s to 4.17s */
+    @keyframes w8 { 0.00%, 10.68% { opacity: 1 } 11.07%, 98.08% { opacity: 0 } 98.46%, 100.00% { opacity: 1 } }
+    .w9 { animation-name: w9; }  /* 4.17s to 9.70s */
+    @keyframes w9 { 0.00%, 10.68% { opacity: 0 } 11.07%, 24.85% { opacity: 1 } 25.24%, 100.00% { opacity: 0 } }
+    .w10 { animation-name: w10; }  /* 11.40s to 18.69s */
+    @keyframes w10 { 0.00%, 29.21% { opacity: 0 } 29.59%, 47.89% { opacity: 1 } 48.27%, 100.00% { opacity: 0 } }
+    .w11 { animation-name: w11; }  /* 20.39s to 27.43s */
+    @keyframes w11 { 0.00%, 52.24% { opacity: 0 } 52.63%, 70.28% { opacity: 1 } 70.66%, 100.00% { opacity: 0 } }
+    .w12 { animation-name: w12; }  /* 27.43s to 30.89s */
+    @keyframes w12 { 0.00%, 70.28% { opacity: 0 } 70.66%, 79.14% { opacity: 1 } 79.53%, 100.00% { opacity: 0 } }
+    @media (prefers-reduced-motion: reduce) {
+      .a { animation: none; opacity: 0; }
+      .a.fin { opacity: 1; }
+    }
+  </style>
+  <text x="20" y="28" class="title">Filtering the dictionary for one puzzle</text>
+  <text x="740" y="28" text-anchor="end" class="muted">sides: SRG · MDH · IOL · ENP</text>
+  <rect x="30" y="56" width="400" height="34" rx="5" class="box"/>
+  <text x="230" y="78" text-anchor="middle" class="cnt">26,648 words in the dictionary</text>
+  <g class="a w1 fin">
+    <polygon points="30,90 430,90 410,144 50,144" class="wall"/>
+    <text x="230" y="122" text-anchor="middle" class="flt">3+ letters</text>
+    <line x1="282" y1="116" x2="458" y2="116" class="kick"/>
+    <polygon points="458,110 468,116 458,122" class="kickhead"/>
+    <rect x="470" y="102" width="36" height="28" rx="4" class="rej"/>
+    <text x="477" y="121" class="rejw">GO</text>
+    <line x1="474" y1="116" x2="502" y2="116" class="strike"/>
+    <text x="516" y="121" class="rejwhy">✗ only 2 letters</text>
+  </g>
+  <g class="a w2 fin">
+    <polygon points="50,178 410,178 345,232 115,232" class="wall"/>
+    <text x="230" y="210" text-anchor="middle" class="flt">only puzzle letters</text>
+    <line x1="316.2" y1="204" x2="458" y2="204" class="kick"/>
+    <polygon points="458,198 468,204 458,210" class="kickhead"/>
+    <rect x="470" y="190" width="58" height="28" rx="4" class="rej"/>
+    <text x="477" y="209" class="rejw">SNOW</text>
+    <line x1="474" y1="204" x2="524" y2="204" class="strike"/>
+    <text x="538" y="209" class="rejwhy">✗ W is not in the puzzle</text>
+  </g>
+  <g class="a w3 fin">
+    <polygon points="115,266 345,266 305,320 155,320" class="wall"/>
+    <text x="230" y="298" text-anchor="middle" class="flt">no same-side neighbors</text>
+    <line x1="331.4" y1="292" x2="458" y2="292" class="kick"/>
+    <polygon points="458,286 468,292 458,298" class="kickhead"/>
+    <rect x="470" y="278" width="58" height="28" rx="4" class="rej"/>
+    <text x="477" y="297" class="rejw">GRID</text>
+    <line x1="474" y1="292" x2="524" y2="292" class="strike"/>
+    <text x="538" y="297" class="rejwhy">✗ G and R share the top side</text>
+  </g>
+  <g class="a w4 fin">
+    <rect x="50" y="144" width="360" height="34" rx="5" class="box"/>
+    <text x="230" y="166" text-anchor="middle" class="cnt">26,558 left</text>
+  </g>
+  <g class="a w5 fin">
+    <rect x="115" y="232" width="230" height="34" rx="5" class="box"/>
+    <text x="230" y="254" text-anchor="middle" class="cnt">1,655 left</text>
+  </g>
+  <g class="a w6 fin">
+    <rect x="155" y="320" width="150" height="34" rx="5" class="okbox"/>
+    <text x="230" y="342" text-anchor="middle" class="okb">565 valid words</text>
+  </g>
+  <g class="a w7 fin">
+    <rect x="470" y="323" width="80" height="28" rx="4" class="pass"/>
+    <text x="478" y="342" class="passw">MORPHS</text>
+    <text x="560" y="342" class="okb">✓ passes all three</text>
+  </g>
+  <text x="20" y="386" class="a w8">Every word in the dictionary starts at the top.</text>
+  <text x="20" y="386" class="a w9">Letter Boxed words need at least three letters.</text>
+  <text x="20" y="386" class="a w10">A letter that is not on the square can never be played.</text>
+  <text x="20" y="386" class="a w11">Such a word could never be traced on the square.</text>
+  <text x="20" y="386" class="a w12">About 2% of the dictionary is left.</text>
+  <text x="20" y="386" class="title a w7 fin">Every rejected word is a dead end the search never has to try.</text>
+</svg>

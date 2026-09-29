@@ -1,0 +1,167 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 368" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated Letter Boxed solution: MORPHS is traced across the square one letter at a time, each letter on a different side from the one before, then SINGLED starts from its last letter S and uses the remaining six letters, until all 12 letters are used in 2 words">
+  <style>
+    :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; --accent: #1971c2; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #ddd; --muted: #999; --full: #555; --empty: #1e1e1e; --edge: #777; --probe: #ff8a4c; --ok: #69db7c; --chip: #2a2a2a; --accent: #74c0fc; }
+    }
+    text { fill: var(--fg); font-size: 14px; }
+    .muted { fill: var(--muted); font-size: 12px; }
+    .title { font-weight: 600; font-size: 15px; }
+    .box { fill: none; stroke: var(--edge); stroke-width: 2; }
+    .dot { fill: var(--empty); stroke: var(--edge); stroke-width: 2; }
+    .let { font-weight: 600; font-size: 16px; }
+    .lit1 { fill: var(--probe); }
+    .lit2 { fill: var(--accent); }
+    .ring2 { fill: none; stroke: var(--accent); stroke-width: 3; }
+    .seg1 { stroke: var(--probe); stroke-width: 3; stroke-linecap: round; }
+    .seg2 { stroke: var(--accent); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 8 5; }
+    .big { font-size: 26px; font-weight: 700; font-family: ui-monospace, Menlo, Consolas, monospace; }
+    .wd1 { fill: var(--probe); }
+    .wd2 { fill: var(--accent); }
+    .oktext { fill: var(--ok); font-weight: 600; font-size: 16px; }
+    /* 47.04s loop, 16 steps starting at 0.5, 4.07, 5.97, 10.85, 12.75, 14.65, 16.55, 19.41, 22.47, 26.09, 27.99, 29.89, 31.79, 33.69, 35.59, 38.7 s; final frame holds 7.59s, then fades. */
+    .a { opacity: 0; animation: 47.04s linear infinite; }
+    .w1 { animation-name: w1; }  /* 5.97s to end */
+    @keyframes w1 { 0.00%, 12.69% { opacity: 0 } 13.01%, 98.41% { opacity: 1 } 98.72%, 100.00% { opacity: 0 } }
+    .w2 { animation-name: w2; }  /* 10.85s to end */
+    @keyframes w2 { 0.00%, 23.07% { opacity: 0 } 23.38%, 98.41% { opacity: 1 } 98.72%, 100.00% { opacity: 0 } }
+    .w3 { animation-name: w3; }  /* 12.75s to end */
+    @keyframes w3 { 0.00%, 27.10% { opacity: 0 } 27.42%, 98.41% { opacity: 1 } 98.72%, 100.00% { opacity: 0 } }
+    .w4 { animation-name: w4; }  /* 14.65s to end */
+    @keyframes w4 { 0.00%, 31.14% { opacity: 0 } 31.46%, 98.41% { opacity: 1 } 98.72%, 100.00% { opacity: 0 } }
+    .w5 { animation-name: w5; }  /* 16.55s to end */
+    @keyframes w5 { 0.00%, 35.18% { opacity: 0 } 35.50%, 98.41% { opacity: 1 } 98.72%, 100.00% { opacity: 0 } }
+    .w6 { animation-name: w6; }  /* 26.09s to end */
+    @keyframes w6 { 0.00%, 55.46% { opacity: 0 } 55.78%, 98.41% { opacity: 1 } 98.72%, 100.00% { opacity: 0 } }
+    .w7 { animation-name: w7; }  /* 27.99s to end */
+    @keyframes w7 { 0.00%, 59.50% { opacity: 0 } 59.82%, 98.41% { opacity: 1 } 98.72%, 100.00% { opacity: 0 } }
+    .w8 { animation-name: w8; }  /* 29.89s to end */
+    @keyframes w8 { 0.00%, 63.54% { opacity: 0 } 63.86%, 98.41% { opacity: 1 } 98.72%, 100.00% { opacity: 0 } }
+    .w9 { animation-name: w9; }  /* 31.79s to end */
+    @keyframes w9 { 0.00%, 67.58% { opacity: 0 } 67.90%, 98.41% { opacity: 1 } 98.72%, 100.00% { opacity: 0 } }
+    .w10 { animation-name: w10; }  /* 33.69s to end */
+    @keyframes w10 { 0.00%, 71.62% { opacity: 0 } 71.94%, 98.41% { opacity: 1 } 98.72%, 100.00% { opacity: 0 } }
+    .w11 { animation-name: w11; }  /* 35.59s to end */
+    @keyframes w11 { 0.00%, 75.66% { opacity: 0 } 75.98%, 98.41% { opacity: 1 } 98.72%, 100.00% { opacity: 0 } }
+    .w12 { animation-name: w12; }  /* 4.07s to end */
+    @keyframes w12 { 0.00%, 8.65% { opacity: 0 } 8.97%, 98.41% { opacity: 1 } 98.72%, 100.00% { opacity: 0 } }
+    .w13 { animation-name: w13; }  /* 22.47s to end */
+    @keyframes w13 { 0.00%, 47.77% { opacity: 0 } 48.09%, 98.41% { opacity: 1 } 98.72%, 100.00% { opacity: 0 } }
+    .w14 { animation-name: w14; }  /* 19.41s to end */
+    @keyframes w14 { 0.00%, 41.26% { opacity: 0 } 41.58%, 98.41% { opacity: 1 } 98.72%, 100.00% { opacity: 0 } }
+    .w15 { animation-name: w15; }  /* 38.70s to end */
+    @keyframes w15 { 0.00%, 82.27% { opacity: 0 } 82.59%, 98.41% { opacity: 1 } 98.72%, 100.00% { opacity: 0 } }
+    .w16 { animation-name: w16; }  /* 0.50s to 4.07s */
+    @keyframes w16 { 0.00%, 8.65% { opacity: 1 } 8.97%, 98.41% { opacity: 0 } 98.72%, 100.00% { opacity: 1 } }
+    .w17 { animation-name: w17; }  /* 4.07s to 5.97s */
+    @keyframes w17 { 0.00%, 8.65% { opacity: 0 } 8.97%, 12.69% { opacity: 1 } 13.01%, 100.00% { opacity: 0 } }
+    .w18 { animation-name: w18; }  /* 5.97s to 10.85s */
+    @keyframes w18 { 0.00%, 12.69% { opacity: 0 } 13.01%, 23.07% { opacity: 1 } 23.38%, 100.00% { opacity: 0 } }
+    .w19 { animation-name: w19; }  /* 10.85s to 12.75s */
+    @keyframes w19 { 0.00%, 23.07% { opacity: 0 } 23.38%, 27.10% { opacity: 1 } 27.42%, 100.00% { opacity: 0 } }
+    .w20 { animation-name: w20; }  /* 12.75s to 14.65s */
+    @keyframes w20 { 0.00%, 27.10% { opacity: 0 } 27.42%, 31.14% { opacity: 1 } 31.46%, 100.00% { opacity: 0 } }
+    .w21 { animation-name: w21; }  /* 14.65s to 16.55s */
+    @keyframes w21 { 0.00%, 31.14% { opacity: 0 } 31.46%, 35.18% { opacity: 1 } 35.50%, 100.00% { opacity: 0 } }
+    .w22 { animation-name: w22; }  /* 16.55s to 19.41s */
+    @keyframes w22 { 0.00%, 35.18% { opacity: 0 } 35.50%, 41.26% { opacity: 1 } 41.58%, 100.00% { opacity: 0 } }
+    .w23 { animation-name: w23; }  /* 26.09s to 27.99s */
+    @keyframes w23 { 0.00%, 55.46% { opacity: 0 } 55.78%, 59.50% { opacity: 1 } 59.82%, 100.00% { opacity: 0 } }
+    .w24 { animation-name: w24; }  /* 27.99s to 29.89s */
+    @keyframes w24 { 0.00%, 59.50% { opacity: 0 } 59.82%, 63.54% { opacity: 1 } 63.86%, 100.00% { opacity: 0 } }
+    .w25 { animation-name: w25; }  /* 29.89s to 31.79s */
+    @keyframes w25 { 0.00%, 63.54% { opacity: 0 } 63.86%, 67.58% { opacity: 1 } 67.90%, 100.00% { opacity: 0 } }
+    .w26 { animation-name: w26; }  /* 31.79s to 33.69s */
+    @keyframes w26 { 0.00%, 67.58% { opacity: 0 } 67.90%, 71.62% { opacity: 1 } 71.94%, 100.00% { opacity: 0 } }
+    .w27 { animation-name: w27; }  /* 33.69s to 35.59s */
+    @keyframes w27 { 0.00%, 71.62% { opacity: 0 } 71.94%, 75.66% { opacity: 1 } 75.98%, 100.00% { opacity: 0 } }
+    .w28 { animation-name: w28; }  /* 35.59s to 38.70s */
+    @keyframes w28 { 0.00%, 75.66% { opacity: 0 } 75.98%, 82.27% { opacity: 1 } 82.59%, 100.00% { opacity: 0 } }
+    @media (prefers-reduced-motion: reduce) {
+      .a { animation: none; opacity: 0; }
+      .a.fin { opacity: 1; }
+    }
+  </style>
+  <text x="20" y="28" class="title">Tracing a solution: MORPHS, then SINGLED</text>
+  <rect x="80" y="80" width="210" height="210" class="box"/>
+  <line x1="290" y1="126.2" x2="185" y2="290" class="seg1 a w1 fin"/>
+  <line x1="185" y1="290" x2="185" y2="80" class="seg1 a w2 fin"/>
+  <line x1="185" y1="80" x2="80" y2="243.8" class="seg1 a w3 fin"/>
+  <line x1="80" y1="243.8" x2="290" y2="243.8" class="seg1 a w4 fin"/>
+  <line x1="290" y1="243.8" x2="126.2" y2="80" class="seg1 a w5 fin"/>
+  <line x1="126.2" y1="80" x2="126.2" y2="290" class="seg2 a w6 fin"/>
+  <line x1="126.2" y1="290" x2="80" y2="185" class="seg2 a w7 fin"/>
+  <line x1="80" y1="185" x2="243.8" y2="80" class="seg2 a w8 fin"/>
+  <line x1="243.8" y1="80" x2="243.8" y2="290" class="seg2 a w9 fin"/>
+  <line x1="243.8" y1="290" x2="80" y2="126.2" class="seg2 a w10 fin"/>
+  <line x1="80" y1="126.2" x2="290" y2="185" class="seg2 a w11 fin"/>
+  <circle cx="126.2" cy="80" r="8" class="dot"/>
+  <text x="126.2" y="64" text-anchor="middle" class="let">S</text>
+  <circle cx="185" cy="80" r="8" class="dot"/>
+  <text x="185" y="64" text-anchor="middle" class="let">R</text>
+  <circle cx="243.8" cy="80" r="8" class="dot"/>
+  <text x="243.8" y="64" text-anchor="middle" class="let">G</text>
+  <circle cx="290" cy="126.2" r="8" class="dot"/>
+  <text x="306" y="131.2" text-anchor="start" class="let">M</text>
+  <circle cx="290" cy="185" r="8" class="dot"/>
+  <text x="306" y="190" text-anchor="start" class="let">D</text>
+  <circle cx="290" cy="243.8" r="8" class="dot"/>
+  <text x="306" y="248.8" text-anchor="start" class="let">H</text>
+  <circle cx="126.2" cy="290" r="8" class="dot"/>
+  <text x="126.2" y="318" text-anchor="middle" class="let">I</text>
+  <circle cx="185" cy="290" r="8" class="dot"/>
+  <text x="185" y="318" text-anchor="middle" class="let">O</text>
+  <circle cx="243.8" cy="290" r="8" class="dot"/>
+  <text x="243.8" y="318" text-anchor="middle" class="let">L</text>
+  <circle cx="80" cy="126.2" r="8" class="dot"/>
+  <text x="64" y="131.2" text-anchor="end" class="let">E</text>
+  <circle cx="80" cy="185" r="8" class="dot"/>
+  <text x="64" y="190" text-anchor="end" class="let">N</text>
+  <circle cx="80" cy="243.8" r="8" class="dot"/>
+  <text x="64" y="248.8" text-anchor="end" class="let">P</text>
+  <circle cx="290" cy="126.2" r="8" class="lit1 a w12 fin"/>
+  <circle cx="185" cy="290" r="8" class="lit1 a w1 fin"/>
+  <circle cx="185" cy="80" r="8" class="lit1 a w2 fin"/>
+  <circle cx="80" cy="243.8" r="8" class="lit1 a w3 fin"/>
+  <circle cx="290" cy="243.8" r="8" class="lit1 a w4 fin"/>
+  <circle cx="126.2" cy="80" r="8" class="lit1 a w5 fin"/>
+  <circle cx="126.2" cy="290" r="8" class="lit2 a w6 fin"/>
+  <circle cx="80" cy="185" r="8" class="lit2 a w7 fin"/>
+  <circle cx="243.8" cy="80" r="8" class="lit2 a w8 fin"/>
+  <circle cx="243.8" cy="290" r="8" class="lit2 a w9 fin"/>
+  <circle cx="80" cy="126.2" r="8" class="lit2 a w10 fin"/>
+  <circle cx="290" cy="185" r="8" class="lit2 a w11 fin"/>
+  <circle cx="126.2" cy="80" r="12" class="ring2 a w13 fin"/>
+  <text x="380" y="86" class="muted">word 1</text>
+  <text x="380" y="120" class="big wd1 a w12 fin">M</text>
+  <text x="410" y="120" class="big wd1 a w1 fin">O</text>
+  <text x="440" y="120" class="big wd1 a w2 fin">R</text>
+  <text x="470" y="120" class="big wd1 a w3 fin">P</text>
+  <text x="500" y="120" class="big wd1 a w4 fin">H</text>
+  <text x="530" y="120" class="big wd1 a w5 fin">S</text>
+  <text x="380" y="146" class="muted a w14 fin">every step jumps to a different side</text>
+  <text x="380" y="186" class="muted">word 2</text>
+  <text x="380" y="220" class="big wd2 a w13 fin">S</text>
+  <text x="410" y="220" class="big wd2 a w6 fin">I</text>
+  <text x="440" y="220" class="big wd2 a w7 fin">N</text>
+  <text x="470" y="220" class="big wd2 a w8 fin">G</text>
+  <text x="500" y="220" class="big wd2 a w9 fin">L</text>
+  <text x="530" y="220" class="big wd2 a w10 fin">E</text>
+  <text x="560" y="220" class="big wd2 a w11 fin">D</text>
+  <text x="380" y="246" class="muted a w13 fin">starts with S, the last letter of MORPHS</text>
+  <text x="380" y="290" class="oktext a w15 fin">All 12 letters used in 2 words ✓</text>
+  <text x="20" y="350" class="a w16">Twelve letters sit around the square, three per side.</text>
+  <text x="20" y="350" class="a w17">M: right side.</text>
+  <text x="20" y="350" class="a w18">O is on the bottom: a different side, so the move is allowed.</text>
+  <text x="20" y="350" class="a w19">R: top.</text>
+  <text x="20" y="350" class="a w20">P: left.</text>
+  <text x="20" y="350" class="a w21">H: right.</text>
+  <text x="20" y="350" class="a w22">S: top. MORPHS is done.</text>
+  <text x="20" y="350" class="a w23">I: bottom.</text>
+  <text x="20" y="350" class="a w24">N: left.</text>
+  <text x="20" y="350" class="a w25">G: top.</text>
+  <text x="20" y="350" class="a w26">L: bottom.</text>
+  <text x="20" y="350" class="a w27">E: left.</text>
+  <text x="20" y="350" class="a w28">D: right, the last unused letter.</text>
+  <text x="20" y="350" class="title a w15 fin">Three rules: switch sides, chain end to start, use every letter.</text>
+</svg>
