@@ -19,49 +19,54 @@
     .cnt { font-weight: 600; font-size: 13px; }
     .div { stroke: var(--edge); stroke-dasharray: 4 4; }
 
-    /* 18s loop. Walk 1 (get 42) runs 0.5s to 4.5s, walk 2 (get 57) runs 8.5s to 12.5s.
-       Everything fades out 16.6s to 17.3s, then the loop restarts. */
-    .w { opacity: 0; animation: 20.6s linear infinite; }
-    .r1 { animation-name: r1; }   /* 0.5s to 1.5s: Memtable probe (walk 1) */
-    .r2 { animation-name: r2; }   /* 1.5s to 2.5s: L0 Bloom filter probe (walk 1) */
-    .r3 { animation-name: r3; }   /* 2.5s to 3.5s: L1 Bloom filter probe (walk 1) */
-    .r4 { animation-name: r4; }   /* 3.5s to 4.5s: read one block from disk (walk 1) */
-    .p1 { animation-name: p1; }   /* from 0.5s: Memtable miss (walk 1) */
-    .p2 { animation-name: p2; }   /* from 1.5s: L0 says no (walk 1) */
-    .p3 { animation-name: p3; }   /* from 2.5s: L1 says maybe (walk 1) */
-    .p4 { animation-name: p4; }   /* from 3.5s: fence pointers pick a block, disk reads = 1 */
-    .p5 { animation-name: p5; }   /* from 4.5s: found in L1, L2 not checked */
-    .c0 { animation-name: c0; }   /* 0s to 3.5s: walk 1 counter at 0 */
-    .r6 { animation-name: r6; }   /* 8.5s to 9.5s: Memtable probe (walk 2) */
-    .r7 { animation-name: r7; }   /* 9.5s to 10.5s: L0 Bloom filter probe (walk 2) */
-    .r8 { animation-name: r8; }   /* 10.5s to 11.5s: L1 Bloom filter probe (walk 2) */
-    .r9 { animation-name: r9; }   /* 11.5s to 12.5s: L2 Bloom filter probe (walk 2) */
-    .p6 { animation-name: p6; }   /* from 8.5s: Memtable miss (walk 2) */
-    .p7 { animation-name: p7; }   /* from 9.5s: L0 says no (walk 2) */
-    .p8 { animation-name: p8; }   /* from 10.5s: L1 says no (walk 2) */
-    .p9 { animation-name: p9; }   /* from 11.5s: L2 says no (walk 2) */
-    .p10 { animation-name: p10; } /* from 12.5s: return null, 0 disk reads */
-    .c1 { animation-name: c1; }   /* 0s to 12.5s: walk 2 counter, plain */
-    @keyframes r1 { 0.00%, 2.08% { opacity: 0 } 2.42%, 10.31% { opacity: 1 } 10.92%, 100.00% { opacity: 0 } }
-    @keyframes r2 { 0.00%, 10.31% { opacity: 0 } 10.92%, 18.81% { opacity: 1 } 19.41%, 100.00% { opacity: 0 } }
-    @keyframes r3 { 0.00%, 18.81% { opacity: 0 } 19.41%, 27.30% { opacity: 1 } 27.91%, 100.00% { opacity: 0 } }
-    @keyframes r4 { 0.00%, 27.30% { opacity: 0 } 27.91%, 35.80% { opacity: 1 } 36.40%, 100.00% { opacity: 0 } }
-    @keyframes p1 { 0.00%, 2.08% { opacity: 0 } 2.42%, 92.75% { opacity: 1 } 95.87%, 100.00% { opacity: 0 } }
-    @keyframes p2 { 0.00%, 10.31% { opacity: 0 } 10.92%, 92.75% { opacity: 1 } 95.87%, 100.00% { opacity: 0 } }
-    @keyframes p3 { 0.00%, 18.81% { opacity: 0 } 19.41%, 92.75% { opacity: 1 } 95.87%, 100.00% { opacity: 0 } }
-    @keyframes p4 { 0.00%, 27.30% { opacity: 0 } 27.91%, 92.75% { opacity: 1 } 95.87%, 100.00% { opacity: 0 } }
-    @keyframes p5 { 0.00%, 35.80% { opacity: 0 } 36.40%, 92.75% { opacity: 1 } 95.87%, 100.00% { opacity: 0 } }
-    @keyframes c0 { 0.00%, 27.30% { opacity: 1 } 27.91%, 100.00% { opacity: 0 } }
-    @keyframes r6 { 0.00%, 44.75% { opacity: 0 } 44.90%, 52.79% { opacity: 1 } 53.40%, 100.00% { opacity: 0 } }
-    @keyframes r7 { 0.00%, 52.79% { opacity: 0 } 53.40%, 61.28% { opacity: 1 } 61.89%, 100.00% { opacity: 0 } }
-    @keyframes r8 { 0.00%, 61.28% { opacity: 0 } 61.89%, 69.78% { opacity: 1 } 70.39%, 100.00% { opacity: 0 } }
-    @keyframes r9 { 0.00%, 69.78% { opacity: 0 } 70.39%, 78.27% { opacity: 1 } 78.88%, 100.00% { opacity: 0 } }
-    @keyframes p6 { 0.00%, 44.75% { opacity: 0 } 44.90%, 92.75% { opacity: 1 } 95.87%, 100.00% { opacity: 0 } }
-    @keyframes p7 { 0.00%, 52.79% { opacity: 0 } 53.40%, 92.75% { opacity: 1 } 95.87%, 100.00% { opacity: 0 } }
-    @keyframes p8 { 0.00%, 61.28% { opacity: 0 } 61.89%, 92.75% { opacity: 1 } 95.87%, 100.00% { opacity: 0 } }
-    @keyframes p9 { 0.00%, 69.78% { opacity: 0 } 70.39%, 92.75% { opacity: 1 } 95.87%, 100.00% { opacity: 0 } }
-    @keyframes p10 { 0.00%, 78.27% { opacity: 0 } 78.88%, 92.75% { opacity: 1 } 95.87%, 100.00% { opacity: 0 } }
-    @keyframes c1 { 0.00%, 78.27% { opacity: 1 } 78.88%, 100.00% { opacity: 0 } }
+    /* 24.8s loop, 11 steps starting at 0.5, 1.9, 3.6, 5.3, 7.8, 9.4, 13.4, 15.2, 16.5, 17.8, 19.1 s; final frame holds 4.8s, then fades. */
+    .w { opacity: 0; animation: 24.8s linear infinite; }
+    .r1 { animation-name: r1; }   /* Memtable probe (walk 1): step 1-2, 0.5s to 1.9s */
+    .r2 { animation-name: r2; }   /* L0 Bloom filter probe (walk 1): step 2-3, 1.9s to 3.6s */
+    .r3 { animation-name: r3; }   /* L1 Bloom filter probe (walk 1): step 3-5, 3.6s to 7.8s */
+    .r4 { animation-name: r4; }   /* read one block from disk (walk 1): step 5-6, 7.8s to 9.4s */
+    .p1 { animation-name: p1; }   /* Memtable miss (walk 1): step 1+, 0.5s to end */
+    .p2 { animation-name: p2; }   /* L0 says no (walk 1): step 2+, 1.9s to end */
+    .p3 { animation-name: p3; }   /* L1 says maybe (walk 1): step 3+, 3.6s to end */
+    .p4 { animation-name: p4; }   /* disk reads = 1: step 5+, 7.8s to end */
+    .p5 { animation-name: p5; }   /* found in L1, L2 not checked: step 6+, 9.4s to end */
+    .c0 { animation-name: c0; }   /* walk 1 counter at 0: step base-5, 0s to 7.8s */
+    .r6 { animation-name: r6; }   /* Memtable probe (walk 2): step 7-8, 13.4s to 15.2s */
+    .r7 { animation-name: r7; }   /* L0 Bloom filter probe (walk 2): step 8-9, 15.2s to 16.5s */
+    .r8 { animation-name: r8; }   /* L1 Bloom filter probe (walk 2): step 9-10, 16.5s to 17.8s */
+    .r9 { animation-name: r9; }   /* L2 Bloom filter probe (walk 2): step 10-11, 17.8s to 19.1s */
+    .p6 { animation-name: p6; }   /* Memtable miss (walk 2): step 7+, 13.4s to end */
+    .p7 { animation-name: p7; }   /* L0 says no (walk 2): step 8+, 15.2s to end */
+    .p8 { animation-name: p8; }   /* L1 says no (walk 2): step 9+, 16.5s to end */
+    .p9 { animation-name: p9; }   /* L2 says no (walk 2): step 10+, 17.8s to end */
+    .p10 { animation-name: p10; } /* return null, 0 disk reads: step 11+, 19.1s to end */
+    .c1 { animation-name: c1; }   /* walk 2 counter, plain: step base-11, 0s to 19.1s */
+    @keyframes r1 { 0.00%, 2.02% { opacity: 0 } 2.62%, 7.66% { opacity: 1 } 8.27%, 100.00% { opacity: 0 } }
+    @keyframes r2 { 0.00%, 7.66% { opacity: 0 } 8.27%, 14.52% { opacity: 1 } 15.12%, 100.00% { opacity: 0 } }
+    @keyframes r3 { 0.00%, 14.52% { opacity: 0 } 15.12%, 31.45% { opacity: 1 } 32.06%, 100.00% { opacity: 0 } }
+    @keyframes r4 { 0.00%, 31.45% { opacity: 0 } 32.06%, 37.90% { opacity: 1 } 38.51%, 100.00% { opacity: 0 } }
+    @keyframes p1 { 0.00%, 2.02% { opacity: 0 } 2.62%, 96.37% { opacity: 1 } 98.39%, 100.00% { opacity: 0 } }
+    @keyframes p2 { 0.00%, 7.66% { opacity: 0 } 8.27%, 96.37% { opacity: 1 } 98.39%, 100.00% { opacity: 0 } }
+    @keyframes p3 { 0.00%, 14.52% { opacity: 0 } 15.12%, 96.37% { opacity: 1 } 98.39%, 100.00% { opacity: 0 } }
+    @keyframes p4 { 0.00%, 31.45% { opacity: 0 } 32.06%, 96.37% { opacity: 1 } 98.39%, 100.00% { opacity: 0 } }
+    @keyframes p5 { 0.00%, 37.90% { opacity: 0 } 38.51%, 96.37% { opacity: 1 } 98.39%, 100.00% { opacity: 0 } }
+    @keyframes c0 { 0.00%, 31.45% { opacity: 1 } 32.06%, 96.37% { opacity: 0 } 98.39%, 100.00% { opacity: 1 } }
+    @keyframes r6 { 0.00%, 54.03% { opacity: 0 } 54.64%, 61.29% { opacity: 1 } 61.90%, 100.00% { opacity: 0 } }
+    @keyframes r7 { 0.00%, 61.29% { opacity: 0 } 61.90%, 66.53% { opacity: 1 } 67.14%, 100.00% { opacity: 0 } }
+    @keyframes r8 { 0.00%, 66.53% { opacity: 0 } 67.14%, 71.77% { opacity: 1 } 72.38%, 100.00% { opacity: 0 } }
+    @keyframes r9 { 0.00%, 71.77% { opacity: 0 } 72.38%, 77.02% { opacity: 1 } 77.62%, 100.00% { opacity: 0 } }
+    @keyframes p6 { 0.00%, 54.03% { opacity: 0 } 54.64%, 96.37% { opacity: 1 } 98.39%, 100.00% { opacity: 0 } }
+    @keyframes p7 { 0.00%, 61.29% { opacity: 0 } 61.90%, 96.37% { opacity: 1 } 98.39%, 100.00% { opacity: 0 } }
+    @keyframes p8 { 0.00%, 66.53% { opacity: 0 } 67.14%, 96.37% { opacity: 1 } 98.39%, 100.00% { opacity: 0 } }
+    @keyframes p9 { 0.00%, 71.77% { opacity: 0 } 72.38%, 96.37% { opacity: 1 } 98.39%, 100.00% { opacity: 0 } }
+    @keyframes p10 { 0.00%, 77.02% { opacity: 0 } 77.62%, 96.37% { opacity: 1 } 98.39%, 100.00% { opacity: 0 } }
+    @keyframes c1 { 0.00%, 77.02% { opacity: 1 } 77.62%, 96.37% { opacity: 0 } 98.39%, 100.00% { opacity: 1 } }
+    .r3l { animation-name: r3l; }  /* maybe present label (walk 1): step 3-4, 3.6s to 5.3s */
+    @keyframes r3l { 0.00%, 14.52% { opacity: 0 } 15.12%, 21.37% { opacity: 1 } 21.98%, 100.00% { opacity: 0 } }
+    .p4f { animation-name: p4f; }  /* fence pointers pick a block (walk 1): step 4+, 5.3s to end */
+    @keyframes p4f { 0.00%, 21.37% { opacity: 0 } 21.98%, 96.37% { opacity: 1 } 98.39%, 100.00% { opacity: 0 } }
+    .r4l { animation-name: r4l; }  /* fence decision label (walk 1): step 4-6, 5.3s to 9.4s */
+    @keyframes r4l { 0.00%, 21.37% { opacity: 0 } 21.98%, 37.90% { opacity: 1 } 38.51%, 100.00% { opacity: 0 } }
     @media (prefers-reduced-motion: reduce) {
       .w { animation: none; opacity: 0; }
       .w.fin { opacity: 1; }
@@ -123,11 +128,11 @@
   <!-- step 3: L1 Bloom filter says maybe -->
   <rect x="92" y="149" width="116" height="30" rx="6" class="ring w r3"/>
   <text x="150" y="169" text-anchor="middle" class="yes w p3 fin">maybe</text>
-  <text x="598" y="169" class="num w r3">maybe present</text>
+  <text x="598" y="169" class="num w r3l">maybe present</text>
   <!-- step 4: fence pointers narrow to block 40-69, read it -->
-  <rect x="282" y="150" width="88" height="28" rx="6" class="ring w p4 fin"/>
+  <rect x="282" y="150" width="88" height="28" rx="6" class="ring w p4f fin"/>
   <rect x="468" y="149" width="60" height="30" rx="5" class="ring w r4"/>
-  <text x="598" y="169" class="num w r4">40 ≤ 42 &lt; 70: read</text>
+  <text x="598" y="169" class="num w r4l">40 ≤ 42 &lt; 70: read</text>
   <!-- step 5: found -->
   <rect x="468" y="149" width="60" height="30" rx="5" class="okring w p5 fin"/>
   <text x="598" y="169" class="oktext w p5 fin">found 42</text>

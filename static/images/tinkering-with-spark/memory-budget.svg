@@ -18,28 +18,25 @@
     .axis { stroke: var(--edge); }
     .chip { fill: var(--chip); stroke: var(--probe); stroke-width: 1.5; }
     .cmd { fill: var(--probe); font-weight: 600; font-size: 13px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
-    .ring { fill: none; stroke: var(--probe); stroke-width: 3; }
     .oktext { fill: var(--ok); font-weight: 600; font-size: 13px; }
     .hot { fill: var(--probe); font-weight: 600; }
 
-    /* 14s loop. Each class shows its element during one time window. */
-    .a1, .a2, .a3, .a4, .a5, .a6, .a7 { opacity: 0; animation: 13.6s linear infinite; }
-    .a1 { animation-name: a1; }  /* defaults (driver 5g + 2g, 1 core): 0s to 5.7s, back in 13.4s */
-    .a2 { animation-name: a2; }  /* caption "Defaults": 0s to 4.1s */
-    .a3 { animation-name: a3; }  /* override flags appear: from 4.2s */
-    .a4 { animation-name: a4; }  /* driver grows to 16g, executor 4 cores: from 5.7s */
-    .a5 { animation-name: a5; }  /* ring on the added 11 GiB: 5.7s to 8.4s */
-    .a6 { animation-name: a6; }  /* caption "Override": 4.2s to 7.6s */
-    .a7 { animation-name: a7; }  /* check + result caption: from 7.7s */
-    @keyframes a1 { 0.00%, 42.58% { opacity: 1 } 43.75%, 91.92% { opacity: 0 } 95.22%, 100.00% { opacity: 1 } }
-    @keyframes a2 { 0.00%, 29.85% { opacity: 1 } 30.89%, 100.00% { opacity: 0 } }
-    @keyframes a3 { 0.00%, 29.85% { opacity: 0 } 30.89%, 91.92% { opacity: 1 } 95.22%, 100.00% { opacity: 0 } }
-    @keyframes a4 { 0.00%, 42.58% { opacity: 0 } 43.75%, 91.92% { opacity: 1 } 95.22%, 100.00% { opacity: 0 } }
-    @keyframes a5 { 0.00%, 42.58% { opacity: 0 } 43.75%, 67.36% { opacity: 1 } 69.49%, 100.00% { opacity: 0 } }
-    @keyframes a6 { 0.00%, 29.85% { opacity: 0 } 30.89%, 55.70% { opacity: 1 } 56.62%, 100.00% { opacity: 0 } }
-    @keyframes a7 { 0.00%, 55.70% { opacity: 0 } 56.62%, 91.92% { opacity: 1 } 95.22%, 100.00% { opacity: 0 } }
+    /* 22.7s loop; steps at 0, 6.0, 9.0, 14.0 s (variable holds); final frame holds to 21.6s, then fades. */
+    .a1, .a2, .a3, .a4, .a6, .a7 { opacity: 0; animation: 22.7s linear infinite; }
+    .a1 { animation-name: a1; }  /* defaults (driver 5g + 2g, 1 core): 0s to 9.0s, back in from 22.05s */
+    .a2 { animation-name: a2; }  /* caption "Defaults": 0s to 6.0s */
+    .a3 { animation-name: a3; }  /* override flags appear: from 6.0s */
+    .a4 { animation-name: a4; }  /* driver grows to 16g, executor 4 cores: from 9.0s */
+    .a6 { animation-name: a6; }  /* caption "Override": 6.0s to 14.0s */
+    .a7 { animation-name: a7; }  /* check + result caption: from 14.0s */
+    @keyframes a1 { 0.00%, 39.65% { opacity: 1 } 40.31%, 95.15% { opacity: 0 } 97.14%, 100.00% { opacity: 1 } }
+    @keyframes a2 { 0.00%, 26.43% { opacity: 1 } 27.09%, 100.00% { opacity: 0 } }
+    @keyframes a3 { 0.00%, 26.43% { opacity: 0 } 27.09%, 95.15% { opacity: 1 } 97.14%, 100.00% { opacity: 0 } }
+    @keyframes a4 { 0.00%, 39.65% { opacity: 0 } 40.31%, 95.15% { opacity: 1 } 97.14%, 100.00% { opacity: 0 } }
+    @keyframes a6 { 0.00%, 26.43% { opacity: 0 } 27.09%, 61.67% { opacity: 1 } 62.33%, 100.00% { opacity: 0 } }
+    @keyframes a7 { 0.00%, 61.67% { opacity: 0 } 62.33%, 95.15% { opacity: 1 } 97.14%, 100.00% { opacity: 0 } }
     @media (prefers-reduced-motion: reduce) {
-      .a1, .a2, .a5, .a6 { animation: none; opacity: 0; }
+      .a1, .a2, .a6 { animation: none; opacity: 0; }
       .a3, .a4, .a7 { animation: none; opacity: 1; }
     }
   </style>
@@ -77,7 +74,6 @@
     <text x="246" y="159" class="val">16g + 2g = 18 GiB</text>
     <text x="130" y="188" class="muted">memoryOverhead stays 2g (unchanged default)</text>
   </g>
-  <rect x="158" y="137" width="70" height="34" rx="3" class="ring a5"/>
   <g class="a3">
     <rect x="440" y="140" width="170" height="28" rx="4" class="chip"/>
     <text x="525" y="159" text-anchor="middle" class="cmd">--driver-memory 16g</text>

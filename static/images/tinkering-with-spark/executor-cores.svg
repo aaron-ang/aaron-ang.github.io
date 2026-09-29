@@ -25,66 +25,66 @@
     .cur { fill: var(--probe); }
     .el { fill: var(--edge); }
 
-    /* 16s loop, both rows on one shared clock. Wave k runs from 0.8 + 1.4(k-1) s for 1.4 s.
-       Top row: waves 1-8 (0.8s to 12.0s). Bottom row: waves 1-2 (0.8s to 3.6s), then idle.
-       Hold final frame until 92%, fade out 92% to 96%, restart. */
-    .w { opacity: 0; animation: 19.7s linear infinite; }
-    .a1 { animation-name: a1; }  /* 0s to 0.8s */
-    .a2 { animation-name: a2; }  /* 0.8s to 2.2s */
-    .a3 { animation-name: a3; }  /* 2.2s to end */
-    .a4 { animation-name: a4; }  /* 0s to 2.2s */
-    .a5 { animation-name: a5; }  /* 2.2s to 3.6s */
-    .a6 { animation-name: a6; }  /* 3.6s to end */
-    .a7 { animation-name: a7; }  /* 0s to 3.6s */
-    .a8 { animation-name: a8; }  /* 3.6s to 5.0s */
-    .a9 { animation-name: a9; }  /* 5.0s to end */
-    .a10 { animation-name: a10; }  /* 0s to 5.0s */
-    .a11 { animation-name: a11; }  /* 5.0s to 6.4s */
-    .a12 { animation-name: a12; }  /* 6.4s to end */
-    .a13 { animation-name: a13; }  /* 0s to 6.4s */
-    .a14 { animation-name: a14; }  /* 6.4s to 7.8s */
-    .a15 { animation-name: a15; }  /* 7.8s to end */
-    .a16 { animation-name: a16; }  /* 0s to 7.8s */
-    .a17 { animation-name: a17; }  /* 7.8s to 9.2s */
-    .a18 { animation-name: a18; }  /* 9.2s to end */
-    .a19 { animation-name: a19; }  /* 0s to 9.2s */
-    .a20 { animation-name: a20; }  /* 9.2s to 10.6s */
-    .a21 { animation-name: a21; }  /* 10.6s to end */
-    .a22 { animation-name: a22; }  /* 0s to 10.6s */
-    .a23 { animation-name: a23; }  /* 10.6s to 12.0s */
-    .a24 { animation-name: a24; }  /* 12.0s to end */
-    .a25 { animation-name: a25; }  /* 3.6s to 5.0s */
-    .a26 { animation-name: a26; }  /* 5.0s to 6.4s */
-    .a27 { animation-name: a27; }  /* 6.4s to 7.8s */
-    .a28 { animation-name: a28; }  /* 7.8s to 9.2s */
-    @keyframes a1 { 0.00%, 4.06% { opacity: 1 } 4.38%, 100.00% { opacity: 0 } }
-    @keyframes a2 { 0.00%, 3.74% { opacity: 0 } 4.06%, 13.27% { opacity: 1 } 13.60%, 100.00% { opacity: 0 } }
-    @keyframes a3 { 0.00%, 12.84% { opacity: 0 } 13.27%, 92.72% { opacity: 1 } 95.81%, 100.00% { opacity: 0 } }
-    @keyframes a4 { 0.00%, 13.27% { opacity: 1 } 13.60%, 100.00% { opacity: 0 } }
-    @keyframes a5 { 0.00%, 12.84% { opacity: 0 } 13.27%, 22.48% { opacity: 1 } 22.80%, 100.00% { opacity: 0 } }
-    @keyframes a6 { 0.00%, 22.05% { opacity: 0 } 22.48%, 92.72% { opacity: 1 } 95.81%, 100.00% { opacity: 0 } }
-    @keyframes a7 { 0.00%, 22.48% { opacity: 1 } 22.80%, 100.00% { opacity: 0 } }
-    @keyframes a8 { 0.00%, 22.05% { opacity: 0 } 22.48%, 31.69% { opacity: 1 } 32.01%, 100.00% { opacity: 0 } }
-    @keyframes a9 { 0.00%, 31.26% { opacity: 0 } 31.69%, 92.72% { opacity: 1 } 95.81%, 100.00% { opacity: 0 } }
-    @keyframes a10 { 0.00%, 31.69% { opacity: 1 } 32.01%, 100.00% { opacity: 0 } }
-    @keyframes a11 { 0.00%, 31.26% { opacity: 0 } 31.69%, 40.89% { opacity: 1 } 41.21%, 100.00% { opacity: 0 } }
-    @keyframes a12 { 0.00%, 40.47% { opacity: 0 } 40.89%, 92.72% { opacity: 1 } 95.81%, 100.00% { opacity: 0 } }
-    @keyframes a13 { 0.00%, 40.89% { opacity: 1 } 41.21%, 100.00% { opacity: 0 } }
-    @keyframes a14 { 0.00%, 40.47% { opacity: 0 } 40.89%, 50.09% { opacity: 1 } 50.41%, 100.00% { opacity: 0 } }
-    @keyframes a15 { 0.00%, 49.66% { opacity: 0 } 50.09%, 92.72% { opacity: 1 } 95.81%, 100.00% { opacity: 0 } }
-    @keyframes a16 { 0.00%, 50.09% { opacity: 1 } 50.41%, 100.00% { opacity: 0 } }
-    @keyframes a17 { 0.00%, 49.66% { opacity: 0 } 50.09%, 59.30% { opacity: 1 } 59.63%, 100.00% { opacity: 0 } }
-    @keyframes a18 { 0.00%, 58.87% { opacity: 0 } 59.30%, 92.72% { opacity: 1 } 95.81%, 100.00% { opacity: 0 } }
-    @keyframes a19 { 0.00%, 59.30% { opacity: 1 } 59.63%, 100.00% { opacity: 0 } }
-    @keyframes a20 { 0.00%, 58.87% { opacity: 0 } 59.30%, 68.51% { opacity: 1 } 68.84%, 100.00% { opacity: 0 } }
-    @keyframes a21 { 0.00%, 68.10% { opacity: 0 } 68.51%, 92.72% { opacity: 1 } 95.81%, 100.00% { opacity: 0 } }
-    @keyframes a22 { 0.00%, 68.51% { opacity: 1 } 68.84%, 100.00% { opacity: 0 } }
-    @keyframes a23 { 0.00%, 68.10% { opacity: 0 } 68.51%, 77.73% { opacity: 1 } 78.04%, 100.00% { opacity: 0 } }
-    @keyframes a24 { 0.00%, 77.30% { opacity: 0 } 77.73%, 92.72% { opacity: 1 } 95.81%, 100.00% { opacity: 0 } }
-    @keyframes a25 { 0.00%, 22.05% { opacity: 0 } 22.48%, 31.69% { opacity: 1 } 32.01%, 100.00% { opacity: 0 } }
-    @keyframes a26 { 0.00%, 31.26% { opacity: 0 } 31.69%, 40.89% { opacity: 1 } 41.21%, 100.00% { opacity: 0 } }
-    @keyframes a27 { 0.00%, 40.47% { opacity: 0 } 40.89%, 50.09% { opacity: 1 } 50.41%, 100.00% { opacity: 0 } }
-    @keyframes a28 { 0.00%, 49.66% { opacity: 0 } 50.09%, 59.30% { opacity: 1 } 59.63%, 100.00% { opacity: 0 } }
+    /* 23.8s loop, both rows on one shared clock (side-by-side comparison, so they advance together).
+       Wave k starts at 3.0 + 1.8(k-1) s and lasts 1.8 s (equal waves: duration is the point). Top row done at 17.4 s.
+       Bottom row: waves 1-2, done at 6.6 s. Final frame holds to 22.4s, fades out to 23.0s, restart. */
+    .w { opacity: 0; animation: 23.8s linear infinite; }
+    .a1 { animation-name: a1; }  /* 0.00s to 3.00s */
+    .a2 { animation-name: a2; }  /* 2.92s to 4.80s */
+    .a3 { animation-name: a3; }  /* 4.72s onward */
+    .a4 { animation-name: a4; }  /* 0.00s to 4.80s */
+    .a5 { animation-name: a5; }  /* 4.72s to 6.60s */
+    .a6 { animation-name: a6; }  /* 6.52s onward */
+    .a7 { animation-name: a7; }  /* 0.00s to 6.60s */
+    .a8 { animation-name: a8; }  /* 6.52s to 8.40s */
+    .a9 { animation-name: a9; }  /* 8.32s onward */
+    .a10 { animation-name: a10; }  /* 0.00s to 8.40s */
+    .a11 { animation-name: a11; }  /* 8.32s to 10.20s */
+    .a12 { animation-name: a12; }  /* 10.12s onward */
+    .a13 { animation-name: a13; }  /* 0.00s to 10.20s */
+    .a14 { animation-name: a14; }  /* 10.12s to 12.00s */
+    .a15 { animation-name: a15; }  /* 11.92s onward */
+    .a16 { animation-name: a16; }  /* 0.00s to 12.00s */
+    .a17 { animation-name: a17; }  /* 11.92s to 13.80s */
+    .a18 { animation-name: a18; }  /* 13.72s onward */
+    .a19 { animation-name: a19; }  /* 0.00s to 13.80s */
+    .a20 { animation-name: a20; }  /* 13.72s to 15.60s */
+    .a21 { animation-name: a21; }  /* 15.52s onward */
+    .a22 { animation-name: a22; }  /* 0.00s to 15.60s */
+    .a23 { animation-name: a23; }  /* 15.52s to 17.40s */
+    .a24 { animation-name: a24; }  /* 17.32s onward */
+    .a25 { animation-name: a25; }  /* 6.52s to 8.40s */
+    .a26 { animation-name: a26; }  /* 8.32s to 10.20s */
+    .a27 { animation-name: a27; }  /* 10.12s to 12.00s */
+    .a28 { animation-name: a28; }  /* 11.92s to 13.80s */
+    @keyframes a1 { 0.00%, 12.61% { opacity: 1 } 12.94%, 100.00% { opacity: 0 } }
+    @keyframes a2 { 0.00%, 12.27% { opacity: 0 } 12.61%, 20.17% { opacity: 1 } 20.50%, 100.00% { opacity: 0 } }
+    @keyframes a3 { 0.00%, 19.83% { opacity: 0 } 20.17%, 94.12% { opacity: 1 } 96.64%, 100.00% { opacity: 0 } }
+    @keyframes a4 { 0.00%, 20.17% { opacity: 1 } 20.50%, 100.00% { opacity: 0 } }
+    @keyframes a5 { 0.00%, 19.83% { opacity: 0 } 20.17%, 27.73% { opacity: 1 } 28.07%, 100.00% { opacity: 0 } }
+    @keyframes a6 { 0.00%, 27.39% { opacity: 0 } 27.73%, 94.12% { opacity: 1 } 96.64%, 100.00% { opacity: 0 } }
+    @keyframes a7 { 0.00%, 27.73% { opacity: 1 } 28.07%, 100.00% { opacity: 0 } }
+    @keyframes a8 { 0.00%, 27.39% { opacity: 0 } 27.73%, 35.29% { opacity: 1 } 35.63%, 100.00% { opacity: 0 } }
+    @keyframes a9 { 0.00%, 34.96% { opacity: 0 } 35.29%, 94.12% { opacity: 1 } 96.64%, 100.00% { opacity: 0 } }
+    @keyframes a10 { 0.00%, 35.29% { opacity: 1 } 35.63%, 100.00% { opacity: 0 } }
+    @keyframes a11 { 0.00%, 34.96% { opacity: 0 } 35.29%, 42.86% { opacity: 1 } 43.19%, 100.00% { opacity: 0 } }
+    @keyframes a12 { 0.00%, 42.52% { opacity: 0 } 42.86%, 94.12% { opacity: 1 } 96.64%, 100.00% { opacity: 0 } }
+    @keyframes a13 { 0.00%, 42.86% { opacity: 1 } 43.19%, 100.00% { opacity: 0 } }
+    @keyframes a14 { 0.00%, 42.52% { opacity: 0 } 42.86%, 50.42% { opacity: 1 } 50.76%, 100.00% { opacity: 0 } }
+    @keyframes a15 { 0.00%, 50.08% { opacity: 0 } 50.42%, 94.12% { opacity: 1 } 96.64%, 100.00% { opacity: 0 } }
+    @keyframes a16 { 0.00%, 50.42% { opacity: 1 } 50.76%, 100.00% { opacity: 0 } }
+    @keyframes a17 { 0.00%, 50.08% { opacity: 0 } 50.42%, 57.98% { opacity: 1 } 58.32%, 100.00% { opacity: 0 } }
+    @keyframes a18 { 0.00%, 57.65% { opacity: 0 } 57.98%, 94.12% { opacity: 1 } 96.64%, 100.00% { opacity: 0 } }
+    @keyframes a19 { 0.00%, 57.98% { opacity: 1 } 58.32%, 100.00% { opacity: 0 } }
+    @keyframes a20 { 0.00%, 57.65% { opacity: 0 } 57.98%, 65.55% { opacity: 1 } 65.88%, 100.00% { opacity: 0 } }
+    @keyframes a21 { 0.00%, 65.21% { opacity: 0 } 65.55%, 94.12% { opacity: 1 } 96.64%, 100.00% { opacity: 0 } }
+    @keyframes a22 { 0.00%, 65.55% { opacity: 1 } 65.88%, 100.00% { opacity: 0 } }
+    @keyframes a23 { 0.00%, 65.21% { opacity: 0 } 65.55%, 73.11% { opacity: 1 } 73.45%, 100.00% { opacity: 0 } }
+    @keyframes a24 { 0.00%, 72.77% { opacity: 0 } 73.11%, 94.12% { opacity: 1 } 96.64%, 100.00% { opacity: 0 } }
+    @keyframes a25 { 0.00%, 27.39% { opacity: 0 } 27.73%, 35.29% { opacity: 1 } 35.63%, 100.00% { opacity: 0 } }
+    @keyframes a26 { 0.00%, 34.96% { opacity: 0 } 35.29%, 42.86% { opacity: 1 } 43.19%, 100.00% { opacity: 0 } }
+    @keyframes a27 { 0.00%, 42.52% { opacity: 0 } 42.86%, 50.42% { opacity: 1 } 50.76%, 100.00% { opacity: 0 } }
+    @keyframes a28 { 0.00%, 50.08% { opacity: 0 } 50.42%, 57.98% { opacity: 1 } 58.32%, 100.00% { opacity: 0 } }
     @media (prefers-reduced-motion: reduce) {
       .w { animation: none; opacity: 0; }
       .w.fin { opacity: 1; }

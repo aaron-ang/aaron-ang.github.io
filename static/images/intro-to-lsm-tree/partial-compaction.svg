@@ -18,42 +18,44 @@
     .arrow { fill: none; stroke: var(--probe); stroke-width: 2; }
     .arrowhead { fill: var(--probe); }
 
-    /* 16s loop: full compaction 0.8s-3.8s, partial compaction 6.0s-9.8s, hold, fade 14.7s-15.4s. */
-    .f1, .f2, .f3, .f4, .f6, .f7, .p1, .p2, .p3, .p4, .p5, .p7, .p8 { opacity: 0; animation: 21.1s linear infinite; }
-    .f5, .p6 { opacity: 1; animation: 21.1s linear infinite; }
-    .f1 { animation-name: f1; }  /* full: trigger text, from 0.8s */
-    @keyframes f1 { 0.00%, 3.79% { opacity: 0 } 4.09%, 92.24% { opacity: 1 } 95.33%, 100.00% { opacity: 0 } }
-    .f2 { animation-name: f2; }  /* full: ring all L_i files, 0.8s to 3.2s */
-    @keyframes f2 { 0.00%, 3.79% { opacity: 0 } 4.09%, 28.10% { opacity: 1 } 28.98%, 100.00% { opacity: 0 } }
-    .f3 { animation-name: f3; }  /* full: ring all L_i+1 files, 1.8s to 3.2s */
-    @keyframes f3 { 0.00%, 11.86% { opacity: 0 } 12.39%, 28.10% { opacity: 1 } 28.98%, 100.00% { opacity: 0 } }
-    .f4 { animation-name: f4; }  /* full: merge arrows, from 2.6s */
-    @keyframes f4 { 0.00%, 20.01% { opacity: 0 } 20.68%, 92.24% { opacity: 1 } 95.33%, 100.00% { opacity: 0 } }
-    .f5 { animation-name: f5; }  /* full: old files gone, 3.2s to 14.7s */
-    @keyframes f5 { 0.00%, 28.10% { opacity: 1 } 28.98%, 92.24% { opacity: 0 } 95.33%, 100.00% { opacity: 1 } }
-    .f6 { animation-name: f6; }  /* full: new L_i+1 files, empty L_i, from 3.2s */
-    @keyframes f6 { 0.00%, 28.10% { opacity: 0 } 28.98%, 92.24% { opacity: 1 } 95.33%, 100.00% { opacity: 0 } }
-    .f7 { animation-name: f7; }  /* full: cost label, from 3.8s */
-    @keyframes f7 { 0.00%, 36.40% { opacity: 0 } 37.27%, 92.24% { opacity: 1 } 95.33%, 100.00% { opacity: 0 } }
-    .p1 { animation-name: p1; }  /* partial: trigger + policy label, from 6.0s */
-    @keyframes p1 { 0.00%, 45.33% { opacity: 0 } 45.56%, 92.24% { opacity: 1 } 95.33%, 100.00% { opacity: 0 } }
-    .p2 { animation-name: p2; }  /* partial: ring picked file, 6.0s to 9.0s */
-    @keyframes p2 { 0.00%, 45.33% { opacity: 0 } 45.56%, 69.79% { opacity: 1 } 70.44%, 100.00% { opacity: 0 } }
-    .p3 { animation-name: p3; }  /* partial: ring overlapping files, 7.2s to 9.0s */
-    @keyframes p3 { 0.00%, 53.42% { opacity: 0 } 53.86%, 69.79% { opacity: 1 } 70.44%, 100.00% { opacity: 0 } }
-    .p4 { animation-name: p4; }  /* partial: overlap label, from 7.2s */
-    @keyframes p4 { 0.00%, 53.42% { opacity: 0 } 53.86%, 92.24% { opacity: 1 } 95.33%, 100.00% { opacity: 0 } }
-    .p5 { animation-name: p5; }  /* partial: merge arrow, from 8.2s */
-    @keyframes p5 { 0.00%, 61.62% { opacity: 0 } 62.15%, 92.24% { opacity: 1 } 95.33%, 100.00% { opacity: 0 } }
-    .p6 { animation-name: p6; }  /* partial: old files gone, 9.0s to 14.7s */
-    @keyframes p6 { 0.00%, 69.79% { opacity: 1 } 70.44%, 92.24% { opacity: 0 } 95.33%, 100.00% { opacity: 1 } }
-    .p7 { animation-name: p7; }  /* partial: new files, from 9.0s */
-    @keyframes p7 { 0.00%, 69.79% { opacity: 0 } 70.44%, 92.24% { opacity: 1 } 95.33%, 100.00% { opacity: 0 } }
-    .p8 { animation-name: p8; }  /* partial: cost label, from 9.8s */
-    @keyframes p8 { 0.00%, 78.07% { opacity: 0 } 78.74%, 92.24% { opacity: 1 } 95.33%, 100.00% { opacity: 0 } }
+    /* 30.4s loop, 12 steps starting at 1.5, 2.8, 4.1, 5.6, 6.9, 10.2, 14, 15.8, 18.3, 20.6, 21.9, 23.7 s; final frame holds 5.8s, then fades. */
+    .f1, .f2, .f3, .f4, .f6, .f7, .p0, .p1, .p2, .p3, .p4, .p5, .p7, .p8 { opacity: 0; animation: 30.4s linear infinite; }
+    .f5, .p6 { opacity: 1; animation: 30.4s linear infinite; }
+    .f1 { animation-name: f1; }  /* full: trigger text: step 1+, 1.5s to end */
+    @keyframes f1 { 0.00%, 4.93% { opacity: 0 } 5.43%, 97.04% { opacity: 1 } 98.68%, 100.00% { opacity: 0 } }
+    .f2 { animation-name: f2; }  /* full: ring all L_i files: step 2-5, 2.8s to 6.9s */
+    @keyframes f2 { 0.00%, 9.21% { opacity: 0 } 9.70%, 22.70% { opacity: 1 } 23.19%, 100.00% { opacity: 0 } }
+    .f3 { animation-name: f3; }  /* full: ring all L_i+1 files: step 3-5, 4.1s to 6.9s */
+    @keyframes f3 { 0.00%, 13.49% { opacity: 0 } 13.98%, 22.70% { opacity: 1 } 23.19%, 100.00% { opacity: 0 } }
+    .f4 { animation-name: f4; }  /* full: merge arrows: step 4+, 5.6s to end */
+    @keyframes f4 { 0.00%, 18.42% { opacity: 0 } 18.91%, 97.04% { opacity: 1 } 98.68%, 100.00% { opacity: 0 } }
+    .f5 { animation-name: f5; }  /* full: old files gone: step base-5, 0s to 6.9s */
+    @keyframes f5 { 0.00%, 22.70% { opacity: 1 } 23.19%, 97.04% { opacity: 0 } 98.68%, 100.00% { opacity: 1 } }
+    .f6 { animation-name: f6; }  /* full: new L_i+1 files, empty L_i: step 5+, 6.9s to end */
+    @keyframes f6 { 0.00%, 22.70% { opacity: 0 } 23.19%, 97.04% { opacity: 1 } 98.68%, 100.00% { opacity: 0 } }
+    .f7 { animation-name: f7; }  /* full: cost label: step 6+, 10.2s to end */
+    @keyframes f7 { 0.00%, 33.55% { opacity: 0 } 34.05%, 97.04% { opacity: 1 } 98.68%, 100.00% { opacity: 0 } }
+    .p1 { animation-name: p1; }  /* partial: policy label: step 8+, 15.8s to end */
+    @keyframes p1 { 0.00%, 51.97% { opacity: 0 } 52.47%, 97.04% { opacity: 1 } 98.68%, 100.00% { opacity: 0 } }
+    .p2 { animation-name: p2; }  /* partial: ring picked file: step 8-11, 15.8s to 21.9s */
+    @keyframes p2 { 0.00%, 51.97% { opacity: 0 } 52.47%, 72.04% { opacity: 1 } 72.53%, 100.00% { opacity: 0 } }
+    .p3 { animation-name: p3; }  /* partial: ring overlapping files: step 9-11, 18.3s to 21.9s */
+    @keyframes p3 { 0.00%, 60.20% { opacity: 0 } 60.69%, 72.04% { opacity: 1 } 72.53%, 100.00% { opacity: 0 } }
+    .p4 { animation-name: p4; }  /* partial: overlap label: step 9+, 18.3s to end */
+    @keyframes p4 { 0.00%, 60.20% { opacity: 0 } 60.69%, 97.04% { opacity: 1 } 98.68%, 100.00% { opacity: 0 } }
+    .p5 { animation-name: p5; }  /* partial: merge arrow: step 10+, 20.6s to end */
+    @keyframes p5 { 0.00%, 67.76% { opacity: 0 } 68.26%, 97.04% { opacity: 1 } 98.68%, 100.00% { opacity: 0 } }
+    .p6 { animation-name: p6; }  /* partial: old files gone: step base-11, 0s to 21.9s */
+    @keyframes p6 { 0.00%, 72.04% { opacity: 1 } 72.53%, 97.04% { opacity: 0 } 98.68%, 100.00% { opacity: 1 } }
+    .p7 { animation-name: p7; }  /* partial: new files: step 11+, 21.9s to end */
+    @keyframes p7 { 0.00%, 72.04% { opacity: 0 } 72.53%, 97.04% { opacity: 1 } 98.68%, 100.00% { opacity: 0 } }
+    .p8 { animation-name: p8; }  /* partial: cost label: step 12+, 23.7s to end */
+    @keyframes p8 { 0.00%, 77.96% { opacity: 0 } 78.45%, 97.04% { opacity: 1 } 98.68%, 100.00% { opacity: 0 } }
+    .p0 { animation-name: p0; }  /* partial: trigger text: step 7+, 14s to end */
+    @keyframes p0 { 0.00%, 46.05% { opacity: 0 } 46.55%, 97.04% { opacity: 1 } 98.68%, 100.00% { opacity: 0 } }
     @media (prefers-reduced-motion: reduce) {
       .f2, .f3, .f5, .p2, .p3, .p6 { animation: none; opacity: 0; }
-      .f1, .f4, .f6, .f7, .p1, .p4, .p5, .p7, .p8 { animation: none; opacity: 1; }
+      .f1, .f4, .f6, .f7, .p0, .p1, .p4, .p5, .p7, .p8 { animation: none; opacity: 1; }
     }
   </style>
   <text x="20" y="24" class="title">Full compaction</text>
@@ -86,7 +88,7 @@
   <text x="20" y="224" class="title">Partial compaction</text>
   <text x="20" y="279">L<tspan baseline-shift="sub" font-size="11">i</tspan></text>
   <text x="20" y="343">L<tspan baseline-shift="sub" font-size="11">i+1</tspan></text>
-  <text x="530" y="279" class="muted p1">trigger: L<tspan baseline-shift="sub" font-size="11">i</tspan> full</text>
+  <text x="530" y="279" class="muted p0">trigger: L<tspan baseline-shift="sub" font-size="11">i</tspan> full</text>
   <text x="320" y="246" text-anchor="middle" class="num p1">picked by policy, e.g. round robin</text>
   <g class="p7"><rect x="285" y="256" width="70" height="36" rx="4" class="gone"/></g>
   <rect x="129" y="256" width="70" height="36" rx="4" class="full"/><text x="164" y="279" text-anchor="middle">[a-f]</text><rect x="441" y="256" width="70" height="36" rx="4" class="full"/><text x="476" y="279" text-anchor="middle">[n-z]</text>

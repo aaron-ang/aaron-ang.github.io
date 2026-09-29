@@ -30,68 +30,68 @@
     .accline polygon { fill: var(--accent); }
     .note { stroke: var(--accent); }
 
-    /* 16s loop. Each class shows its element during one time window; all fade out 92% to 96%. */
-    .a { opacity: 0; animation: 15.5s linear infinite; }
-    .n1 { animation-name: n1; }  /* narration 1: 0.80s to 2.72s */
-    @keyframes n1 { 0.00%, 4.65% { opacity: 0 } 5.16%, 15.99% { opacity: 1 } 16.46%, 100.00% { opacity: 0 } }
-    .n2 { animation-name: n2; }  /* narration 2: 2.72s to 4.64s */
-    @keyframes n2 { 0.00%, 15.99% { opacity: 0 } 16.46%, 27.28% { opacity: 1 } 27.75%, 100.00% { opacity: 0 } }
-    .n3 { animation-name: n3; }  /* narration 3: 4.64s to 6.56s */
-    @keyframes n3 { 0.00%, 27.28% { opacity: 0 } 27.75%, 38.57% { opacity: 1 } 39.04%, 100.00% { opacity: 0 } }
-    .n4 { animation-name: n4; }  /* narration 4: 6.56s to 8.48s */
-    @keyframes n4 { 0.00%, 38.57% { opacity: 0 } 39.04%, 49.85% { opacity: 1 } 50.33%, 100.00% { opacity: 0 } }
-    .n5 { animation-name: n5; }  /* narration 5: 8.48s to 10.40s */
-    @keyframes n5 { 0.00%, 49.85% { opacity: 0 } 50.33%, 61.15% { opacity: 1 } 61.62%, 100.00% { opacity: 0 } }
-    .n6 { animation-name: n6; }  /* narration 6: 10.40s to 12.32s */
-    @keyframes n6 { 0.00%, 61.15% { opacity: 0 } 61.62%, 72.43% { opacity: 1 } 72.91%, 100.00% { opacity: 0 } }
-    .n7 { animation-name: n7; }  /* narration 7: 12.32s onward */
-    @keyframes n7 { 0.00%, 72.43% { opacity: 0 } 72.91%, 92.24% { opacity: 1 } 95.49%, 100.00% { opacity: 0 } }
-    .s1c { animation-name: s1c; }  /* s1: 0.80s to 2.72s */
-    @keyframes s1c { 0.00%, 4.65% { opacity: 0 } 5.16%, 15.99% { opacity: 1 } 16.46%, 100.00% { opacity: 0 } }
-    .s1d { animation-name: s1d; }  /* s1: 2.72s onward */
-    @keyframes s1d { 0.00%, 15.99% { opacity: 0 } 16.46%, 92.24% { opacity: 1 } 95.49%, 100.00% { opacity: 0 } }
-    .l1 { animation-name: l1; }  /* label 1: 0.80s onward */
-    @keyframes l1 { 0.00%, 4.65% { opacity: 0 } 5.16%, 92.24% { opacity: 1 } 95.49%, 100.00% { opacity: 0 } }
-    .s2c { animation-name: s2c; }  /* s2: 2.72s to 4.64s */
-    @keyframes s2c { 0.00%, 15.99% { opacity: 0 } 16.46%, 27.28% { opacity: 1 } 27.75%, 100.00% { opacity: 0 } }
-    .s2d { animation-name: s2d; }  /* s2: 4.64s onward */
-    @keyframes s2d { 0.00%, 27.28% { opacity: 0 } 27.75%, 92.24% { opacity: 1 } 95.49%, 100.00% { opacity: 0 } }
-    .l2 { animation-name: l2; }  /* label 2: 2.72s onward */
-    @keyframes l2 { 0.00%, 15.99% { opacity: 0 } 16.46%, 92.24% { opacity: 1 } 95.49%, 100.00% { opacity: 0 } }
-    .am { animation-name: am; }  /* AM container: 2.72s onward */
-    @keyframes am { 0.00%, 15.99% { opacity: 0 } 16.46%, 92.24% { opacity: 1 } 95.49%, 100.00% { opacity: 0 } }
-    .s3c { animation-name: s3c; }  /* s3: 4.64s to 6.56s */
-    @keyframes s3c { 0.00%, 27.28% { opacity: 0 } 27.75%, 38.57% { opacity: 1 } 39.04%, 100.00% { opacity: 0 } }
-    .s3d { animation-name: s3d; }  /* s3: 6.56s onward */
-    @keyframes s3d { 0.00%, 38.57% { opacity: 0 } 39.04%, 92.24% { opacity: 1 } 95.49%, 100.00% { opacity: 0 } }
-    .l3 { animation-name: l3; }  /* label 3: 4.64s onward */
-    @keyframes l3 { 0.00%, 27.28% { opacity: 0 } 27.75%, 92.24% { opacity: 1 } 95.49%, 100.00% { opacity: 0 } }
-    .s4c { animation-name: s4c; }  /* s4: 6.56s to 8.48s */
-    @keyframes s4c { 0.00%, 38.57% { opacity: 0 } 39.04%, 49.85% { opacity: 1 } 50.33%, 100.00% { opacity: 0 } }
-    .s4d { animation-name: s4d; }  /* s4: 8.48s onward */
-    @keyframes s4d { 0.00%, 49.85% { opacity: 0 } 50.33%, 92.24% { opacity: 1 } 95.49%, 100.00% { opacity: 0 } }
-    .l4 { animation-name: l4; }  /* label 4: 6.56s onward */
-    @keyframes l4 { 0.00%, 38.57% { opacity: 0 } 39.04%, 92.24% { opacity: 1 } 95.49%, 100.00% { opacity: 0 } }
-    .ct { animation-name: ct; }  /* granted containers: 6.56s onward */
-    @keyframes ct { 0.00%, 38.57% { opacity: 0 } 39.04%, 92.24% { opacity: 1 } 95.49%, 100.00% { opacity: 0 } }
-    .s5c { animation-name: s5c; }  /* s5: 8.48s to 10.40s */
-    @keyframes s5c { 0.00%, 49.85% { opacity: 0 } 50.33%, 61.15% { opacity: 1 } 61.62%, 100.00% { opacity: 0 } }
-    .s5d { animation-name: s5d; }  /* s5: 10.40s onward */
-    @keyframes s5d { 0.00%, 61.15% { opacity: 0 } 61.62%, 92.24% { opacity: 1 } 95.49%, 100.00% { opacity: 0 } }
-    .ex { animation-name: ex; }  /* executors: 8.48s onward */
-    @keyframes ex { 0.00%, 49.85% { opacity: 0 } 50.33%, 92.24% { opacity: 1 } 95.49%, 100.00% { opacity: 0 } }
-    .l5 { animation-name: l5; }  /* label 5: 8.48s onward */
-    @keyframes l5 { 0.00%, 49.85% { opacity: 0 } 50.33%, 92.24% { opacity: 1 } 95.49%, 100.00% { opacity: 0 } }
-    .s6 { animation-name: s6; }  /* driver-executor bus: 10.40s onward */
-    @keyframes s6 { 0.00%, 61.15% { opacity: 0 } 61.62%, 92.24% { opacity: 1 } 95.49%, 100.00% { opacity: 0 } }
-    .l6 { animation-name: l6; }  /* label 6: 10.40s onward */
-    @keyframes l6 { 0.00%, 61.15% { opacity: 0 } 61.62%, 92.24% { opacity: 1 } 95.49%, 100.00% { opacity: 0 } }
-    .tk { animation-name: tk; }  /* several tasks per executor: 10.40s onward */
-    @keyframes tk { 0.00%, 61.15% { opacity: 0 } 61.62%, 92.24% { opacity: 1 } 95.49%, 100.00% { opacity: 0 } }
-    .nsc { animation-name: nsc; }  /* ns: 12.32s onward */
-    @keyframes nsc { 0.00%, 72.43% { opacity: 0 } 72.91%, 92.24% { opacity: 1 } 95.49%, 100.00% { opacity: 0 } }
-    .lns { animation-name: lns; }  /* node status labels: 12.32s onward */
-    @keyframes lns { 0.00%, 72.43% { opacity: 0 } 72.91%, 92.24% { opacity: 1 } 95.49%, 100.00% { opacity: 0 } }
+    /* 33.82s loop; steps at 0.72, 4.12, 9.42, 13.02, 16.62, 21.32, 27.12 s (variable holds); all fade out 32.62s to 33.12s. */
+    .a { opacity: 0; animation: 33.82s linear infinite; }
+    .n1 { animation-name: n1; }  /* narration 1: 0.72s to 4.12s */
+    @keyframes n1 { 0.00%, 2.13% { opacity: 0 } 2.57%, 12.18% { opacity: 1 } 12.63%, 100.00% { opacity: 0 } }
+    .n2 { animation-name: n2; }  /* narration 2: 4.12s to 9.42s */
+    @keyframes n2 { 0.00%, 12.18% { opacity: 0 } 12.63%, 27.85% { opacity: 1 } 28.30%, 100.00% { opacity: 0 } }
+    .n3 { animation-name: n3; }  /* narration 3: 9.42s to 13.02s */
+    @keyframes n3 { 0.00%, 27.85% { opacity: 0 } 28.30%, 38.50% { opacity: 1 } 38.94%, 100.00% { opacity: 0 } }
+    .n4 { animation-name: n4; }  /* narration 4: 13.02s to 16.62s */
+    @keyframes n4 { 0.00%, 38.50% { opacity: 0 } 38.94%, 49.14% { opacity: 1 } 49.59%, 100.00% { opacity: 0 } }
+    .n5 { animation-name: n5; }  /* narration 5: 16.62s to 21.32s */
+    @keyframes n5 { 0.00%, 49.14% { opacity: 0 } 49.59%, 63.04% { opacity: 1 } 63.48%, 100.00% { opacity: 0 } }
+    .n6 { animation-name: n6; }  /* narration 6: 21.32s to 27.12s */
+    @keyframes n6 { 0.00%, 63.04% { opacity: 0 } 63.48%, 80.19% { opacity: 1 } 80.63%, 100.00% { opacity: 0 } }
+    .n7 { animation-name: n7; }  /* narration 7: 27.12s onward */
+    @keyframes n7 { 0.00%, 80.19% { opacity: 0 } 80.63%, 96.45% { opacity: 1 } 97.93%, 100.00% { opacity: 0 } }
+    .s1c { animation-name: s1c; }  /* s1: 0.72s to 4.12s */
+    @keyframes s1c { 0.00%, 2.13% { opacity: 0 } 2.57%, 12.18% { opacity: 1 } 12.63%, 100.00% { opacity: 0 } }
+    .s1d { animation-name: s1d; }  /* s1: 4.12s onward */
+    @keyframes s1d { 0.00%, 12.18% { opacity: 0 } 12.63%, 96.45% { opacity: 1 } 97.93%, 100.00% { opacity: 0 } }
+    .l1 { animation-name: l1; }  /* label 1: 0.72s onward */
+    @keyframes l1 { 0.00%, 2.13% { opacity: 0 } 2.57%, 96.45% { opacity: 1 } 97.93%, 100.00% { opacity: 0 } }
+    .s2c { animation-name: s2c; }  /* s2: 4.12s to 9.42s */
+    @keyframes s2c { 0.00%, 12.18% { opacity: 0 } 12.63%, 27.85% { opacity: 1 } 28.30%, 100.00% { opacity: 0 } }
+    .s2d { animation-name: s2d; }  /* s2: 9.42s onward */
+    @keyframes s2d { 0.00%, 27.85% { opacity: 0 } 28.30%, 96.45% { opacity: 1 } 97.93%, 100.00% { opacity: 0 } }
+    .l2 { animation-name: l2; }  /* label 2: 4.12s onward */
+    @keyframes l2 { 0.00%, 12.18% { opacity: 0 } 12.63%, 96.45% { opacity: 1 } 97.93%, 100.00% { opacity: 0 } }
+    .am { animation-name: am; }  /* AM container: 4.12s onward */
+    @keyframes am { 0.00%, 12.18% { opacity: 0 } 12.63%, 96.45% { opacity: 1 } 97.93%, 100.00% { opacity: 0 } }
+    .s3c { animation-name: s3c; }  /* s3: 9.42s to 13.02s */
+    @keyframes s3c { 0.00%, 27.85% { opacity: 0 } 28.30%, 38.50% { opacity: 1 } 38.94%, 100.00% { opacity: 0 } }
+    .s3d { animation-name: s3d; }  /* s3: 13.02s onward */
+    @keyframes s3d { 0.00%, 38.50% { opacity: 0 } 38.94%, 96.45% { opacity: 1 } 97.93%, 100.00% { opacity: 0 } }
+    .l3 { animation-name: l3; }  /* label 3: 9.42s onward */
+    @keyframes l3 { 0.00%, 27.85% { opacity: 0 } 28.30%, 96.45% { opacity: 1 } 97.93%, 100.00% { opacity: 0 } }
+    .s4c { animation-name: s4c; }  /* s4: 13.02s to 16.62s */
+    @keyframes s4c { 0.00%, 38.50% { opacity: 0 } 38.94%, 49.14% { opacity: 1 } 49.59%, 100.00% { opacity: 0 } }
+    .s4d { animation-name: s4d; }  /* s4: 16.62s onward */
+    @keyframes s4d { 0.00%, 49.14% { opacity: 0 } 49.59%, 96.45% { opacity: 1 } 97.93%, 100.00% { opacity: 0 } }
+    .l4 { animation-name: l4; }  /* label 4: 13.02s onward */
+    @keyframes l4 { 0.00%, 38.50% { opacity: 0 } 38.94%, 96.45% { opacity: 1 } 97.93%, 100.00% { opacity: 0 } }
+    .ct { animation-name: ct; }  /* granted containers: 13.02s onward */
+    @keyframes ct { 0.00%, 38.50% { opacity: 0 } 38.94%, 96.45% { opacity: 1 } 97.93%, 100.00% { opacity: 0 } }
+    .s5c { animation-name: s5c; }  /* s5: 16.62s to 21.32s */
+    @keyframes s5c { 0.00%, 49.14% { opacity: 0 } 49.59%, 63.04% { opacity: 1 } 63.48%, 100.00% { opacity: 0 } }
+    .s5d { animation-name: s5d; }  /* s5: 21.32s onward */
+    @keyframes s5d { 0.00%, 63.04% { opacity: 0 } 63.48%, 96.45% { opacity: 1 } 97.93%, 100.00% { opacity: 0 } }
+    .ex { animation-name: ex; }  /* executors: 16.62s onward */
+    @keyframes ex { 0.00%, 49.14% { opacity: 0 } 49.59%, 96.45% { opacity: 1 } 97.93%, 100.00% { opacity: 0 } }
+    .l5 { animation-name: l5; }  /* label 5: 16.62s onward */
+    @keyframes l5 { 0.00%, 49.14% { opacity: 0 } 49.59%, 96.45% { opacity: 1 } 97.93%, 100.00% { opacity: 0 } }
+    .s6 { animation-name: s6; }  /* driver-executor bus: 21.32s onward */
+    @keyframes s6 { 0.00%, 63.04% { opacity: 0 } 63.48%, 96.45% { opacity: 1 } 97.93%, 100.00% { opacity: 0 } }
+    .l6 { animation-name: l6; }  /* label 6: 21.32s onward */
+    @keyframes l6 { 0.00%, 63.04% { opacity: 0 } 63.48%, 96.45% { opacity: 1 } 97.93%, 100.00% { opacity: 0 } }
+    .tk { animation-name: tk; }  /* several tasks per executor: 21.32s onward */
+    @keyframes tk { 0.00%, 63.04% { opacity: 0 } 63.48%, 96.45% { opacity: 1 } 97.93%, 100.00% { opacity: 0 } }
+    .nsc { animation-name: nsc; }  /* ns: 27.12s onward */
+    @keyframes nsc { 0.00%, 80.19% { opacity: 0 } 80.63%, 96.45% { opacity: 1 } 97.93%, 100.00% { opacity: 0 } }
+    .lns { animation-name: lns; }  /* node status labels: 27.12s onward */
+    @keyframes lns { 0.00%, 80.19% { opacity: 0 } 80.63%, 96.45% { opacity: 1 } 97.93%, 100.00% { opacity: 0 } }
     @media (prefers-reduced-motion: reduce) {
       .a { animation: none; opacity: 0; }
       .a.fin, .nsf { opacity: 1; }

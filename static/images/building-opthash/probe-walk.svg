@@ -17,20 +17,20 @@
     .arrow { fill: none; stroke: var(--probe); stroke-width: 2; }
     .arrowhead { fill: var(--probe); }
 
-    /* 11.4s loop. Each class shows its element during one time window. */
-    .s1, .s2, .s3, .s4, .s5, .s6 { opacity: 0; animation: 11.4s linear infinite; }
-    .s1 { animation-name: s1; }  /* probe 1: 0.5s to 1.7s */
-    .s2 { animation-name: s2; }  /* probe 2: 1.7s to 2.11.4s */
-    .s3 { animation-name: s3; }  /* from 2.11.4s: probe 3 / budget used up */
-    .s4 { animation-name: s4; }  /* from 3.7s: insert (uniform), jump arrow (elastic) */
-    .s5 { animation-name: s5; }  /* from 4.5s: insert in next array (elastic) */
+    /* 13.7s loop. Each class shows its element during one time window. */
+    .s1, .s2, .s3, .s4, .s5, .s6 { opacity: 0; animation: 13.7s linear infinite; }
+    .s1 { animation-name: s1; }  /* probe 1: 0.5s to 2.2s */
+    .s2 { animation-name: s2; }  /* probe 2: 2.2s to 3.9s */
+    .s3 { animation-name: s3; }  /* from 3.9s: probe 3 / budget used up */
+    .s4 { animation-name: s4; }  /* from 6.5s: insert (uniform), jump arrow (elastic) */
+    .s5 { animation-name: s5; }  /* from 9.1s: insert in next array (elastic); fades at 13.1s */
     .s6 { animation-name: s6; }  /* probe labels that stay: 0.5s onward */
-    @keyframes s1 { 0.00%, 3.95% { opacity: 0 } 4.73%, 18.90% { opacity: 1 } 20.08%, 100.00% { opacity: 0 } }
-    @keyframes s2 { 0.00%, 18.90% { opacity: 0 } 20.08%, 34.26% { opacity: 1 } 35.43%, 100.00% { opacity: 0 } }
-    @keyframes s3 { 0.00%, 34.26% { opacity: 0 } 35.43%, 94.17% { opacity: 1 } 96.84%, 100.00% { opacity: 0 } }
-    @keyframes s4 { 0.00%, 49.08% { opacity: 0 } 50.79%, 94.17% { opacity: 1 } 96.84%, 100.00% { opacity: 0 } }
-    @keyframes s5 { 0.00%, 64.42% { opacity: 0 } 66.14%, 94.17% { opacity: 1 } 96.84%, 100.00% { opacity: 0 } }
-    @keyframes s6 { 0.00%, 3.95% { opacity: 0 } 4.73%, 94.17% { opacity: 1 } 96.84%, 100.00% { opacity: 0 } }
+    @keyframes s1 { 0.00%, 3.65% { opacity: 0 } 4.74%, 16.06% { opacity: 1 } 17.15%, 100.00% { opacity: 0 } }
+    @keyframes s2 { 0.00%, 16.06% { opacity: 0 } 17.15%, 28.47% { opacity: 1 } 29.56%, 100.00% { opacity: 0 } }
+    @keyframes s3 { 0.00%, 28.47% { opacity: 0 } 29.56%, 95.62% { opacity: 1 } 97.81%, 100.00% { opacity: 0 } }
+    @keyframes s4 { 0.00%, 47.45% { opacity: 0 } 48.54%, 95.62% { opacity: 1 } 97.81%, 100.00% { opacity: 0 } }
+    @keyframes s5 { 0.00%, 66.42% { opacity: 0 } 67.52%, 95.62% { opacity: 1 } 97.81%, 100.00% { opacity: 0 } }
+    @keyframes s6 { 0.00%, 3.65% { opacity: 0 } 4.74%, 95.62% { opacity: 1 } 97.81%, 100.00% { opacity: 0 } }
     @media (prefers-reduced-motion: reduce) {
       .s1, .s2 { animation: none; opacity: 0; }
       .s3, .s4, .s5, .s6 { animation: none; opacity: 1; }

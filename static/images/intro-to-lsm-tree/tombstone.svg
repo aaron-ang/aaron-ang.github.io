@@ -22,52 +22,52 @@
     .arrow { fill: none; stroke: var(--probe); stroke-width: 2; }
     .arrowhead { fill: var(--probe); }
 
-    /* 18s loop. Each class shows its element during one time window. */
-    .a { opacity: 0; animation: 13.8s linear infinite; }
-    .c0 { animation-name: c0; }  /* caption, old value: 0s to 1s */
-    .c1 { animation-name: c1; }  /* caption + tombstone insert: 1s to 3s */
-    .c2 { animation-name: c2; }  /* caption, get(7): 3s to 5.5s */
-    .c3 { animation-name: c3; }  /* caption, compactions: 5.5s to 11.5s */
-    .c4 { animation-name: c4; }  /* caption, merge in last level: 11.5s to 14s */
-    .t0 { animation-name: t0; }  /* tombstone in memtable: 1s to 5.5s */
-    .t1 { animation-name: t1; }  /* tombstone in L1: 5.5s to 8.5s */
-    .t2 { animation-name: t2; }  /* tombstone in L2: 8.5s to 14s */
-    .d { animation-name: d; }    /* delete(7) label: 1s onward */
-    .g { animation-name: g; }    /* get(7) -> null + ring: 3s onward */
-    .gr { animation-name: gr; }  /* get(7) probe ring: 3s to 5.5s */
-    .lg { animation-name: lg; }  /* logically deleted, still on disk: 3s to 14s */
-    .k1 { animation-name: k1; }  /* compaction 1 (minutes) + ghost in memtable: 5.5s onward */
-    .k2 { animation-name: k2; }  /* compaction 2 (hours) + ghost in L1: 8.5s onward */
-    .k3 { animation-name: k3; }  /* compaction 3 (days) arrow: 11.5s onward */
-    .mr { animation-name: mr; }  /* merge ring on 7: v: 11.5s to 14s */
-    .v { animation-name: v; }    /* old entry 7: v: 0s to 14s */
-    .p { animation-name: p; }    /* physically deleted + ghost in L2: 14s onward */
-    .e0 { animation-name: e0; }  /* elapsed: just now, 0s to 5.5s */
-    .e1 { animation-name: e1; }  /* elapsed: minutes, 5.5s to 8.5s */
-    .e2 { animation-name: e2; }  /* elapsed: hours, 8.5s to 11.5s */
-    .e3 { animation-name: e3; }  /* elapsed: days, 11.5s onward */
-    @keyframes c0 { 0.00%, 6.52% { opacity: 1 } 7.30%, 100.00% { opacity: 0 } }
-    @keyframes c1 { 0.00%, 6.52% { opacity: 0 } 7.30%, 19.30% { opacity: 1 } 19.98%, 100.00% { opacity: 0 } }
-    @keyframes c2 { 0.00%, 19.30% { opacity: 0 } 19.98%, 32.11% { opacity: 1 } 32.67%, 100.00% { opacity: 0 } }
-    @keyframes c3 { 0.00%, 32.11% { opacity: 0 } 32.67%, 57.57% { opacity: 1 } 58.03%, 100.00% { opacity: 0 } }
-    @keyframes c4 { 0.00%, 57.57% { opacity: 0 } 58.03%, 70.17% { opacity: 1 } 70.71%, 100.00% { opacity: 0 } }
-    @keyframes t0 { 0.00%, 6.52% { opacity: 0 } 7.30%, 32.11% { opacity: 1 } 32.67%, 100.00% { opacity: 0 } }
-    @keyframes t1 { 0.00%, 32.11% { opacity: 0 } 32.67%, 44.96% { opacity: 1 } 45.35%, 100.00% { opacity: 0 } }
-    @keyframes t2 { 0.00%, 44.96% { opacity: 0 } 45.35%, 70.17% { opacity: 1 } 70.71%, 100.00% { opacity: 0 } }
-    @keyframes d { 0.00%, 6.52% { opacity: 0 } 7.30%, 92.71% { opacity: 1 } 96.07%, 100.00% { opacity: 0 } }
-    @keyframes g { 0.00%, 19.30% { opacity: 0 } 19.98%, 92.71% { opacity: 1 } 96.07%, 100.00% { opacity: 0 } }
-    @keyframes gr { 0.00%, 19.30% { opacity: 0 } 19.98%, 32.11% { opacity: 1 } 32.67%, 100.00% { opacity: 0 } }
-    @keyframes lg { 0.00%, 19.30% { opacity: 0 } 19.98%, 70.17% { opacity: 1 } 70.71%, 100.00% { opacity: 0 } }
-    @keyframes k1 { 0.00%, 32.11% { opacity: 0 } 32.67%, 92.71% { opacity: 1 } 96.07%, 100.00% { opacity: 0 } }
-    @keyframes k2 { 0.00%, 44.96% { opacity: 0 } 45.35%, 92.71% { opacity: 1 } 96.07%, 100.00% { opacity: 0 } }
-    @keyframes k3 { 0.00%, 57.57% { opacity: 0 } 58.03%, 92.71% { opacity: 1 } 96.07%, 100.00% { opacity: 0 } }
-    @keyframes mr { 0.00%, 57.57% { opacity: 0 } 58.03%, 70.17% { opacity: 1 } 70.71%, 100.00% { opacity: 0 } }
-    @keyframes v { 0.00%, 70.17% { opacity: 1 } 70.71%, 100.00% { opacity: 0 } }
-    @keyframes p { 0.00%, 70.17% { opacity: 0 } 70.71%, 92.71% { opacity: 1 } 96.07%, 100.00% { opacity: 0 } }
-    @keyframes e0 { 0.00%, 32.11% { opacity: 1 } 32.67%, 100.00% { opacity: 0 } }
-    @keyframes e1 { 0.00%, 32.11% { opacity: 0 } 32.67%, 44.96% { opacity: 1 } 45.35%, 100.00% { opacity: 0 } }
-    @keyframes e2 { 0.00%, 44.96% { opacity: 0 } 45.35%, 57.57% { opacity: 1 } 58.03%, 100.00% { opacity: 0 } }
-    @keyframes e3 { 0.00%, 57.57% { opacity: 0 } 58.03%, 92.71% { opacity: 1 } 96.07%, 100.00% { opacity: 0 } }
+    /* 32.7s loop, 6 steps starting at 3.4, 6.8, 12.8, 18, 20, 24.3 s; final frame holds 7.5s, then fades. */
+    .a { opacity: 0; animation: 32.7s linear infinite; }
+    .c0 { animation-name: c0; }  /* caption, old value: step base-1, 0s to 3.4s */
+    .c1 { animation-name: c1; }  /* caption + tombstone insert: step 1-2, 3.4s to 6.8s */
+    .c2 { animation-name: c2; }  /* caption, get(7): step 2-3, 6.8s to 12.8s */
+    .c3 { animation-name: c3; }  /* caption, compactions: step 3-5, 12.8s to 20s */
+    .c4 { animation-name: c4; }  /* caption, merge in last level: step 5-6, 20s to 24.3s */
+    .t0 { animation-name: t0; }  /* tombstone in memtable: step 1-3, 3.4s to 12.8s */
+    .t1 { animation-name: t1; }  /* tombstone in L1: step 3-4, 12.8s to 18s */
+    .t2 { animation-name: t2; }  /* tombstone in L2: step 4-6, 18s to 24.3s */
+    .d { animation-name: d; }    /* delete(7) label:  onward: step 1+, 3.4s to end */
+    .g { animation-name: g; }    /* get(7) -> null + ring:  onward: step 2+, 6.8s to end */
+    .gr { animation-name: gr; }  /* get(7) probe ring: step 2-3, 6.8s to 12.8s */
+    .lg { animation-name: lg; }  /* logically deleted, still on disk: step 2-6, 6.8s to 24.3s */
+    .k1 { animation-name: k1; }  /* compaction 1 (minutes) + ghost in memtable:  onward: step 3+, 12.8s to end */
+    .k2 { animation-name: k2; }  /* compaction 2 (hours) + ghost in L1:  onward: step 4+, 18s to end */
+    .k3 { animation-name: k3; }  /* compaction 3 (days) arrow:  onward: step 5+, 20s to end */
+    .mr { animation-name: mr; }  /* merge ring on 7: v: step 5-6, 20s to 24.3s */
+    .v { animation-name: v; }    /* old entry 7: v: step base-6, 0s to 24.3s */
+    .p { animation-name: p; }    /* physically deleted + ghost in L2:  onward: step 6+, 24.3s to end */
+    .e0 { animation-name: e0; }  /* elapsed: just now: step base-3, 0s to 12.8s */
+    .e1 { animation-name: e1; }  /* elapsed: minutes: step 3-4, 12.8s to 18s */
+    .e2 { animation-name: e2; }  /* elapsed: hours: step 4-5, 18s to 20s */
+    .e3 { animation-name: e3; }  /* elapsed: days onward: step 5+, 20s to end */
+    @keyframes c0 { 0.00%, 10.40% { opacity: 1 } 10.86%, 97.25% { opacity: 0 } 98.78%, 100.00% { opacity: 1 } }
+    @keyframes c1 { 0.00%, 10.40% { opacity: 0 } 10.86%, 20.80% { opacity: 1 } 21.25%, 100.00% { opacity: 0 } }
+    @keyframes c2 { 0.00%, 20.80% { opacity: 0 } 21.25%, 39.14% { opacity: 1 } 39.60%, 100.00% { opacity: 0 } }
+    @keyframes c3 { 0.00%, 39.14% { opacity: 0 } 39.60%, 61.16% { opacity: 1 } 61.62%, 100.00% { opacity: 0 } }
+    @keyframes c4 { 0.00%, 61.16% { opacity: 0 } 61.62%, 74.31% { opacity: 1 } 74.77%, 100.00% { opacity: 0 } }
+    @keyframes t0 { 0.00%, 10.40% { opacity: 0 } 10.86%, 39.14% { opacity: 1 } 39.60%, 100.00% { opacity: 0 } }
+    @keyframes t1 { 0.00%, 39.14% { opacity: 0 } 39.60%, 55.05% { opacity: 1 } 55.50%, 100.00% { opacity: 0 } }
+    @keyframes t2 { 0.00%, 55.05% { opacity: 0 } 55.50%, 74.31% { opacity: 1 } 74.77%, 100.00% { opacity: 0 } }
+    @keyframes d { 0.00%, 10.40% { opacity: 0 } 10.86%, 97.25% { opacity: 1 } 98.78%, 100.00% { opacity: 0 } }
+    @keyframes g { 0.00%, 20.80% { opacity: 0 } 21.25%, 97.25% { opacity: 1 } 98.78%, 100.00% { opacity: 0 } }
+    @keyframes gr { 0.00%, 20.80% { opacity: 0 } 21.25%, 39.14% { opacity: 1 } 39.60%, 100.00% { opacity: 0 } }
+    @keyframes lg { 0.00%, 20.80% { opacity: 0 } 21.25%, 74.31% { opacity: 1 } 74.77%, 100.00% { opacity: 0 } }
+    @keyframes k1 { 0.00%, 39.14% { opacity: 0 } 39.60%, 97.25% { opacity: 1 } 98.78%, 100.00% { opacity: 0 } }
+    @keyframes k2 { 0.00%, 55.05% { opacity: 0 } 55.50%, 97.25% { opacity: 1 } 98.78%, 100.00% { opacity: 0 } }
+    @keyframes k3 { 0.00%, 61.16% { opacity: 0 } 61.62%, 97.25% { opacity: 1 } 98.78%, 100.00% { opacity: 0 } }
+    @keyframes mr { 0.00%, 61.16% { opacity: 0 } 61.62%, 74.31% { opacity: 1 } 74.77%, 100.00% { opacity: 0 } }
+    @keyframes v { 0.00%, 74.31% { opacity: 1 } 74.77%, 97.25% { opacity: 0 } 98.78%, 100.00% { opacity: 1 } }
+    @keyframes p { 0.00%, 74.31% { opacity: 0 } 74.77%, 97.25% { opacity: 1 } 98.78%, 100.00% { opacity: 0 } }
+    @keyframes e0 { 0.00%, 39.14% { opacity: 1 } 39.60%, 97.25% { opacity: 0 } 98.78%, 100.00% { opacity: 1 } }
+    @keyframes e1 { 0.00%, 39.14% { opacity: 0 } 39.60%, 55.05% { opacity: 1 } 55.50%, 100.00% { opacity: 0 } }
+    @keyframes e2 { 0.00%, 55.05% { opacity: 0 } 55.50%, 61.16% { opacity: 1 } 61.62%, 100.00% { opacity: 0 } }
+    @keyframes e3 { 0.00%, 61.16% { opacity: 0 } 61.62%, 97.25% { opacity: 1 } 98.78%, 100.00% { opacity: 0 } }
     @media (prefers-reduced-motion: reduce) {
       .a { animation: none; opacity: 0; }
       .a.fin { opacity: 1; }

@@ -15,32 +15,32 @@
     .num { fill: var(--probe); font-weight: 600; font-size: 12px; }
     .oktext { fill: var(--ok); font-weight: 600; font-size: 12px; }
     .div { stroke: var(--edge); stroke-dasharray: 4 4; }
-    .a { opacity: 0; animation: 17.5s linear infinite; }
-    /* 16s loop. Each class shows its elements during one time window. */
-    .f1 { animation-name: f1; }  /* flush 1 in memtable row: 1s to 2s */
-    .f2 { animation-name: f2; }  /* flush 2 in memtable row: 3.5s to 4.5s */
-    .f3 { animation-name: f3; }  /* flush 3 in memtable row: 6s to 7s */
-    .p1 { animation-name: p1; }  /* after flush 1: 2s to 4.5s */
-    .p2 { animation-name: p2; }  /* after flush 2: 4.5s to 7s */
-    .p3 { animation-name: p3; }  /* after flush 3: L1 full / T runs: 7s to 9s */
-    .t1 { animation-name: t1; }  /* tiered run 1 in L1: 2s to 9s */
-    .t2 { animation-name: t2; }  /* tiered run 2 in L1: 4.5s to 9s */
-    .t3 { animation-name: t3; }  /* tiered run 3 in L1: 7s to 9s */
-    .l2old { animation-name: l2old; }  /* leveled L2 before merge: 0s to 9s */
-    .l2new { animation-name: l2new; }  /* merge into L2: 9s to loop end */
-    .rd { animation-name: rd; }  /* read cost: 11s to loop end */
-    @keyframes f1 { 0.00%, 5.35% { opacity: 0 } 5.72%, 15.08% { opacity: 1 } 15.72%, 100.00% { opacity: 0 } }
-    @keyframes f2 { 0.00%, 25.29% { opacity: 0 } 25.72%, 35.07% { opacity: 1 } 35.72%, 100.00% { opacity: 0 } }
-    @keyframes f3 { 0.00%, 45.29% { opacity: 0 } 45.72%, 55.07% { opacity: 1 } 55.72%, 100.00% { opacity: 0 } }
-    @keyframes p1 { 0.00%, 15.08% { opacity: 0 } 15.72%, 35.07% { opacity: 1 } 35.72%, 100.00% { opacity: 0 } }
-    @keyframes p2 { 0.00%, 35.07% { opacity: 0 } 35.72%, 55.07% { opacity: 1 } 55.72%, 100.00% { opacity: 0 } }
-    @keyframes p3 { 0.00%, 55.07% { opacity: 0 } 55.72%, 65.40% { opacity: 1 } 65.72%, 100.00% { opacity: 0 } }
-    @keyframes t1 { 0.00%, 15.08% { opacity: 0 } 15.72%, 65.40% { opacity: 1 } 65.72%, 100.00% { opacity: 0 } }
-    @keyframes t2 { 0.00%, 35.07% { opacity: 0 } 35.72%, 65.40% { opacity: 1 } 65.72%, 100.00% { opacity: 0 } }
-    @keyframes t3 { 0.00%, 55.07% { opacity: 0 } 55.72%, 65.40% { opacity: 1 } 65.72%, 100.00% { opacity: 0 } }
-    @keyframes l2old { 0.00%, 65.40% { opacity: 1 } 65.72%, 100.00% { opacity: 0 } }
-    @keyframes l2new { 0.00%, 65.40% { opacity: 0 } 65.72%, 92.48% { opacity: 1 } 95.72%, 100.00% { opacity: 0 } }
-    @keyframes rd { 0.00%, 75.40% { opacity: 0 } 75.72%, 92.48% { opacity: 1 } 95.72%, 100.00% { opacity: 0 } }
+    .a { opacity: 0; animation: 33.6s linear infinite; }
+    /* 33.6s loop, 8 steps starting at 0.9, 3.7, 7.2, 9, 12.1, 13.9, 17.7, 25.3 s; final frame holds 7.4s, then fades. */
+    .f1 { animation-name: f1; }  /* flush 1 in memtable row: step 1-2, 0.9s to 3.7s */
+    .f2 { animation-name: f2; }  /* flush 2 in memtable row: step 3-4, 7.2s to 9s */
+    .f3 { animation-name: f3; }  /* flush 3 in memtable row: step 5-6, 12.1s to 13.9s */
+    .p1 { animation-name: p1; }  /* after flush 1: step 2-4, 3.7s to 9s */
+    .p2 { animation-name: p2; }  /* after flush 2: step 4-6, 9s to 13.9s */
+    .p3 { animation-name: p3; }  /* after flush 3: L1 full / T runs: step 6-7, 13.9s to 17.7s */
+    .t1 { animation-name: t1; }  /* tiered run 1 in L1: step 2-7, 3.7s to 17.7s */
+    .t2 { animation-name: t2; }  /* tiered run 2 in L1: step 4-7, 9s to 17.7s */
+    .t3 { animation-name: t3; }  /* tiered run 3 in L1: step 6-7, 13.9s to 17.7s */
+    .l2old { animation-name: l2old; }  /* leveled L2 before merge: step base-7, 0s to 17.7s */
+    .l2new { animation-name: l2new; }  /* merge into L2: step 7+, 17.7s to end */
+    .rd { animation-name: rd; }  /* read cost: step 8+, 25.3s to end */
+    @keyframes f1 { 0.00%, 2.68% { opacity: 0 } 3.12%, 11.01% { opacity: 1 } 11.46%, 100.00% { opacity: 0 } }
+    @keyframes f2 { 0.00%, 21.43% { opacity: 0 } 21.88%, 26.79% { opacity: 1 } 27.23%, 100.00% { opacity: 0 } }
+    @keyframes f3 { 0.00%, 36.01% { opacity: 0 } 36.46%, 41.37% { opacity: 1 } 41.82%, 100.00% { opacity: 0 } }
+    @keyframes p1 { 0.00%, 11.01% { opacity: 0 } 11.46%, 26.79% { opacity: 1 } 27.23%, 100.00% { opacity: 0 } }
+    @keyframes p2 { 0.00%, 26.79% { opacity: 0 } 27.23%, 41.37% { opacity: 1 } 41.82%, 100.00% { opacity: 0 } }
+    @keyframes p3 { 0.00%, 41.37% { opacity: 0 } 41.82%, 52.68% { opacity: 1 } 53.12%, 100.00% { opacity: 0 } }
+    @keyframes t1 { 0.00%, 11.01% { opacity: 0 } 11.46%, 52.68% { opacity: 1 } 53.12%, 100.00% { opacity: 0 } }
+    @keyframes t2 { 0.00%, 26.79% { opacity: 0 } 27.23%, 52.68% { opacity: 1 } 53.12%, 100.00% { opacity: 0 } }
+    @keyframes t3 { 0.00%, 41.37% { opacity: 0 } 41.82%, 52.68% { opacity: 1 } 53.12%, 100.00% { opacity: 0 } }
+    @keyframes l2old { 0.00%, 52.68% { opacity: 1 } 53.12%, 97.32% { opacity: 0 } 98.81%, 100.00% { opacity: 1 } }
+    @keyframes l2new { 0.00%, 52.68% { opacity: 0 } 53.12%, 97.32% { opacity: 1 } 98.81%, 100.00% { opacity: 0 } }
+    @keyframes rd { 0.00%, 75.30% { opacity: 0 } 75.74%, 97.32% { opacity: 1 } 98.81%, 100.00% { opacity: 0 } }
     @media (prefers-reduced-motion: reduce) {
       .a { animation: none; opacity: 0; }
       .a.fin { opacity: 1; }

@@ -23,55 +23,55 @@
     .okarrow { fill: none; stroke: var(--ok); stroke-width: 2; }
     .okhead { fill: var(--ok); }
 
-    /* 16s loop. Row A (5g) runs 0.5s to 4.3s, row B (16g) runs 4.6s to 10.2s, hold, fade out 14.7s to 15.4s. */
-    .w { opacity: 0; animation: 12.8s linear infinite; }
-    .mv { animation: 12.8s linear infinite; }
-    .w10 { animation-name: w10; }  /* B collect arrows: 0.0s to 8.0s */
-    @keyframes w10 { 0.00%, 48.75% { opacity: 1 } 49.25%, 94.46% { opacity: 0 } 100.00% { opacity: 1 } }
-    .m11 { animation-name: m11; }  /* B chunk 1: 4.6s to 5.4s */
-    @keyframes m11 { 0.00%, 4.09% { opacity: 1; transform: translate(0px, 0px) } 4.69% { opacity: 1; transform: translate(194px, 46px) } 5.19%, 94.46% { opacity: 0; transform: translate(194px, 46px) } 94.47% { opacity: 0; transform: translate(0px, 0px) } 100.00% { opacity: 1; transform: translate(0px, 0px) } }
-    .m12 { animation-name: m12; }  /* B chunk 2: 5.4s to 6.2s */
-    @keyframes m12 { 0.00%, 4.69% { opacity: 1; transform: translate(0px, 0px) } 18.86% { opacity: 1; transform: translate(194px, 14px) } 19.36%, 94.46% { opacity: 0; transform: translate(194px, 14px) } 94.47% { opacity: 0; transform: translate(0px, 0px) } 100.00% { opacity: 1; transform: translate(0px, 0px) } }
-    .m13 { animation-name: m13; }  /* B chunk 3: 6.2s to 7.0s */
-    @keyframes m13 { 0.00%, 18.86% { opacity: 1; transform: translate(0px, 0px) } 33.04% { opacity: 1; transform: translate(194px, -18px) } 33.52%, 94.46% { opacity: 0; transform: translate(194px, -18px) } 94.47% { opacity: 0; transform: translate(0px, 0px) } 100.00% { opacity: 1; transform: translate(0px, 0px) } }
-    .m14 { animation-name: m14; }  /* B chunk 4: 7.0s to 7.8s */
-    @keyframes m14 { 0.00%, 33.04% { opacity: 1; transform: translate(0px, 0px) } 47.20% { opacity: 1; transform: translate(194px, -50px) } 47.70%, 94.46% { opacity: 0; transform: translate(194px, -50px) } 94.47% { opacity: 0; transform: translate(0px, 0px) } 100.00% { opacity: 1; transform: translate(0px, 0px) } }
-    .w15 { animation-name: w15; }  /* B bar segment 1: 5.4s to 14.7s */
-    @keyframes w15 { 0.00%, 4.64% { opacity: 0 } 4.69%, 89.90% { opacity: 1 } 94.46%, 100.00% { opacity: 0 } }
-    .w16 { animation-name: w16; }  /* B bar segment 2: 6.2s to 14.7s */
-    @keyframes w16 { 0.00%, 17.70% { opacity: 0 } 18.86%, 89.90% { opacity: 1 } 94.46%, 100.00% { opacity: 0 } }
-    .w17 { animation-name: w17; }  /* B bar segment 3: 7.0s to 14.7s */
-    @keyframes w17 { 0.00%, 31.85% { opacity: 0 } 33.04%, 89.90% { opacity: 1 } 94.46%, 100.00% { opacity: 0 } }
-    .w18 { animation-name: w18; }  /* B bar segment 4: 7.8s to 14.7s */
-    @keyframes w18 { 0.00%, 46.01% { opacity: 0 } 47.20%, 89.90% { opacity: 1 } 94.46%, 100.00% { opacity: 0 } }
-    .w19 { animation-name: w19; }  /* B collected text: 7.8s to 14.7s */
-    @keyframes w19 { 0.00%, 46.01% { opacity: 0 } 47.20%, 89.90% { opacity: 1 } 94.46%, 100.00% { opacity: 0 } }
-    .w20 { animation-name: w20; }  /* B broadcast arrow: 8.2s to 14.7s */
-    @keyframes w20 { 0.00%, 49.82% { opacity: 0 } 50.32%, 89.90% { opacity: 1 } 94.46%, 100.00% { opacity: 0 } }
-    .m21 { animation-name: m21; }  /* B broadcast block: 8.3s to 9.5s */
-    @keyframes m21 { 0.00%, 50.61% { opacity: 0; transform: translate(0px, 0px) } 51.11% { opacity: 1; transform: translate(0px, 0px) } 64.78% { opacity: 1; transform: translate(-194px, -46px) } 65.29%, 100.00% { opacity: 0; transform: translate(-194px, -46px) } }
-    .w22 { animation-name: w22; }  /* B broadcast copy: 9.5s to 14.7s */
-    @keyframes w22 { 0.00%, 64.05% { opacity: 0 } 64.78%, 89.90% { opacity: 1 } 94.46%, 100.00% { opacity: 0 } }
-    .w23 { animation-name: w23; }  /* B broadcast arrow: 8.2s to 14.7s */
-    @keyframes w23 { 0.00%, 49.82% { opacity: 0 } 50.32%, 89.90% { opacity: 1 } 94.46%, 100.00% { opacity: 0 } }
-    .m24 { animation-name: m24; }  /* B broadcast block: 8.3s to 9.5s */
-    @keyframes m24 { 0.00%, 50.61% { opacity: 0; transform: translate(0px, 0px) } 51.11% { opacity: 1; transform: translate(0px, 0px) } 64.78% { opacity: 1; transform: translate(-194px, -14px) } 65.29%, 100.00% { opacity: 0; transform: translate(-194px, -14px) } }
-    .w25 { animation-name: w25; }  /* B broadcast copy: 9.5s to 14.7s */
-    @keyframes w25 { 0.00%, 64.05% { opacity: 0 } 64.78%, 89.90% { opacity: 1 } 94.46%, 100.00% { opacity: 0 } }
-    .w26 { animation-name: w26; }  /* B broadcast arrow: 8.2s to 14.7s */
-    @keyframes w26 { 0.00%, 49.82% { opacity: 0 } 50.32%, 89.90% { opacity: 1 } 94.46%, 100.00% { opacity: 0 } }
-    .m27 { animation-name: m27; }  /* B broadcast block: 8.3s to 9.5s */
-    @keyframes m27 { 0.00%, 50.61% { opacity: 0; transform: translate(0px, 0px) } 51.11% { opacity: 1; transform: translate(0px, 0px) } 64.78% { opacity: 1; transform: translate(-194px, 18px) } 65.29%, 100.00% { opacity: 0; transform: translate(-194px, 18px) } }
-    .w28 { animation-name: w28; }  /* B broadcast copy: 9.5s to 14.7s */
-    @keyframes w28 { 0.00%, 64.05% { opacity: 0 } 64.78%, 89.90% { opacity: 1 } 94.46%, 100.00% { opacity: 0 } }
-    .w29 { animation-name: w29; }  /* B broadcast arrow: 8.2s to 14.7s */
-    @keyframes w29 { 0.00%, 49.82% { opacity: 0 } 50.32%, 89.90% { opacity: 1 } 94.46%, 100.00% { opacity: 0 } }
-    .m30 { animation-name: m30; }  /* B broadcast block: 8.3s to 9.5s */
-    @keyframes m30 { 0.00%, 50.61% { opacity: 0; transform: translate(0px, 0px) } 51.11% { opacity: 1; transform: translate(0px, 0px) } 64.78% { opacity: 1; transform: translate(-194px, 50px) } 65.29%, 100.00% { opacity: 0; transform: translate(-194px, 50px) } }
-    .w31 { animation-name: w31; }  /* B broadcast copy: 9.5s to 14.7s */
-    @keyframes w31 { 0.00%, 64.05% { opacity: 0 } 64.78%, 89.90% { opacity: 1 } 94.46%, 100.00% { opacity: 0 } }
-    .w32 { animation-name: w32; }  /* B done text: 9.8s to 14.7s */
-    @keyframes w32 { 0.00%, 66.61% { opacity: 0 } 67.11%, 89.90% { opacity: 1 } 94.46%, 100.00% { opacity: 0 } }
+    /* 16.5s loop. Steps: chunks land 1.1, 2.7, 4.3, 5.9s (+ fits text); broadcast 8.2s (copies land 9.05s); done text 10.6s; hold to 15.2s, fade out to 15.8s, reset by loop end. */
+    .w { opacity: 0; animation: 16.5s linear infinite; }
+    .mv { animation: 16.5s linear infinite; }
+    .w10 { animation-name: w10; }  /* B collect arrows: 0s to 8.2s, back in from 15.8s */
+    @keyframes w10 { 0.00%, 49.70% { opacity: 1 } 50.61%, 95.76% { opacity: 0 } 100.00% { opacity: 1 } }
+    .m11 { animation-name: m11; }  /* B chunk 1: 0.5s to 1.1s */
+    @keyframes m11 { 0.00% { opacity: 1; transform: translate(0px, 0px) } 3.03% { opacity: 1; transform: translate(0px, 0px) } 6.67% { opacity: 1; transform: translate(194px, 46px) } 7.03% { opacity: 0; transform: translate(194px, 46px) } 95.76% { opacity: 0; transform: translate(194px, 46px) } 95.79% { opacity: 0; transform: translate(0px, 0px) } 100.00% { opacity: 1; transform: translate(0px, 0px) } }
+    .m12 { animation-name: m12; }  /* B chunk 2: 2.1s to 2.7s */
+    @keyframes m12 { 0.00% { opacity: 1; transform: translate(0px, 0px) } 12.73% { opacity: 1; transform: translate(0px, 0px) } 16.36% { opacity: 1; transform: translate(194px, 14px) } 16.73% { opacity: 0; transform: translate(194px, 14px) } 95.76% { opacity: 0; transform: translate(194px, 14px) } 95.79% { opacity: 0; transform: translate(0px, 0px) } 100.00% { opacity: 1; transform: translate(0px, 0px) } }
+    .m13 { animation-name: m13; }  /* B chunk 3: 3.7s to 4.3s */
+    @keyframes m13 { 0.00% { opacity: 1; transform: translate(0px, 0px) } 22.42% { opacity: 1; transform: translate(0px, 0px) } 26.06% { opacity: 1; transform: translate(194px, -18px) } 26.42% { opacity: 0; transform: translate(194px, -18px) } 95.76% { opacity: 0; transform: translate(194px, -18px) } 95.79% { opacity: 0; transform: translate(0px, 0px) } 100.00% { opacity: 1; transform: translate(0px, 0px) } }
+    .m14 { animation-name: m14; }  /* B chunk 4: 5.3s to 5.9s */
+    @keyframes m14 { 0.00% { opacity: 1; transform: translate(0px, 0px) } 32.12% { opacity: 1; transform: translate(0px, 0px) } 35.76% { opacity: 1; transform: translate(194px, -50px) } 36.12% { opacity: 0; transform: translate(194px, -50px) } 95.76% { opacity: 0; transform: translate(194px, -50px) } 95.79% { opacity: 0; transform: translate(0px, 0px) } 100.00% { opacity: 1; transform: translate(0px, 0px) } }
+    .w15 { animation-name: w15; }  /* B bar segment 1: 1.1s to 15.2s */
+    @keyframes w15 { 0.00%, 6.36% { opacity: 0 } 6.67%, 92.12% { opacity: 1 } 95.76%, 100.00% { opacity: 0 } }
+    .w16 { animation-name: w16; }  /* B bar segment 2: 2.7s to 15.2s */
+    @keyframes w16 { 0.00%, 16.06% { opacity: 0 } 16.36%, 92.12% { opacity: 1 } 95.76%, 100.00% { opacity: 0 } }
+    .w17 { animation-name: w17; }  /* B bar segment 3: 4.3s to 15.2s */
+    @keyframes w17 { 0.00%, 25.76% { opacity: 0 } 26.06%, 92.12% { opacity: 1 } 95.76%, 100.00% { opacity: 0 } }
+    .w18 { animation-name: w18; }  /* B bar segment 4: 5.9s to 15.2s */
+    @keyframes w18 { 0.00%, 35.45% { opacity: 0 } 35.76%, 92.12% { opacity: 1 } 95.76%, 100.00% { opacity: 0 } }
+    .w19 { animation-name: w19; }  /* B collected text: 5.9s to 15.2s */
+    @keyframes w19 { 0.00%, 35.76% { opacity: 0 } 36.67%, 92.12% { opacity: 1 } 95.76%, 100.00% { opacity: 0 } }
+    .w20 { animation-name: w20; }  /* B broadcast arrow: 8.2s to 15.2s */
+    @keyframes w20 { 0.00%, 50.00% { opacity: 0 } 50.91%, 92.12% { opacity: 1 } 95.76%, 100.00% { opacity: 0 } }
+    .m21 { animation-name: m21; }  /* B broadcast block: 8.35s to 9.1s */
+    @keyframes m21 { 0.00% { opacity: 0; transform: translate(0px, 0px) } 50.61% { opacity: 0; transform: translate(0px, 0px) } 51.21% { opacity: 1; transform: translate(0px, 0px) } 54.85% { opacity: 1; transform: translate(-194px, -46px) } 55.21% { opacity: 0; transform: translate(-194px, -46px) } 100.00% { opacity: 0; transform: translate(-194px, -46px) } }
+    .w22 { animation-name: w22; }  /* B broadcast copy: 9.05s to 15.2s */
+    @keyframes w22 { 0.00%, 54.55% { opacity: 0 } 54.85%, 92.12% { opacity: 1 } 95.76%, 100.00% { opacity: 0 } }
+    .w23 { animation-name: w23; }  /* B broadcast arrow: 8.2s to 15.2s */
+    @keyframes w23 { 0.00%, 50.00% { opacity: 0 } 50.91%, 92.12% { opacity: 1 } 95.76%, 100.00% { opacity: 0 } }
+    .m24 { animation-name: m24; }  /* B broadcast block: 8.35s to 9.1s */
+    @keyframes m24 { 0.00% { opacity: 0; transform: translate(0px, 0px) } 50.61% { opacity: 0; transform: translate(0px, 0px) } 51.21% { opacity: 1; transform: translate(0px, 0px) } 54.85% { opacity: 1; transform: translate(-194px, -14px) } 55.21% { opacity: 0; transform: translate(-194px, -14px) } 100.00% { opacity: 0; transform: translate(-194px, -14px) } }
+    .w25 { animation-name: w25; }  /* B broadcast copy: 9.05s to 15.2s */
+    @keyframes w25 { 0.00%, 54.55% { opacity: 0 } 54.85%, 92.12% { opacity: 1 } 95.76%, 100.00% { opacity: 0 } }
+    .w26 { animation-name: w26; }  /* B broadcast arrow: 8.2s to 15.2s */
+    @keyframes w26 { 0.00%, 50.00% { opacity: 0 } 50.91%, 92.12% { opacity: 1 } 95.76%, 100.00% { opacity: 0 } }
+    .m27 { animation-name: m27; }  /* B broadcast block: 8.35s to 9.1s */
+    @keyframes m27 { 0.00% { opacity: 0; transform: translate(0px, 0px) } 50.61% { opacity: 0; transform: translate(0px, 0px) } 51.21% { opacity: 1; transform: translate(0px, 0px) } 54.85% { opacity: 1; transform: translate(-194px, 18px) } 55.21% { opacity: 0; transform: translate(-194px, 18px) } 100.00% { opacity: 0; transform: translate(-194px, 18px) } }
+    .w28 { animation-name: w28; }  /* B broadcast copy: 9.05s to 15.2s */
+    @keyframes w28 { 0.00%, 54.55% { opacity: 0 } 54.85%, 92.12% { opacity: 1 } 95.76%, 100.00% { opacity: 0 } }
+    .w29 { animation-name: w29; }  /* B broadcast arrow: 8.2s to 15.2s */
+    @keyframes w29 { 0.00%, 50.00% { opacity: 0 } 50.91%, 92.12% { opacity: 1 } 95.76%, 100.00% { opacity: 0 } }
+    .m30 { animation-name: m30; }  /* B broadcast block: 8.35s to 9.1s */
+    @keyframes m30 { 0.00% { opacity: 0; transform: translate(0px, 0px) } 50.61% { opacity: 0; transform: translate(0px, 0px) } 51.21% { opacity: 1; transform: translate(0px, 0px) } 54.85% { opacity: 1; transform: translate(-194px, 50px) } 55.21% { opacity: 0; transform: translate(-194px, 50px) } 100.00% { opacity: 0; transform: translate(-194px, 50px) } }
+    .w31 { animation-name: w31; }  /* B broadcast copy: 9.05s to 15.2s */
+    @keyframes w31 { 0.00%, 54.55% { opacity: 0 } 54.85%, 92.12% { opacity: 1 } 95.76%, 100.00% { opacity: 0 } }
+    .w32 { animation-name: w32; }  /* B done text: 10.6s to 15.2s */
+    @keyframes w32 { 0.00%, 64.24% { opacity: 0 } 65.15%, 92.12% { opacity: 1 } 95.76%, 100.00% { opacity: 0 } }
     @media (prefers-reduced-motion: reduce) {
       .w, .mv { animation: none; opacity: 0; }
       .w.fin { opacity: 1; }
