@@ -1,6 +1,11 @@
 <figure>
   <img src="{{ .Destination | safeURL }}" alt="{{ .PlainText }}" loading="lazy">
+  {{- /* A title ("…") is the visible caption; without one, the alt text doubles as the caption. */}}
+  {{- with .Title }}
+  <figcaption>{{ . | markdownify }}</figcaption>
+  {{- else }}
   {{- with .Text }}
   <figcaption>{{ . }}</figcaption>
+  {{- end }}
   {{- end }}
 </figure>

@@ -19,7 +19,7 @@ Initially, incoming writes are buffered in a **sorted**, **in-memory** data stru
 
 Here's how a handful of writes flow through this path, from the WAL and Memtable all the way to SSTables and compaction:
 
-![Each write is appended to the Commit log / WAL on disk and inserted into the in-memory Memtable, which keeps its keys sorted. When the Memtable reaches its threshold, it is flushed to disk as a new immutable, sorted SSTable, so the update put(b,3) becomes a new entry while the older b=1 stays in SSTable 1. Once three SSTables pile up, compaction merges them into one larger sorted SSTable and drops the stale a=2 and b=1. Adapted from [ScyllaDB](https://www.scylladb.com/glossary/sstable/).](/images/intro-to-lsm-tree/write-path.svg)
+![Writes go to the WAL on disk and to the sorted Memtable, which flushes as an immutable SSTable; the update put(b,3) adds a new entry beside the old b=1. Compaction later merges three SSTables and drops stale entries.](/images/intro-to-lsm-tree/write-path.svg "Adapted from [ScyllaDB](https://www.scylladb.com/glossary/sstable/).")
 
 ## Compaction
 
@@ -44,7 +44,7 @@ In most implementations, a dedicated background thread is used to perform compac
 
 To see where each strategy spends its merging effort, below is the same three flushes fed into a leveled tree and a tiered tree side by side:
 
-![Both trees take the same three flushes with size ratio T = 3. The leveled tree keeps one sorted run per level: it merges each flush into L1's run, and when L1 fills it merges into L2, rewriting L2's run. The tiered tree stacks the flushes as separate runs in L1. At T runs it merges them into one new run in L2 and leaves the old run untouched, so it merges less but a lookup has more runs to check. Adapted from [RocksDB](https://github.com/facebook/rocksdb/wiki/Leveled-Compaction), [Alibaba Cloud](https://www.alibabacloud.com/blog/an-in-depth-discussion-on-the-lsm-compaction-mechanism_596780), and [*Monkey: Optimal Navigable Key-Value Store*](https://nivdayan.github.io/monkeykeyvaluestore.pdf).](/images/intro-to-lsm-tree/leveled-vs-tiered.svg)
+![Three flushes with size ratio T = 3. The leveled tree merges each flush into L1's single run and rewrites L2 when L1 fills; the tiered tree stacks runs in L1 and merges all three into a new L2 run.](/images/intro-to-lsm-tree/leveled-vs-tiered.svg "Adapted from [RocksDB](https://github.com/facebook/rocksdb/wiki/Leveled-Compaction), [Alibaba Cloud](https://www.alibabacloud.com/blog/an-in-depth-discussion-on-the-lsm-compaction-mechanism_596780), and [*Monkey: Optimal Navigable Key-Value Store*](https://nivdayan.github.io/monkeykeyvaluestore.pdf).")
 
 ### Partial Compaction
 
@@ -52,7 +52,7 @@ Leveled compaction can lead to cascading compactions, which results in high late
 
 A comparison of full and partial compaction (starting from the same full level) is shown below:
 
-![Both panels start from the same full level Lᵢ. Full compaction merges every file in Lᵢ and Lᵢ₊₁, rewriting 9 files at once. Partial compaction picks a single file from Lᵢ, here [g-m], and merges it only with the two Lᵢ₊₁ files whose key ranges overlap it, rewriting 3 files: a smaller unit of work. Adapted from [Compactionary](https://disc-projects.bu.edu/compactionary/background.html).](/images/intro-to-lsm-tree/partial-compaction.svg)
+![From the same full level Lᵢ, full compaction merges every file in Lᵢ and Lᵢ₊₁, rewriting 9 files; partial compaction merges one file, g–m, with the two overlapping files below, rewriting 3.](/images/intro-to-lsm-tree/partial-compaction.svg "Adapted from [Compactionary](https://disc-projects.bu.edu/compactionary/background.html).")
 
 The table below shows the compaction granularity used by several production storage engines. Leveled engines typically compact at file granularity, while tiered engines merge whole sorted runs.
 
@@ -133,7 +133,7 @@ The sparse index, containing the key mapping, is typically encoded at the end of
 
 Putting the two together, below are two lookups: one key that costs a single disk read, and one that the bloom filters rule out without ever touching disk:
 
-![get(42) misses the Memtable. The L0 Bloom filter says the key is certainly not there, so L0 is skipped. The L1 filter says it may be present, and the fence pointers narrow the search to one block, so the lookup costs one disk read. get(57) is ruled out by every Bloom filter and returns null without touching disk.](/images/intro-to-lsm-tree/read-path.svg)
+![get(42) skips L0 on its Bloom filter; L1's filter says maybe, and the fence pointers pick one block, so it costs one disk read. get(57) is ruled out by every filter and never touches disk.](/images/intro-to-lsm-tree/read-path.svg "Everything left of the dashed line lives in memory, so only the SSTable blocks cost a disk read.")
 
 ### Block Cache
 
@@ -147,7 +147,7 @@ Deletes in LSM-trees are realized by **inserting** a special type of key-value e
 
 Here's the journey of a single delete, from the Memtable down to the last level:
 
-![delete(7) inserts a tombstone into the Memtable, and from then on get(7) returns null, even though the old value is still on disk in L3. Compactions carry the tombstone down one level at a time, over minutes, then hours, then days. Only when it reaches the last level and merges with the old entry are both physically deleted. Adapted from [Lethe](https://disc-projects.bu.edu/lethe/).](/images/intro-to-lsm-tree/tombstone.svg)
+![delete(7) puts a tombstone in the Memtable, so get(7) returns null while the old value stays in L3. Compactions carry the tombstone down level by level until it meets the old entry and both are deleted.](/images/intro-to-lsm-tree/tombstone.svg "Adapted from [Lethe](https://disc-projects.bu.edu/lethe/).")
 
 ## Research @ [DiSC Lab](https://disc.bu.edu)
 

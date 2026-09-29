@@ -40,7 +40,7 @@ The **ApplicationMaster** negotiates resources from the Scheduler, manages task 
 
 Here's how these components work together when a client submits a job:
 
-![A client submits a job to the ApplicationsManager inside the ResourceManager, which launches an ApplicationMaster in a container on a NodeManager. The ApplicationMaster asks the Scheduler for resources, receives containers on other NodeManagers, and launches a task in each, while every NodeManager keeps reporting its node status to the ResourceManager. Adapted from [Apache Hadoop YARN](https://hadoop.apache.org/docs/stable/hadoop-yarn/hadoop-yarn-site/YARN.html).](/images/tinkering-with-spark/yarn-architecture.svg)
+![A client submits a job to the ResourceManager, which launches an ApplicationMaster on a NodeManager. The ApplicationMaster gets containers from the Scheduler and launches tasks in them, while every NodeManager reports its status.](/images/tinkering-with-spark/yarn-architecture.svg "Adapted from [Apache Hadoop YARN](https://hadoop.apache.org/docs/stable/hadoop-yarn/hadoop-yarn-site/YARN.html).")
 
 ## **Running Spark on YARN**
 
@@ -50,7 +50,7 @@ Running Spark on YARN allows multiple frameworks (not just Spark) to dynamically
 
 Running a Spark application in cluster mode follows the same flow, with a few differences (highlighted in blue):
 
-![The same flow in cluster mode, with the differences highlighted in blue. spark-submit submits the application, and the ApplicationMaster it launches also runs the Spark Driver. The containers the Scheduler grants become Spark Executors, and the driver sends them tasks, several at a time, which report their results back. Adapted from [Sujith Jay](https://sujithjay.com/spark/with-yarn).](/images/tinkering-with-spark/spark-on-yarn.svg)
+![The same flow in Spark's cluster mode: the ApplicationMaster also runs the Spark Driver, the granted containers become executors, and the driver sends them tasks, which report results back.](/images/tinkering-with-spark/spark-on-yarn.svg "Blue marks what Spark changes in the YARN flow. Adapted from [Sujith Jay](https://sujithjay.com/spark/with-yarn).")
 
 #### Spark Driver
 
@@ -111,7 +111,7 @@ Closer inspection of the logs revealed a clear pattern: **driver OOM errors con
 
 Here's what that failure looks like with the default 5GiB driver:
 
-![With the default 5 GiB of driver memory, the driver collects results from each executor until the data outgrows its memory, and it crashes with an OutOfMemoryError before the broadcast can happen.](/images/tinkering-with-spark/broadcast-oom.svg)
+![With the default 5 GiB of driver memory, the driver collects results from each executor until the data outgrows its memory, and it crashes with an OutOfMemoryError before the broadcast can happen.](/images/tinkering-with-spark/broadcast-oom.svg "Collection runs on the driver, so its memory limits the join no matter how many executors there are.")
 
 ## **The Fix**
 
@@ -119,17 +119,17 @@ For processing speed, the solution appeared straightforward: increase the number
 
 To see why more cores per executor shortens a stage, compare the two setups below:
 
-![The same stage of 8 tasks runs on one executor with 16 GiB of memory. With one core, the executor has a single task slot, so the tasks run one at a time and take 8 waves. With four cores, four tasks run at once, sharing the same 16 GiB heap, and the stage finishes in 2 waves while the single-core executor is still working.](/images/tinkering-with-spark/executor-cores.svg)
+![The same 8-task stage on one executor with 16 GiB. With one core, tasks run one at a time in 8 waves; with four cores, four run at once and finish in 2 waves.](/images/tinkering-with-spark/executor-cores.svg "The four tasks share one 16 GiB heap, so each gets about a quarter of the executor's memory.")
 
 Next, I addressed driver OOM errors by increasing driver memory. The challenge was determining an appropriate limit. With container memory at 102GiB and memory overhead defaulting to about 10% of the requested memory, the driver could request up to roughly 92GiB. To stay safe, I capped the driver allocation at about half of that, or 48GiB. I began conservatively with **16GiB**, mirroring the executor memory, and found that OOM errors disappeared in subsequent runs—so I retained that value.
 
 With 16GiB, the same broadcast join from earlier now completes:
 
-![With 16 GiB of driver memory, the same data fits, collection finishes, and the driver broadcasts the table to every executor so the broadcast join can run.](/images/tinkering-with-spark/broadcast-fix.svg)
+![With 16 GiB of driver memory, the same data fits, collection finishes, and the driver broadcasts the table to every executor so the broadcast join can run.](/images/tinkering-with-spark/broadcast-fix.svg "Only the driver's memory changed; the executors are the same as before.")
 
 To put these memory numbers into perspective, here they are on a single scale:
 
-![The driver starts with the default 5g of memory plus 2g of memoryOverhead. Raising driver memory to 16g grows it to 18 GiB, still well under the 48 GiB safety cap in a 102 GiB container that must also fit roughly 10% of overhead. The executor keeps its 16g plus 4g, while its cores go from 1 to 4.](/images/tinkering-with-spark/memory-budget.svg)
+![Memory on one scale: the driver grows from 5g plus 2g of overhead to 16g plus 2g, far under the 48 GiB safety cap in a 102 GiB container. The executor keeps 16g plus 4g.](/images/tinkering-with-spark/memory-budget.svg "Each bar is one process; the executor bar stands for each of the ten executors.")
 
 In the end, the effective configuration overrides were: 
 

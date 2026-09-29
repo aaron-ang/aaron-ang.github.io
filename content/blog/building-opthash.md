@@ -15,7 +15,7 @@ The paper, [_Optimal Bounds for Open Addressing Without Reordering_](https://arx
 
 The main difference between them is whether they are _greedy_. Funnel (like most open-addressed tables) is greedy, meaning each key takes the first empty slot its probe sequence reaches. In 1985, Andrew Yao conjectured that uniform probing, the textbook greedy scheme, has close to the lowest worst-case insertion cost any greedy table can reach. Funnel's worst case is much lower, which disproves the conjecture.[^greedy] Elastic is not greedy, and that lets it get under a limit Yao did prove for greedy tables: its average insertion cost stays constant as the table fills, while that of a greedy table must grow. It gives each array a probe budget, and once the budget runs out, it stops looking in that array and moves on to the next one, even if the array still has empty slots.[^budget]
 
-![Both walks hit the same crowded array, and the third slot they probe is empty. Uniform probing takes it. Elastic has used up its budget of two probes here, so it never tries that slot and moves on to the next, emptier array.](/images/building-opthash/probe-walk.svg)
+![Both walks hit the same crowded array, and the third slot they probe is empty. Uniform probing takes it. Elastic has used up its budget of two probes here, so it never tries that slot and moves on to the next, emptier array.](/images/building-opthash/probe-walk.svg "Skipping one free slot costs Elastic little, because the next array has far more room.")
 
 I couldn't find an official implementation, so I decided to write one. Building the algorithms seemed a better way to understand them than rereading the proofs, and Rust offered control over memory layout and SIMD, plus a great opportunity to learn more of the language.
 
@@ -27,11 +27,11 @@ Before getting to the implementation, let's look at how each construction places
 
 Elastic splits the table into a series of arrays, each half the size of the one before, and starts by filling the largest to about 75 percent. After that, insertions proceed in batches, each working on a pair of neighboring arrays: a larger $A_i$ and a smaller $A_{i+1}$. A batch tops up $A_i$ until only a small fraction of its slots are free and fills $A_{i+1}$ to 75 percent, setting up the next pair.
 
-![Elastic fills its arrays in batches. Each array fills to 75 percent while it is the smaller of its pair, then to nearly full while it is the larger. After that, the next batch moves one array down.](/images/building-opthash/elastic-fill.svg)
+![Elastic fills its arrays in batches. Each array fills to 75 percent while it is the smaller of its pair, then to nearly full while it is the larger. After that, the next batch moves one array down.](/images/building-opthash/elastic-fill.svg "Blue is the filled part of each array.")
 
 Within a batch, two checks pick one of three cases for each key:
 
-![Elastic insertion: three keys, one per case. Two checks pick the case: if Aᵢ is nearly full, go to Aᵢ₊₁ (Case 2). If Aᵢ₊₁ is already 3/4 full, stay in Aᵢ (Case 3). Otherwise probe Aᵢ up to a budget that grows as Aᵢ fills, then fall back to Aᵢ₊₁ (Case 1).](/images/building-opthash/elastic-insert.svg)
+![Three keys, one per case. Each checks whether Aᵢ is nearly full (Case 2: go to Aᵢ₊₁) and whether Aᵢ₊₁ is already 3/4 full (Case 3: stay in Aᵢ); otherwise it probes Aᵢ within a budget (Case 1).](/images/building-opthash/elastic-insert.svg "The budget grows as Aᵢ fills, so keys late in a batch probe Aᵢ longer before falling back.")
 
 Lookups don't use batches or cases, because a lookup can't tell which batch placed a key and may have to check every array. Instead, it walks one global probe sequence that visits the arrays in a fixed, interleaved order until it finds the key.
 
@@ -39,7 +39,7 @@ Lookups don't use batches or cases, because a lookup can't tell which batch plac
 
 Funnel also splits the table into shrinking levels, but each main level is divided into buckets of the same fixed width, so a later level is smaller only because it has fewer buckets. The paper derives the bucket width, level count, and shrink rate from the table's headroom.[^funnel-params] An insertion falls through the levels until it finds room, and a small special area at the bottom catches what the last level can't hold:
 
-![Funnel insertion: the first key hashes to one bucket per level and falls through full buckets until Level 3 has room. The second key finds every bucket full, gives up on special area B after a few single-slot tries, and lands in special area C, which uses the [power of two choices](https://www.eecs.harvard.edu/~michaelm/postscripts/handbook2001.pdf): the key hashes to two buckets, a and b, and alternates between their slots, so it lands in the emptier one.](/images/building-opthash/funnel-insert.svg)
+![Funnel insertion: the first key falls through full buckets until Level 3 has room. The second key finds every bucket full, fails in special area B, and lands in special area C, in the emptier of two buckets.](/images/building-opthash/funnel-insert.svg "Special area C uses the [power of two choices](https://www.eecs.harvard.edu/~michaelm/postscripts/handbook2001.pdf): checking two buckets instead of one keeps them far more evenly filled.")
 
 My first version translated both constructions as literally as I could. It was easy to check against the paper, but it was slow.
 
