@@ -1,0 +1,246 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 362" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated delete persistence threshold: a delete with DPT D writes a tombstone storing D and its delete time t0; each level gives the file a deadline of t0 plus D/7, 2D/7, or 4D/7, and when the deadline passes the file is marked expired and compacted to the next level, until the tombstone meets the old value in the last level and both are dropped before t0 plus D">
+  <title>Delete persistence threshold: deadlines force a tombstone down</title>
+  <style>
+    :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #ddd; --muted: #999; --full: #555; --empty: #1e1e1e; --edge: #777; --probe: #ff8a4c; --ok: #69db7c; --chip: #2a2a2a; }
+    }
+    text { fill: var(--fg); font-size: 14px; }
+    .muted { fill: var(--muted); font-size: 12px; }
+    .full { fill: var(--full); stroke: var(--edge); }
+    .empty { fill: var(--empty); stroke: var(--edge); }
+    .tomb { fill: var(--probe); stroke: var(--probe); }
+    .tombtext { fill: var(--empty); font-weight: 600; font-size: 13px; }
+    .key { font-weight: 600; font-size: 13px; }
+    .field { fill: var(--chip); stroke: var(--probe); }
+    .ghost { fill: none; stroke: var(--muted); stroke-dasharray: 4 3; }
+    .ring { fill: none; stroke: var(--probe); stroke-width: 3; }
+    .okring { fill: none; stroke: var(--ok); stroke-width: 2; stroke-dasharray: 5 4; }
+    .num { fill: var(--probe); font-weight: 600; font-size: 13px; }
+    .oktext { fill: var(--ok); font-weight: 600; font-size: 13px; }
+    .arrow { fill: none; stroke: var(--probe); stroke-width: 2; }
+    .arrowhead { fill: var(--probe); }
+    .axis { stroke: var(--muted); stroke-width: 1; }
+    .limit { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 5 4; }
+    .budget { stroke: var(--probe); stroke-width: 1.5; stroke-opacity: 0.5; }
+    .tick { stroke: var(--probe); stroke-width: 2.5; }
+    .now { stroke: var(--fg); stroke-width: 1.5; }
+
+    /* 51s loop, 12 steps starting at 3.8, 8.9, 14.3, 16.9, 20.3, 25.5, 28.1, 30.9, 35.6, 38.2, 40.8, 44.1 s; final frame holds 6s, then fades. */
+    .a { opacity: 0; animation: 51s linear infinite; }
+    .c0 { animation-name: c0; }    /* caption, old value: step base-1, 0s to 3.8s */
+    .c1 { animation-name: c1; }    /* caption, delete writes tombstone: step 1-2, 3.8s to 8.9s */
+    .c2 { animation-name: c2; }    /* caption, flush to L0: step 2-3, 8.9s to 14.3s */
+    .c3 { animation-name: c3; }    /* caption, now passes L0 deadline: step 3-4, 14.3s to 16.9s */
+    .c4 { animation-name: c4; }    /* caption, L0 file expired: step 4-5, 16.9s to 20.3s */
+    .c5 { animation-name: c5; }    /* caption, compacted to L1: step 5-6, 20.3s to 25.5s */
+    .c6 { animation-name: c6; }    /* caption, now passes L1 deadline: step 6-7, 25.5s to 28.1s */
+    .c7 { animation-name: c7; }    /* caption, L1 file expired: step 7-8, 28.1s to 30.9s */
+    .c8 { animation-name: c8; }    /* caption, compacted to L2: step 8-9, 30.9s to 35.6s */
+    .c9 { animation-name: c9; }    /* caption, now passes L2 deadline: step 9-10, 35.6s to 38.2s */
+    .c10 { animation-name: c10; }  /* caption, L2 file expired: step 10-11, 38.2s to 40.8s */
+    .c11 { animation-name: c11; }  /* caption, compacted to L3: step 11-12, 40.8s to 44.1s */
+    .sq { animation-name: sq; }    /* SQL line + tombstone value layout: step 1+, 3.8s to end */
+    .n0 { animation-name: n0; }    /* now at t0: step 1-3, 3.8s to 14.3s */
+    .n1 { animation-name: n1; }    /* now past t0 + D/7: step 3-6, 14.3s to 25.5s */
+    .n2 { animation-name: n2; }    /* now past t0 + 2D/7: step 6-9, 25.5s to 35.6s */
+    .n3 { animation-name: n3; }    /* now past t0 + 4D/7: step 9+, 35.6s to end */
+    .f0 { animation-name: f0; }    /* tombstone file in L0: step 2-5, 8.9s to 20.3s */
+    .f1 { animation-name: f1; }    /* tombstone file in L1: step 5-8, 20.3s to 30.9s */
+    .f2 { animation-name: f2; }    /* tombstone file in L2: step 8-11, 30.9s to 40.8s */
+    .d0 { animation-name: d0; }    /* L0 deadline: step 2+, 8.9s to end */
+    .d1 { animation-name: d1; }    /* L1 deadline: step 5+, 20.3s to end */
+    .d2 { animation-name: d2; }    /* L2 deadline: step 8+, 30.9s to end */
+    .x0 { animation-name: x0; }    /* L0 file expired: step 4-5, 16.9s to 20.3s */
+    .x1 { animation-name: x1; }    /* L1 file expired: step 7-8, 28.1s to 30.9s */
+    .x2 { animation-name: x2; }    /* L2 file expired: step 10-11, 38.2s to 40.8s */
+    .k1 { animation-name: k1; }    /* compaction L0 to L1 + ghost in L0: step 5+, 20.3s to end */
+    .k2 { animation-name: k2; }    /* compaction L1 to L2 + ghost in L1: step 8+, 30.9s to end */
+    .k3 { animation-name: k3; }    /* compaction L2 to L3 + ghost in L2: step 11+, 40.8s to end */
+    .mr { animation-name: mr; }    /* merge ring on 7: v: step 11-12, 40.8s to 44.1s */
+    .v { animation-name: v; }      /* old entry 7: v: step base-12, 0s to 44.1s */
+    .p { animation-name: p; }      /* physically deleted: step 12+, 44.1s to end */
+    @keyframes c0 { 0.00%, 7.46% { opacity: 1 } 7.75%, 98.23% { opacity: 0 } 99.21%, 100.00% { opacity: 1 } }
+    @keyframes c1 { 0.00%, 7.46% { opacity: 0 } 7.75%, 17.45% { opacity: 1 } 17.74%, 100.00% { opacity: 0 } }
+    @keyframes c2 { 0.00%, 17.45% { opacity: 0 } 17.74%, 28.04% { opacity: 1 } 28.33%, 100.00% { opacity: 0 } }
+    @keyframes c3 { 0.00%, 28.04% { opacity: 0 } 28.33%, 33.13% { opacity: 1 } 33.43%, 100.00% { opacity: 0 } }
+    @keyframes c4 { 0.00%, 33.13% { opacity: 0 } 33.43%, 39.80% { opacity: 1 } 40.10%, 100.00% { opacity: 0 } }
+    @keyframes c5 { 0.00%, 39.80% { opacity: 0 } 40.10%, 50.00% { opacity: 1 } 50.30%, 100.00% { opacity: 0 } }
+    @keyframes c6 { 0.00%, 50.00% { opacity: 0 } 50.30%, 55.10% { opacity: 1 } 55.40%, 100.00% { opacity: 0 } }
+    @keyframes c7 { 0.00%, 55.10% { opacity: 0 } 55.40%, 60.59% { opacity: 1 } 60.88%, 100.00% { opacity: 0 } }
+    @keyframes c8 { 0.00%, 60.59% { opacity: 0 } 60.88%, 69.80% { opacity: 1 } 70.10%, 100.00% { opacity: 0 } }
+    @keyframes c9 { 0.00%, 69.80% { opacity: 0 } 70.10%, 74.90% { opacity: 1 } 75.20%, 100.00% { opacity: 0 } }
+    @keyframes c10 { 0.00%, 74.90% { opacity: 0 } 75.20%, 80.00% { opacity: 1 } 80.29%, 100.00% { opacity: 0 } }
+    @keyframes c11 { 0.00%, 80.00% { opacity: 0 } 80.29%, 86.47% { opacity: 1 } 86.77%, 100.00% { opacity: 0 } }
+    @keyframes sq { 0.00%, 7.46% { opacity: 0 } 7.75%, 98.23% { opacity: 1 } 99.21%, 100.00% { opacity: 0 } }
+    @keyframes n0 { 0.00%, 7.46% { opacity: 0 } 7.75%, 28.04% { opacity: 1 } 28.33%, 100.00% { opacity: 0 } }
+    @keyframes n1 { 0.00%, 28.04% { opacity: 0 } 28.33%, 50.00% { opacity: 1 } 50.30%, 100.00% { opacity: 0 } }
+    @keyframes n2 { 0.00%, 50.00% { opacity: 0 } 50.30%, 69.80% { opacity: 1 } 70.10%, 100.00% { opacity: 0 } }
+    @keyframes n3 { 0.00%, 69.80% { opacity: 0 } 70.10%, 98.23% { opacity: 1 } 99.21%, 100.00% { opacity: 0 } }
+    @keyframes f0 { 0.00%, 17.45% { opacity: 0 } 17.74%, 39.80% { opacity: 1 } 40.10%, 100.00% { opacity: 0 } }
+    @keyframes f1 { 0.00%, 39.80% { opacity: 0 } 40.10%, 60.59% { opacity: 1 } 60.88%, 100.00% { opacity: 0 } }
+    @keyframes f2 { 0.00%, 60.59% { opacity: 0 } 60.88%, 80.00% { opacity: 1 } 80.29%, 100.00% { opacity: 0 } }
+    @keyframes d0 { 0.00%, 17.45% { opacity: 0 } 17.74%, 98.23% { opacity: 1 } 99.21%, 100.00% { opacity: 0 } }
+    @keyframes d1 { 0.00%, 39.80% { opacity: 0 } 40.10%, 98.23% { opacity: 1 } 99.21%, 100.00% { opacity: 0 } }
+    @keyframes d2 { 0.00%, 60.59% { opacity: 0 } 60.88%, 98.23% { opacity: 1 } 99.21%, 100.00% { opacity: 0 } }
+    @keyframes x0 { 0.00%, 33.13% { opacity: 0 } 33.43%, 39.80% { opacity: 1 } 40.10%, 100.00% { opacity: 0 } }
+    @keyframes x1 { 0.00%, 55.10% { opacity: 0 } 55.40%, 60.59% { opacity: 1 } 60.88%, 100.00% { opacity: 0 } }
+    @keyframes x2 { 0.00%, 74.90% { opacity: 0 } 75.20%, 80.00% { opacity: 1 } 80.29%, 100.00% { opacity: 0 } }
+    @keyframes k1 { 0.00%, 39.80% { opacity: 0 } 40.10%, 98.23% { opacity: 1 } 99.21%, 100.00% { opacity: 0 } }
+    @keyframes k2 { 0.00%, 60.59% { opacity: 0 } 60.88%, 98.23% { opacity: 1 } 99.21%, 100.00% { opacity: 0 } }
+    @keyframes k3 { 0.00%, 80.00% { opacity: 0 } 80.29%, 98.23% { opacity: 1 } 99.21%, 100.00% { opacity: 0 } }
+    @keyframes mr { 0.00%, 80.00% { opacity: 0 } 80.29%, 86.47% { opacity: 1 } 86.77%, 100.00% { opacity: 0 } }
+    @keyframes v { 0.00%, 86.47% { opacity: 1 } 86.77%, 98.23% { opacity: 0 } 99.21%, 100.00% { opacity: 1 } }
+    @keyframes p { 0.00%, 86.47% { opacity: 0 } 86.77%, 98.23% { opacity: 1 } 99.21%, 100.00% { opacity: 0 } }
+    @media (prefers-reduced-motion: reduce) {
+      .a { animation: none; opacity: 0; }
+      .a.fin { opacity: 1; }
+    }
+  </style>
+
+  <!-- captions -->
+  <text x="20" y="30" class="a c0">Key 7's old value sits in L3, the last level.</text>
+  <text x="20" y="30" class="a c1">The delete writes a tombstone whose value stores D and the delete time t₀.</text>
+  <text x="20" y="30" class="a c2">A flush writes it to L0 with a deadline: t₀ plus L0's share of D.</text>
+  <text x="20" y="30" class="a c3">Time passes the L0 deadline.</text>
+  <text x="20" y="30" class="a c4">The next compaction check marks the file expired.</text>
+  <text x="20" y="30" class="a c5">It's compacted to L1, although L1 isn't full, and gets a later deadline.</text>
+  <text x="20" y="30" class="a c6">Time passes the L1 deadline.</text>
+  <text x="20" y="30" class="a c7">The check marks it expired again.</text>
+  <text x="20" y="30" class="a c8">Each level's budget doubles, so L2's deadline is t₀ + 4D/7.</text>
+  <text x="20" y="30" class="a c9">Time passes the L2 deadline.</text>
+  <text x="20" y="30" class="a c10">The check marks it expired.</text>
+  <text x="20" y="30" class="a c11">Compacted to L3, the tombstone meets 7: v.</text>
+  <text x="20" y="30" class="oktext a p fin" style="font-size:14px">Key 7 is physically deleted before t₀ + D.</text>
+
+  <!-- the delete -->
+  <g class="a sq fin">
+    <text x="20" y="65" class="num">DELETE … WITH DPT = D</text>
+  </g>
+
+  <!-- time axis: t0 to t0 + D, shared by every level row -->
+  <text x="400" y="93" text-anchor="middle" class="muted">t₀</text>
+  <text x="720" y="93" text-anchor="middle" class="muted">t₀ + D</text>
+  <path d="M 400 98 L 400 332" class="axis"/>
+  <path d="M 720 98 L 720 332" class="limit"/>
+  <text x="705" y="318" text-anchor="end" class="muted">no deadline</text>
+
+  <!-- level labels; slot k at x = 110 + 52k, tombstone column k = 1 -->
+  <text x="20" y="126">L0</text>
+  <text x="20" y="190">L1</text>
+  <text x="20" y="254">L2</text>
+  <text x="20" y="318">L3 (last)</text>
+
+  <!-- L0: 2 slots -->
+  <rect x="110" y="104" width="44" height="34" rx="4" class="full"/>
+  <rect x="162" y="104" width="44" height="34" rx="4" class="empty"/>
+  <!-- L1: 3 slots -->
+  <rect x="110" y="168" width="44" height="34" rx="4" class="full"/>
+  <rect x="162" y="168" width="44" height="34" rx="4" class="empty"/>
+  <rect x="214" y="168" width="44" height="34" rx="4" class="full"/>
+  <!-- L2: 4 slots -->
+  <rect x="110" y="232" width="44" height="34" rx="4" class="full"/>
+  <rect x="162" y="232" width="44" height="34" rx="4" class="empty"/>
+  <rect x="214" y="232" width="44" height="34" rx="4" class="full"/>
+  <rect x="266" y="232" width="44" height="34" rx="4" class="full"/>
+  <!-- L3: 5 slots, slot 1 holds the old entry 7: v -->
+  <rect x="110" y="296" width="44" height="34" rx="4" class="full"/>
+  <rect x="162" y="296" width="44" height="34" rx="4" class="empty"/>
+  <rect x="214" y="296" width="44" height="34" rx="4" class="full"/>
+  <rect x="266" y="296" width="44" height="34" rx="4" class="full"/>
+  <rect x="318" y="296" width="44" height="34" rx="4" class="full"/>
+  <g class="a v">
+    <rect x="162" y="296" width="44" height="34" rx="4" class="full"/>
+    <text x="184" y="318" text-anchor="middle" class="key">7: v</text>
+  </g>
+
+  <!-- vacated slots -->
+  <rect x="165" y="107" width="38" height="28" rx="3" class="ghost a k1 fin"/>
+  <rect x="165" y="171" width="38" height="28" rx="3" class="ghost a k2 fin"/>
+  <rect x="165" y="235" width="38" height="28" rx="3" class="ghost a k3 fin"/>
+
+  <!-- the tombstone file, one copy per level -->
+  <g class="a f0">
+    <rect x="162" y="104" width="44" height="34" rx="4" class="tomb"/>
+    <text x="184" y="126" text-anchor="middle" class="tombtext">7 ✝</text>
+  </g>
+  <g class="a f1">
+    <rect x="162" y="168" width="44" height="34" rx="4" class="tomb"/>
+    <text x="184" y="190" text-anchor="middle" class="tombtext">7 ✝</text>
+  </g>
+  <g class="a f2">
+    <rect x="162" y="232" width="44" height="34" rx="4" class="tomb"/>
+    <text x="184" y="254" text-anchor="middle" class="tombtext">7 ✝</text>
+  </g>
+
+  <!-- expired flags -->
+  <g class="a x0">
+    <rect x="158" y="100" width="52" height="42" rx="6" class="ring"/>
+    <text x="218" y="126" class="num">expired</text>
+  </g>
+  <g class="a x1">
+    <rect x="158" y="164" width="52" height="42" rx="6" class="ring"/>
+    <text x="270" y="190" class="num">expired</text>
+  </g>
+  <g class="a x2">
+    <rect x="158" y="228" width="52" height="42" rx="6" class="ring"/>
+    <text x="322" y="254" class="num">expired</text>
+  </g>
+
+  <!-- forced compactions -->
+  <g class="a k1 fin">
+    <path d="M 184 141 L 184 158" class="arrow"/>
+    <polygon points="178,156 184,166 190,156" class="arrowhead"/>
+    <text x="198" y="157" class="muted">forced compaction</text>
+  </g>
+  <g class="a k2 fin">
+    <path d="M 184 205 L 184 222" class="arrow"/>
+    <polygon points="178,220 184,230 190,220" class="arrowhead"/>
+    <text x="198" y="221" class="muted">forced compaction</text>
+  </g>
+  <g class="a k3 fin">
+    <path d="M 184 269 L 184 286" class="arrow"/>
+    <polygon points="178,284 184,294 190,284" class="arrowhead"/>
+    <text x="198" y="285" class="muted">forced compaction</text>
+  </g>
+
+  <!-- now marker, one copy per position -->
+  <g class="a n0">
+    <path d="M 400 98 L 400 334" class="now"/>
+    <text x="400" y="350" text-anchor="middle" style="font-size:12px">now</text>
+  </g>
+  <g class="a n1">
+    <path d="M 454 98 L 454 334" class="now"/>
+    <text x="454" y="350" text-anchor="middle" style="font-size:12px">now</text>
+  </g>
+  <g class="a n2">
+    <path d="M 499 98 L 499 334" class="now"/>
+    <text x="499" y="350" text-anchor="middle" style="font-size:12px">now</text>
+  </g>
+  <g class="a n3 fin">
+    <path d="M 591 98 L 591 334" class="now"/>
+    <text x="591" y="350" text-anchor="middle" style="font-size:12px">now</text>
+  </g>
+
+  <!-- per-level deadlines, each measured from t0: D/7, 2D/7, 4D/7 (T = 2) -->
+  <g class="a d0 fin">
+    <path d="M 400 132 L 446 132" class="budget"/>
+    <path d="M 446 108 L 446 134" class="tick"/>
+    <text x="406" y="125" class="num">+D/7</text>
+  </g>
+  <g class="a d1 fin">
+    <path d="M 400 196 L 491 196" class="budget"/>
+    <path d="M 491 172 L 491 198" class="tick"/>
+    <text x="406" y="189" class="num">+2D/7</text>
+  </g>
+  <g class="a d2 fin">
+    <path d="M 400 260 L 583 260" class="budget"/>
+    <path d="M 583 236 L 583 262" class="tick"/>
+    <text x="406" y="253" class="num">+4D/7</text>
+  </g>
+
+  <!-- merge in the last level, then both entries are gone -->
+  <rect x="158" y="292" width="52" height="42" rx="6" class="ring a mr"/>
+  <rect x="158" y="292" width="52" height="42" rx="6" class="okring a p fin"/>
+  <text x="110" y="352" class="oktext a p fin">7 ✝ and 7: v both dropped</text>
+</svg>

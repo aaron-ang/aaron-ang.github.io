@@ -171,9 +171,13 @@ There are often trade-offs between different amplification metrics. For instance
 
 ### What I’m working on
 
-At the DiSC Lab, I’m working on extending [MySQL](https://github.com/mysql/mysql-server) to incorporate application support for a novel LSM delete engine called [Lethe](https://disc-projects.bu.edu/lethe/). Lethe provides persistence guarantees for primary delete operations. A write-up of the motivations of the project and current progress can be found [here](https://docs.google.com/document/d/1B6eS_YCTRvrcCuAtHlK42Kctx354K5_YqQoqAWimAV4/edit?usp=sharing). I will also provide a concise summary below.
+At the DiSC Lab, I’m working on extending [MySQL](https://github.com/mysql/mysql-server) to incorporate application support for a novel LSM delete engine called [Lethe](https://disc-projects.bu.edu/lethe/). Lethe provides persistence guarantees for primary delete operations. A write-up of the motivations of the project and current progress can be found [here](https://drive.google.com/file/d/17RJTovDi_5fxiH6S1vnm1BJ2yGSO2W2m/view?usp=sharing). I will also provide a concise summary below.
 
 We previously discussed that deletions in LSM are “lazily” materialized, meaning the “deleted” key is physically removed from the system only during compactions. Furthermore, a tombstone might need to reach the last level of the LSM tree for the associated key to be physically removed, requiring compactions through every level. As the size of the tree grows, compaction might be delayed, and the process itself could be time-consuming. This introduces a significant challenge, as the duration between a deletion request from the client and the actual physical key deletion could extend to days or even months. Such a delay poses a considerable privacy risk for companies, particularly those committed to specific turnaround times for personal data removal (e.g., 30 days). In cases where company data is compromised, the persistence of user data beyond the stipulated period could result in legal complications for these organizations.
+
+Lethe caps that wait with a *delete persistence threshold* (DPT): the longest a deleted key may stay on disk. Our SQL extension sets it per table or per statement, e.g. `DELETE ... WITH DPT = D` for a threshold of D seconds, like 30 days for the example above. To meet it, each level gives a tombstone a share of D,[^dpt] and a file that overstays its share is compacted down right away.
+
+![DELETE with DPT D writes a tombstone storing D and delete time t₀. Each level sets a deadline of t₀ plus D/7, 2D/7, or 4D/7; once it passes, the file is marked expired and compacted down until the tombstone meets 7: v.](/images/intro-to-lsm-tree/dpt-compaction.svg "Example with four levels, each twice the size of the one above. Each bar is a level's deadline, measured from the delete time t₀.")
 
 The envisioned long-term outcome of this project is to advocate for integrating the new SQL syntax into [ANSI](https://blog.ansi.org/sql-standard-iso-iec-9075-2023-ansi-x3-135/#gref) standards, **establishing persistent deletes as a foundational capability in SQL**. This paradigm shift aims to compel Database Management Systems (DBMS) vendors to natively implement persistent delete functionality. We hope to empower not only database engineers but also SQL users with greater control over their data lifecycles. This increased agency will enable them to meet Service Level Agreements (SLAs) and address various business requirements more effectively, particularly those related to data privacy and protection.
 
@@ -190,3 +194,10 @@ We are living in an era where emphasis on data security and privacy is paramount
 [Lethe: Enabling Efficient Deletes in LSMs](https://disc-projects.bu.edu/lethe/)
 
 [SIGMOD 2022: Dissecting, Designing, and Optimizing LSM-based Data Stores (Tutorial)](https://www.youtube.com/watch?v=Al3krW4Sh3Q)
+
+[^dpt]:
+    The last level needs no budget, because a tombstone there is dropped. Each other level's budget is $T$ times the one above, where $T$ is the size ratio: how many times bigger each level is than the one before it. With $T = 2$ and four levels, L0 to L2 get $b$, $2b$, and $4b$. These must sum to $D$, so $7b = D$ and the budgets are $D/7$, $2D/7$, and $4D/7$. In general, with $L$ levels, level $i$ gets ([code](https://github.com/BU-DiSC/rocksdb/blob/1a038dfe0862a6219d021a0156cd407ac9f09707/util/dpt_level.h)):
+
+    $$D_i = D \cdot \frac{T-1}{T^{L-1}-1} \cdot T^i$$
+
+    The implementation measures each deadline from the delete time, not from when the tombstone arrived at the level, so the tombstone reaches the last level by $4D/7$, well within the threshold.
