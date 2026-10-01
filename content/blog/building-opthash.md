@@ -1,5 +1,5 @@
 +++
-title = "opthash: From Paper to Hardware and Back"
+title = "opthash: Bridging Theory with Hardware"
 date = "2026-09-06"
 slug = "building-opthash"
 tags = ["Design", "Research", "Engineering"]
