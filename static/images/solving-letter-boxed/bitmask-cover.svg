@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 350" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated bitmask check: MORPHS and SINGLED each light the bits of the letters they use, sharing S, and OR-ing the two masks lights all 12 bits, so (a | b) === 0xFFF">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 350" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated bitmask check: FORMED and DASHING each light the bits of the letters they use, sharing D, and OR-ing the two masks lights all 12 bits, so (a | b) === 0xFFF">
   <style>
     :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; --accent: #1971c2; }
     @media (prefers-color-scheme: dark) {
@@ -44,26 +44,27 @@
       .a { animation: none; opacity: 0; }
       .a.fin { opacity: 1; }
     }
+    .mvar { font-family: 'Times New Roman', Times, 'STIX Two Text', serif; font-style: italic; font-size: 1.1em; }
   </style>
-  <text x="20" y="28" class="title">Each word as a 12-bit mask: bit i is set if the word uses letter i</text>
+  <text x="20" y="28" class="title">Each word as a 12-bit mask: bit <tspan class="mvar">i</tspan> is set if the word uses letter <tspan class="mvar">i</tspan></text>
   <text x="205" y="54" text-anchor="middle" class="muted">top side</text>
   <text x="329" y="54" text-anchor="middle" class="muted">right side</text>
   <text x="453" y="54" text-anchor="middle" class="muted">bottom side</text>
   <text x="577" y="54" text-anchor="middle" class="muted">left side</text>
-  <text x="167" y="80" text-anchor="middle" class="let">S</text>
-  <text x="205" y="80" text-anchor="middle" class="let">R</text>
-  <text x="243" y="80" text-anchor="middle" class="let">G</text>
-  <text x="291" y="80" text-anchor="middle" class="let">M</text>
-  <text x="329" y="80" text-anchor="middle" class="let">D</text>
-  <text x="367" y="80" text-anchor="middle" class="let">H</text>
-  <text x="415" y="80" text-anchor="middle" class="let">I</text>
-  <text x="453" y="80" text-anchor="middle" class="let">O</text>
-  <text x="491" y="80" text-anchor="middle" class="let">L</text>
-  <text x="539" y="80" text-anchor="middle" class="let">E</text>
-  <text x="577" y="80" text-anchor="middle" class="let">N</text>
-  <text x="615" y="80" text-anchor="middle" class="let">P</text>
+  <text x="167" y="80" text-anchor="middle" class="let">M</text>
+  <text x="205" y="80" text-anchor="middle" class="let">S</text>
+  <text x="243" y="80" text-anchor="middle" class="let">O</text>
+  <text x="291" y="80" text-anchor="middle" class="let">H</text>
+  <text x="329" y="80" text-anchor="middle" class="let">G</text>
+  <text x="367" y="80" text-anchor="middle" class="let">D</text>
+  <text x="415" y="80" text-anchor="middle" class="let">R</text>
+  <text x="453" y="80" text-anchor="middle" class="let">I</text>
+  <text x="491" y="80" text-anchor="middle" class="let">E</text>
+  <text x="539" y="80" text-anchor="middle" class="let">N</text>
+  <text x="577" y="80" text-anchor="middle" class="let">A</text>
+  <text x="615" y="80" text-anchor="middle" class="let">F</text>
   <text x="20" y="80" class="muted">bit 0 → bit 11</text>
-  <text x="20" y="114" class="rowlab">a = MORPHS</text>
+  <text x="20" y="114" class="rowlab">a = FORMED</text>
   <rect x="150" y="92" width="34" height="34" rx="4" class="empty"/>
   <text x="167" y="114" text-anchor="middle" class="zero">0</text>
   <rect x="188" y="92" width="34" height="34" rx="4" class="empty"/>
@@ -91,19 +92,19 @@
   <g class="a w1 fin">
     <rect x="150" y="92" width="34" height="34" rx="4" class="c1"/>
     <text x="167" y="114" text-anchor="middle" class="one">1</text>
-    <rect x="188" y="92" width="34" height="34" rx="4" class="c1"/>
-    <text x="205" y="114" text-anchor="middle" class="one">1</text>
-    <rect x="274" y="92" width="34" height="34" rx="4" class="c1"/>
-    <text x="291" y="114" text-anchor="middle" class="one">1</text>
+    <rect x="226" y="92" width="34" height="34" rx="4" class="c1"/>
+    <text x="243" y="114" text-anchor="middle" class="one">1</text>
     <rect x="350" y="92" width="34" height="34" rx="4" class="c1"/>
     <text x="367" y="114" text-anchor="middle" class="one">1</text>
-    <rect x="436" y="92" width="34" height="34" rx="4" class="c1"/>
-    <text x="453" y="114" text-anchor="middle" class="one">1</text>
+    <rect x="398" y="92" width="34" height="34" rx="4" class="c1"/>
+    <text x="415" y="114" text-anchor="middle" class="one">1</text>
+    <rect x="474" y="92" width="34" height="34" rx="4" class="c1"/>
+    <text x="491" y="114" text-anchor="middle" class="one">1</text>
     <rect x="598" y="92" width="34" height="34" rx="4" class="c1"/>
     <text x="615" y="114" text-anchor="middle" class="one">1</text>
   </g>
   <text x="648" y="114" class="muted a w1 fin">uses 6</text>
-  <text x="20" y="162" class="rowlab">b = SINGLED</text>
+  <text x="20" y="162" class="rowlab">b = DASHING</text>
   <rect x="150" y="140" width="34" height="34" rx="4" class="empty"/>
   <text x="167" y="162" text-anchor="middle" class="zero">0</text>
   <rect x="188" y="140" width="34" height="34" rx="4" class="empty"/>
@@ -129,23 +130,23 @@
   <rect x="598" y="140" width="34" height="34" rx="4" class="empty"/>
   <text x="615" y="162" text-anchor="middle" class="zero">0</text>
   <g class="a w2 fin">
-    <rect x="150" y="140" width="34" height="34" rx="4" class="c2"/>
-    <text x="167" y="162" text-anchor="middle" class="one">1</text>
-    <rect x="226" y="140" width="34" height="34" rx="4" class="c2"/>
-    <text x="243" y="162" text-anchor="middle" class="one">1</text>
+    <rect x="188" y="140" width="34" height="34" rx="4" class="c2"/>
+    <text x="205" y="162" text-anchor="middle" class="one">1</text>
+    <rect x="274" y="140" width="34" height="34" rx="4" class="c2"/>
+    <text x="291" y="162" text-anchor="middle" class="one">1</text>
     <rect x="312" y="140" width="34" height="34" rx="4" class="c2"/>
     <text x="329" y="162" text-anchor="middle" class="one">1</text>
-    <rect x="398" y="140" width="34" height="34" rx="4" class="c2"/>
-    <text x="415" y="162" text-anchor="middle" class="one">1</text>
-    <rect x="474" y="140" width="34" height="34" rx="4" class="c2"/>
-    <text x="491" y="162" text-anchor="middle" class="one">1</text>
+    <rect x="350" y="140" width="34" height="34" rx="4" class="c2"/>
+    <text x="367" y="162" text-anchor="middle" class="one">1</text>
+    <rect x="436" y="140" width="34" height="34" rx="4" class="c2"/>
+    <text x="453" y="162" text-anchor="middle" class="one">1</text>
     <rect x="522" y="140" width="34" height="34" rx="4" class="c2"/>
     <text x="539" y="162" text-anchor="middle" class="one">1</text>
     <rect x="560" y="140" width="34" height="34" rx="4" class="c2"/>
     <text x="577" y="162" text-anchor="middle" class="one">1</text>
   </g>
   <text x="648" y="162" class="muted a w2 fin">uses 7</text>
-  <rect x="145" y="87" width="44" height="92" rx="6" class="hl a w3 fin"/>
+  <rect x="345" y="87" width="44" height="92" rx="6" class="hl a w3 fin"/>
   <line x1="150" y1="190" x2="632" y2="190" class="rule"/>
   <text x="20" y="228" class="rowlab">a | b</text>
   <rect x="150" y="206" width="34" height="34" rx="4" class="empty"/>
@@ -205,7 +206,7 @@
   <text x="344" y="288" class="okb a w5 fin">→ true ✓</text>
   <text x="20" y="334" class="a w6">Each of the puzzle's 12 letters gets one bit. Every bit starts at 0.</text>
   <text x="20" y="334" class="a w7">A word sets one bit per distinct letter, in any order.</text>
-  <text x="20" y="334" class="a w8">Both words use S, so both set the S bit.</text>
+  <text x="20" y="334" class="a w8">Both words use D, so both set the D bit.</text>
   <text x="20" y="334" class="a w9">OR keeps a bit if either word sets it.</text>
   <text x="20" y="334" class="title a w5 fin">One OR and one compare replace searching every word for every letter.</text>
 </svg>

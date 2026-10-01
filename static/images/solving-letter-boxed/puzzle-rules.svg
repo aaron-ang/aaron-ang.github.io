@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 368" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated Letter Boxed solution: MORPHS is traced across the square one letter at a time, each letter on a different side from the one before, then SINGLED starts from its last letter S and uses the remaining six letters, until all 12 letters are used in 2 words">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 368" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated Letter Boxed solution: FORMED is traced across the square one letter at a time, each letter on a different side from the one before, then DASHING starts from its last letter D and uses the remaining six letters, until all 12 letters are used in 2 words">
   <style>
     :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; --accent: #1971c2; }
     @media (prefers-color-scheme: dark) {
@@ -82,86 +82,86 @@
       .a.fin { opacity: 1; }
     }
   </style>
-  <text x="20" y="28" class="title">Tracing a solution: MORPHS, then SINGLED</text>
+  <text x="20" y="28" class="title">Tracing a solution: FORMED, then DASHING</text>
   <rect x="80" y="80" width="210" height="210" class="box"/>
-  <line x1="290" y1="126.2" x2="185" y2="290" class="seg1 a w1 fin"/>
-  <line x1="185" y1="290" x2="185" y2="80" class="seg1 a w2 fin"/>
-  <line x1="185" y1="80" x2="80" y2="243.8" class="seg1 a w3 fin"/>
-  <line x1="80" y1="243.8" x2="290" y2="243.8" class="seg1 a w4 fin"/>
-  <line x1="290" y1="243.8" x2="126.2" y2="80" class="seg1 a w5 fin"/>
-  <line x1="126.2" y1="80" x2="126.2" y2="290" class="seg2 a w6 fin"/>
-  <line x1="126.2" y1="290" x2="80" y2="185" class="seg2 a w7 fin"/>
-  <line x1="80" y1="185" x2="243.8" y2="80" class="seg2 a w8 fin"/>
-  <line x1="243.8" y1="80" x2="243.8" y2="290" class="seg2 a w9 fin"/>
-  <line x1="243.8" y1="290" x2="80" y2="126.2" class="seg2 a w10 fin"/>
+  <line x1="80" y1="243.8" x2="243.8" y2="80" class="seg1 a w1 fin"/>
+  <line x1="243.8" y1="80" x2="126.2" y2="290" class="seg1 a w2 fin"/>
+  <line x1="126.2" y1="290" x2="126.2" y2="80" class="seg1 a w3 fin"/>
+  <line x1="126.2" y1="80" x2="243.8" y2="290" class="seg1 a w4 fin"/>
+  <line x1="243.8" y1="290" x2="290" y2="243.8" class="seg1 a w5 fin"/>
+  <line x1="290" y1="243.8" x2="80" y2="185" class="seg2 a w6 fin"/>
+  <line x1="80" y1="185" x2="185" y2="80" class="seg2 a w7 fin"/>
+  <line x1="185" y1="80" x2="290" y2="126.2" class="seg2 a w8 fin"/>
+  <line x1="290" y1="126.2" x2="185" y2="290" class="seg2 a w9 fin"/>
+  <line x1="185" y1="290" x2="80" y2="126.2" class="seg2 a w10 fin"/>
   <line x1="80" y1="126.2" x2="290" y2="185" class="seg2 a w11 fin"/>
   <circle cx="126.2" cy="80" r="8" class="dot"/>
-  <text x="126.2" y="64" text-anchor="middle" class="let">S</text>
+  <text x="126.2" y="64" text-anchor="middle" class="let">M</text>
   <circle cx="185" cy="80" r="8" class="dot"/>
-  <text x="185" y="64" text-anchor="middle" class="let">R</text>
+  <text x="185" y="64" text-anchor="middle" class="let">S</text>
   <circle cx="243.8" cy="80" r="8" class="dot"/>
-  <text x="243.8" y="64" text-anchor="middle" class="let">G</text>
+  <text x="243.8" y="64" text-anchor="middle" class="let">O</text>
   <circle cx="290" cy="126.2" r="8" class="dot"/>
-  <text x="306" y="131.2" text-anchor="start" class="let">M</text>
+  <text x="306" y="131.2" text-anchor="start" class="let">H</text>
   <circle cx="290" cy="185" r="8" class="dot"/>
-  <text x="306" y="190" text-anchor="start" class="let">D</text>
+  <text x="306" y="190" text-anchor="start" class="let">G</text>
   <circle cx="290" cy="243.8" r="8" class="dot"/>
-  <text x="306" y="248.8" text-anchor="start" class="let">H</text>
+  <text x="306" y="248.8" text-anchor="start" class="let">D</text>
   <circle cx="126.2" cy="290" r="8" class="dot"/>
-  <text x="126.2" y="318" text-anchor="middle" class="let">I</text>
+  <text x="126.2" y="318" text-anchor="middle" class="let">R</text>
   <circle cx="185" cy="290" r="8" class="dot"/>
-  <text x="185" y="318" text-anchor="middle" class="let">O</text>
+  <text x="185" y="318" text-anchor="middle" class="let">I</text>
   <circle cx="243.8" cy="290" r="8" class="dot"/>
-  <text x="243.8" y="318" text-anchor="middle" class="let">L</text>
+  <text x="243.8" y="318" text-anchor="middle" class="let">E</text>
   <circle cx="80" cy="126.2" r="8" class="dot"/>
-  <text x="64" y="131.2" text-anchor="end" class="let">E</text>
+  <text x="64" y="131.2" text-anchor="end" class="let">N</text>
   <circle cx="80" cy="185" r="8" class="dot"/>
-  <text x="64" y="190" text-anchor="end" class="let">N</text>
+  <text x="64" y="190" text-anchor="end" class="let">A</text>
   <circle cx="80" cy="243.8" r="8" class="dot"/>
-  <text x="64" y="248.8" text-anchor="end" class="let">P</text>
-  <circle cx="290" cy="126.2" r="8" class="lit1 a w12 fin"/>
-  <circle cx="185" cy="290" r="8" class="lit1 a w1 fin"/>
-  <circle cx="185" cy="80" r="8" class="lit1 a w2 fin"/>
-  <circle cx="80" cy="243.8" r="8" class="lit1 a w3 fin"/>
-  <circle cx="290" cy="243.8" r="8" class="lit1 a w4 fin"/>
-  <circle cx="126.2" cy="80" r="8" class="lit1 a w5 fin"/>
-  <circle cx="126.2" cy="290" r="8" class="lit2 a w6 fin"/>
-  <circle cx="80" cy="185" r="8" class="lit2 a w7 fin"/>
-  <circle cx="243.8" cy="80" r="8" class="lit2 a w8 fin"/>
-  <circle cx="243.8" cy="290" r="8" class="lit2 a w9 fin"/>
+  <text x="64" y="248.8" text-anchor="end" class="let">F</text>
+  <circle cx="80" cy="243.8" r="8" class="lit1 a w12 fin"/>
+  <circle cx="243.8" cy="80" r="8" class="lit1 a w1 fin"/>
+  <circle cx="126.2" cy="290" r="8" class="lit1 a w2 fin"/>
+  <circle cx="126.2" cy="80" r="8" class="lit1 a w3 fin"/>
+  <circle cx="243.8" cy="290" r="8" class="lit1 a w4 fin"/>
+  <circle cx="290" cy="243.8" r="8" class="lit1 a w5 fin"/>
+  <circle cx="80" cy="185" r="8" class="lit2 a w6 fin"/>
+  <circle cx="185" cy="80" r="8" class="lit2 a w7 fin"/>
+  <circle cx="290" cy="126.2" r="8" class="lit2 a w8 fin"/>
+  <circle cx="185" cy="290" r="8" class="lit2 a w9 fin"/>
   <circle cx="80" cy="126.2" r="8" class="lit2 a w10 fin"/>
   <circle cx="290" cy="185" r="8" class="lit2 a w11 fin"/>
-  <circle cx="126.2" cy="80" r="12" class="ring2 a w13 fin"/>
+  <circle cx="290" cy="243.8" r="12" class="ring2 a w13 fin"/>
   <text x="380" y="86" class="muted">word 1</text>
-  <text x="380" y="120" class="big wd1 a w12 fin">M</text>
+  <text x="380" y="120" class="big wd1 a w12 fin">F</text>
   <text x="410" y="120" class="big wd1 a w1 fin">O</text>
   <text x="440" y="120" class="big wd1 a w2 fin">R</text>
-  <text x="470" y="120" class="big wd1 a w3 fin">P</text>
-  <text x="500" y="120" class="big wd1 a w4 fin">H</text>
-  <text x="530" y="120" class="big wd1 a w5 fin">S</text>
+  <text x="470" y="120" class="big wd1 a w3 fin">M</text>
+  <text x="500" y="120" class="big wd1 a w4 fin">E</text>
+  <text x="530" y="120" class="big wd1 a w5 fin">D</text>
   <text x="380" y="146" class="muted a w14 fin">every step jumps to a different side</text>
   <text x="380" y="186" class="muted">word 2</text>
-  <text x="380" y="220" class="big wd2 a w13 fin">S</text>
-  <text x="410" y="220" class="big wd2 a w6 fin">I</text>
-  <text x="440" y="220" class="big wd2 a w7 fin">N</text>
-  <text x="470" y="220" class="big wd2 a w8 fin">G</text>
-  <text x="500" y="220" class="big wd2 a w9 fin">L</text>
-  <text x="530" y="220" class="big wd2 a w10 fin">E</text>
-  <text x="560" y="220" class="big wd2 a w11 fin">D</text>
-  <text x="380" y="246" class="muted a w13 fin">starts with S, the last letter of MORPHS</text>
+  <text x="380" y="220" class="big wd2 a w13 fin">D</text>
+  <text x="410" y="220" class="big wd2 a w6 fin">A</text>
+  <text x="440" y="220" class="big wd2 a w7 fin">S</text>
+  <text x="470" y="220" class="big wd2 a w8 fin">H</text>
+  <text x="500" y="220" class="big wd2 a w9 fin">I</text>
+  <text x="530" y="220" class="big wd2 a w10 fin">N</text>
+  <text x="560" y="220" class="big wd2 a w11 fin">G</text>
+  <text x="380" y="246" class="muted a w13 fin">starts with D, the last letter of FORMED</text>
   <text x="380" y="290" class="oktext a w15 fin">All 12 letters used in 2 words ✓</text>
   <text x="20" y="350" class="a w16">Twelve letters sit around the square, three per side.</text>
-  <text x="20" y="350" class="a w17">M: right side.</text>
-  <text x="20" y="350" class="a w18">O is on the bottom: a different side, so the move is allowed.</text>
-  <text x="20" y="350" class="a w19">R: top.</text>
-  <text x="20" y="350" class="a w20">P: left.</text>
-  <text x="20" y="350" class="a w21">H: right.</text>
-  <text x="20" y="350" class="a w22">S: top. MORPHS is done.</text>
-  <text x="20" y="350" class="a w23">I: bottom.</text>
-  <text x="20" y="350" class="a w24">N: left.</text>
-  <text x="20" y="350" class="a w25">G: top.</text>
-  <text x="20" y="350" class="a w26">L: bottom.</text>
-  <text x="20" y="350" class="a w27">E: left.</text>
-  <text x="20" y="350" class="a w28">D: right, the last unused letter.</text>
+  <text x="20" y="350" class="a w17">F: left side.</text>
+  <text x="20" y="350" class="a w18">O is on the top: a different side, so the move is allowed.</text>
+  <text x="20" y="350" class="a w19">R: bottom.</text>
+  <text x="20" y="350" class="a w20">M: top.</text>
+  <text x="20" y="350" class="a w21">E: bottom.</text>
+  <text x="20" y="350" class="a w22">D: right. FORMED is done.</text>
+  <text x="20" y="350" class="a w23">A: left.</text>
+  <text x="20" y="350" class="a w24">S: top.</text>
+  <text x="20" y="350" class="a w25">H: right.</text>
+  <text x="20" y="350" class="a w26">I: bottom.</text>
+  <text x="20" y="350" class="a w27">N: left.</text>
+  <text x="20" y="350" class="a w28">G: right, the last unused letter.</text>
   <text x="20" y="350" class="title a w15 fin">Three rules: switch sides, chain end to start, use every letter.</text>
 </svg>
