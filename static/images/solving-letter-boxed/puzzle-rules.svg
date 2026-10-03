@@ -163,5 +163,5 @@
   <text x="20" y="350" class="a w26">I: bottom.</text>
   <text x="20" y="350" class="a w27">N: left.</text>
   <text x="20" y="350" class="a w28">G: right, the last unused letter.</text>
-  <text x="20" y="350" class="title a w15 fin">Three rules: switch sides, chain end to start, use every letter.</text>
+  <text x="20" y="350" class="title a w15 fin">Rules: switch sides, chain end to start, use every letter.</text>
 </svg>

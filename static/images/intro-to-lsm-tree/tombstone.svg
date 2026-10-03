@@ -72,6 +72,7 @@
       .a { animation: none; opacity: 0; }
       .a.fin { opacity: 1; }
     }
+    .mvar { font-family: 'Times New Roman', Times, 'STIX Two Text', serif; font-style: italic; font-size: 1.1em; }
   </style>
 
   <!-- captions -->
@@ -79,7 +80,7 @@
   <text x="20" y="30" class="a c1">delete(7) inserts a tombstone into the memtable.</text>
   <text x="20" y="30" class="a c2">A read finds the tombstone first, so key 7 is logically deleted.</text>
   <text x="20" y="30" class="a c3">Compactions carry the tombstone down, one level at a time.</text>
-  <text x="20" y="30" class="a c4">The tombstone reaches the last level and meets 7: v.</text>
+  <text x="20" y="30" class="a c4">The tombstone reaches the last level and meets 7: <tspan class="mvar">v</tspan>.</text>
   <text x="20" y="30" class="oktext a p fin" style="font-size:14px">Both entries are dropped: key 7 is physically deleted.</text>
 
   <!-- elapsed counter -->
@@ -122,7 +123,7 @@
   <rect x="542" y="252" width="48" height="34" rx="4" class="full"/>
   <g class="a v">
     <rect x="262" y="252" width="48" height="34" rx="4" class="full"/>
-    <text x="286" y="274" text-anchor="middle" class="key">7: v</text>
+    <text x="286" y="274" text-anchor="middle" class="key">7: <tspan class="mvar">v</tspan></text>
   </g>
 
   <!-- vacated slots: where the tombstone has been -->
@@ -177,5 +178,5 @@
   <!-- merge in the last level, then both entries are gone -->
   <rect x="258" y="248" width="56" height="42" rx="6" class="ring a mr"/>
   <rect x="258" y="248" width="56" height="42" rx="6" class="okring a p fin"/>
-  <text x="150" y="310" class="oktext a p fin">physically deleted: 7 ✝ and 7: v both dropped</text>
+  <text x="150" y="310" class="oktext a p fin">physically deleted: 7 ✝ and 7: <tspan class="mvar">v</tspan> both dropped</text>
 </svg>

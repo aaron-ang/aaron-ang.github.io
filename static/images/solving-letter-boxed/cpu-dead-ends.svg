@@ -104,7 +104,7 @@
     }
   </style>
   <text x="20" y="26" class="title">Find Best on the CPU: remembering dead ends</text>
-  <text x="20" y="48" class="muted">Puzzle DCE/AUB/HMW/RNF, 255 valid words. Level 3: every chain of 3 words.</text>
+  <text x="20" y="48" class="muted">Puzzle DCE/AUB/HMW/RNF, 255 valid words. Level 3: searching for 3-word solutions.</text>
   <text x="20" y="80" class="muted">covered letters</text>
   <text x="159" y="80" text-anchor="middle" class="let">D</text>
   <text x="193" y="80" text-anchor="middle" class="let">C</text>

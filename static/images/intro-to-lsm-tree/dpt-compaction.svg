@@ -96,31 +96,32 @@
       .a { animation: none; opacity: 0; }
       .a.fin { opacity: 1; }
     }
+    .mvar { font-family: 'Times New Roman', Times, 'STIX Two Text', serif; font-style: italic; font-size: 1.1em; }
   </style>
 
   <!-- captions -->
   <text x="20" y="30" class="a c0">Key 7's old value sits in L3, the last level.</text>
-  <text x="20" y="30" class="a c1">The delete writes a tombstone whose value stores D and the delete time t₀.</text>
-  <text x="20" y="30" class="a c2">A flush writes it to L0 with a deadline: t₀ plus L0's share of D.</text>
+  <text x="20" y="30" class="a c1">The delete writes a tombstone whose value stores <tspan class="mvar">D</tspan> and the delete time <tspan class="mvar">t</tspan>₀.</text>
+  <text x="20" y="30" class="a c2">A flush writes it to L0 with a deadline: <tspan class="mvar">t</tspan>₀ plus L0's share of <tspan class="mvar">D</tspan>.</text>
   <text x="20" y="30" class="a c3">Time passes the L0 deadline.</text>
   <text x="20" y="30" class="a c4">The next compaction check marks the file expired.</text>
   <text x="20" y="30" class="a c5">It's compacted to L1, although L1 isn't full, and gets a later deadline.</text>
   <text x="20" y="30" class="a c6">Time passes the L1 deadline.</text>
   <text x="20" y="30" class="a c7">The check marks it expired again.</text>
-  <text x="20" y="30" class="a c8">Each level's budget doubles, so L2's deadline is t₀ + 4D/7.</text>
+  <text x="20" y="30" class="a c8">Each level's budget doubles, so L2's deadline is <tspan class="mvar">t</tspan>₀ + 4<tspan class="mvar">D</tspan>/7.</text>
   <text x="20" y="30" class="a c9">Time passes the L2 deadline.</text>
   <text x="20" y="30" class="a c10">The check marks it expired.</text>
-  <text x="20" y="30" class="a c11">Compacted to L3, the tombstone meets 7: v.</text>
-  <text x="20" y="30" class="oktext a p fin" style="font-size:14px">Key 7 is physically deleted before t₀ + D.</text>
+  <text x="20" y="30" class="a c11">Compacted to L3, the tombstone meets 7: <tspan class="mvar">v</tspan>.</text>
+  <text x="20" y="30" class="oktext a p fin" style="font-size:14px">Key 7 is physically deleted before <tspan class="mvar">t</tspan>₀ + <tspan class="mvar">D</tspan>.</text>
 
   <!-- the delete -->
   <g class="a sq fin">
-    <text x="20" y="65" class="num">DELETE … WITH DPT = D</text>
+    <text x="20" y="65" class="num">DELETE … WITH DPT = <tspan class="mvar">D</tspan></text>
   </g>
 
   <!-- time axis: t0 to t0 + D, shared by every level row -->
-  <text x="400" y="93" text-anchor="middle" class="muted">t₀</text>
-  <text x="720" y="93" text-anchor="middle" class="muted">t₀ + D</text>
+  <text x="400" y="93" text-anchor="middle" class="muted"><tspan class="mvar">t</tspan>₀</text>
+  <text x="720" y="93" text-anchor="middle" class="muted"><tspan class="mvar">t</tspan>₀ + <tspan class="mvar">D</tspan></text>
   <path d="M 400 98 L 400 332" class="axis"/>
   <path d="M 720 98 L 720 332" class="limit"/>
   <text x="705" y="318" text-anchor="end" class="muted">no deadline</text>
@@ -151,7 +152,7 @@
   <rect x="318" y="296" width="44" height="34" rx="4" class="full"/>
   <g class="a v">
     <rect x="162" y="296" width="44" height="34" rx="4" class="full"/>
-    <text x="184" y="318" text-anchor="middle" class="key">7: v</text>
+    <text x="184" y="318" text-anchor="middle" class="key">7: <tspan class="mvar">v</tspan></text>
   </g>
 
   <!-- vacated slots -->
@@ -226,21 +227,21 @@
   <g class="a d0 fin">
     <path d="M 400 132 L 446 132" class="budget"/>
     <path d="M 446 108 L 446 134" class="tick"/>
-    <text x="406" y="125" class="num">+D/7</text>
+    <text x="406" y="125" class="num">+<tspan class="mvar">D</tspan>/7</text>
   </g>
   <g class="a d1 fin">
     <path d="M 400 196 L 491 196" class="budget"/>
     <path d="M 491 172 L 491 198" class="tick"/>
-    <text x="406" y="189" class="num">+2D/7</text>
+    <text x="406" y="189" class="num">+2<tspan class="mvar">D</tspan>/7</text>
   </g>
   <g class="a d2 fin">
     <path d="M 400 260 L 583 260" class="budget"/>
     <path d="M 583 236 L 583 262" class="tick"/>
-    <text x="406" y="253" class="num">+4D/7</text>
+    <text x="406" y="253" class="num">+4<tspan class="mvar">D</tspan>/7</text>
   </g>
 
   <!-- merge in the last level, then both entries are gone -->
   <rect x="158" y="292" width="52" height="42" rx="6" class="ring a mr"/>
   <rect x="158" y="292" width="52" height="42" rx="6" class="okring a p fin"/>
-  <text x="110" y="352" class="oktext a p fin">7 ✝ and 7: v both dropped</text>
+  <text x="110" y="352" class="oktext a p fin">7 ✝ and 7: <tspan class="mvar">v</tspan> both dropped</text>
 </svg>

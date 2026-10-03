@@ -45,9 +45,10 @@
       .a { animation: none; opacity: 0; }
       .a.fin { opacity: 1; }
     }
+    .mvar { font-family: 'Times New Roman', Times, 'STIX Two Text', serif; font-style: italic; font-size: 1.1em; }
   </style>
   <text x="20" y="26" class="title">Leveled</text>
-  <text x="92" y="26" class="muted">1 sorted run per level, T = 3</text>
+  <text x="92" y="26" class="muted">1 sorted run per level, <tspan class="mvar">T</tspan> = 3</text>
   <text x="20" y="81" class="muted">flush</text>
   <text x="20" y="121">L1</text>
   <text x="20" y="161">L2</text>
@@ -72,7 +73,7 @@
   <text x="162" y="161" class="num a l2new fin">rewrites L2: 3 + 3 &#8594; 6</text>
   <text x="20" y="236" class="a rd fin">Here, a lookup checks 2 runs (1 per level)</text>
   <text x="400" y="26" class="title">Tiered</text>
-  <text x="460" y="26" class="muted">up to T = 3 runs per level</text>
+  <text x="460" y="26" class="muted">up to <tspan class="mvar">T</tspan> = 3 runs per level</text>
   <text x="400" y="81" class="muted">flush</text>
   <text x="400" y="121">L1</text>
   <text x="400" y="161">L2</text>
@@ -98,7 +99,7 @@
   <rect x="437" y="103" width="44" height="26" rx="5" class="ring a p3"/>
   <text x="494" y="121" class="muted a p1">new run (1 of 3)</text>
   <text x="494" y="121" class="muted a p2">new run (2 of 3)</text>
-  <text x="494" y="121" class="num a p3">3 runs = T: merge all</text>
+  <text x="494" y="121" class="num a p3">3 runs = <tspan class="mvar">T</tspan>: merge all</text>
   <text x="494" y="121" class="muted a l2new fin">3 runs merged into 1, moved down</text>
   <text x="553" y="161" class="oktext a l2new fin">new run; old run not rewritten</text>
   <text x="400" y="236" class="a rd fin">Here, a lookup checks 3 runs (every run)</text>
@@ -106,7 +107,7 @@
   <line x1="20" y1="256" x2="740" y2="256" class="div"/>
   <text x="20" y="280" class="foot">Leveled: 1 run per level, so no duplicate keys per level.</text>
   <text x="20" y="300" class="foot">Better reads and less space; more merging (rewrites).</text>
-  <text x="400" y="280" class="foot">Tiered: up to T runs per level, merged lazily.</text>
+  <text x="400" y="280" class="foot">Tiered: up to <tspan class="mvar">T</tspan> runs per level, merged lazily.</text>
   <text x="400" y="300" class="foot">Better ingestion; more space and read cost.</text>
   <text x="20" y="326" class="muted">Same three 1-unit flushes into both trees. Dashed outlines show capacity: 3, 9, 27 units.</text>
 </svg>
