@@ -21,7 +21,7 @@ When I couldn't find an official implementation, I decided to write one. Buildin
 
 That became [opthash](https://github.com/aaron-ang/opthash-rs). It started as an [exploratory exercise](https://news.ycombinator.com/item?id=48365720), and I was curious how these constructions would stack up against the tables most Rust code already relies on, like `std::HashMap` and [`hashbrown`](https://github.com/rust-lang/hashbrown). To compete with them, opthash would have to make good use of caches, vector instructions, and allocators, and support what a general-purpose map does beyond the paper, such as deleting keys and growing the underlying array.
 
-Before getting to the implementation, let's look at how each construction places keys. The paper specifies which slots a key may use and the order in which it tries them, but leaves how each slot is checked to the implementation. The two constructions make those choices differently.
+Before getting to the implementation, let's look at how each construction places keys. The paper specifies which slots a key may use and the order in which it tries them, and the two constructions make those choices differently. How each slot is checked is left to the implementation.
 
 ### Elastic Hashing
 
@@ -95,7 +95,7 @@ In CI, [CodSpeed](https://codspeed.io) runs the same suite on every pull request
 
 Smaller experiments went through the same checks.[^small-experiments] Much later, I found the benchmark fixture itself was skewed: at 20,000 entries, Elastic and `hashbrown` were 70 percent full while Funnel was completely full. Now every map is filled to capacity before anything is measured.[^fixture]
 
-Better measurement caught wins that were noise and wins that only held on one machine. It also exposed a bigger problem. Some optimizations that measured well, notably power-of-two geometry and changed probing arithmetic, had changed which slots the algorithms visited: the maps were faster because they were no longer quite the paper's algorithms.
+Better measurement caught wins that were noise and wins that only held on one machine. The same measurements also exposed a bigger problem: some optimizations that measured well, notably power-of-two geometry and changed probing arithmetic, had changed which slots the algorithms visited. The maps were faster because they were no longer quite the paper's algorithms.
 
 ## Returning to the Paper
 
@@ -158,7 +158,7 @@ flowchart LR
   eq -- no --> bad["test fails: algorithm changed"]
 ```
 
-The rewrite made both maps much slower. Here is the cost on a 20,000-entry map of `u64` keys, in nanoseconds per operation, before (`v0.10.3`) and after the rewrite:[^bench-setup]
+Here is how much slower the rewrite made both maps on a 20,000-entry map of `u64` keys, in nanoseconds per operation, before (`v0.10.3`) and after:[^bench-setup]
 
 | Map         |            Insert |             Hit |            Miss |
 | ----------- | ----------------: | --------------: | --------------: |
@@ -209,7 +209,7 @@ Cycles and instructions grew by the same factor, and instructions per cycle bare
 
 Insert behaves differently, because there the exact version also takes about 10 times as many cache misses per operation. It visits far more slots before it settles, and those slots are spread across two arrays instead of one contiguous group.
 
-The first round of tuning showed the exact version had room to improve. Streamlining the hot paths made Elastic insertion about 4x faster without changing which slots it visits.[^hot-paths] That narrowed the project's question to how fast the paper's design can get on its own, with the library features kept out of the way.
+The first round of tuning showed the exact version had room to improve. Streamlining the hot paths made Elastic insertion more than 4x faster without changing which slots it visits.[^hot-paths] That narrowed the project's question to how fast the paper's design can get on its own, with the library features kept out of the way.
 
 ## Beyond the Paper
 
@@ -226,7 +226,7 @@ Placement recovery is the one exception, and it exists because the paper gives e
 
 Keeping library code from changing the paper's placements took some fixes. Elastic used to pick its active batch from a running count of inserts. Under a steady mix of inserts and deletes, that count kept climbing even though the number of live keys stayed flat. The batch index crept forward and new keys drifted into the smallest levels, where they quickly ran out of room and set off recovery. Counting live entries instead of total inserts fixed it.[^churn]
 
-The same split applies to benchmarks. The paper's analysis covers inserts and successful lookups for both maps, and failed lookups for Funnel only. It doesn't cover failed lookups for Elastic, and deletes and growth aren't part of the paper at all. Benchmarks for those operations measure opthash's own library code. One combined score would mix the two and hide where the time goes, so opthash reports them separately. Every run also includes `std::HashMap` and `hashbrown`, which show how fast mature, general-purpose tables are on the same machine and workload, giving opthash's numbers something to be read against.[^python]
+Benchmarks are split the same way, between operations the paper analyzes and operations it doesn't. The paper's analysis covers inserts and successful lookups for both maps, and failed lookups for Funnel only. It doesn't cover failed lookups for Elastic, and deletes and growth aren't part of the paper at all. Benchmarks for those operations measure opthash's own library code. One combined score would mix the two and hide where the time goes, so opthash reports them separately. Every run also includes `std::HashMap` and `hashbrown`, which show how fast mature, general-purpose tables are on the same machine and workload, giving opthash's numbers something to be read against.[^python]
 
 ## Looking Back
 
@@ -252,13 +252,13 @@ The question that started the project, whether the paper's probe bounds can make
 
 [^budget]: With [uniform probing](https://doi.org/10.1145/3828.3836), the expected walk grows with $1/\varepsilon$, where $\varepsilon$ is the free fraction of the array. Elastic's budget is $c \cdot \min(\log^2(1/\varepsilon), \log(1/\delta))$, where $\delta$ is the free fraction of the whole table. That $\log(1/\delta)$ cap is what keeps Elastic's worst case at $O(\log(1/\delta))$, below the $\Omega(\log^2(1/\delta))$ lower bound for greedy tables.
 
-[^funnel-params]: opthash pins one such choice and treats any change to it as a different algorithm for trace purposes.
+[^funnel-params]: opthash pins one such choice, and its tests that record the order of slots visited treat any change to that choice as a different algorithm.
 
 [^arena]: See [opthash#68](https://github.com/aaron-ang/opthash-rs/pull/68). Each level became a pointer and a count into the shared arena.
 
 [^mini-hash]: See [opthash#12](https://github.com/aaron-ang/opthash-rs/pull/12) for the full workload table, Elastic included.
 
-[^small-experiments]: Software prefetching did nothing or hurt, reordering fields sometimes produced worse codegen, and a 64-lane AVX-512 path was dropped for the existing 16-lane x86 scan once the generated code showed no gain. The ARM machine used here scans 8 lanes with NEON. One change, swapping a batch-plan `Vec` for a boxed slice, lost 6.5 percent on its own and was reverted, then came back without the slowdown as part of a later layout cleanup.
+[^small-experiments]: Software prefetching did nothing or hurt, reordering fields sometimes produced worse machine code, and a 64-lane AVX-512 path was dropped for the existing 16-lane x86 scan once the generated code showed no gain.
 
 [^codspeed]: See [opthash#36](https://github.com/aaron-ang/opthash-rs/pull/36). Both the Rust Criterion benchmarks and the Python pytest benchmarks run this way. CodSpeed's simulation later replaced a separate iai-callgrind instruction-count benchmark.
 
@@ -270,9 +270,9 @@ The question that started the project, whether the paper's probe bounds can make
 
 [^bench-setup]: The regression was first recorded in the [design notes](https://github.com/aaron-ang/opthash-rs/blob/e2aab0104d5afad0749a9e5fb949cb43f68aba6c/docs/superpowers/specs/2026-07-11-paper-faithful-performance-parity-design.md#context). A fresh run for this article reproduced it: same fixtures, 100,000 operations per sample, interleaved twice on one pinned Cortex-X925 core at 3.9 GHz. At 20,000 entries, Elastic and `hashbrown` are 70 percent full and Funnel is full. Compare each row before and after, not maps against each other.
 
-[^controls]: Both pairs agreed within 5 percent on every cell. The `std` and `hashbrown` controls were flat on insert and hit. On miss, `std` was 1.5x slower and `hashbrown` 0.8x in the exact tree's binary, identically in both pairs. That points to the two bench binaries compiling the same control code differently, not run-to-run noise.
+[^controls]: Each before-and-after comparison was run twice, and the two runs agreed within 5 percent on every operation. The `std` and `hashbrown` baselines were flat on insert and successful lookups. On failed lookups, they ran at different speeds in the two builds, `std` taking 1.5x as long after the rewrite and `hashbrown` 0.8x as long, by the same amount in both runs. That points to the two benchmark builds compiling the same baseline code differently, not to run-to-run noise.
 
-[^hot-paths]: See [opthash#121](https://github.com/aaron-ang/opthash-rs/pull/121), which measured Elastic insert 76.63 percent faster. Only the insert gain counts, because its controls were noisy.
+[^hot-paths]: See [opthash#121](https://github.com/aaron-ang/opthash-rs/pull/121). In CodSpeed's simulation, Elastic insert went from 111 ms to 24 ms. Only the insert gain counts, because the controls were noisy in that run.
 
 [^filter]: See [opthash#132](https://github.com/aaron-ang/opthash-rs/pull/132). Each key sets two bits in a 64-bit word shared by ten slots. Because bits are never cleared one key at a time, the filter can wrongly say "maybe" but never wrongly say "no".
 

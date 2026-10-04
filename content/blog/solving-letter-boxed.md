@@ -78,7 +78,7 @@ By 2026, running the solver locally looked attractive again, for three reasons:
 2. **WebGPU.** Browsers can now run general-purpose programs on the GPU through [WebGPU](https://developer.mozilla.org/en-US/docs/Web/API/WebGPU_API).[^support]
 3. **A faster solver.** Before moving it back, I rewrote the core data structures so that the work itself got much smaller, which is what the next two sections cover.
 
-With the solver local, there's no network round trip, no cold start, and no server bill. The cost is that solve speed now depends on the user's device. Devices without WebGPU fall back to the CPU, as described later.
+Running the solver locally removes the network round trip, the cold start, and the server bill. The cost is that solve speed now depends on the user's device. Devices without WebGPU fall back to the CPU, as described later.
 
 ## Bitmasks
 
@@ -108,13 +108,13 @@ Combining two words' masks shows which letters they use together:
 
 ![Each of the twelve letters gets one bit. FORMED and DASHING each set their letters' bits, and OR-ing the two masks sets all twelve.](/images/solving-letter-boxed/bitmask-cover.svg "D appears in both words but still sets just one bit.")
 
-With masks, "do these words use every letter?" becomes a single comparison:
+Once every word has a mask, "do these words use every letter?" becomes a single comparison:
 
 ```ts
 (a.coverageMask | b.coverageMask) === allCoveredMask; // 0xFFF
 ```
 
-The same idea handles sides. The solver precomputes a small table, `sideOf[letterIndex]`, so "are these two letters on the same side?" is two array lookups and a comparison instead of eight string searches.
+A second precomputed table, `sideOf[letterIndex]`, handles sides, so "are these two letters on the same side?" is two array lookups and a comparison instead of eight string searches.
 
 Adding a letter to a word's mask only takes an [OR](https://en.wikipedia.org/wiki/Bitwise_operation#OR) of its bit, but removing a letter during backtracking is harder. If the word is "SEES" and you remove the last S, the S bit must stay set, because another S is still there. A mask records _whether_ a letter appears, not _how many times_. So the solver rebuilds a word's mask from its remaining letters whenever it backtracks, which costs little for words this short.
 
@@ -122,7 +122,7 @@ Adding a letter to a word's mask only takes an [OR](https://en.wikipedia.org/wik
 
 The second idea is _[precomputation](https://en.wikipedia.org/wiki/Precomputation)_: anything that doesn't depend on the search should be computed once, before the search starts.
 
-The largest saving comes from the dictionary. The full word list has 26,648 words, but most of them can't be used in any given puzzle. A word containing a letter that isn't on the square can never appear in a solution. Neither can a word where two consecutive letters come from the same side. Filtering those out, along with words shorter than three letters, leaves a much smaller list.
+The largest saving comes from the dictionary: the full word list has 26,648 words, but most of them can't be used in any given puzzle. A word containing a letter that isn't on the square can never appear in a solution. Neither can a word where two consecutive letters come from the same side. Filtering those out, along with words shorter than three letters, leaves a much smaller list.
 
 For one puzzle, the three filters reduce the dictionary as follows:
 
@@ -193,7 +193,7 @@ Threads also need a safe way to write their results, because thousands of them m
 
 The CPU drives the search, one word count, or _level_, at a time. First it checks for a one-word solution itself. Then it _dispatches_ the shader, telling the GPU to run one thread per (chain, word) pair, and waits for that pass to finish. The first dispatch extends one-word chains to two words, the next extends those to three, and so on.
 
-The chains themselves never leave the GPU. Each pass writes its new chains into a _buffer_, a block of GPU memory, that the next pass reads as its input, and then the two buffers swap roles. After each pass, the CPU _reads back_ only the two counters, plus any solutions, copying them from GPU memory in a single step.
+The chains themselves never leave the GPU: each pass writes its new chains into a _buffer_, a block of GPU memory, that the next pass reads as its input, and then the two buffers swap roles. After each pass, the CPU _reads back_ only the two counters, plus any solutions, copying them from GPU memory in a single step.
 
 With those counts, the CPU decides what happens next. If the pass found no solutions, it dispatches again, until it reaches the word limit or runs out of chains. If the pass found any, the search stops, since those solutions have the fewest words.
 
@@ -205,7 +205,7 @@ In a different puzzle, the first solutions only appear on the second pass:
 
 ### CPU Fallback
 
-Not every browser or device supports WebGPU. Without it, or when a pass produces more chains than the GPU's buffers can hold, the worker runs the same search on the CPU. It uses the same filtered words, masks, and first-letter index, and it also goes one level at a time: all one-word chains, then all two-word chains, and so on up to the word limit, stopping at the first level with a solution.
+When a browser or device doesn't support WebGPU, or when a pass produces more chains than the GPU's buffers can hold, the worker runs the same search on the CPU. It uses the same filtered words, masks, and first-letter index, and it also goes one level at a time: all one-word chains, then all two-word chains, and so on up to the word limit, stopping at the first level with a solution.
 
 The CPU version also remembers dead ends, a form of [memoization](https://en.wikipedia.org/wiki/Memoization). A partial chain's future depends only on three things: its last letter, the letters it has covered so far, and how many words it has left.[^reuse] Together, those three make up the chain's _position_.
 
@@ -217,7 +217,7 @@ The number of possible positions is small:
 - 4,096 possible sets of covered letters, since each of the 12 letters is either covered or not ($2^{12}$),
 - one to four words left, with the first of up to five words already placed.
 
-Multiplied together, that's at most 196,608 positions. The solver stores one byte per position, so the whole table takes under 300 KB.[^fast]
+Multiplying these together gives at most 196,608 positions. The solver stores one byte per position, so the whole table takes under 300 KB.[^fast]
 
 The animation below shows one dead end being recorded and then reused:
 
