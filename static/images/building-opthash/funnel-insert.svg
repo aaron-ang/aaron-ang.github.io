@@ -156,7 +156,7 @@
   <text x="193.0" y="168" text-anchor="middle" class="num w w6">full ↓</text>
   <rect x="258" y="176" width="94" height="34" rx="5" class="ring w w7"/>
   <rect x="297" y="185" width="16" height="16" rx="2" class="new w w8"/>
-  <text x="130" y="30" class="oktext w w9">Level 3's bucket has room: the key takes its first empty slot.</text>
+  <text x="130" y="30" class="oktext w w9">Level 3's bucket has room. The key takes its first empty slot.</text>
   <g class="w w10 fin">
     <rect x="150" y="70" width="26" height="26" rx="3" class="full"/>
     <rect x="180" y="70" width="26" height="26" rx="3" class="full"/>
@@ -228,5 +228,5 @@
   <rect x="401" y="302" width="32" height="32" rx="4" class="ring w w32 fin"/>
   <text x="417.0" y="345" text-anchor="middle" class="num w w33 fin">4</text>
   <rect x="409" y="310" width="16" height="16" rx="2" class="new w w34 fin"/>
-  <text x="130" y="30" class="oktext w w35 fin">Slot 4 is free: the key lands in b, the emptier of the two buckets.</text>
+  <text x="130" y="30" class="oktext w w35 fin">The key lands in free slot 4 of b, the emptier of the two buckets.</text>
 </svg>

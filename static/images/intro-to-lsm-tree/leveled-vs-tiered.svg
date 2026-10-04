@@ -106,7 +106,7 @@
   <line x1="380" y1="10" x2="380" y2="244" class="div"/>
   <line x1="20" y1="256" x2="740" y2="256" class="div"/>
   <text x="20" y="280" class="foot">Leveled: 1 run per level, so no duplicate keys per level.</text>
-  <text x="20" y="300" class="foot">Better reads and less space; more merging (rewrites).</text>
+  <text x="20" y="300" class="foot">Better reads and less space, but more merging (rewrites).</text>
   <text x="400" y="280" class="foot">Tiered: up to <tspan class="mvar">T</tspan> runs per level, merged lazily.</text>
   <text x="400" y="300" class="foot">Better ingestion; more space and read cost.</text>
   <text x="20" y="326" class="muted">Same three 1-unit flushes into both trees. Dashed outlines show capacity: 3, 9, 27 units.</text>

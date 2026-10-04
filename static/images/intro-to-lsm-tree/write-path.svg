@@ -195,7 +195,7 @@
   <text x="20" y="28" class="cap  w w29">put(b,3) adds a new entry. Nothing is updated in place.</text>
   <text x="20" y="28" class="cap  w w18">Second flush: the older b=1 is still in SSTable 1.</text>
   <text x="20" y="28" class="cap  w w30">More writes fill the Memtable again.</text>
-  <text x="20" y="28" class="cap  w w31">Third flush: three SSTables now on disk.</text>
-  <text x="20" y="28" class="cap  w w23">Compaction merges the SSTables; the newest value of each key wins.</text>
+  <text x="20" y="28" class="cap  w w31">Third flush puts three SSTables on disk.</text>
+  <text x="20" y="28" class="cap  w w23">When compaction merges SSTables, the newest value of each key wins.</text>
   <text x="20" y="28" class="cap oktext w w27 fin">Result: one larger sorted SSTable without the stale a=2 and b=1.</text>
 </svg>

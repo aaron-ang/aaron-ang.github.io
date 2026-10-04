@@ -230,7 +230,7 @@
   <text x="20" y="352" class="a w18">A worker gets its own thread, beside the main thread.</text>
   <text x="20" y="352" class="a w19">The worker filters the dictionary once per puzzle.</text>
   <text x="20" y="352" class="a w20">The main thread keeps handling events meanwhile.</text>
-  <text x="20" y="352" class="a w21">Find Best is a separate request; it reuses the filtered words.</text>
+  <text x="20" y="352" class="a w21">Find Best, a separate request, reuses the filtered words.</text>
   <text x="20" y="352" class="title a w12 fin">Same Solve algorithm; the search moved off the main thread.</text>
   <text x="20" y="376" class="muted a w12 fin"><tspan class="yr">2022</tspan>: UI blocked · <tspan class="yr">2023</tspan>: network round trip · <tspan class="yr">2026</tspan>: neither</text>
 </svg>
