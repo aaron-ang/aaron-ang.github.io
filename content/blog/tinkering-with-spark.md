@@ -11,7 +11,7 @@ In the summer of 2022, I interned at [Shopee](https://shopee.com/) as a product 
 
 Our main tools for data processing and querying were [Presto](https://prestodb.io/) and [Apache Spark](https://spark.apache.org/), supplemented by internal tools that abstracted away much of the underlying engineering complexity.
 
-During my time there, there were some noticeable job failures and delays such that deadlines were unnecessarily pushed back. While I will analyze specific causes and fixes in a later section, an important backdrop was the company-wide resource shortage at the time. It was incredibly expensive to acquire compute resources, and the demand for compute due to increased workloads far outpaced the supply. This was especially challenging for the SnR team, where ML engineers were running intensive experiments on recommendation models that consumed substantial processing power.
+During my time there, noticeable job failures and delays pushed deadlines back unnecessarily. While I will analyze specific causes and fixes in a later section, an important backdrop was the company-wide resource shortage at the time. It was incredibly expensive to acquire compute resources, and the demand for compute due to increased workloads far outpaced the supply. This was especially challenging for the SnR team, where ML engineers were running intensive experiments on recommendation models that consumed substantial processing power.
 
 Before we dive into the issue, I will first introduce the key technologies involved—namely Spark and YARN.
 

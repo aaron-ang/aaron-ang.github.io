@@ -53,7 +53,7 @@ Converts spoken queries to text via [whisper.cpp](https://github.com/ggml-org/wh
 
 **Guardrail Agent**
 
-Validates user input and rejects unsafe or malicious instructions, such as access system prompts or override safety-critical controls.
+Validates user input and rejects unsafe or malicious instructions, such as attempts to access system prompts or override safety-critical controls.
 
 **Supervisor Agent**
 
@@ -104,7 +104,7 @@ Suppose the driver says, *“Pair my phone to the car’s Bluetooth.”*
         
     4. **Output Queue**
         
-        Buffers the result, ensuring they are delivered in order and not interrupted by concurrent tasks.
+        Buffers the result, ensuring it is delivered in order and not interrupted by concurrent tasks.
         
 3. **Output Module**
     
@@ -183,7 +183,7 @@ Internal evaluations indicate that the modular approach scales more effectively 
 
 #### Enabling Real-Time Inference on Constrained Hardware
 
-Running AI models on edge hardware is challenging due to tight compute and memory budgets. To address these constraints, we routed requests between the VLM and the compact LLM and applied 4-bit quantization to both. The larger VLM delivers strong multimodal reasoning but incurs higher latency, so non-vision tasks are routed to the LLM to maintain responsiveness. This division of labor achieves a balance between functionality and responsiveness, enabling real-time multimodal inference for automotive workloads on resource-constrained devices.
+Running AI models on edge hardware is challenging due to tight compute and memory budgets. To address these constraints, we routed requests between the VLM and the compact LLM and applied 4-bit quantization to both. The larger VLM delivers strong multimodal reasoning but incurs higher latency, so non-vision tasks go to the LLM instead. This division of labor achieves a balance between functionality and responsiveness, enabling real-time multimodal inference for automotive workloads on resource-constrained devices.
 
 ![Impact of KV cache warmup on end-to-end latency.](/images/building-an-on-device-automobile-assistant/kv-cache-warmup-latency.png)
 

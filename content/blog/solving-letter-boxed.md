@@ -44,9 +44,9 @@ After a solve, the button turns into **Find Best**. Among solutions with the few
 
 Solve's backtracking stayed the same, but where it ran changed four times. The animation below follows the solver from the browser's main thread to the cloud and back to a [_Web Worker_](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API), a background thread in the page:
 
-![Three setups: in 2022 the solver blocks the browser's main thread; in 2023 a cloud function solves it over the network; in 2026 a Web Worker solves it locally, with WebGPU for Find Best.](/images/solving-letter-boxed/architecture-evolution.svg "The tabs replay each year's setup in turn; the final frame shows 2026, with a one-line summary of the earlier years.")
+![Three setups: in 2022 the solver blocks the browser's main thread. In 2023 a cloud function solves it over the network. In 2026 a Web Worker solves it locally, with WebGPU for Find Best.](/images/solving-letter-boxed/architecture-evolution.svg "The tabs replay each year's setup in turn; the final frame shows 2026, with a one-line summary of the earlier years.")
 
-{{< table title="Where the solver has run" caption="Dates from 2022 onward are from the repository's commit history; the Java version predates it." >}}
+{{< table title="Where the solver has run" caption="Dates from 2022 onward are from the repository's commit history, but the Java version predates it." >}}
 | When | Where it runs | What it fixed | What it cost |
 |---|---|---|---|
 | Spring 2022 | Java, command line | — | No interface |
@@ -102,7 +102,7 @@ func (ls *LetterSquare) allLettersUsed() bool {
 }
 ```
 
-There's nothing wrong with this code, but the solver asks these questions millions of times. A puzzle has exactly twelve letters, and a 32-bit integer has room for all of them. Give each letter an index from 0 to 11 in side order, so in the figure below M is bit 0 and F is bit 11. Then represent "which letters does this word use?" as a number where bit $i$ is set if letter $i$ appears. That number is called a [_bitmask_](https://en.wikipedia.org/wiki/Mask_%28computing%29).
+There's nothing wrong with this code, but the solver asks these questions millions of times. A puzzle has exactly twelve letters, and a 32-bit integer has room for all of them. Give each letter an index from 0 to 11 in side order: in the figure below, M is bit 0 and F is bit 11. Then represent "which letters does this word use?" as a number where bit $i$ is set if letter $i$ appears. That number is called a [_bitmask_](https://en.wikipedia.org/wiki/Mask_%28computing%29).
 
 Combining two words' masks shows which letters they use together:
 
@@ -116,7 +116,7 @@ With masks, "do these words use every letter?" becomes a single comparison:
 
 The same idea handles sides. The solver precomputes a small table, `sideOf[letterIndex]`, so "are these two letters on the same side?" is two array lookups and a comparison instead of eight string searches.
 
-Adding a letter to a word's mask only takes an [OR](https://en.wikipedia.org/wiki/Bitwise_operation#OR) of its bit, but removing a letter during backtracking is harder. If the word is "SEES" and you remove the last S, the S bit must stay set, because another S is still there. A mask records _whether_ a letter appears, not _how many times_. So the solver rebuilds a word's mask from its remaining letters whenever it backtracks, which is cheap because words are short.
+Adding a letter to a word's mask only takes an [OR](https://en.wikipedia.org/wiki/Bitwise_operation#OR) of its bit, but removing a letter during backtracking is harder. If the word is "SEES" and you remove the last S, the S bit must stay set, because another S is still there. A mask records _whether_ a letter appears, not _how many times_. So the solver rebuilds a word's mask from its remaining letters whenever it backtracks, which costs little for words this short.
 
 ## Precomputation
 
@@ -143,7 +143,7 @@ A few more precomputations follow the same pattern:
 
 - **Letter lookups** are small arrays, built once per puzzle, that give each letter's position in the puzzle, its bit, and its side. Answering any of those questions is a single array read instead of a string search.
 - **An index by first letter** keeps one list per puzzle letter (twelve in all), holding the valid words that start with it. When the next word must start with `D`, the solver reads `D`'s list and only considers those words.
-- **A per-puzzle cache** keeps the filtered word list, so pressing Find Best after Solve doesn't redo the filtering.
+- **A per-puzzle cache** keeps the filtered word list, and pressing Find Best after Solve reuses it instead of filtering again.
 
 ## Find Best on the GPU
 
@@ -153,7 +153,7 @@ Extending chains suits a GPU, because a GPU is best at running the same small pr
 
 ### Parallelizing Search
 
-A _[compute shader](https://en.wikipedia.org/wiki/Compute_kernel)_ is a small program the GPU runs once per thread. The WebGPU version launches one thread of it for every (chain, word) pair, all in one batch called a _dispatch_. In the first pass, each chain is a single word, so with this puzzle's 565 valid words that's about 320,000 threads. Each thread asks three questions:
+A _[compute shader](https://en.wikipedia.org/wiki/Compute_kernel)_ is a small program the GPU runs once per thread. The WebGPU version launches one thread of it for every (chain, word) pair, all in one batch called a _dispatch_. In the first pass, each chain is a single word. With this puzzle's 565 valid words, that's about 320,000 threads. Each thread asks three questions:
 
 1. Does this word start with the chain's last letter? If not, stop.
 2. Is this word already in the chain? If so, stop.
@@ -215,13 +215,13 @@ The number of possible positions is small:
 
 - 12 possible last letters, one for each letter on the square,
 - 4,096 possible sets of covered letters, since each of the 12 letters is either covered or not ($2^{12}$),
-- one to four words left, since the first of up to five words is already placed.
+- one to four words left, with the first of up to five words already placed.
 
 Multiplied together, that's at most 196,608 positions. The solver stores one byte per position, so the whole table takes under 300 KB.[^fast]
 
 The animation below shows one dead end being recorded and then reused:
 
-![At level 3, ARC → CAME ends in E with five letters covered and one word left. None of the 7 E-words completes it, so the position is marked dead; CREAM → MARE later reaches it and is skipped.](/images/solving-letter-boxed/cpu-dead-ends.svg "Dead ends are keyed by position, not by the words that led there.")
+![At level 3, ARC → CAME ends in E with five letters covered and one word left. None of the 7 E-words completes it. The position is marked dead, and when CREAM → MARE later reaches it, the search skips it.](/images/solving-letter-boxed/cpu-dead-ends.svg "Dead ends are keyed by position, not by the words that led there.")
 
 ## Tradeoffs
 
@@ -234,7 +234,7 @@ The local architecture comes with a few tradeoffs:
 
 ## Closing Thoughts
 
-Most of the gain came from shrinking the work, not from where the solver ran. The cloud function didn't solve puzzles any faster. It kept the page responsive while the user waited on the network. Running in the browser again only worked because bitmasks and filtering had shrunk the work enough for the user's own device.
+Most of the gain came from shrinking the work, not from where the solver ran. The cloud function didn't solve puzzles any faster: it only kept the page responsive while the user waited on the network. Running in the browser again only worked because bitmasks and filtering had shrunk the work enough for the user's own device.
 
 Where the solver ran depended as much on what I knew as on what browsers offered. In 2022, it ran on the main thread and froze the page. In 2023, I reached for a server because I didn't know Web Workers existed. By 2026, I did, and WebGPU had arrived to let Find Best run on the GPU.
 
