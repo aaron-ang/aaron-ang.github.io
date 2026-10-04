@@ -1,0 +1,212 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 564" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated timeline of 14 tiles of C on 6 SMs, one lane per SM, time running right. Whole tiles go out in waves of six: two full waves, then a third wave where SMs 1 and 2 compute tiles 13 and 14 while the other four SMs sit idle, so the multiply ends one whole tile after they stop. Below, with stream-K, tiles 13 and 14 are each cut along K into three pieces, and the six pieces run one per SM, so all SMs finish together, earlier. For tile 13, SMs 1 and 3 store partial sums in a workspace; SM 5, which holds the last piece, adds them and writes the tile to C; tile 14 works the same way, with SM 6 adding. All of this happens before the new finish line. Each piece carries a little overhead, so the host estimates the busiest SM's time for two to four pieces per tile before choosing a split.">
+  <style>
+    :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #ddd; --muted: #999; --full: #555; --empty: #1e1e1e; --edge: #777; --probe: #ff8a4c; --ok: #69db7c; --chip: #2a2a2a; }
+    }
+    text { fill: var(--fg); font-size: 14px; }
+    .muted { fill: var(--muted); font-size: 12px; }
+    .title { font-weight: 600; font-size: 15px; }
+    .b { font-weight: 600; }
+    .sm { font-size: 12px; }
+    .empty { fill: var(--empty); stroke: var(--edge); }
+    .chip { fill: var(--chip); stroke: var(--edge); }
+    .tile { fill: var(--full); stroke: var(--edge); }
+    .hot { fill: var(--probe); fill-opacity: 0.35; stroke: var(--probe); stroke-width: 2; }
+    .ovh { fill: var(--probe); fill-opacity: 0.85; }
+    .ring { fill: none; stroke: var(--probe); stroke-width: 2; }
+    .over { fill: none; stroke: var(--probe); stroke-width: 1.5; stroke-dasharray: 5 4; }
+    .done { stroke: var(--fg); stroke-width: 1.5; stroke-dasharray: 4 3; }
+    .ghost { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 3; }
+    .axis { stroke: var(--edge); stroke-width: 1; fill: none; }
+    .arr { stroke: var(--probe); stroke-width: 1.8; fill: none; }
+    .ahead { fill: var(--probe); }
+    .parr { stroke: var(--fg); stroke-width: 1.5; fill: none; }
+    .phead { fill: var(--fg); }
+    .ok { stroke: var(--ok); stroke-width: 2; fill: none; }
+    .okhead { fill: var(--ok); }
+    .add { fill: var(--ok); fill-opacity: 0.5; stroke: var(--ok); stroke-width: 1.2; }
+    .num { fill: var(--probe); font-weight: 600; font-size: 13px; }
+    .oktext { fill: var(--ok); font-weight: 600; }
+    /* 59.75s loop, 8 steps starting at 0.5, 7.5, 13.7, 18.7, 24.2, 32.7, 43.5, 50 s; final frame holds 9s, then fades. */
+    .a { opacity: 0; animation: 59.75s linear infinite; }
+    .st1 { animation-name: st1; }  /* 0.5s to end */
+    @keyframes st1 { 0.00%, 100.00% { opacity: 1 } }
+    .st1-2 { animation-name: st1_2; }  /* 0.5s to 7.5s */
+    @keyframes st1_2 { 0.00%, 12.55% { opacity: 1 } 12.80%, 98.74% { opacity: 0 } 99.00%, 100.00% { opacity: 1 } }
+    .st2 { animation-name: st2; }  /* 7.5s to end */
+    @keyframes st2 { 0.00%, 12.55% { opacity: 0 } 12.80%, 98.74% { opacity: 1 } 99.00%, 100.00% { opacity: 0 } }
+    .st2-3 { animation-name: st2_3; }  /* 7.5s to 13.7s */
+    @keyframes st2_3 { 0.00%, 12.55% { opacity: 0 } 12.80%, 22.93% { opacity: 1 } 23.18%, 100.00% { opacity: 0 } }
+    .st3 { animation-name: st3; }  /* 13.7s to end */
+    @keyframes st3 { 0.00%, 22.93% { opacity: 0 } 23.18%, 98.74% { opacity: 1 } 99.00%, 100.00% { opacity: 0 } }
+    .st3-4 { animation-name: st3_4; }  /* 13.7s to 18.7s */
+    @keyframes st3_4 { 0.00%, 22.93% { opacity: 0 } 23.18%, 31.30% { opacity: 1 } 31.55%, 100.00% { opacity: 0 } }
+    .st4 { animation-name: st4; }  /* 18.7s to end */
+    @keyframes st4 { 0.00%, 31.30% { opacity: 0 } 31.55%, 98.74% { opacity: 1 } 99.00%, 100.00% { opacity: 0 } }
+    .st4-5 { animation-name: st4_5; }  /* 18.7s to 24.2s */
+    @keyframes st4_5 { 0.00%, 31.30% { opacity: 0 } 31.55%, 40.50% { opacity: 1 } 40.75%, 100.00% { opacity: 0 } }
+    .st5 { animation-name: st5; }  /* 24.2s to end */
+    @keyframes st5 { 0.00%, 40.50% { opacity: 0 } 40.75%, 98.74% { opacity: 1 } 99.00%, 100.00% { opacity: 0 } }
+    .st5-6 { animation-name: st5_6; }  /* 24.2s to 32.7s */
+    @keyframes st5_6 { 0.00%, 40.50% { opacity: 0 } 40.75%, 54.73% { opacity: 1 } 54.98%, 100.00% { opacity: 0 } }
+    .st6 { animation-name: st6; }  /* 32.7s to end */
+    @keyframes st6 { 0.00%, 54.73% { opacity: 0 } 54.98%, 98.74% { opacity: 1 } 99.00%, 100.00% { opacity: 0 } }
+    .st6-7 { animation-name: st6_7; }  /* 32.7s to 43.5s */
+    @keyframes st6_7 { 0.00%, 54.73% { opacity: 0 } 54.98%, 72.80% { opacity: 1 } 73.05%, 100.00% { opacity: 0 } }
+    .st7 { animation-name: st7; }  /* 43.5s to end */
+    @keyframes st7 { 0.00%, 72.80% { opacity: 0 } 73.05%, 98.74% { opacity: 1 } 99.00%, 100.00% { opacity: 0 } }
+    .st7-8 { animation-name: st7_8; }  /* 43.5s to 50s */
+    @keyframes st7_8 { 0.00%, 72.80% { opacity: 0 } 73.05%, 83.68% { opacity: 1 } 83.93%, 100.00% { opacity: 0 } }
+    .st8 { animation-name: st8; }  /* 50s to end */
+    @keyframes st8 { 0.00%, 83.68% { opacity: 0 } 83.93%, 98.74% { opacity: 1 } 99.00%, 100.00% { opacity: 0 } }
+    @media (prefers-reduced-motion: reduce) {
+      .a { animation: none; opacity: 0; }
+      .a.fin { opacity: 1; }
+    }
+    .mvar { font-family: 'Times New Roman', Times, 'STIX Two Text', serif; font-style: italic; font-size: 1.1em; }
+  </style>
+  <text x="20" y="28" class="title">Whole tiles, handed out in waves</text>
+  <text x="20" y="77" class="muted">SM 1</text>
+  <rect x="110" y="62" width="600" height="22" class="empty"/>
+  <text x="20" y="104" class="muted">SM 2</text>
+  <rect x="110" y="89" width="600" height="22" class="empty"/>
+  <text x="20" y="131" class="muted">SM 3</text>
+  <rect x="110" y="116" width="600" height="22" class="empty"/>
+  <text x="20" y="158" class="muted">SM 4</text>
+  <rect x="110" y="143" width="600" height="22" class="empty"/>
+  <text x="20" y="185" class="muted">SM 5</text>
+  <rect x="110" y="170" width="600" height="22" class="empty"/>
+  <text x="20" y="212" class="muted">SM 6</text>
+  <rect x="110" y="197" width="600" height="22" class="empty"/>
+  <path d="M 110 228 H 720" class="axis"/>
+  <path d="M 722 228 l -7 -4 v 8 z" class="ahead" style="fill:var(--edge)"/>
+  <text x="722" y="244" text-anchor="end" class="muted">time</text>
+  <rect x="111.0" y="62" width="178.0" height="22" class="tile a st1 fin"/>
+  <text x="200.0" y="77" text-anchor="middle" class="sm a st1 fin">1</text>
+  <rect x="111.0" y="89" width="178.0" height="22" class="tile a st1 fin"/>
+  <text x="200.0" y="104" text-anchor="middle" class="sm a st1 fin">2</text>
+  <rect x="111.0" y="116" width="178.0" height="22" class="tile a st1 fin"/>
+  <text x="200.0" y="131" text-anchor="middle" class="sm a st1 fin">3</text>
+  <rect x="111.0" y="143" width="178.0" height="22" class="tile a st1 fin"/>
+  <text x="200.0" y="158" text-anchor="middle" class="sm a st1 fin">4</text>
+  <rect x="111.0" y="170" width="178.0" height="22" class="tile a st1 fin"/>
+  <text x="200.0" y="185" text-anchor="middle" class="sm a st1 fin">5</text>
+  <rect x="111.0" y="197" width="178.0" height="22" class="tile a st1 fin"/>
+  <text x="200.0" y="212" text-anchor="middle" class="sm a st1 fin">6</text>
+  <text x="200" y="244" text-anchor="middle" class="muted a st1 fin">wave 1</text>
+  <rect x="291.0" y="62" width="178.0" height="22" class="tile a st2 fin"/>
+  <text x="380.0" y="77" text-anchor="middle" class="sm a st2 fin">7</text>
+  <rect x="291.0" y="89" width="178.0" height="22" class="tile a st2 fin"/>
+  <text x="380.0" y="104" text-anchor="middle" class="sm a st2 fin">8</text>
+  <rect x="291.0" y="116" width="178.0" height="22" class="tile a st2 fin"/>
+  <text x="380.0" y="131" text-anchor="middle" class="sm a st2 fin">9</text>
+  <rect x="291.0" y="143" width="178.0" height="22" class="tile a st2 fin"/>
+  <text x="380.0" y="158" text-anchor="middle" class="sm a st2 fin">10</text>
+  <rect x="291.0" y="170" width="178.0" height="22" class="tile a st2 fin"/>
+  <text x="380.0" y="185" text-anchor="middle" class="sm a st2 fin">11</text>
+  <rect x="291.0" y="197" width="178.0" height="22" class="tile a st2 fin"/>
+  <text x="380.0" y="212" text-anchor="middle" class="sm a st2 fin">12</text>
+  <text x="380" y="244" text-anchor="middle" class="muted a st2 fin">wave 2</text>
+  <rect x="471.0" y="62" width="178.0" height="22" class="hot a st3 fin"/>
+  <text x="560.0" y="77" text-anchor="middle" class="sm a st3 fin">13</text>
+  <rect x="471.0" y="89" width="178.0" height="22" class="hot a st3 fin"/>
+  <text x="560.0" y="104" text-anchor="middle" class="sm a st3 fin">14</text>
+  <rect x="471" y="117" width="178" height="20" class="over a st3 fin"/>
+  <text x="560" y="131" text-anchor="middle" class="muted a st3 fin">idle</text>
+  <rect x="471" y="144" width="178" height="20" class="over a st3 fin"/>
+  <text x="560" y="158" text-anchor="middle" class="muted a st3 fin">idle</text>
+  <rect x="471" y="171" width="178" height="20" class="over a st3 fin"/>
+  <text x="560" y="185" text-anchor="middle" class="muted a st3 fin">idle</text>
+  <rect x="471" y="198" width="178" height="20" class="over a st3 fin"/>
+  <text x="560" y="212" text-anchor="middle" class="muted a st3 fin">idle</text>
+  <text x="560" y="244" text-anchor="middle" class="muted a st3 fin">wave 3</text>
+  <path d="M 650 54 V 228" class="done a st4 fin"/>
+  <text x="656" y="77" class="b sm a st4 fin">done</text>
+  <path d="M 470 52 v -6 H 650 v 6" class="arr a st4 fin"/>
+  <text x="560" y="42" text-anchor="middle" class="num a st4 fin">tail</text>
+  <text x="20" y="276" class="title a st5 fin">Stream-K: the leftover tiles split along <tspan class="mvar">K</tspan></text>
+  <g class="a st5 fin">
+  <text x="20" y="331" class="muted">SM 1</text>
+  <rect x="110" y="316" width="600" height="22" class="empty"/>
+  <text x="20" y="358" class="muted">SM 2</text>
+  <rect x="110" y="343" width="600" height="22" class="empty"/>
+  <text x="20" y="385" class="muted">SM 3</text>
+  <rect x="110" y="370" width="600" height="22" class="empty"/>
+  <text x="20" y="412" class="muted">SM 4</text>
+  <rect x="110" y="397" width="600" height="22" class="empty"/>
+  <text x="20" y="439" class="muted">SM 5</text>
+  <rect x="110" y="424" width="600" height="22" class="empty"/>
+  <text x="20" y="466" class="muted">SM 6</text>
+  <rect x="110" y="451" width="600" height="22" class="empty"/>
+  </g>
+  <g class="a st5 fin">
+  <path d="M 110 482 H 720" class="axis"/>
+  <path d="M 722 482 l -7 -4 v 8 z" class="ahead" style="fill:var(--edge)"/>
+  <text x="722" y="498" text-anchor="end" class="muted">time</text>
+  </g>
+  <rect x="111.0" y="316" width="178.0" height="22" class="tile a st5 fin"/>
+  <text x="200.0" y="331" text-anchor="middle" class="sm a st5 fin">1</text>
+  <rect x="111.0" y="343" width="178.0" height="22" class="tile a st5 fin"/>
+  <text x="200.0" y="358" text-anchor="middle" class="sm a st5 fin">2</text>
+  <rect x="111.0" y="370" width="178.0" height="22" class="tile a st5 fin"/>
+  <text x="200.0" y="385" text-anchor="middle" class="sm a st5 fin">3</text>
+  <rect x="111.0" y="397" width="178.0" height="22" class="tile a st5 fin"/>
+  <text x="200.0" y="412" text-anchor="middle" class="sm a st5 fin">4</text>
+  <rect x="111.0" y="424" width="178.0" height="22" class="tile a st5 fin"/>
+  <text x="200.0" y="439" text-anchor="middle" class="sm a st5 fin">5</text>
+  <rect x="111.0" y="451" width="178.0" height="22" class="tile a st5 fin"/>
+  <text x="200.0" y="466" text-anchor="middle" class="sm a st5 fin">6</text>
+  <rect x="291.0" y="316" width="178.0" height="22" class="tile a st5 fin"/>
+  <text x="380.0" y="331" text-anchor="middle" class="sm a st5 fin">7</text>
+  <rect x="291.0" y="343" width="178.0" height="22" class="tile a st5 fin"/>
+  <text x="380.0" y="358" text-anchor="middle" class="sm a st5 fin">8</text>
+  <rect x="291.0" y="370" width="178.0" height="22" class="tile a st5 fin"/>
+  <text x="380.0" y="385" text-anchor="middle" class="sm a st5 fin">9</text>
+  <rect x="291.0" y="397" width="178.0" height="22" class="tile a st5 fin"/>
+  <text x="380.0" y="412" text-anchor="middle" class="sm a st5 fin">10</text>
+  <rect x="291.0" y="424" width="178.0" height="22" class="tile a st5 fin"/>
+  <text x="380.0" y="439" text-anchor="middle" class="sm a st5 fin">11</text>
+  <rect x="291.0" y="451" width="178.0" height="22" class="tile a st5 fin"/>
+  <text x="380.0" y="466" text-anchor="middle" class="sm a st5 fin">12</text>
+  <rect x="471.0" y="316" width="59.0" height="22" class="hot a st5 fin"/>
+  <text x="500.5" y="331" text-anchor="middle" class="sm a st5 fin">13a</text>
+  <rect x="530.0" y="316" width="6" height="22" class="ovh a st5 fin"/>
+  <rect x="471.0" y="343" width="59.0" height="22" class="hot a st5 fin"/>
+  <text x="500.5" y="358" text-anchor="middle" class="sm a st5 fin">14a</text>
+  <rect x="530.0" y="343" width="6" height="22" class="ovh a st5 fin"/>
+  <rect x="471.0" y="370" width="59.0" height="22" class="hot a st5 fin"/>
+  <text x="500.5" y="385" text-anchor="middle" class="sm a st5 fin">13b</text>
+  <rect x="530.0" y="370" width="6" height="22" class="ovh a st5 fin"/>
+  <rect x="471.0" y="397" width="59.0" height="22" class="hot a st5 fin"/>
+  <text x="500.5" y="412" text-anchor="middle" class="sm a st5 fin">14b</text>
+  <rect x="530.0" y="397" width="6" height="22" class="ovh a st5 fin"/>
+  <rect x="471.0" y="424" width="59.0" height="22" class="hot a st5 fin"/>
+  <text x="500.5" y="439" text-anchor="middle" class="sm a st5 fin">13c</text>
+  <rect x="530.0" y="424" width="6" height="22" class="ovh a st5 fin"/>
+  <rect x="471.0" y="451" width="59.0" height="22" class="hot a st5 fin"/>
+  <text x="500.5" y="466" text-anchor="middle" class="sm a st5 fin">14c</text>
+  <rect x="530.0" y="451" width="6" height="22" class="ovh a st5 fin"/>
+  <path d="M 543 327 C 555 350, 555 395, 548 417" class="parr a st6 fin"/>
+  <path d="M 543 381 C 551 392, 551 404, 548 417" class="parr a st6 fin"/>
+  <path d="M 548 423 L 543.5 414 L 552.5 414 z" class="phead a st6 fin"/>
+  <rect x="537" y="424" width="18" height="22" class="add a st6 fin"/>
+  <text x="546" y="439" text-anchor="middle" class="b sm a st6 fin">+</text>
+  <rect x="537" y="451" width="18" height="22" class="add a st6 fin"/>
+  <text x="546" y="466" text-anchor="middle" class="b sm a st6 fin">+</text>
+  <text x="110" y="500" class="muted a st6 fin">arrows: tile 13's partial sums, via a workspace · +: add them, write <tspan class="mvar">C</tspan> (same for 14)</text>
+  <rect x="528.0" y="312" width="10" height="165" class="ring a st7 fin"/>
+  <text x="534.0" y="306" text-anchor="middle" class="num a st7 fin">overhead</text>
+  <path d="M 556 314 V 482" class="done a st8 fin"/>
+  <path d="M 650 314 V 482" class="ghost a st8 fin"/>
+  <path d="M 556 508 v -6 H 650 v 6" class="ok a st8 fin"/>
+  <text x="603" y="524" text-anchor="middle" class="oktext sm a st8 fin">time saved</text>
+  <text x="20" y="548" class="a st1-2">Fourteen tiles of <tspan class="mvar">C</tspan>, six SMs: in the first wave, each SM takes one tile.</text>
+  <text x="20" y="548" class="a st2-3">After a second wave of six more, twelve tiles are done.</text>
+  <text x="20" y="548" class="a st3-4">Only two tiles remain for six SMs.</text>
+  <text x="20" y="548" class="a st4-5">The multiply finishes only when the busiest SM does, one whole tile after the rest.</text>
+  <text x="20" y="548" class="a st5-6">Three pieces per leftover tile make six, exactly one per SM.</text>
+  <text x="20" y="548" class="a st6-7">Tile 13: SM 5, holding the last piece, adds SMs 1 and 3's sums and writes <tspan class="mvar">C</tspan>.</text>
+  <text x="20" y="548" class="a st7-8">Every piece carries some overhead. The host estimates the busiest SM's time for 2–4 pieces.</text>
+  <text x="20" y="548" class="b a st8 fin">Splitting only the last wave's tiles along <tspan class="mvar">K</tspan> keeps every SM busy until the end.</text>
+</svg>

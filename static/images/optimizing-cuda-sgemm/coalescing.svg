@@ -1,0 +1,166 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 456" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated memory coalescing for 8 threads of one warp. Strided: each thread's address falls in a different memory segment, so the hardware issues 8 transactions. Coalesced: consecutive threads read consecutive addresses in one segment, served by 1 wide transaction.">
+  <style>
+    :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #ddd; --muted: #999; --full: #555; --empty: #1e1e1e; --edge: #777; --probe: #ff8a4c; --ok: #69db7c; --chip: #2a2a2a; }
+    }
+    text { fill: var(--fg); font-size: 14px; }
+    .muted { fill: var(--muted); font-size: 12px; }
+    .title { font-weight: 600; font-size: 15px; }
+    .b { font-weight: 600; }
+    .empty { fill: var(--empty); stroke: var(--edge); }
+    .chip { fill: var(--chip); stroke: var(--edge); }
+    .ring { fill: none; stroke: var(--probe); stroke-width: 3; }
+    .okring { fill: none; stroke: var(--ok); stroke-width: 3; }
+    .hot { fill: var(--probe); fill-opacity: 0.35; stroke: var(--probe); stroke-width: 2; }
+    .num { fill: var(--probe); font-weight: 600; font-size: 13px; }
+    .new { fill: var(--ok); }
+    .oktext { fill: var(--ok); font-weight: 600; }
+    .arrow { fill: none; stroke: var(--probe); stroke-width: 2; }
+    .arrowhead { fill: var(--probe); }
+    .okarrow { fill: none; stroke: var(--ok); stroke-width: 2; }
+    .okhead { fill: var(--ok); }
+    /* 27.61s loop, 6 steps starting at 0.5, 4.62, 8.04, 11.87, 15.99, 20.62 s; final frame holds 6.24s, then fades. */
+    .a { opacity: 0; animation: 27.61s linear infinite; }
+    .w1 { animation-name: w1; }  /* 4.62s to end */
+    @keyframes w1 { 0.00%, 16.73% { opacity: 0 } 17.28%, 97.28% { opacity: 1 } 97.83%, 100.00% { opacity: 0 } }
+    .w2 { animation-name: w2; }  /* 8.04s to end */
+    @keyframes w2 { 0.00%, 29.12% { opacity: 0 } 29.66%, 97.28% { opacity: 1 } 97.83%, 100.00% { opacity: 0 } }
+    .w3 { animation-name: w3; }  /* 8.04s to 11.87s */
+    @keyframes w3 { 0.00%, 29.12% { opacity: 0 } 29.66%, 42.99% { opacity: 1 } 43.53%, 100.00% { opacity: 0 } }
+    .w4 { animation-name: w4; }  /* 11.87s to end */
+    @keyframes w4 { 0.00%, 42.99% { opacity: 0 } 43.53%, 97.28% { opacity: 1 } 97.83%, 100.00% { opacity: 0 } }
+    .w5 { animation-name: w5; }  /* 15.99s to end */
+    @keyframes w5 { 0.00%, 57.91% { opacity: 0 } 58.46%, 97.28% { opacity: 1 } 97.83%, 100.00% { opacity: 0 } }
+    .w6 { animation-name: w6; }  /* 20.62s to end */
+    @keyframes w6 { 0.00%, 74.68% { opacity: 0 } 75.23%, 97.28% { opacity: 1 } 97.83%, 100.00% { opacity: 0 } }
+    .w7 { animation-name: w7; }  /* 0.50s to 4.62s */
+    @keyframes w7 { 0.00%, 16.73% { opacity: 1 } 17.28%, 97.28% { opacity: 0 } 97.83%, 100.00% { opacity: 1 } }
+    .w8 { animation-name: w8; }  /* 4.62s to 8.04s */
+    @keyframes w8 { 0.00%, 16.73% { opacity: 0 } 17.28%, 29.12% { opacity: 1 } 29.66%, 100.00% { opacity: 0 } }
+    .w9 { animation-name: w9; }  /* 11.87s to 15.99s */
+    @keyframes w9 { 0.00%, 42.99% { opacity: 0 } 43.53%, 57.91% { opacity: 1 } 58.46%, 100.00% { opacity: 0 } }
+    .w10 { animation-name: w10; }  /* 15.99s to 20.62s */
+    @keyframes w10 { 0.00%, 57.91% { opacity: 0 } 58.46%, 74.68% { opacity: 1 } 75.23%, 100.00% { opacity: 0 } }
+    @media (prefers-reduced-motion: reduce) {
+      .a { animation: none; opacity: 0; }
+      .a.fin { opacity: 1; }
+    }
+    </style>
+  <text x="20" y="24" class="muted">The threads of one warp issue a load together.</text>
+  <text x="20" y="54" class="title">Strided</text>
+  <text x="160" y="54" class="muted">each thread's address falls in a different segment</text>
+  <rect x="75" y="70" width="50" height="26" rx="4" class="chip"/>
+  <text x="100" y="88" text-anchor="middle">t0</text>
+  <rect x="155" y="70" width="50" height="26" rx="4" class="chip"/>
+  <text x="180" y="88" text-anchor="middle">t1</text>
+  <rect x="235" y="70" width="50" height="26" rx="4" class="chip"/>
+  <text x="260" y="88" text-anchor="middle">t2</text>
+  <rect x="315" y="70" width="50" height="26" rx="4" class="chip"/>
+  <text x="340" y="88" text-anchor="middle">t3</text>
+  <rect x="395" y="70" width="50" height="26" rx="4" class="chip"/>
+  <text x="420" y="88" text-anchor="middle">t4</text>
+  <rect x="475" y="70" width="50" height="26" rx="4" class="chip"/>
+  <text x="500" y="88" text-anchor="middle">t5</text>
+  <rect x="555" y="70" width="50" height="26" rx="4" class="chip"/>
+  <text x="580" y="88" text-anchor="middle">t6</text>
+  <rect x="635" y="70" width="50" height="26" rx="4" class="chip"/>
+  <text x="660" y="88" text-anchor="middle">t7</text>
+  <path d="M 70 160 v 22 M 80 160 v 22 M 90 160 v 22 M 100 160 v 22 M 110 160 v 22 M 120 160 v 22 M 130 160 v 22 M 150 160 v 22 M 160 160 v 22 M 170 160 v 22 M 180 160 v 22 M 190 160 v 22 M 200 160 v 22 M 210 160 v 22 M 230 160 v 22 M 240 160 v 22 M 250 160 v 22 M 260 160 v 22 M 270 160 v 22 M 280 160 v 22 M 290 160 v 22 M 310 160 v 22 M 320 160 v 22 M 330 160 v 22 M 340 160 v 22 M 350 160 v 22 M 360 160 v 22 M 370 160 v 22 M 390 160 v 22 M 400 160 v 22 M 410 160 v 22 M 420 160 v 22 M 430 160 v 22 M 440 160 v 22 M 450 160 v 22 M 470 160 v 22 M 480 160 v 22 M 490 160 v 22 M 500 160 v 22 M 510 160 v 22 M 520 160 v 22 M 530 160 v 22 M 550 160 v 22 M 560 160 v 22 M 570 160 v 22 M 580 160 v 22 M 590 160 v 22 M 600 160 v 22 M 610 160 v 22 M 630 160 v 22 M 640 160 v 22 M 650 160 v 22 M 660 160 v 22 M 670 160 v 22 M 680 160 v 22 M 690 160 v 22" stroke="var(--edge)" stroke-width="0.6" stroke-opacity="0.6"/>
+  <rect x="60" y="160" width="80" height="22" class="empty" fill-opacity="0"/>
+  <rect x="140" y="160" width="80" height="22" class="empty" fill-opacity="0"/>
+  <rect x="220" y="160" width="80" height="22" class="empty" fill-opacity="0"/>
+  <rect x="300" y="160" width="80" height="22" class="empty" fill-opacity="0"/>
+  <rect x="380" y="160" width="80" height="22" class="empty" fill-opacity="0"/>
+  <rect x="460" y="160" width="80" height="22" class="empty" fill-opacity="0"/>
+  <rect x="540" y="160" width="80" height="22" class="empty" fill-opacity="0"/>
+  <rect x="620" y="160" width="80" height="22" class="empty" fill-opacity="0"/>
+  <text x="60" y="200" class="muted">global memory, in segments. Each segment touched costs one transaction.</text>
+  <path d="M 100.0 98.0 L 69.8 149.7" class="arrow a w1 fin"/>
+  <polygon points="64.7,146.7 65.0,158.0 75.0,152.7" class="arrowhead a w1 fin"/>
+  <rect x="60" y="160" width="10" height="22" class="hot a w1 fin"/>
+  <path d="M 180.0 98.0 L 149.8 149.7" class="arrow a w1 fin"/>
+  <polygon points="144.7,146.7 145.0,158.0 155.0,152.7" class="arrowhead a w1 fin"/>
+  <rect x="140" y="160" width="10" height="22" class="hot a w1 fin"/>
+  <path d="M 260.0 98.0 L 229.8 149.7" class="arrow a w1 fin"/>
+  <polygon points="224.7,146.7 225.0,158.0 235.0,152.7" class="arrowhead a w1 fin"/>
+  <rect x="220" y="160" width="10" height="22" class="hot a w1 fin"/>
+  <path d="M 340.0 98.0 L 309.8 149.7" class="arrow a w1 fin"/>
+  <polygon points="304.7,146.7 305.0,158.0 315.0,152.7" class="arrowhead a w1 fin"/>
+  <rect x="300" y="160" width="10" height="22" class="hot a w1 fin"/>
+  <path d="M 420.0 98.0 L 389.8 149.7" class="arrow a w1 fin"/>
+  <polygon points="384.7,146.7 385.0,158.0 395.0,152.7" class="arrowhead a w1 fin"/>
+  <rect x="380" y="160" width="10" height="22" class="hot a w1 fin"/>
+  <path d="M 500.0 98.0 L 469.8 149.7" class="arrow a w1 fin"/>
+  <polygon points="464.7,146.7 465.0,158.0 475.0,152.7" class="arrowhead a w1 fin"/>
+  <rect x="460" y="160" width="10" height="22" class="hot a w1 fin"/>
+  <path d="M 580.0 98.0 L 549.8 149.7" class="arrow a w1 fin"/>
+  <polygon points="544.7,146.7 545.0,158.0 555.0,152.7" class="arrowhead a w1 fin"/>
+  <rect x="540" y="160" width="10" height="22" class="hot a w1 fin"/>
+  <path d="M 660.0 98.0 L 629.8 149.7" class="arrow a w1 fin"/>
+  <polygon points="624.7,146.7 625.0,158.0 635.0,152.7" class="arrowhead a w1 fin"/>
+  <rect x="620" y="160" width="10" height="22" class="hot a w1 fin"/>
+  <rect x="62" y="157" width="76" height="28" rx="3" class="ring a w2 fin"/>
+  <text x="740" y="54" text-anchor="end" class="num a w3" style="font-size:14px">transactions: 1</text>
+  <rect x="142" y="157" width="76" height="28" rx="3" class="ring a w4 fin"/>
+  <rect x="222" y="157" width="76" height="28" rx="3" class="ring a w4 fin"/>
+  <rect x="302" y="157" width="76" height="28" rx="3" class="ring a w4 fin"/>
+  <rect x="382" y="157" width="76" height="28" rx="3" class="ring a w4 fin"/>
+  <rect x="462" y="157" width="76" height="28" rx="3" class="ring a w4 fin"/>
+  <rect x="542" y="157" width="76" height="28" rx="3" class="ring a w4 fin"/>
+  <rect x="622" y="157" width="76" height="28" rx="3" class="ring a w4 fin"/>
+  <text x="740" y="54" text-anchor="end" class="num a w4 fin" style="font-size:14px">transactions: 8</text>
+  <text x="20" y="264" class="title">Coalesced</text>
+  <text x="170" y="264" class="muted">consecutive threads read consecutive addresses</text>
+  <rect x="75" y="280" width="50" height="26" rx="4" class="chip"/>
+  <text x="100" y="298" text-anchor="middle">t0</text>
+  <rect x="155" y="280" width="50" height="26" rx="4" class="chip"/>
+  <text x="180" y="298" text-anchor="middle">t1</text>
+  <rect x="235" y="280" width="50" height="26" rx="4" class="chip"/>
+  <text x="260" y="298" text-anchor="middle">t2</text>
+  <rect x="315" y="280" width="50" height="26" rx="4" class="chip"/>
+  <text x="340" y="298" text-anchor="middle">t3</text>
+  <rect x="395" y="280" width="50" height="26" rx="4" class="chip"/>
+  <text x="420" y="298" text-anchor="middle">t4</text>
+  <rect x="475" y="280" width="50" height="26" rx="4" class="chip"/>
+  <text x="500" y="298" text-anchor="middle">t5</text>
+  <rect x="555" y="280" width="50" height="26" rx="4" class="chip"/>
+  <text x="580" y="298" text-anchor="middle">t6</text>
+  <rect x="635" y="280" width="50" height="26" rx="4" class="chip"/>
+  <text x="660" y="298" text-anchor="middle">t7</text>
+  <path d="M 70 370 v 22 M 80 370 v 22 M 90 370 v 22 M 100 370 v 22 M 110 370 v 22 M 120 370 v 22 M 130 370 v 22 M 150 370 v 22 M 160 370 v 22 M 170 370 v 22 M 180 370 v 22 M 190 370 v 22 M 200 370 v 22 M 210 370 v 22 M 230 370 v 22 M 240 370 v 22 M 250 370 v 22 M 260 370 v 22 M 270 370 v 22 M 280 370 v 22 M 290 370 v 22 M 310 370 v 22 M 320 370 v 22 M 330 370 v 22 M 340 370 v 22 M 350 370 v 22 M 360 370 v 22 M 370 370 v 22 M 390 370 v 22 M 400 370 v 22 M 410 370 v 22 M 420 370 v 22 M 430 370 v 22 M 440 370 v 22 M 450 370 v 22 M 470 370 v 22 M 480 370 v 22 M 490 370 v 22 M 500 370 v 22 M 510 370 v 22 M 520 370 v 22 M 530 370 v 22 M 550 370 v 22 M 560 370 v 22 M 570 370 v 22 M 580 370 v 22 M 590 370 v 22 M 600 370 v 22 M 610 370 v 22 M 630 370 v 22 M 640 370 v 22 M 650 370 v 22 M 660 370 v 22 M 670 370 v 22 M 680 370 v 22 M 690 370 v 22" stroke="var(--edge)" stroke-width="0.6" stroke-opacity="0.6"/>
+  <rect x="60" y="370" width="80" height="22" class="empty" fill-opacity="0"/>
+  <rect x="140" y="370" width="80" height="22" class="empty" fill-opacity="0"/>
+  <rect x="220" y="370" width="80" height="22" class="empty" fill-opacity="0"/>
+  <rect x="300" y="370" width="80" height="22" class="empty" fill-opacity="0"/>
+  <rect x="380" y="370" width="80" height="22" class="empty" fill-opacity="0"/>
+  <rect x="460" y="370" width="80" height="22" class="empty" fill-opacity="0"/>
+  <rect x="540" y="370" width="80" height="22" class="empty" fill-opacity="0"/>
+  <rect x="620" y="370" width="80" height="22" class="empty" fill-opacity="0"/>
+  <text x="60" y="410" class="muted">global memory</text>
+  <path d="M 100.0 308.0 L 67.6 363.5" class="okarrow a w5 fin"/>
+  <polygon points="65.0,362.0 65.0,368.0 70.2,365.0" class="okhead a w5 fin"/>
+  <path d="M 180.0 308.0 L 79.5 365.4" class="okarrow a w5 fin"/>
+  <polygon points="78.0,362.8 75.0,368.0 81.0,368.0" class="okhead a w5 fin"/>
+  <path d="M 260.0 308.0 L 89.9 366.3" class="okarrow a w5 fin"/>
+  <polygon points="88.9,363.5 85.0,368.0 90.9,369.2" class="okhead a w5 fin"/>
+  <path d="M 340.0 308.0 L 100.1 366.8" class="okarrow a w5 fin"/>
+  <polygon points="99.3,363.8 95.0,368.0 100.8,369.7" class="okhead a w5 fin"/>
+  <path d="M 420.0 308.0 L 110.1 367.0" class="okarrow a w5 fin"/>
+  <polygon points="109.5,364.1 105.0,368.0 110.7,370.0" class="okhead a w5 fin"/>
+  <path d="M 500.0 308.0 L 120.1 367.2" class="okarrow a w5 fin"/>
+  <polygon points="119.7,364.2 115.0,368.0 120.6,370.2" class="okhead a w5 fin"/>
+  <path d="M 580.0 308.0 L 130.2 367.3" class="okarrow a w5 fin"/>
+  <polygon points="129.8,364.3 125.0,368.0 130.5,370.3" class="okhead a w5 fin"/>
+  <path d="M 660.0 308.0 L 140.2 367.4" class="okarrow a w5 fin"/>
+  <polygon points="139.8,364.4 135.0,368.0 140.5,370.4" class="okhead a w5 fin"/>
+  <rect x="60" y="370" width="80" height="22" class="new a w5 fin" fill-opacity="0.45"/>
+  <rect x="62" y="367" width="76" height="28" rx="3" class="okring a w6 fin"/>
+  <text x="740" y="264" text-anchor="end" class="oktext a w6 fin">transactions: 1</text>
+  <text x="20" y="442" class="a w7">Each thread needs one 4-byte float.</text>
+  <text x="20" y="442" class="a w8">The addresses are 8 floats apart.</text>
+  <text x="20" y="442" class="a w3">The whole segment is fetched to deliver one float.</text>
+  <text x="20" y="442" class="a w9">Most of every fetched segment goes unused.</text>
+  <text x="20" y="442" class="a w10">All 8 floats sit side by side in one segment.</text>
+  <text x="20" y="442" class="b a w6 fin">Same 8 loads, same instruction: only the address pattern changed the cost.</text>
+</svg>

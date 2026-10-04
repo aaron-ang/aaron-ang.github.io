@@ -1,0 +1,153 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 290" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated dot product: one output of C = A times B is computed by walking row i of A and column j of B, one multiply-add at a time. The next output, C[i][j+1], re-reads the same row of A. In all, N squared outputs times 2N reads each, yet A and B hold only 2N squared distinct values.">
+  <style>
+    :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #ddd; --muted: #999; --full: #555; --empty: #1e1e1e; --edge: #777; --probe: #ff8a4c; --ok: #69db7c; --chip: #2a2a2a; }
+    }
+    text { fill: var(--fg); font-size: 14px; }
+    .muted { fill: var(--muted); font-size: 12px; }
+    .title { font-weight: 600; font-size: 15px; }
+    .b { font-weight: 600; }
+    .empty { fill: var(--empty); stroke: var(--edge); }
+    .ring { fill: none; stroke: var(--probe); stroke-width: 3; }
+    .okring { fill: none; stroke: var(--ok); stroke-width: 3; }
+    .hot { fill: var(--probe); fill-opacity: 0.35; stroke: var(--probe); stroke-width: 2; }
+    .num { fill: var(--probe); font-weight: 600; font-size: 13px; }
+    .new { fill: var(--ok); }
+    .oktext { fill: var(--ok); font-weight: 600; }
+    /* 34.47s loop, 8 steps starting at 0.5, 3.72, 7.85, 11.38, 14.91, 18.44, 22.16, 27.29 s; final frame holds 6.43s, then fades. */
+    .a { opacity: 0; animation: 34.47s linear infinite; }
+    .w1 { animation-name: w1; }  /* 0.50s to end */
+    @keyframes w1 { 0.00%, 100.00% { opacity: 1 } }
+    .w2 { animation-name: w2; }  /* 0.50s to 18.44s */
+    @keyframes w2 { 0.00%, 53.50% { opacity: 1 } 53.93%, 97.82% { opacity: 0 } 98.26%, 100.00% { opacity: 1 } }
+    .w3 { animation-name: w3; }  /* 18.44s to end */
+    @keyframes w3 { 0.00%, 53.50% { opacity: 0 } 53.93%, 97.82% { opacity: 1 } 98.26%, 100.00% { opacity: 0 } }
+    .w4 { animation-name: w4; }  /* 3.72s to 7.85s */
+    @keyframes w4 { 0.00%, 10.79% { opacity: 0 } 11.23%, 22.77% { opacity: 1 } 23.21%, 100.00% { opacity: 0 } }
+    .w5 { animation-name: w5; }  /* 7.85s to end */
+    @keyframes w5 { 0.00%, 22.77% { opacity: 0 } 23.21%, 97.82% { opacity: 1 } 98.26%, 100.00% { opacity: 0 } }
+    .w6 { animation-name: w6; }  /* 3.72s to end */
+    @keyframes w6 { 0.00%, 10.79% { opacity: 0 } 11.23%, 97.82% { opacity: 1 } 98.26%, 100.00% { opacity: 0 } }
+    .w7 { animation-name: w7; }  /* 7.85s to 11.38s */
+    @keyframes w7 { 0.00%, 22.77% { opacity: 0 } 23.21%, 33.01% { opacity: 1 } 33.45%, 100.00% { opacity: 0 } }
+    .w8 { animation-name: w8; }  /* 11.38s to end */
+    @keyframes w8 { 0.00%, 33.01% { opacity: 0 } 33.45%, 97.82% { opacity: 1 } 98.26%, 100.00% { opacity: 0 } }
+    .w9 { animation-name: w9; }  /* 11.38s to 14.91s */
+    @keyframes w9 { 0.00%, 33.01% { opacity: 0 } 33.45%, 43.26% { opacity: 1 } 43.69%, 100.00% { opacity: 0 } }
+    .w10 { animation-name: w10; }  /* 14.91s to end */
+    @keyframes w10 { 0.00%, 43.26% { opacity: 0 } 43.69%, 97.82% { opacity: 1 } 98.26%, 100.00% { opacity: 0 } }
+    .w11 { animation-name: w11; }  /* 14.91s to 18.44s */
+    @keyframes w11 { 0.00%, 43.26% { opacity: 0 } 43.69%, 53.50% { opacity: 1 } 53.93%, 100.00% { opacity: 0 } }
+    .w12 { animation-name: w12; }  /* 22.16s to end */
+    @keyframes w12 { 0.00%, 64.29% { opacity: 0 } 64.72%, 97.82% { opacity: 1 } 98.26%, 100.00% { opacity: 0 } }
+    .w13 { animation-name: w13; }  /* 27.29s to end */
+    @keyframes w13 { 0.00%, 79.17% { opacity: 0 } 79.61%, 97.82% { opacity: 1 } 98.26%, 100.00% { opacity: 0 } }
+    .w14 { animation-name: w14; }  /* 0.50s to 3.72s */
+    @keyframes w14 { 0.00%, 10.79% { opacity: 1 } 11.23%, 97.82% { opacity: 0 } 98.26%, 100.00% { opacity: 1 } }
+    .w15 { animation-name: w15; }  /* 18.44s to 22.16s */
+    @keyframes w15 { 0.00%, 53.50% { opacity: 0 } 53.93%, 64.29% { opacity: 1 } 64.72%, 100.00% { opacity: 0 } }
+    .w16 { animation-name: w16; }  /* 22.16s to 27.29s */
+    @keyframes w16 { 0.00%, 64.29% { opacity: 0 } 64.72%, 79.17% { opacity: 1 } 79.61%, 100.00% { opacity: 0 } }
+    @media (prefers-reduced-motion: reduce) {
+      .a { animation: none; opacity: 0; }
+      .a.fin { opacity: 1; }
+    }
+    .mvar { font-family: 'Times New Roman', Times, 'STIX Two Text', serif; font-style: italic; font-size: 1.1em; }
+  </style>
+  <g transform="translate(0,-30)">
+  <text x="182" y="68" text-anchor="middle" class="title"><tspan class="mvar">A</tspan></text>
+  <rect x="110" y="80" width="36" height="36" class="empty"/>
+  <rect x="146" y="80" width="36" height="36" class="empty"/>
+  <rect x="182" y="80" width="36" height="36" class="empty"/>
+  <rect x="218" y="80" width="36" height="36" class="empty"/>
+  <rect x="110" y="116" width="36" height="36" class="empty"/>
+  <rect x="146" y="116" width="36" height="36" class="empty"/>
+  <rect x="182" y="116" width="36" height="36" class="empty"/>
+  <rect x="218" y="116" width="36" height="36" class="empty"/>
+  <rect x="110" y="152" width="36" height="36" class="empty"/>
+  <rect x="146" y="152" width="36" height="36" class="empty"/>
+  <rect x="182" y="152" width="36" height="36" class="empty"/>
+  <rect x="218" y="152" width="36" height="36" class="empty"/>
+  <rect x="110" y="188" width="36" height="36" class="empty"/>
+  <rect x="146" y="188" width="36" height="36" class="empty"/>
+  <rect x="182" y="188" width="36" height="36" class="empty"/>
+  <rect x="218" y="188" width="36" height="36" class="empty"/>
+  <text x="412" y="68" text-anchor="middle" class="title"><tspan class="mvar">B</tspan></text>
+  <rect x="340" y="80" width="36" height="36" class="empty"/>
+  <rect x="376" y="80" width="36" height="36" class="empty"/>
+  <rect x="412" y="80" width="36" height="36" class="empty"/>
+  <rect x="448" y="80" width="36" height="36" class="empty"/>
+  <rect x="340" y="116" width="36" height="36" class="empty"/>
+  <rect x="376" y="116" width="36" height="36" class="empty"/>
+  <rect x="412" y="116" width="36" height="36" class="empty"/>
+  <rect x="448" y="116" width="36" height="36" class="empty"/>
+  <rect x="340" y="152" width="36" height="36" class="empty"/>
+  <rect x="376" y="152" width="36" height="36" class="empty"/>
+  <rect x="412" y="152" width="36" height="36" class="empty"/>
+  <rect x="448" y="152" width="36" height="36" class="empty"/>
+  <rect x="340" y="188" width="36" height="36" class="empty"/>
+  <rect x="376" y="188" width="36" height="36" class="empty"/>
+  <rect x="412" y="188" width="36" height="36" class="empty"/>
+  <rect x="448" y="188" width="36" height="36" class="empty"/>
+  <text x="642" y="68" text-anchor="middle" class="title"><tspan class="mvar">C</tspan></text>
+  <rect x="570" y="80" width="36" height="36" class="empty"/>
+  <rect x="606" y="80" width="36" height="36" class="empty"/>
+  <rect x="642" y="80" width="36" height="36" class="empty"/>
+  <rect x="678" y="80" width="36" height="36" class="empty"/>
+  <rect x="570" y="116" width="36" height="36" class="empty"/>
+  <rect x="606" y="116" width="36" height="36" class="empty"/>
+  <rect x="642" y="116" width="36" height="36" class="empty"/>
+  <rect x="678" y="116" width="36" height="36" class="empty"/>
+  <rect x="570" y="152" width="36" height="36" class="empty"/>
+  <rect x="606" y="152" width="36" height="36" class="empty"/>
+  <rect x="642" y="152" width="36" height="36" class="empty"/>
+  <rect x="678" y="152" width="36" height="36" class="empty"/>
+  <rect x="570" y="188" width="36" height="36" class="empty"/>
+  <rect x="606" y="188" width="36" height="36" class="empty"/>
+  <rect x="642" y="188" width="36" height="36" class="empty"/>
+  <rect x="678" y="188" width="36" height="36" class="empty"/>
+  <text x="297" y="160" text-anchor="middle" style="font-size:22px">×</text>
+  <text x="527" y="160" text-anchor="middle" style="font-size:22px">=</text>
+  <rect x="108" y="114" width="148" height="40" rx="3" class="ring a w1 fin"/>
+  <text x="102" y="139" text-anchor="end" class="num a w1 fin">row <tspan class="mvar">i</tspan></text>
+  <rect x="413.5" y="78" width="33" height="148" rx="3" class="ring a w2"/>
+  <rect x="413.5" y="78" width="33" height="148" rx="3" class="okring a w3 fin"/>
+  <text x="430" y="242" text-anchor="middle" class="num a w2">col <tspan class="mvar">j</tspan></text>
+  <text x="430" y="242" text-anchor="middle" class="oktext a w3 fin" style="font-size:13px">col <tspan class="mvar">j</tspan></text>
+  <rect x="640" y="114" width="40" height="40" rx="3" class="ring a w2"/>
+  <rect x="640" y="114" width="40" height="40" rx="3" class="okring a w3 fin"/>
+  <rect x="113" y="119" width="30" height="30" class="hot a w4"/>
+  <rect x="415" y="83" width="30" height="30" class="hot a w4"/>
+  <rect x="113" y="119" width="30" height="30" class="hot a w5 fin" style="fill-opacity:0.15;stroke:none"/>
+  <rect x="415" y="83" width="30" height="30" class="hot a w5 fin" style="fill-opacity:0.15;stroke:none"/>
+  <rect x="643" y="117" width="34" height="34" class="new a w6 fin" fill-opacity="0.30"/>
+  <rect x="149" y="119" width="30" height="30" class="hot a w7"/>
+  <rect x="415" y="119" width="30" height="30" class="hot a w7"/>
+  <rect x="149" y="119" width="30" height="30" class="hot a w8 fin" style="fill-opacity:0.15;stroke:none"/>
+  <rect x="415" y="119" width="30" height="30" class="hot a w8 fin" style="fill-opacity:0.15;stroke:none"/>
+  <rect x="643" y="117" width="34" height="34" class="new a w5 fin" fill-opacity="0.30"/>
+  <rect x="185" y="119" width="30" height="30" class="hot a w9"/>
+  <rect x="415" y="155" width="30" height="30" class="hot a w9"/>
+  <rect x="185" y="119" width="30" height="30" class="hot a w10 fin" style="fill-opacity:0.15;stroke:none"/>
+  <rect x="415" y="155" width="30" height="30" class="hot a w10 fin" style="fill-opacity:0.15;stroke:none"/>
+  <rect x="643" y="117" width="34" height="34" class="new a w8 fin" fill-opacity="0.30"/>
+  <rect x="221" y="119" width="30" height="30" class="hot a w11"/>
+  <rect x="415" y="191" width="30" height="30" class="hot a w11"/>
+  <rect x="221" y="119" width="30" height="30" class="hot a w3 fin" style="fill-opacity:0.15;stroke:none"/>
+  <rect x="415" y="191" width="30" height="30" class="hot a w3 fin" style="fill-opacity:0.15;stroke:none"/>
+  <rect x="643" y="117" width="34" height="34" class="new a w10 fin" fill-opacity="1.00"/>
+  <rect x="449.5" y="78" width="33" height="148" rx="3" class="ring a w12 fin"/>
+  <text x="466" y="260" text-anchor="middle" class="num a w12 fin">col <tspan class="mvar">j</tspan>+1</text>
+  <rect x="676" y="114" width="40" height="40" rx="3" class="ring a w12 fin"/>
+  <text x="102" y="156" text-anchor="end" class="num a w12 fin">read again</text>
+  </g>
+  <text x="20" y="272" class="a w14">One output of <tspan class="mvar">C</tspan> is a dot product.</text>
+  <text x="20" y="272" class="a w4">Multiply-add 1 of 4: <tspan class="mvar">C</tspan>[<tspan class="mvar">i</tspan>][<tspan class="mvar">j</tspan>] += <tspan class="mvar">A</tspan>[<tspan class="mvar">i</tspan>][0] × <tspan class="mvar">B</tspan>[0][<tspan class="mvar">j</tspan>]</text>
+  <text x="20" y="272" class="a w7">Multiply-add 2 of 4: <tspan class="mvar">C</tspan>[<tspan class="mvar">i</tspan>][<tspan class="mvar">j</tspan>] += <tspan class="mvar">A</tspan>[<tspan class="mvar">i</tspan>][1] × <tspan class="mvar">B</tspan>[1][<tspan class="mvar">j</tspan>]</text>
+  <text x="20" y="272" class="a w9">Multiply-add 3 of 4: <tspan class="mvar">C</tspan>[<tspan class="mvar">i</tspan>][<tspan class="mvar">j</tspan>] += <tspan class="mvar">A</tspan>[<tspan class="mvar">i</tspan>][2] × <tspan class="mvar">B</tspan>[2][<tspan class="mvar">j</tspan>]</text>
+  <text x="20" y="272" class="a w11">Multiply-add 4 of 4: <tspan class="mvar">C</tspan>[<tspan class="mvar">i</tspan>][<tspan class="mvar">j</tspan>] += <tspan class="mvar">A</tspan>[<tspan class="mvar">i</tspan>][3] × <tspan class="mvar">B</tspan>[3][<tspan class="mvar">j</tspan>]</text>
+  <text x="20" y="272" class="a w15"><tspan class="mvar">C</tspan>[<tspan class="mvar">i</tspan>][<tspan class="mvar">j</tspan>] is done after <tspan class="mvar">N</tspan> = 4 multiply-adds.</text>
+  <text x="20" y="272" class="a w16"><tspan class="mvar">C</tspan>[<tspan class="mvar">i</tspan>][<tspan class="mvar">j</tspan>+1] fetches row <tspan class="mvar">i</tspan> of <tspan class="mvar">A</tspan> from memory a second time.</text>
+  <text x="20" y="272" class="b a w13 fin"><tspan class="mvar">N</tspan><tspan baseline-shift="super" font-size="0.7em">2</tspan> outputs × 2<tspan class="mvar">N</tspan> reads each, yet <tspan class="mvar">A</tspan> and <tspan class="mvar">B</tspan> hold only 2<tspan class="mvar">N</tspan><tspan baseline-shift="super" font-size="0.7em">2</tspan> distinct values.</text>
+</svg>

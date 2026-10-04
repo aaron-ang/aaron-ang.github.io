@@ -1,0 +1,238 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 428" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated double buffering. A one-buffer timeline alternates between loading a K slice and computing it, with a sync between each. Two shared-memory buffers then appear, and a second timeline row grows in step with the scene above it, with a shaded band on the bars just added: slice 1 is loaded into buffer 0 (bar L1); the threads compute slice 1 while slice 2's global loads are in flight into registers (C1 and L2 appear together, overlapping); after the compute, the registers are stored into buffer 1, then a sync and swap (sync mark); slice 2 is computed while slice 3 loads (C2 and L3); slice 3 goes through registers into buffer 0, then a sync and swap; slice 3 is computed with nothing left to load (C3). The two-buffer row finishes sooner, since every load after the first hides behind a compute. A last row shows two blocks per SM with one buffer each: one block's loads overlap the other block's math, hiding the same loads. That row ends last because it does two blocks' work, 6 slices in all; the blocks take turns computing, each at about half speed. Double buffering and a second block hide the same loads, so a second buffer adds little on top.">
+  <style>
+    :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #ddd; --muted: #999; --full: #555; --empty: #1e1e1e; --edge: #777; --probe: #ff8a4c; --ok: #69db7c; --chip: #2a2a2a; }
+    }
+    text { fill: var(--fg); font-size: 14px; }
+    .muted { fill: var(--muted); font-size: 12px; }
+    .title { font-weight: 600; font-size: 15px; }
+    .b { font-weight: 600; }
+    .sm { font-size: 12px; }
+    .empty { fill: var(--empty); stroke: var(--edge); }
+    .chip { fill: var(--chip); stroke: var(--edge); }
+    .hot { fill: var(--probe); fill-opacity: 0.35; stroke: var(--probe); stroke-width: 1.5; }
+    .new { fill: var(--ok); fill-opacity: 0.4; stroke: var(--ok); stroke-width: 1.5; }
+    .num { fill: var(--probe); font-weight: 600; font-size: 13px; }
+    .oktext { fill: var(--ok); font-weight: 600; }
+    .lbl { font-size: 11px; font-weight: 600; }
+    .arrow { fill: none; stroke: var(--probe); stroke-width: 2; }
+    .arrowd { fill: none; stroke: var(--probe); stroke-width: 2; stroke-dasharray: 5 4; }
+    .arrowhead { fill: var(--probe); }
+    .okarrow { fill: none; stroke: var(--ok); stroke-width: 2; }
+    .okhead { fill: var(--ok); }
+    .sync { stroke: var(--fg); stroke-width: 2; }
+    .mvar { font-family: 'Times New Roman', Times, 'STIX Two Text', serif; font-style: italic; font-size: 1.1em; }
+    .now { fill: var(--fg); fill-opacity: 0.07; stroke: var(--fg); stroke-opacity: 0.45; stroke-dasharray: 3 3; }
+    .flow { fill: none; stroke: var(--edge); stroke-width: 1.5; }
+    .flowhead { fill: var(--edge); }
+    .dash { fill: none; stroke: var(--edge); stroke-width: 1.5; stroke-dasharray: 5 4; }
+    /* 60.85s loop, 10 steps starting at 0.5, 6.8, 12.8, 17.5, 23.9, 29.6, 36, 40.4, 45.2, 49.8 s; final frame holds 10.3s, then fades. */
+    .a { opacity: 0; animation: 60.85s linear infinite; }
+    .st1-2 { animation-name: st1_2; }  /* 0.5s to 6.8s */
+    @keyframes st1_2 { 0.00%, 11.18% { opacity: 1 } 11.42%, 98.77% { opacity: 0 } 99.01%, 100.00% { opacity: 1 } }
+    .st1 { animation-name: st1; }  /* 0.5s to end */
+    @keyframes st1 { 0.00%, 100.00% { opacity: 1 } }
+    .st2-3 { animation-name: st2_3; }  /* 6.8s to 12.8s */
+    @keyframes st2_3 { 0.00%, 11.18% { opacity: 0 } 11.42%, 21.04% { opacity: 1 } 21.28%, 100.00% { opacity: 0 } }
+    .st2 { animation-name: st2; }  /* 6.8s to end */
+    @keyframes st2 { 0.00%, 11.18% { opacity: 0 } 11.42%, 98.77% { opacity: 1 } 99.01%, 100.00% { opacity: 0 } }
+    .st3-4 { animation-name: st3_4; }  /* 12.8s to 17.5s */
+    @keyframes st3_4 { 0.00%, 21.04% { opacity: 0 } 21.28%, 28.76% { opacity: 1 } 29.01%, 100.00% { opacity: 0 } }
+    .st3-7 { animation-name: st3_7; }  /* 12.8s to 36s */
+    @keyframes st3_7 { 0.00%, 21.04% { opacity: 0 } 21.28%, 59.16% { opacity: 1 } 59.41%, 100.00% { opacity: 0 } }
+    .st3 { animation-name: st3; }  /* 12.8s to end */
+    @keyframes st3 { 0.00%, 21.04% { opacity: 0 } 21.28%, 98.77% { opacity: 1 } 99.01%, 100.00% { opacity: 0 } }
+    .st7-10 { animation-name: st7_10; }  /* 36s to 49.8s */
+    @keyframes st7_10 { 0.00%, 59.16% { opacity: 0 } 59.41%, 81.84% { opacity: 1 } 82.09%, 100.00% { opacity: 0 } }
+    .st4-5 { animation-name: st4_5; }  /* 17.5s to 23.9s */
+    @keyframes st4_5 { 0.00%, 28.76% { opacity: 0 } 29.01%, 39.28% { opacity: 1 } 39.52%, 100.00% { opacity: 0 } }
+    .st4 { animation-name: st4; }  /* 17.5s to end */
+    @keyframes st4 { 0.00%, 28.76% { opacity: 0 } 29.01%, 98.77% { opacity: 1 } 99.01%, 100.00% { opacity: 0 } }
+    .st5-6 { animation-name: st5_6; }  /* 23.9s to 29.6s */
+    @keyframes st5_6 { 0.00%, 39.28% { opacity: 0 } 39.52%, 48.64% { opacity: 1 } 48.89%, 100.00% { opacity: 0 } }
+    .st5 { animation-name: st5; }  /* 23.9s to end */
+    @keyframes st5 { 0.00%, 39.28% { opacity: 0 } 39.52%, 98.77% { opacity: 1 } 99.01%, 100.00% { opacity: 0 } }
+    .st6-7 { animation-name: st6_7; }  /* 29.6s to 36s */
+    @keyframes st6_7 { 0.00%, 48.64% { opacity: 0 } 48.89%, 59.16% { opacity: 1 } 59.41%, 100.00% { opacity: 0 } }
+    .st6 { animation-name: st6; }  /* 29.6s to end */
+    @keyframes st6 { 0.00%, 48.64% { opacity: 0 } 48.89%, 98.77% { opacity: 1 } 99.01%, 100.00% { opacity: 0 } }
+    .st7-8 { animation-name: st7_8; }  /* 36s to 40.4s */
+    @keyframes st7_8 { 0.00%, 59.16% { opacity: 0 } 59.41%, 66.39% { opacity: 1 } 66.64%, 100.00% { opacity: 0 } }
+    .st7 { animation-name: st7; }  /* 36s to end */
+    @keyframes st7 { 0.00%, 59.16% { opacity: 0 } 59.41%, 98.77% { opacity: 1 } 99.01%, 100.00% { opacity: 0 } }
+    .st8-9 { animation-name: st8_9; }  /* 40.4s to 45.2s */
+    @keyframes st8_9 { 0.00%, 66.39% { opacity: 0 } 66.64%, 74.28% { opacity: 1 } 74.53%, 100.00% { opacity: 0 } }
+    .st8 { animation-name: st8; }  /* 40.4s to end */
+    @keyframes st8 { 0.00%, 66.39% { opacity: 0 } 66.64%, 98.77% { opacity: 1 } 99.01%, 100.00% { opacity: 0 } }
+    .st9-10 { animation-name: st9_10; }  /* 45.2s to 49.8s */
+    @keyframes st9_10 { 0.00%, 74.28% { opacity: 0 } 74.53%, 81.84% { opacity: 1 } 82.09%, 100.00% { opacity: 0 } }
+    .st9 { animation-name: st9; }  /* 45.2s to end */
+    @keyframes st9 { 0.00%, 74.28% { opacity: 0 } 74.53%, 98.77% { opacity: 1 } 99.01%, 100.00% { opacity: 0 } }
+    .st10 { animation-name: st10; }  /* 49.8s to end */
+    @keyframes st10 { 0.00%, 81.84% { opacity: 0 } 82.09%, 98.77% { opacity: 1 } 99.01%, 100.00% { opacity: 0 } }
+    @media (prefers-reduced-motion: reduce) {
+      .a { animation: none; opacity: 0; }
+      .a.fin { opacity: 1; }
+    }
+  </style>
+  <text x="20" y="26" class="title">Double buffering: fetch the next <tspan class="mvar">K</tspan> slice while computing this one</text>
+  <rect x="20" y="44" width="120" height="146" class="dash" rx="8"/>
+  <text x="32" y="64" class="b sm">global memory</text>
+  <rect x="40" y="76" width="80" height="24" rx="4" class="chip"/>
+  <rect x="40" y="76" width="80" height="24" rx="4" class="hot a st3 fin"/>
+  <text x="80" y="92" text-anchor="middle" class="sm">slice 1</text>
+  <rect x="40" y="112" width="80" height="24" rx="4" class="chip"/>
+  <rect x="40" y="112" width="80" height="24" rx="4" class="hot a st4 fin"/>
+  <text x="80" y="128" text-anchor="middle" class="sm">slice 2</text>
+  <rect x="40" y="148" width="80" height="24" rx="4" class="chip"/>
+  <rect x="40" y="148" width="80" height="24" rx="4" class="hot a st6 fin"/>
+  <text x="80" y="164" text-anchor="middle" class="sm">slice 3</text>
+  <text x="300" y="58" class="b sm a st2 fin">shared memory</text>
+  <rect x="300" y="70" width="130" height="48" rx="4" class="empty a st2 fin"/>
+  <rect x="300" y="132" width="130" height="48" rx="4" class="empty a st2 fin"/>
+  <rect x="302" y="72" width="126" height="44" rx="3" class="hot a st3-7"/>
+  <text x="365" y="104" text-anchor="middle" class="b sm a st3-7">slice 1</text>
+  <rect x="302" y="72" width="126" height="44" rx="3" class="hot a st7 fin"/>
+  <text x="365" y="104" text-anchor="middle" class="b sm a st7 fin">slice 3</text>
+  <rect x="302" y="134" width="126" height="44" rx="3" class="hot a st5 fin"/>
+  <text x="365" y="166" text-anchor="middle" class="b sm a st5 fin">slice 2</text>
+  <text x="306" y="84" class="muted a st2 fin">buffer 0</text>
+  <text x="306" y="146" class="muted a st2 fin">buffer 1</text>
+  <rect x="180" y="124" width="76" height="24" rx="4" class="chip a st4 fin"/>
+  <text x="218" y="140" text-anchor="middle" class="sm a st4 fin">registers</text>
+  <path d="M 142.0 124.0 L 170.0 132.0" class="flow a st10 fin"/>
+  <polygon points="168.4,137.3 178.0,134.5 171.4,127.0" class="flowhead a st10 fin"/>
+  <path d="M 258.0 135.0 L 288.0 135.0" class="flow a st10 fin"/>
+  <polygon points="288.0,130.0 296.0,135.0 288.0,140.0" class="flowhead a st10 fin"/>
+  <path d="M 142.0 88.0 L 286.0 93.6" class="arrow a st3-4"/>
+  <polygon points="285.8,99.6 296.0,94.0 286.2,87.6" class="arrowhead a st3-4"/>
+  <text x="220" y="82" text-anchor="middle" class="num sm a st3-4">load</text>
+  <path d="M 142.0 124.0 L 168.4 132.1" class="arrowd a st4-5"/>
+  <polygon points="166.7,137.8 178.0,135.0 170.2,126.3" class="arrowhead a st4-5"/>
+  <text x="176" y="114" text-anchor="middle" class="num sm a st4-5">in flight</text>
+  <path d="M 258.0 138.0 L 287.0 151.7" class="arrow a st5-6"/>
+  <polygon points="284.4,157.1 296.0,156.0 289.5,146.3" class="arrowhead a st5-6"/>
+  <text x="262" y="174" text-anchor="middle" class="num sm a st5-6">store</text>
+  <path d="M 142.0 160.0 L 169.0 147.3" class="arrowd a st6-7"/>
+  <polygon points="171.5,152.7 178.0,143.0 166.4,141.8" class="arrowhead a st6-7"/>
+  <text x="176" y="176" text-anchor="middle" class="num sm a st6-7">in flight</text>
+  <path d="M 258.0 132.0 L 288.4 106.4" class="arrow a st7-10"/>
+  <polygon points="292.2,111.0 296.0,100.0 284.5,101.9" class="arrowhead a st7-10"/>
+  <text x="258" y="112" text-anchor="middle" class="num sm a st7-10">store</text>
+  <text x="456" y="124" class="b sm a st5-6">sync, swap</text>
+  <path d="M 436 100 q 14 30 0 60" class="okarrow a st5-6"/>
+  <text x="456" y="124" class="b sm a st7 fin">sync, swap</text>
+  <path d="M 436 100 q 14 30 0 60" class="okarrow a st7 fin"/>
+  <rect x="560" y="70" width="180" height="110" rx="8" class="dash"/>
+  <text x="572" y="90" class="b sm">threads compute</text>
+  <path d="M 432.0 94.0 L 546.5 110.6" class="okarrow a st4-5"/>
+  <polygon points="547.4,104.7 556.0,112.0 545.6,116.6" class="okhead a st4-5"/>
+  <text x="650" y="140" text-anchor="middle" class="oktext a st4-5">slice 1 from buffer 0</text>
+  <path d="M 432.0 156.0 L 546.6 130.1" class="okarrow a st6-7"/>
+  <polygon points="545.3,124.3 556.0,128.0 548.0,136.0" class="okhead a st6-7"/>
+  <text x="650" y="140" text-anchor="middle" class="oktext a st6-7">slice 2 from buffer 1</text>
+  <path d="M 432.0 88.0 L 546.5 106.5" class="okarrow a st8 fin"/>
+  <polygon points="547.5,100.5 556.0,108.0 545.6,112.4" class="okhead a st8 fin"/>
+  <text x="650" y="140" text-anchor="middle" class="oktext a st8 fin">slice 3 from buffer 0</text>
+  <text x="20" y="222" class="b sm">timeline (schematic)</text>
+  <rect x="230" y="212" width="24" height="12" class="hot"/><text x="260" y="222" class="muted">load</text>
+  <rect x="310" y="212" width="24" height="12" class="new"/><text x="340" y="222" class="muted">compute</text>
+  <line x1="420" y1="210" x2="420" y2="226" class="sync"/><text x="428" y="222" class="muted">sync</text>
+  <text x="20" y="260" class="sm">one buffer</text>
+  <rect x="230" y="246" width="40" height="18" class="hot a st1 fin"/>
+  <text x="250.0" y="259" text-anchor="middle" class="lbl a st1 fin">L1</text>
+  <line x1="272" y1="243" x2="272" y2="267" class="sync a st1 fin"/>
+  <rect x="274" y="246" width="72" height="18" class="new a st1 fin"/>
+  <text x="310.0" y="259" text-anchor="middle" class="lbl a st1 fin">C1</text>
+  <line x1="348" y1="243" x2="348" y2="267" class="sync a st1 fin"/>
+  <rect x="350" y="246" width="40" height="18" class="hot a st1 fin"/>
+  <text x="370.0" y="259" text-anchor="middle" class="lbl a st1 fin">L2</text>
+  <line x1="392" y1="243" x2="392" y2="267" class="sync a st1 fin"/>
+  <rect x="394" y="246" width="72" height="18" class="new a st1 fin"/>
+  <text x="430.0" y="259" text-anchor="middle" class="lbl a st1 fin">C2</text>
+  <line x1="468" y1="243" x2="468" y2="267" class="sync a st1 fin"/>
+  <rect x="470" y="246" width="40" height="18" class="hot a st1 fin"/>
+  <text x="490.0" y="259" text-anchor="middle" class="lbl a st1 fin">L3</text>
+  <line x1="512" y1="243" x2="512" y2="267" class="sync a st1 fin"/>
+  <rect x="514" y="246" width="72" height="18" class="new a st1 fin"/>
+  <text x="550.0" y="259" text-anchor="middle" class="lbl a st1 fin">C3</text>
+  <line x1="588" y1="243" x2="588" y2="267" class="sync a st1 fin"/>
+  <text x="596" y="260" class="muted">done</text>
+  <rect x="228" y="276" width="46" height="45" class="now a st3-4"/>
+  <rect x="272" y="276" width="76" height="45" class="now a st4-5"/>
+  <rect x="342" y="276" width="12" height="45" class="now a st5-6"/>
+  <rect x="348" y="276" width="76" height="45" class="now a st6-7"/>
+  <rect x="418" y="276" width="12" height="45" class="now a st7-8"/>
+  <rect x="424" y="276" width="76" height="45" class="now a st8-9"/>
+  <rect x="494" y="276" width="96" height="45" class="now a st9-10"/>
+  <text x="20" y="296" class="sm a st2 fin">two buffers</text>
+  <rect x="230" y="282" width="40" height="18" class="hot a st3 fin"/>
+  <text x="250.0" y="295" text-anchor="middle" class="lbl a st3 fin">L1</text>
+  <line x1="272" y1="279" x2="272" y2="303" class="sync a st3 fin"/>
+  <rect x="274" y="282" width="72" height="18" class="new a st4 fin"/>
+  <text x="310.0" y="295" text-anchor="middle" class="lbl a st4 fin">C1</text>
+  <rect x="278" y="303" width="40" height="15" class="hot a st4 fin"/>
+  <text x="298.0" y="315" text-anchor="middle" class="lbl a st4 fin">L2</text>
+  <line x1="348" y1="279" x2="348" y2="303" class="sync a st5 fin"/>
+  <rect x="350" y="282" width="72" height="18" class="new a st6 fin"/>
+  <text x="386.0" y="295" text-anchor="middle" class="lbl a st6 fin">C2</text>
+  <rect x="354" y="303" width="40" height="15" class="hot a st6 fin"/>
+  <text x="374.0" y="315" text-anchor="middle" class="lbl a st6 fin">L3</text>
+  <line x1="424" y1="279" x2="424" y2="303" class="sync a st7 fin"/>
+  <rect x="426" y="282" width="72" height="18" class="new a st8 fin"/>
+  <text x="462.0" y="295" text-anchor="middle" class="lbl a st8 fin">C3</text>
+  <line x1="500" y1="279" x2="500" y2="303" class="sync a st9 fin"/>
+  <text x="508" y="296" class="oktext sm a st9 fin">done sooner</text>
+  <text x="20" y="346" class="sm a st10 fin">two blocks per SM,</text>
+  <text x="20" y="364" class="sm a st10 fin">one buffer each</text>
+  <text x="224" y="347" text-anchor="end" class="muted a st10 fin">block 1</text>
+  <text x="224" y="369" text-anchor="end" class="muted a st10 fin">block 2</text>
+  <rect x="230" y="334" width="40" height="18" class="hot a st10 fin"/>
+  <text x="250.0" y="347" text-anchor="middle" class="lbl a st10 fin">L1</text>
+  <line x1="272" y1="331" x2="272" y2="355" class="sync a st10 fin"/>
+  <rect x="274" y="334" width="72" height="18" class="new a st10 fin"/>
+  <text x="310.0" y="347" text-anchor="middle" class="lbl a st10 fin">C1</text>
+  <line x1="348" y1="331" x2="348" y2="355" class="sync a st10 fin"/>
+  <rect x="350" y="334" width="40" height="18" class="hot a st10 fin"/>
+  <text x="370.0" y="347" text-anchor="middle" class="lbl a st10 fin">L2</text>
+  <line x1="392" y1="331" x2="392" y2="355" class="sync a st10 fin"/>
+  <rect x="424" y="334" width="72" height="18" class="new a st10 fin"/>
+  <text x="460.0" y="347" text-anchor="middle" class="lbl a st10 fin">C2</text>
+  <line x1="498" y1="331" x2="498" y2="355" class="sync a st10 fin"/>
+  <rect x="500" y="334" width="40" height="18" class="hot a st10 fin"/>
+  <text x="520.0" y="347" text-anchor="middle" class="lbl a st10 fin">L3</text>
+  <line x1="542" y1="331" x2="542" y2="355" class="sync a st10 fin"/>
+  <rect x="574" y="334" width="72" height="18" class="new a st10 fin"/>
+  <text x="610.0" y="347" text-anchor="middle" class="lbl a st10 fin">C3</text>
+  <line x1="648" y1="331" x2="648" y2="355" class="sync a st10 fin"/>
+  <rect x="274" y="356" width="40" height="18" class="hot a st10 fin"/>
+  <text x="294.0" y="369" text-anchor="middle" class="lbl a st10 fin">L1</text>
+  <line x1="316" y1="353" x2="316" y2="377" class="sync a st10 fin"/>
+  <rect x="350" y="356" width="72" height="18" class="new a st10 fin"/>
+  <text x="386.0" y="369" text-anchor="middle" class="lbl a st10 fin">C1</text>
+  <line x1="424" y1="353" x2="424" y2="377" class="sync a st10 fin"/>
+  <rect x="426" y="356" width="40" height="18" class="hot a st10 fin"/>
+  <text x="446.0" y="369" text-anchor="middle" class="lbl a st10 fin">L2</text>
+  <line x1="468" y1="353" x2="468" y2="377" class="sync a st10 fin"/>
+  <rect x="500" y="356" width="72" height="18" class="new a st10 fin"/>
+  <text x="536.0" y="369" text-anchor="middle" class="lbl a st10 fin">C2</text>
+  <line x1="574" y1="353" x2="574" y2="377" class="sync a st10 fin"/>
+  <rect x="576" y="356" width="40" height="18" class="hot a st10 fin"/>
+  <text x="596.0" y="369" text-anchor="middle" class="lbl a st10 fin">L3</text>
+  <line x1="618" y1="353" x2="618" y2="377" class="sync a st10 fin"/>
+  <rect x="650" y="356" width="72" height="18" class="new a st10 fin"/>
+  <text x="686.0" y="369" text-anchor="middle" class="lbl a st10 fin">C3</text>
+  <line x1="724" y1="353" x2="724" y2="377" class="sync a st10 fin"/>
+  <text x="724" y="392" text-anchor="end" class="muted a st10 fin"><tspan class="b">2 blocks' work: 6 slices.</tspan> The blocks take turns computing, each at about half speed.</text>
+  <text x="20" y="412" class="a st1-2">One buffer: the next load can't start until everyone is done reading this slice.</text>
+  <text x="20" y="412" class="a st2-3">A second buffer lets the next slice land while this one is still being read.</text>
+  <text x="20" y="412" class="a st3-4">Before the loop starts, slice 1 is loaded into buffer 0.</text>
+  <text x="20" y="412" class="a st4-5">Slice 2's global loads go to registers first and overlap the math.</text>
+  <text x="20" y="412" class="a st5-6">After the math, the registers are written to the free buffer; one sync publishes them.</text>
+  <text x="20" y="412" class="a st6-7">Buffer 0 is no longer being read: slice 3 can go there next.</text>
+  <text x="20" y="412" class="a st7-8">The same store, sync and swap, with the roles reversed.</text>
+  <text x="20" y="412" class="a st8-9">The last slice computes with nothing left to fetch.</text>
+  <text x="20" y="412" class="a st9-10">Each load now overlaps a compute. Only the first one is exposed.</text>
+  <text x="20" y="412" class="b a st10 fin">Double buffering and a second block hide the same loads, so a second buffer adds little on top.</text>
+</svg>

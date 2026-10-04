@@ -1,0 +1,203 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 412" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated shared-memory tiling: one thread block owns a tile of C. For each of 4 slices along K it copies a tile of A and a tile of B from global memory into shared memory once, and every thread reads them from there, after a barrier, to update its running sum; before each later copy, the threads wait at that same barrier until every thread is done with the previous slice, so the copy cannot overwrite tiles still being read. After the last slice, each thread writes its finished sum to C.">
+  <style>
+    :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #ddd; --muted: #999; --full: #555; --empty: #1e1e1e; --edge: #777; --probe: #ff8a4c; --ok: #69db7c; --chip: #2a2a2a; }
+    }
+    text { fill: var(--fg); font-size: 14px; }
+    .muted { fill: var(--muted); font-size: 12px; }
+    .title { font-weight: 600; font-size: 15px; }
+    .b { font-weight: 600; }
+    .full { fill: var(--full); stroke: var(--edge); }
+    .empty { fill: var(--empty); stroke: var(--edge); }
+    .chip { fill: var(--chip); stroke: var(--edge); }
+    .ring { fill: none; stroke: var(--probe); stroke-width: 3; }
+    .okring { fill: none; stroke: var(--ok); stroke-width: 3; }
+    .hot { fill: var(--probe); fill-opacity: 0.35; stroke: var(--probe); stroke-width: 2; }
+    .num { fill: var(--probe); font-weight: 600; font-size: 13px; }
+    .new { fill: var(--ok); }
+    .oktext { fill: var(--ok); font-weight: 600; }
+    .arrow { fill: none; stroke: var(--probe); stroke-width: 2; }
+    .arrowhead { fill: var(--probe); }
+    .grey { fill: none; stroke: var(--edge); stroke-width: 1.5; }
+    .greyhead { fill: var(--edge); }
+    .dash { fill: none; stroke: var(--edge); stroke-width: 1.5; stroke-dasharray: 5 4; }
+    /* 50.1s loop, 11 steps starting at 0.5, 6.45, 12.29, 17.21, 21.31, 25.31, 28.23, 32.55, 34.86, 38.68, 41.9 s; final frame holds 7.45s, then fades. */
+    .a { opacity: 0; animation: 50.1s linear infinite; }
+    .w1 { animation-name: w1; }  /* 0.50s to end */
+    @keyframes w1 { 0.00%, 100.00% { opacity: 1 } }
+    .w2 { animation-name: w2; }  /* 0.50s to 41.90s */
+    @keyframes w2 { 0.00%, 83.63% { opacity: 1 } 83.93%, 98.50% { opacity: 0 } 98.80%, 100.00% { opacity: 1 } }
+    .w3 { animation-name: w3; }  /* 6.45s to end */
+    @keyframes w3 { 0.00%, 12.87% { opacity: 0 } 13.17%, 98.50% { opacity: 1 } 98.80%, 100.00% { opacity: 0 } }
+    .w4 { animation-name: w4; }  /* 12.29s to end */
+    @keyframes w4 { 0.00%, 24.53% { opacity: 0 } 24.83%, 98.50% { opacity: 1 } 98.80%, 100.00% { opacity: 0 } }
+    .w5 { animation-name: w5; }  /* 6.45s to 12.29s */
+    @keyframes w5 { 0.00%, 12.87% { opacity: 0 } 13.17%, 24.53% { opacity: 1 } 24.83%, 100.00% { opacity: 0 } }
+    .w6 { animation-name: w6; }  /* 6.45s to 21.31s */
+    @keyframes w6 { 0.00%, 12.87% { opacity: 0 } 13.17%, 42.53% { opacity: 1 } 42.83%, 100.00% { opacity: 0 } }
+    .w7 { animation-name: w7; }  /* 21.31s to 25.31s */
+    @keyframes w7 { 0.00%, 42.53% { opacity: 0 } 42.83%, 50.52% { opacity: 1 } 50.82%, 100.00% { opacity: 0 } }
+    .w8 { animation-name: w8; }  /* 21.31s to 28.23s */
+    @keyframes w8 { 0.00%, 42.53% { opacity: 0 } 42.83%, 56.35% { opacity: 1 } 56.65%, 100.00% { opacity: 0 } }
+    .w9 { animation-name: w9; }  /* 25.31s to end */
+    @keyframes w9 { 0.00%, 50.52% { opacity: 0 } 50.82%, 98.50% { opacity: 1 } 98.80%, 100.00% { opacity: 0 } }
+    .w10 { animation-name: w10; }  /* 28.23s to 32.55s */
+    @keyframes w10 { 0.00%, 56.35% { opacity: 0 } 56.65%, 64.97% { opacity: 1 } 65.27%, 100.00% { opacity: 0 } }
+    .w11 { animation-name: w11; }  /* 28.23s to 34.86s */
+    @keyframes w11 { 0.00%, 56.35% { opacity: 0 } 56.65%, 69.58% { opacity: 1 } 69.88%, 100.00% { opacity: 0 } }
+    .w12 { animation-name: w12; }  /* 32.55s to end */
+    @keyframes w12 { 0.00%, 64.97% { opacity: 0 } 65.27%, 98.50% { opacity: 1 } 98.80%, 100.00% { opacity: 0 } }
+    .w13 { animation-name: w13; }  /* 34.86s to 38.68s */
+    @keyframes w13 { 0.00%, 69.58% { opacity: 0 } 69.88%, 77.21% { opacity: 1 } 77.50%, 100.00% { opacity: 0 } }
+    .w14 { animation-name: w14; }  /* 34.86s to end */
+    @keyframes w14 { 0.00%, 69.58% { opacity: 0 } 69.88%, 98.50% { opacity: 1 } 98.80%, 100.00% { opacity: 0 } }
+    .w15 { animation-name: w15; }  /* 38.68s to end */
+    @keyframes w15 { 0.00%, 77.21% { opacity: 0 } 77.50%, 98.50% { opacity: 1 } 98.80%, 100.00% { opacity: 0 } }
+    .w16 { animation-name: w16; }  /* 41.90s to end */
+    @keyframes w16 { 0.00%, 83.63% { opacity: 0 } 83.93%, 98.50% { opacity: 1 } 98.80%, 100.00% { opacity: 0 } }
+    .w17 { animation-name: w17; }  /* 0.50s to 6.45s */
+    @keyframes w17 { 0.00%, 12.87% { opacity: 1 } 13.17%, 98.50% { opacity: 0 } 98.80%, 100.00% { opacity: 1 } }
+    .w18 { animation-name: w18; }  /* 12.29s to 17.21s */
+    @keyframes w18 { 0.00%, 24.53% { opacity: 0 } 24.83%, 34.35% { opacity: 1 } 34.65%, 100.00% { opacity: 0 } }
+    .w19 { animation-name: w19; }  /* 25.31s to 28.23s */
+    @keyframes w19 { 0.00%, 50.52% { opacity: 0 } 50.82%, 56.35% { opacity: 1 } 56.65%, 100.00% { opacity: 0 } }
+    .w20 { animation-name: w20; }  /* 32.55s to 34.86s */
+    @keyframes w20 { 0.00%, 64.97% { opacity: 0 } 65.27%, 69.58% { opacity: 1 } 69.88%, 100.00% { opacity: 0 } }
+    .w21 { animation-name: w21; }  /* 38.68s to 41.90s */
+    @keyframes w21 { 0.00%, 77.21% { opacity: 0 } 77.50%, 83.63% { opacity: 1 } 83.93%, 100.00% { opacity: 0 } }
+    .w22 { animation-name: w22; }  /* 17.21s to 21.31s */
+    @keyframes w22 { 0.00%, 34.35% { opacity: 0 } 34.65%, 42.53% { opacity: 1 } 42.83%, 100.00% { opacity: 0 } }
+    @media (prefers-reduced-motion: reduce) {
+      .a { animation: none; opacity: 0; }
+      .a.fin { opacity: 1; }
+    }
+    .mvar { font-family: 'Times New Roman', Times, 'STIX Two Text', serif; font-style: italic; font-size: 1.1em; }
+  </style>
+  <g transform="translate(0,-24)">
+  <rect x="20" y="42" width="380" height="350" class="dash" rx="8"/>
+  <text x="34" y="64" class="title">global memory (off-chip, slow)</text>
+  <rect x="428" y="42" width="312" height="158" class="dash" rx="8"/>
+  <text x="442" y="64" class="title">shared memory (on-chip, fast)</text>
+  <rect x="428" y="240" width="312" height="152" class="dash" rx="8"/>
+  <text x="442" y="262" class="title">threads in the block</text>
+  <rect x="230" y="84" width="140" height="140" class="empty"/>
+  <text x="220" y="159" text-anchor="end" class="title"><tspan class="mvar">B</tspan></text>
+  <rect x="60" y="240" width="140" height="140" class="empty"/>
+  <text x="50" y="315" text-anchor="end" class="title"><tspan class="mvar">A</tspan></text>
+  <rect x="230" y="240" width="140" height="140" class="empty"/>
+  <text x="380" y="315" class="title"><tspan class="mvar">C</tspan></text>
+  <path d="M 230 119 h 140 M 265 84 v 140 M 230 154 h 140 M 300 84 v 140 M 230 189 h 140 M 335 84 v 140 M 60 275 h 140 M 95 240 v 140 M 60 310 h 140 M 130 240 v 140 M 60 345 h 140 M 165 240 v 140 M 230 275 h 140 M 265 240 v 140 M 230 310 h 140 M 300 240 v 140 M 230 345 h 140 M 335 240 v 140" stroke="var(--edge)" stroke-width="0.6" stroke-opacity="0.5"/>
+  <rect x="58.5" y="273.5" width="143" height="38" class="ring a w1 fin" rx="3"/>
+  <rect x="298.5" y="82.5" width="38" height="143" class="ring a w1 fin" rx="3"/>
+  <rect x="298.5" y="273.5" width="38" height="38" class="ring a w2" rx="3"/>
+  <rect x="452" y="72" width="35" height="35" class="empty"/>
+  <rect x="452" y="148" width="35" height="35" class="empty"/>
+  <text x="497" y="87" class="title"><tspan class="mvar">B</tspan><tspan baseline-shift="sub" font-size="0.7em">s</tspan></text>
+  <text x="497" y="163" class="title"><tspan class="mvar">A</tspan><tspan baseline-shift="sub" font-size="0.7em">s</tspan></text>
+  <path d="M 440 220 H 728" class="dash a w3 fin" style="stroke:var(--probe)"/>
+  <text x="545" y="211" class="num a w3 fin" style="font-size:12px">__syncthreads() barrier</text>
+  <path d="M 440 220 H 728" class="a w22" style="fill:none;stroke:var(--probe);stroke-width:8;stroke-opacity:0.25"/>
+  <path d="M 440 220 H 728" class="a w22" style="fill:none;stroke:var(--probe);stroke-width:3.5"/>
+  <text x="545" y="236" class="num a w22" style="font-size:11px">all threads wait here</text>
+  <path d="M 462.0 202.0 L 462.0 226.4" class="grey a w4 fin"/>
+  <polygon points="468.0,226.4 462.0,236.0 456.0,226.4" class="greyhead a w4 fin"/>
+  <path d="M 482.0 202.0 L 482.0 226.4" class="grey a w4 fin"/>
+  <polygon points="488.0,226.4 482.0,236.0 476.0,226.4" class="greyhead a w4 fin"/>
+  <text x="590" y="104" class="num a w4 fin" style="font-size:12px">loaded once,</text>
+  <text x="590" y="120" class="num a w4 fin" style="font-size:12px">reused by every</text>
+  <text x="590" y="136" class="num a w4 fin" style="font-size:12px">thread in the block</text>
+  <rect x="460" y="280" width="22" height="18" class="chip" rx="3"/>
+  <rect x="490" y="280" width="22" height="18" class="chip" rx="3"/>
+  <rect x="520" y="280" width="22" height="18" class="chip" rx="3"/>
+  <rect x="550" y="280" width="22" height="18" class="chip" rx="3"/>
+  <rect x="460" y="304" width="22" height="18" class="chip" rx="3"/>
+  <rect x="490" y="304" width="22" height="18" class="chip" rx="3"/>
+  <rect x="520" y="304" width="22" height="18" class="chip" rx="3"/>
+  <rect x="550" y="304" width="22" height="18" class="chip" rx="3"/>
+  <rect x="460" y="328" width="22" height="18" class="chip" rx="3"/>
+  <rect x="490" y="328" width="22" height="18" class="chip" rx="3"/>
+  <rect x="520" y="328" width="22" height="18" class="chip" rx="3"/>
+  <rect x="550" y="328" width="22" height="18" class="chip" rx="3"/>
+  <rect x="460" y="352" width="22" height="18" class="chip" rx="3"/>
+  <rect x="490" y="352" width="22" height="18" class="chip" rx="3"/>
+  <rect x="520" y="352" width="22" height="18" class="chip" rx="3"/>
+  <rect x="550" y="352" width="22" height="18" class="chip" rx="3"/>
+  <text x="600" y="306" class="muted">each thread keeps</text>
+  <text x="600" y="322" class="muted">a running sum</text>
+  <text x="600" y="338" class="muted">in a register</text>
+  <rect x="63" y="278" width="29" height="29" class="hot a w5"/>
+  <rect x="303" y="87" width="29" height="29" class="hot a w5"/>
+  <rect x="455" y="75" width="29" height="29" class="hot a w6"/>
+  <rect x="455" y="151" width="29" height="29" class="hot a w6"/>
+  <text x="497" y="103" class="num a w6">slice 1</text>
+  <text x="497" y="179" class="num a w6">slice 1</text>
+  <path d="M 333 101.5 H 408 V 89.5 H 442" class="arrow a w5"/>
+  <polygon points="441,83.5 451,89.5 441,95.5" class="arrowhead a w5"/>
+  <text x="385" y="96.5" text-anchor="middle" class="num a w5" style="font-size:11px">copy</text>
+  <path d="M 77.5 277 V 232 H 418 V 165.5 H 442" class="arrow a w5"/>
+  <polygon points="441,159.5 451,165.5 441,171.5" class="arrowhead a w5"/>
+  <text x="215" y="252" text-anchor="middle" class="num a w5" style="font-size:11px">copy</text>
+  <rect x="63" y="278" width="29" height="29" class="full a w4 fin"/>
+  <rect x="303" y="87" width="29" height="29" class="full a w4 fin"/>
+  <path d="M 460 280 h 22 v 18 h -22 z M 490 280 h 22 v 18 h -22 z M 520 280 h 22 v 18 h -22 z M 550 280 h 22 v 18 h -22 z M 460 304 h 22 v 18 h -22 z M 490 304 h 22 v 18 h -22 z M 520 304 h 22 v 18 h -22 z M 550 304 h 22 v 18 h -22 z M 460 328 h 22 v 18 h -22 z M 490 328 h 22 v 18 h -22 z M 520 328 h 22 v 18 h -22 z M 550 328 h 22 v 18 h -22 z M 460 352 h 22 v 18 h -22 z M 490 352 h 22 v 18 h -22 z M 520 352 h 22 v 18 h -22 z M 550 352 h 22 v 18 h -22 z" class="new a w4 fin" fill-opacity="0.25"/>
+  <rect x="98" y="278" width="29" height="29" class="hot a w7"/>
+  <rect x="303" y="122" width="29" height="29" class="hot a w7"/>
+  <rect x="455" y="75" width="29" height="29" class="hot a w8"/>
+  <rect x="455" y="151" width="29" height="29" class="hot a w8"/>
+  <text x="497" y="103" class="num a w8">slice 2</text>
+  <text x="497" y="179" class="num a w8">slice 2</text>
+  <path d="M 333 136.5 H 408 V 89.5 H 442" class="arrow a w7"/>
+  <polygon points="441,83.5 451,89.5 441,95.5" class="arrowhead a w7"/>
+  <text x="385" y="131.5" text-anchor="middle" class="num a w7" style="font-size:11px">copy</text>
+  <path d="M 112.5 277 V 232 H 418 V 165.5 H 442" class="arrow a w7"/>
+  <polygon points="441,159.5 451,165.5 441,171.5" class="arrowhead a w7"/>
+  <text x="215" y="252" text-anchor="middle" class="num a w7" style="font-size:11px">copy</text>
+  <rect x="98" y="278" width="29" height="29" class="full a w9 fin"/>
+  <rect x="303" y="122" width="29" height="29" class="full a w9 fin"/>
+  <path d="M 460 280 h 22 v 18 h -22 z M 490 280 h 22 v 18 h -22 z M 520 280 h 22 v 18 h -22 z M 550 280 h 22 v 18 h -22 z M 460 304 h 22 v 18 h -22 z M 490 304 h 22 v 18 h -22 z M 520 304 h 22 v 18 h -22 z M 550 304 h 22 v 18 h -22 z M 460 328 h 22 v 18 h -22 z M 490 328 h 22 v 18 h -22 z M 520 328 h 22 v 18 h -22 z M 550 328 h 22 v 18 h -22 z M 460 352 h 22 v 18 h -22 z M 490 352 h 22 v 18 h -22 z M 520 352 h 22 v 18 h -22 z M 550 352 h 22 v 18 h -22 z" class="new a w9 fin" fill-opacity="0.25"/>
+  <rect x="133" y="278" width="29" height="29" class="hot a w10"/>
+  <rect x="303" y="157" width="29" height="29" class="hot a w10"/>
+  <rect x="455" y="75" width="29" height="29" class="hot a w11"/>
+  <rect x="455" y="151" width="29" height="29" class="hot a w11"/>
+  <text x="497" y="103" class="num a w11">slice 3</text>
+  <text x="497" y="179" class="num a w11">slice 3</text>
+  <path d="M 333 171.5 H 408 V 89.5 H 442" class="arrow a w10"/>
+  <polygon points="441,83.5 451,89.5 441,95.5" class="arrowhead a w10"/>
+  <text x="385" y="166.5" text-anchor="middle" class="num a w10" style="font-size:11px">copy</text>
+  <path d="M 147.5 277 V 232 H 418 V 165.5 H 442" class="arrow a w10"/>
+  <polygon points="441,159.5 451,165.5 441,171.5" class="arrowhead a w10"/>
+  <text x="215" y="252" text-anchor="middle" class="num a w10" style="font-size:11px">copy</text>
+  <rect x="133" y="278" width="29" height="29" class="full a w12 fin"/>
+  <rect x="303" y="157" width="29" height="29" class="full a w12 fin"/>
+  <path d="M 460 280 h 22 v 18 h -22 z M 490 280 h 22 v 18 h -22 z M 520 280 h 22 v 18 h -22 z M 550 280 h 22 v 18 h -22 z M 460 304 h 22 v 18 h -22 z M 490 304 h 22 v 18 h -22 z M 520 304 h 22 v 18 h -22 z M 550 304 h 22 v 18 h -22 z M 460 328 h 22 v 18 h -22 z M 490 328 h 22 v 18 h -22 z M 520 328 h 22 v 18 h -22 z M 550 328 h 22 v 18 h -22 z M 460 352 h 22 v 18 h -22 z M 490 352 h 22 v 18 h -22 z M 520 352 h 22 v 18 h -22 z M 550 352 h 22 v 18 h -22 z" class="new a w12 fin" fill-opacity="0.25"/>
+  <rect x="168" y="278" width="29" height="29" class="hot a w13"/>
+  <rect x="303" y="192" width="29" height="29" class="hot a w13"/>
+  <rect x="455" y="75" width="29" height="29" class="hot a w14 fin"/>
+  <rect x="455" y="151" width="29" height="29" class="hot a w14 fin"/>
+  <text x="497" y="103" class="num a w14 fin">slice 4</text>
+  <text x="497" y="179" class="num a w14 fin">slice 4</text>
+  <path d="M 333 206.5 H 408 V 89.5 H 442" class="arrow a w13"/>
+  <polygon points="441,83.5 451,89.5 441,95.5" class="arrowhead a w13"/>
+  <text x="385" y="201.5" text-anchor="middle" class="num a w13" style="font-size:11px">copy</text>
+  <path d="M 182.5 277 V 232 H 418 V 165.5 H 442" class="arrow a w13"/>
+  <polygon points="441,159.5 451,165.5 441,171.5" class="arrowhead a w13"/>
+  <text x="215" y="252" text-anchor="middle" class="num a w13" style="font-size:11px">copy</text>
+  <rect x="168" y="278" width="29" height="29" class="full a w15 fin"/>
+  <rect x="303" y="192" width="29" height="29" class="full a w15 fin"/>
+  <path d="M 460 280 h 22 v 18 h -22 z M 490 280 h 22 v 18 h -22 z M 520 280 h 22 v 18 h -22 z M 550 280 h 22 v 18 h -22 z M 460 304 h 22 v 18 h -22 z M 490 304 h 22 v 18 h -22 z M 520 304 h 22 v 18 h -22 z M 550 304 h 22 v 18 h -22 z M 460 328 h 22 v 18 h -22 z M 490 328 h 22 v 18 h -22 z M 520 328 h 22 v 18 h -22 z M 550 328 h 22 v 18 h -22 z M 460 352 h 22 v 18 h -22 z M 490 352 h 22 v 18 h -22 z M 520 352 h 22 v 18 h -22 z M 550 352 h 22 v 18 h -22 z" class="new a w15 fin" fill-opacity="1.00"/>
+  <rect x="301" y="276" width="33" height="33" class="new a w16 fin"/>
+  <rect x="298.5" y="273.5" width="38" height="38" class="okring a w16 fin" rx="3"/>
+  </g>
+  <text x="20" y="396" class="a w17">One block computes one tile of <tspan class="mvar">C</tspan> from a strip of <tspan class="mvar">A</tspan> and a strip of <tspan class="mvar">B</tspan>.</text>
+  <text x="20" y="396" class="a w5">All threads copy the two tiles together, then wait at the barrier.</text>
+  <text x="20" y="396" class="a w18">Past the barrier, threads read only shared memory.</text>
+  <text x="20" y="396" class="a w22">Wait at a barrier until every thread is done with slice 1.</text>
+  <text x="20" y="396" class="a w7">Then copy slice 2 into shared memory.</text>
+  <text x="20" y="396" class="a w19">Threads add slice 2 to their sums.</text>
+  <text x="20" y="396" class="a w10">Same copy and barrier for slice 3.</text>
+  <text x="20" y="396" class="a w20">Threads add slice 3.</text>
+  <text x="20" y="396" class="a w13">The last slice is copied.</text>
+  <text x="20" y="396" class="a w21">Threads add slice 4: their sums are complete.</text>
+  <text x="20" y="396" class="b a w16 fin">Each value of <tspan class="mvar">A</tspan> and <tspan class="mvar">B</tspan> now leaves global memory once per block, not once per thread.</text>
+</svg>

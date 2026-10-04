@@ -1,0 +1,197 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 372" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated register tiling: one thread keeps an 8 by 8 patch of C in registers. At each k step it loads 8 values from a column of As and 8 from a row of Bs, then does all 64 multiply-adds between them, row by row. 16 loads for 64 multiply-adds is 0.25 loads each, 8 times fewer than the 2 a thread computing a single output needs.">
+  <style>
+    :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #ddd; --muted: #999; --full: #555; --empty: #1e1e1e; --edge: #777; --probe: #ff8a4c; --ok: #69db7c; --chip: #2a2a2a; }
+    }
+    text { fill: var(--fg); font-size: 14px; }
+    .muted { fill: var(--muted); font-size: 12px; }
+    .title { font-weight: 600; font-size: 15px; }
+    .b { font-weight: 600; }
+    .empty { fill: var(--empty); stroke: var(--edge); }
+    .hot { fill: var(--probe); fill-opacity: 0.35; stroke: var(--probe); stroke-width: 2; }
+    .num { fill: var(--probe); font-weight: 600; font-size: 13px; }
+    .new { fill: var(--ok); }
+    .okring { fill: none; stroke: var(--ok); stroke-width: 3; }
+    .oktext { fill: var(--ok); font-weight: 600; }
+    .arrow { fill: none; stroke: var(--probe); stroke-width: 2; }
+    .arrowhead { fill: var(--probe); }
+    /* 37.47s loop, 7 steps starting at 0.5, 5.22, 10.06, 13.48, 18.11, 24.15, 29.99 s; final frame holds 6.73s, then fades. */
+    .a { opacity: 0; animation: 37.47s linear infinite; }
+    .w1 { animation-name: w1; }  /* 5.22s to end */
+    @keyframes w1 { 0.00%, 13.93% { opacity: 0 } 14.33%, 98.00% { opacity: 1 } 98.40%, 100.00% { opacity: 0 } }
+    .w2 { animation-name: w2; }  /* 10.06s to end */
+    @keyframes w2 { 0.00%, 26.85% { opacity: 0 } 27.25%, 98.00% { opacity: 1 } 98.40%, 100.00% { opacity: 0 } }
+    .w3 { animation-name: w3; }  /* 5.22s to 10.06s */
+    @keyframes w3 { 0.00%, 13.93% { opacity: 0 } 14.33%, 26.85% { opacity: 1 } 27.25%, 100.00% { opacity: 0 } }
+    .w4 { animation-name: w4; }  /* 13.48s to end */
+    @keyframes w4 { 0.00%, 35.98% { opacity: 0 } 36.38%, 98.00% { opacity: 1 } 98.40%, 100.00% { opacity: 0 } }
+    .w5 { animation-name: w5; }  /* 13.48s to 18.11s */
+    @keyframes w5 { 0.00%, 35.98% { opacity: 0 } 36.38%, 48.33% { opacity: 1 } 48.73%, 100.00% { opacity: 0 } }
+    .w6 { animation-name: w6; }  /* 18.11s to end */
+    @keyframes w6 { 0.00%, 48.33% { opacity: 0 } 48.73%, 98.00% { opacity: 1 } 98.40%, 100.00% { opacity: 0 } }
+    .w7 { animation-name: w7; }  /* 24.15s to end */
+    @keyframes w7 { 0.00%, 64.45% { opacity: 0 } 64.85%, 98.00% { opacity: 1 } 98.40%, 100.00% { opacity: 0 } }
+    .w8 { animation-name: w8; }  /* 29.99s to end */
+    @keyframes w8 { 0.00%, 80.04% { opacity: 0 } 80.44%, 98.00% { opacity: 1 } 98.40%, 100.00% { opacity: 0 } }
+    .w9 { animation-name: w9; }  /* 0.50s to 5.22s */
+    @keyframes w9 { 0.00%, 13.93% { opacity: 1 } 14.33%, 98.00% { opacity: 0 } 98.40%, 100.00% { opacity: 1 } }
+    .w10 { animation-name: w10; }  /* 10.06s to 13.48s */
+    @keyframes w10 { 0.00%, 26.85% { opacity: 0 } 27.25%, 35.98% { opacity: 1 } 36.38%, 100.00% { opacity: 0 } }
+    .w11 { animation-name: w11; }  /* 18.11s to 24.15s */
+    @keyframes w11 { 0.00%, 48.33% { opacity: 0 } 48.73%, 64.45% { opacity: 1 } 64.85%, 100.00% { opacity: 0 } }
+    .w12 { animation-name: w12; }  /* 24.15s to 29.99s */
+    @keyframes w12 { 0.00%, 64.45% { opacity: 0 } 64.85%, 80.04% { opacity: 1 } 80.44%, 100.00% { opacity: 0 } }
+    .w13 { animation-name: w13; }  /* 0.50s to 18.11s (patch outline until all rows fill) */
+    @keyframes w13 { 0.00%, 48.33% { opacity: 1 } 48.73%, 98.00% { opacity: 0 } 98.40%, 100.00% { opacity: 1 } }
+    .patch { fill: none; stroke: var(--fg); stroke-width: 2.5; }
+    @media (prefers-reduced-motion: reduce) {
+      .a { animation: none; opacity: 0; }
+      .a.fin { opacity: 1; }
+    }
+    .mvar { font-family: 'Times New Roman', Times, 'STIX Two Text', serif; font-style: italic; font-size: 1.1em; }
+  </style>
+  <g transform="translate(0,-36)">
+  <rect x="230" y="74" width="18" height="18" class="empty"/>
+  <rect x="248" y="74" width="18" height="18" class="empty"/>
+  <rect x="266" y="74" width="18" height="18" class="empty"/>
+  <rect x="284" y="74" width="18" height="18" class="empty"/>
+  <rect x="302" y="74" width="18" height="18" class="empty"/>
+  <rect x="320" y="74" width="18" height="18" class="empty"/>
+  <rect x="338" y="74" width="18" height="18" class="empty"/>
+  <rect x="356" y="74" width="18" height="18" class="empty"/>
+  <text x="230" y="66" class="muted"><tspan class="mvar">B</tspan><tspan baseline-shift="sub" font-size="0.7em">s</tspan>, row <tspan class="mvar">k</tspan> (shared memory)</text>
+  <rect x="110" y="184" width="18" height="18" class="empty"/>
+  <rect x="110" y="202" width="18" height="18" class="empty"/>
+  <rect x="110" y="220" width="18" height="18" class="empty"/>
+  <rect x="110" y="238" width="18" height="18" class="empty"/>
+  <rect x="110" y="256" width="18" height="18" class="empty"/>
+  <rect x="110" y="274" width="18" height="18" class="empty"/>
+  <rect x="110" y="292" width="18" height="18" class="empty"/>
+  <rect x="110" y="310" width="18" height="18" class="empty"/>
+  <text x="119.0" y="346" text-anchor="middle" class="muted"><tspan class="mvar">A</tspan><tspan baseline-shift="sub" font-size="0.7em">s</tspan>, column <tspan class="mvar">k</tspan></text>
+  <text x="119.0" y="361" text-anchor="middle" class="muted">(shared memory)</text>
+  <rect x="230" y="154" width="18" height="18" class="empty"/>
+  <rect x="248" y="154" width="18" height="18" class="empty"/>
+  <rect x="266" y="154" width="18" height="18" class="empty"/>
+  <rect x="284" y="154" width="18" height="18" class="empty"/>
+  <rect x="302" y="154" width="18" height="18" class="empty"/>
+  <rect x="320" y="154" width="18" height="18" class="empty"/>
+  <rect x="338" y="154" width="18" height="18" class="empty"/>
+  <rect x="356" y="154" width="18" height="18" class="empty"/>
+  <text x="382" y="168" class="muted">regN</text>
+  <rect x="200" y="184" width="18" height="18" class="empty"/>
+  <rect x="200" y="202" width="18" height="18" class="empty"/>
+  <rect x="200" y="220" width="18" height="18" class="empty"/>
+  <rect x="200" y="238" width="18" height="18" class="empty"/>
+  <rect x="200" y="256" width="18" height="18" class="empty"/>
+  <rect x="200" y="274" width="18" height="18" class="empty"/>
+  <rect x="200" y="292" width="18" height="18" class="empty"/>
+  <rect x="200" y="310" width="18" height="18" class="empty"/>
+  <text x="209.0" y="176" text-anchor="middle" class="muted">regM</text>
+  <rect x="230" y="184" width="18" height="18" class="empty"/>
+  <rect x="248" y="184" width="18" height="18" class="empty"/>
+  <rect x="266" y="184" width="18" height="18" class="empty"/>
+  <rect x="284" y="184" width="18" height="18" class="empty"/>
+  <rect x="302" y="184" width="18" height="18" class="empty"/>
+  <rect x="320" y="184" width="18" height="18" class="empty"/>
+  <rect x="338" y="184" width="18" height="18" class="empty"/>
+  <rect x="356" y="184" width="18" height="18" class="empty"/>
+  <rect x="230" y="202" width="18" height="18" class="empty"/>
+  <rect x="248" y="202" width="18" height="18" class="empty"/>
+  <rect x="266" y="202" width="18" height="18" class="empty"/>
+  <rect x="284" y="202" width="18" height="18" class="empty"/>
+  <rect x="302" y="202" width="18" height="18" class="empty"/>
+  <rect x="320" y="202" width="18" height="18" class="empty"/>
+  <rect x="338" y="202" width="18" height="18" class="empty"/>
+  <rect x="356" y="202" width="18" height="18" class="empty"/>
+  <rect x="230" y="220" width="18" height="18" class="empty"/>
+  <rect x="248" y="220" width="18" height="18" class="empty"/>
+  <rect x="266" y="220" width="18" height="18" class="empty"/>
+  <rect x="284" y="220" width="18" height="18" class="empty"/>
+  <rect x="302" y="220" width="18" height="18" class="empty"/>
+  <rect x="320" y="220" width="18" height="18" class="empty"/>
+  <rect x="338" y="220" width="18" height="18" class="empty"/>
+  <rect x="356" y="220" width="18" height="18" class="empty"/>
+  <rect x="230" y="238" width="18" height="18" class="empty"/>
+  <rect x="248" y="238" width="18" height="18" class="empty"/>
+  <rect x="266" y="238" width="18" height="18" class="empty"/>
+  <rect x="284" y="238" width="18" height="18" class="empty"/>
+  <rect x="302" y="238" width="18" height="18" class="empty"/>
+  <rect x="320" y="238" width="18" height="18" class="empty"/>
+  <rect x="338" y="238" width="18" height="18" class="empty"/>
+  <rect x="356" y="238" width="18" height="18" class="empty"/>
+  <rect x="230" y="256" width="18" height="18" class="empty"/>
+  <rect x="248" y="256" width="18" height="18" class="empty"/>
+  <rect x="266" y="256" width="18" height="18" class="empty"/>
+  <rect x="284" y="256" width="18" height="18" class="empty"/>
+  <rect x="302" y="256" width="18" height="18" class="empty"/>
+  <rect x="320" y="256" width="18" height="18" class="empty"/>
+  <rect x="338" y="256" width="18" height="18" class="empty"/>
+  <rect x="356" y="256" width="18" height="18" class="empty"/>
+  <rect x="230" y="274" width="18" height="18" class="empty"/>
+  <rect x="248" y="274" width="18" height="18" class="empty"/>
+  <rect x="266" y="274" width="18" height="18" class="empty"/>
+  <rect x="284" y="274" width="18" height="18" class="empty"/>
+  <rect x="302" y="274" width="18" height="18" class="empty"/>
+  <rect x="320" y="274" width="18" height="18" class="empty"/>
+  <rect x="338" y="274" width="18" height="18" class="empty"/>
+  <rect x="356" y="274" width="18" height="18" class="empty"/>
+  <rect x="230" y="292" width="18" height="18" class="empty"/>
+  <rect x="248" y="292" width="18" height="18" class="empty"/>
+  <rect x="266" y="292" width="18" height="18" class="empty"/>
+  <rect x="284" y="292" width="18" height="18" class="empty"/>
+  <rect x="302" y="292" width="18" height="18" class="empty"/>
+  <rect x="320" y="292" width="18" height="18" class="empty"/>
+  <rect x="338" y="292" width="18" height="18" class="empty"/>
+  <rect x="356" y="292" width="18" height="18" class="empty"/>
+  <rect x="230" y="310" width="18" height="18" class="empty"/>
+  <rect x="248" y="310" width="18" height="18" class="empty"/>
+  <rect x="266" y="310" width="18" height="18" class="empty"/>
+  <rect x="284" y="310" width="18" height="18" class="empty"/>
+  <rect x="302" y="310" width="18" height="18" class="empty"/>
+  <rect x="320" y="310" width="18" height="18" class="empty"/>
+  <rect x="338" y="310" width="18" height="18" class="empty"/>
+  <rect x="356" y="310" width="18" height="18" class="empty"/>
+  <rect x="229" y="183" width="146" height="146" class="patch a w13"/>
+  <text x="302" y="346" text-anchor="middle" class="muted">8×8 patch of <tspan class="mvar">C</tspan> (registers)</text>
+  <text x="450" y="84" class="title">one <tspan class="mvar">k</tspan> step, one thread</text>
+  <rect x="110" y="184" width="18" height="144" class="hot a w1 fin"/>
+  <path d="M 132.0 256.0 L 186.4 256.0" class="arrow a w1 fin"/>
+  <polygon points="186.4,250.0 196.0,256.0 186.4,262.0" class="arrowhead a w1 fin"/>
+  <text x="164.0" y="248" text-anchor="middle" class="num a w1 fin">8</text>
+  <rect x="200" y="184" width="18" height="144" class="hot a w1 fin"/>
+  <rect x="230" y="74" width="144" height="18" class="hot a w2 fin"/>
+  <path d="M 302.0 95.0 L 302.0 141.4" class="arrow a w2 fin"/>
+  <polygon points="308.0,141.4 302.0,151.0 296.0,141.4" class="arrowhead a w2 fin"/>
+  <text x="310" y="127.0" class="num a w2 fin">8</text>
+  <rect x="230" y="154" width="144" height="18" class="hot a w2 fin"/>
+  <text x="450" y="112" class="num a w3" style="font-size:14px">loads: 8</text>
+  <text x="450" y="112" class="num a w2 fin" style="font-size:14px">loads: 16</text>
+  <rect x="231" y="185" width="142" height="16" class="new a w4 fin" fill-opacity="0.6"/>
+  <text x="450" y="136" class="oktext a w5">multiply-adds: 8</text>
+  <rect x="199" y="183" width="20" height="20" class="okring a w5"/>
+  <rect x="229" y="153" width="146" height="20" class="okring a w4 fin"/>
+  <rect x="199" y="183" width="20" height="146" class="okring a w6 fin"/>
+  <rect x="231" y="203" width="142" height="16" class="new a w6 fin" fill-opacity="0.6"/>
+  <rect x="231" y="221" width="142" height="16" class="new a w6 fin" fill-opacity="0.6"/>
+  <rect x="231" y="239" width="142" height="16" class="new a w6 fin" fill-opacity="0.6"/>
+  <rect x="231" y="257" width="142" height="16" class="new a w6 fin" fill-opacity="0.6"/>
+  <rect x="231" y="275" width="142" height="16" class="new a w6 fin" fill-opacity="0.6"/>
+  <rect x="231" y="293" width="142" height="16" class="new a w6 fin" fill-opacity="0.6"/>
+  <rect x="231" y="311" width="142" height="16" class="new a w6 fin" fill-opacity="0.6"/>
+  <text x="450" y="136" class="oktext a w6 fin">multiply-adds: 64</text>
+  <text x="450" y="196" class="title a w7 fin">loads per multiply-add</text>
+  <text x="450" y="222" class="a w7 fin">1 output per thread: 2</text>
+  <rect x="450" y="230" width="240" height="12" class="hot a w7 fin" rx="2"/>
+  <text x="450" y="272" class="a w8 fin">8×8 patch: 16 ÷ 64 = 0.25</text>
+  <rect x="450" y="280" width="30" height="12" class="new a w8 fin" rx="2"/>
+  </g>
+  <text x="20" y="356" class="a w9">Each thread computes 64 outputs instead of 1.</text>
+  <text x="20" y="356" class="a w3">First, the 8 values of <tspan class="mvar">A</tspan> this patch needs at step <tspan class="mvar">k</tspan>.</text>
+  <text x="20" y="356" class="a w10">Then the 8 values of <tspan class="mvar">B</tspan>.</text>
+  <text x="20" y="356" class="a w5">One <tspan class="mvar">A</tspan> value times all 8 <tspan class="mvar">B</tspan> values fills a row.</text>
+  <text x="20" y="356" class="a w11">The other rows reuse the same 8 <tspan class="mvar">B</tspan> values: <tspan class="mvar">C</tspan>[<tspan class="mvar">m</tspan>][<tspan class="mvar">n</tspan>] += regM[<tspan class="mvar">m</tspan>] × regN[<tspan class="mvar">n</tspan>].</text>
+  <text x="20" y="356" class="a w12">With one output, each multiply-add needs its own <tspan class="mvar">A</tspan> and <tspan class="mvar">B</tspan> value.</text>
+  <text x="20" y="356" class="b a w8 fin">Each loaded value now feeds 8 multiply-adds instead of 1.</text>
+</svg>

@@ -1,0 +1,348 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 516" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated comparison of one thread's work per k step. Before, it loads 8 values of A and 8 of B from shared memory and does 64 multiply-adds into an 8 by 8 patch of C; the block tile is 128 by 128 with 256 threads. After, the patch is 16 by 8: 16 values of A and 8 of B, 24 loads, feed 128 multiply-adds, and the block tile is 128 by 256, still 256 threads. Bars compare 16 over 64 with 24 over 128: the bigger patch needs fewer shared-memory loads per multiply-add. Below, one SM's register file drawn to scale: before, two blocks of 256 threads at 128 registers each fill it; after, 237 registers per thread make one block take nearly all of it, leaving no room for a second block, so one block runs per SM.">
+  <style>
+    :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; --blkbg: #a0caa8; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #ddd; --muted: #999; --full: #555; --empty: #1e1e1e; --edge: #777; --probe: #ff8a4c; --ok: #69db7c; --chip: #2a2a2a; --blkbg: #407348; }
+    }
+    text { fill: var(--fg); font-size: 14px; }
+    .muted { fill: var(--muted); font-size: 12px; }
+    .title { font-weight: 600; font-size: 15px; }
+    .b { font-weight: 600; }
+    .sm { font-size: 12px; }
+    .empty { fill: var(--empty); stroke: var(--edge); }
+    .hot { fill: var(--probe); fill-opacity: 0.35; stroke: var(--probe); stroke-width: 2; }
+    .new { fill: var(--ok); }
+    .on-blk { paint-order: stroke; stroke: var(--blkbg); stroke-width: 4px; stroke-linejoin: round; }
+    .blk { fill: var(--ok); fill-opacity: 0.45; stroke: var(--ok); stroke-width: 2; }
+    .num { fill: var(--probe); font-weight: 600; font-size: 13px; }
+    .oktext { fill: var(--ok); font-weight: 600; }
+    /* 49.92s loop, 8 steps starting at 0.5, 6.94, 10.97, 18.62, 22.65, 28.88, 37.71, 43.04 s; final frame holds 6.13s, then fades. */
+    .a { opacity: 0; animation: 49.92s linear infinite; }
+    .w1 { animation-name: w1; }  /* 6.94s to end */
+    @keyframes w1 { 0.00%, 13.90% { opacity: 0 } 14.20%, 98.50% { opacity: 1 } 98.80%, 100.00% { opacity: 0 } }
+    .w2 { animation-name: w2; }  /* 10.97s to end */
+    @keyframes w2 { 0.00%, 21.98% { opacity: 0 } 22.28%, 98.50% { opacity: 1 } 98.80%, 100.00% { opacity: 0 } }
+    .w3 { animation-name: w3; }  /* 18.62s to end */
+    @keyframes w3 { 0.00%, 37.30% { opacity: 0 } 37.60%, 98.50% { opacity: 1 } 98.80%, 100.00% { opacity: 0 } }
+    .w4 { animation-name: w4; }  /* 22.65s to end */
+    @keyframes w4 { 0.00%, 45.37% { opacity: 0 } 45.67%, 98.50% { opacity: 1 } 98.80%, 100.00% { opacity: 0 } }
+    .w5 { animation-name: w5; }  /* 28.88s to end */
+    @keyframes w5 { 0.00%, 57.85% { opacity: 0 } 58.15%, 98.50% { opacity: 1 } 98.80%, 100.00% { opacity: 0 } }
+    .w6 { animation-name: w6; }  /* 37.71s to end */
+    @keyframes w6 { 0.00%, 75.54% { opacity: 0 } 75.84%, 98.50% { opacity: 1 } 98.80%, 100.00% { opacity: 0 } }
+    .w7 { animation-name: w7; }  /* 43.04s to end */
+    @keyframes w7 { 0.00%, 86.22% { opacity: 0 } 86.52%, 98.50% { opacity: 1 } 98.80%, 100.00% { opacity: 0 } }
+    .w8 { animation-name: w8; }  /* 0.50s to 6.94s */
+    @keyframes w8 { 0.00%, 13.90% { opacity: 1 } 14.20%, 98.50% { opacity: 0 } 98.80%, 100.00% { opacity: 1 } }
+    .w9 { animation-name: w9; }  /* 6.94s to 10.97s */
+    @keyframes w9 { 0.00%, 13.90% { opacity: 0 } 14.20%, 21.98% { opacity: 1 } 22.28%, 100.00% { opacity: 0 } }
+    .w10 { animation-name: w10; }  /* 10.97s to 18.62s */
+    @keyframes w10 { 0.00%, 21.98% { opacity: 0 } 22.28%, 37.30% { opacity: 1 } 37.60%, 100.00% { opacity: 0 } }
+    .w11 { animation-name: w11; }  /* 18.62s to 22.65s */
+    @keyframes w11 { 0.00%, 37.30% { opacity: 0 } 37.60%, 45.37% { opacity: 1 } 45.67%, 100.00% { opacity: 0 } }
+    .w12 { animation-name: w12; }  /* 22.65s to 28.88s */
+    @keyframes w12 { 0.00%, 45.37% { opacity: 0 } 45.67%, 57.85% { opacity: 1 } 58.15%, 100.00% { opacity: 0 } }
+    .w13 { animation-name: w13; }  /* 28.88s to 37.71s */
+    @keyframes w13 { 0.00%, 57.85% { opacity: 0 } 58.15%, 75.54% { opacity: 1 } 75.84%, 100.00% { opacity: 0 } }
+    .w14 { animation-name: w14; }  /* 37.71s to 43.04s */
+    @keyframes w14 { 0.00%, 75.54% { opacity: 0 } 75.84%, 86.22% { opacity: 1 } 86.52%, 100.00% { opacity: 0 } }
+    @media (prefers-reduced-motion: reduce) {
+      .a { animation: none; opacity: 0; }
+      .a.fin { opacity: 1; }
+    }
+    .mvar { font-family: 'Times New Roman', Times, 'STIX Two Text', serif; font-style: italic; font-size: 1.1em; }
+  </style>
+  <text x="20" y="28" class="title">One thread, one <tspan class="mvar">k</tspan> step</text>
+  <text x="190" y="28" class="muted">loads from shared memory feed multiply-adds into registers</text>
+  <rect x="80" y="64" width="12" height="12" class="empty"/>
+  <rect x="92" y="64" width="12" height="12" class="empty"/>
+  <rect x="104" y="64" width="12" height="12" class="empty"/>
+  <rect x="116" y="64" width="12" height="12" class="empty"/>
+  <rect x="128" y="64" width="12" height="12" class="empty"/>
+  <rect x="140" y="64" width="12" height="12" class="empty"/>
+  <rect x="152" y="64" width="12" height="12" class="empty"/>
+  <rect x="164" y="64" width="12" height="12" class="empty"/>
+  <rect x="56" y="84" width="12" height="12" class="empty"/>
+  <rect x="56" y="96" width="12" height="12" class="empty"/>
+  <rect x="56" y="108" width="12" height="12" class="empty"/>
+  <rect x="56" y="120" width="12" height="12" class="empty"/>
+  <rect x="56" y="132" width="12" height="12" class="empty"/>
+  <rect x="56" y="144" width="12" height="12" class="empty"/>
+  <rect x="56" y="156" width="12" height="12" class="empty"/>
+  <rect x="56" y="168" width="12" height="12" class="empty"/>
+  <rect x="80" y="84" width="12" height="12" class="empty"/>
+  <rect x="92" y="84" width="12" height="12" class="empty"/>
+  <rect x="104" y="84" width="12" height="12" class="empty"/>
+  <rect x="116" y="84" width="12" height="12" class="empty"/>
+  <rect x="128" y="84" width="12" height="12" class="empty"/>
+  <rect x="140" y="84" width="12" height="12" class="empty"/>
+  <rect x="152" y="84" width="12" height="12" class="empty"/>
+  <rect x="164" y="84" width="12" height="12" class="empty"/>
+  <rect x="80" y="96" width="12" height="12" class="empty"/>
+  <rect x="92" y="96" width="12" height="12" class="empty"/>
+  <rect x="104" y="96" width="12" height="12" class="empty"/>
+  <rect x="116" y="96" width="12" height="12" class="empty"/>
+  <rect x="128" y="96" width="12" height="12" class="empty"/>
+  <rect x="140" y="96" width="12" height="12" class="empty"/>
+  <rect x="152" y="96" width="12" height="12" class="empty"/>
+  <rect x="164" y="96" width="12" height="12" class="empty"/>
+  <rect x="80" y="108" width="12" height="12" class="empty"/>
+  <rect x="92" y="108" width="12" height="12" class="empty"/>
+  <rect x="104" y="108" width="12" height="12" class="empty"/>
+  <rect x="116" y="108" width="12" height="12" class="empty"/>
+  <rect x="128" y="108" width="12" height="12" class="empty"/>
+  <rect x="140" y="108" width="12" height="12" class="empty"/>
+  <rect x="152" y="108" width="12" height="12" class="empty"/>
+  <rect x="164" y="108" width="12" height="12" class="empty"/>
+  <rect x="80" y="120" width="12" height="12" class="empty"/>
+  <rect x="92" y="120" width="12" height="12" class="empty"/>
+  <rect x="104" y="120" width="12" height="12" class="empty"/>
+  <rect x="116" y="120" width="12" height="12" class="empty"/>
+  <rect x="128" y="120" width="12" height="12" class="empty"/>
+  <rect x="140" y="120" width="12" height="12" class="empty"/>
+  <rect x="152" y="120" width="12" height="12" class="empty"/>
+  <rect x="164" y="120" width="12" height="12" class="empty"/>
+  <rect x="80" y="132" width="12" height="12" class="empty"/>
+  <rect x="92" y="132" width="12" height="12" class="empty"/>
+  <rect x="104" y="132" width="12" height="12" class="empty"/>
+  <rect x="116" y="132" width="12" height="12" class="empty"/>
+  <rect x="128" y="132" width="12" height="12" class="empty"/>
+  <rect x="140" y="132" width="12" height="12" class="empty"/>
+  <rect x="152" y="132" width="12" height="12" class="empty"/>
+  <rect x="164" y="132" width="12" height="12" class="empty"/>
+  <rect x="80" y="144" width="12" height="12" class="empty"/>
+  <rect x="92" y="144" width="12" height="12" class="empty"/>
+  <rect x="104" y="144" width="12" height="12" class="empty"/>
+  <rect x="116" y="144" width="12" height="12" class="empty"/>
+  <rect x="128" y="144" width="12" height="12" class="empty"/>
+  <rect x="140" y="144" width="12" height="12" class="empty"/>
+  <rect x="152" y="144" width="12" height="12" class="empty"/>
+  <rect x="164" y="144" width="12" height="12" class="empty"/>
+  <rect x="80" y="156" width="12" height="12" class="empty"/>
+  <rect x="92" y="156" width="12" height="12" class="empty"/>
+  <rect x="104" y="156" width="12" height="12" class="empty"/>
+  <rect x="116" y="156" width="12" height="12" class="empty"/>
+  <rect x="128" y="156" width="12" height="12" class="empty"/>
+  <rect x="140" y="156" width="12" height="12" class="empty"/>
+  <rect x="152" y="156" width="12" height="12" class="empty"/>
+  <rect x="164" y="156" width="12" height="12" class="empty"/>
+  <rect x="80" y="168" width="12" height="12" class="empty"/>
+  <rect x="92" y="168" width="12" height="12" class="empty"/>
+  <rect x="104" y="168" width="12" height="12" class="empty"/>
+  <rect x="116" y="168" width="12" height="12" class="empty"/>
+  <rect x="128" y="168" width="12" height="12" class="empty"/>
+  <rect x="140" y="168" width="12" height="12" class="empty"/>
+  <rect x="152" y="168" width="12" height="12" class="empty"/>
+  <rect x="164" y="168" width="12" height="12" class="empty"/>
+  <text x="182" y="74" class="muted"><tspan class="mvar">B</tspan></text>
+  <text x="62" y="196" text-anchor="middle" class="muted"><tspan class="mvar">A</tspan></text>
+  <text x="128" y="198" text-anchor="middle" class="b">8×8 patch of <tspan class="mvar">C</tspan></text>
+  <text x="128" y="216" text-anchor="middle" class="muted">block: 128×128 tile, 256 threads</text>
+  <rect x="80" y="64" width="96" height="12" class="hot"/>
+  <rect x="56" y="84" width="12" height="96" class="hot"/>
+  <text x="128" y="242" text-anchor="middle" class="num">16 loads</text>
+  <rect x="81" y="85" width="94" height="94" class="new a w1 fin" fill-opacity="0.55"/>
+  <text x="128" y="260" text-anchor="middle" class="oktext a w1 fin">64 multiply-adds</text>
+  <g class="a w2 fin">
+  <rect x="300" y="64" width="12" height="12" class="empty"/>
+  <rect x="312" y="64" width="12" height="12" class="empty"/>
+  <rect x="324" y="64" width="12" height="12" class="empty"/>
+  <rect x="336" y="64" width="12" height="12" class="empty"/>
+  <rect x="348" y="64" width="12" height="12" class="empty"/>
+  <rect x="360" y="64" width="12" height="12" class="empty"/>
+  <rect x="372" y="64" width="12" height="12" class="empty"/>
+  <rect x="384" y="64" width="12" height="12" class="empty"/>
+  </g>
+  <g class="a w2 fin">
+  <rect x="276" y="84" width="12" height="12" class="empty"/>
+  <rect x="276" y="96" width="12" height="12" class="empty"/>
+  <rect x="276" y="108" width="12" height="12" class="empty"/>
+  <rect x="276" y="120" width="12" height="12" class="empty"/>
+  <rect x="276" y="132" width="12" height="12" class="empty"/>
+  <rect x="276" y="144" width="12" height="12" class="empty"/>
+  <rect x="276" y="156" width="12" height="12" class="empty"/>
+  <rect x="276" y="168" width="12" height="12" class="empty"/>
+  <rect x="276" y="180" width="12" height="12" class="empty"/>
+  <rect x="276" y="192" width="12" height="12" class="empty"/>
+  <rect x="276" y="204" width="12" height="12" class="empty"/>
+  <rect x="276" y="216" width="12" height="12" class="empty"/>
+  <rect x="276" y="228" width="12" height="12" class="empty"/>
+  <rect x="276" y="240" width="12" height="12" class="empty"/>
+  <rect x="276" y="252" width="12" height="12" class="empty"/>
+  <rect x="276" y="264" width="12" height="12" class="empty"/>
+  </g>
+  <g class="a w2 fin">
+  <rect x="300" y="84" width="12" height="12" class="empty"/>
+  <rect x="312" y="84" width="12" height="12" class="empty"/>
+  <rect x="324" y="84" width="12" height="12" class="empty"/>
+  <rect x="336" y="84" width="12" height="12" class="empty"/>
+  <rect x="348" y="84" width="12" height="12" class="empty"/>
+  <rect x="360" y="84" width="12" height="12" class="empty"/>
+  <rect x="372" y="84" width="12" height="12" class="empty"/>
+  <rect x="384" y="84" width="12" height="12" class="empty"/>
+  <rect x="300" y="96" width="12" height="12" class="empty"/>
+  <rect x="312" y="96" width="12" height="12" class="empty"/>
+  <rect x="324" y="96" width="12" height="12" class="empty"/>
+  <rect x="336" y="96" width="12" height="12" class="empty"/>
+  <rect x="348" y="96" width="12" height="12" class="empty"/>
+  <rect x="360" y="96" width="12" height="12" class="empty"/>
+  <rect x="372" y="96" width="12" height="12" class="empty"/>
+  <rect x="384" y="96" width="12" height="12" class="empty"/>
+  <rect x="300" y="108" width="12" height="12" class="empty"/>
+  <rect x="312" y="108" width="12" height="12" class="empty"/>
+  <rect x="324" y="108" width="12" height="12" class="empty"/>
+  <rect x="336" y="108" width="12" height="12" class="empty"/>
+  <rect x="348" y="108" width="12" height="12" class="empty"/>
+  <rect x="360" y="108" width="12" height="12" class="empty"/>
+  <rect x="372" y="108" width="12" height="12" class="empty"/>
+  <rect x="384" y="108" width="12" height="12" class="empty"/>
+  <rect x="300" y="120" width="12" height="12" class="empty"/>
+  <rect x="312" y="120" width="12" height="12" class="empty"/>
+  <rect x="324" y="120" width="12" height="12" class="empty"/>
+  <rect x="336" y="120" width="12" height="12" class="empty"/>
+  <rect x="348" y="120" width="12" height="12" class="empty"/>
+  <rect x="360" y="120" width="12" height="12" class="empty"/>
+  <rect x="372" y="120" width="12" height="12" class="empty"/>
+  <rect x="384" y="120" width="12" height="12" class="empty"/>
+  <rect x="300" y="132" width="12" height="12" class="empty"/>
+  <rect x="312" y="132" width="12" height="12" class="empty"/>
+  <rect x="324" y="132" width="12" height="12" class="empty"/>
+  <rect x="336" y="132" width="12" height="12" class="empty"/>
+  <rect x="348" y="132" width="12" height="12" class="empty"/>
+  <rect x="360" y="132" width="12" height="12" class="empty"/>
+  <rect x="372" y="132" width="12" height="12" class="empty"/>
+  <rect x="384" y="132" width="12" height="12" class="empty"/>
+  <rect x="300" y="144" width="12" height="12" class="empty"/>
+  <rect x="312" y="144" width="12" height="12" class="empty"/>
+  <rect x="324" y="144" width="12" height="12" class="empty"/>
+  <rect x="336" y="144" width="12" height="12" class="empty"/>
+  <rect x="348" y="144" width="12" height="12" class="empty"/>
+  <rect x="360" y="144" width="12" height="12" class="empty"/>
+  <rect x="372" y="144" width="12" height="12" class="empty"/>
+  <rect x="384" y="144" width="12" height="12" class="empty"/>
+  <rect x="300" y="156" width="12" height="12" class="empty"/>
+  <rect x="312" y="156" width="12" height="12" class="empty"/>
+  <rect x="324" y="156" width="12" height="12" class="empty"/>
+  <rect x="336" y="156" width="12" height="12" class="empty"/>
+  <rect x="348" y="156" width="12" height="12" class="empty"/>
+  <rect x="360" y="156" width="12" height="12" class="empty"/>
+  <rect x="372" y="156" width="12" height="12" class="empty"/>
+  <rect x="384" y="156" width="12" height="12" class="empty"/>
+  <rect x="300" y="168" width="12" height="12" class="empty"/>
+  <rect x="312" y="168" width="12" height="12" class="empty"/>
+  <rect x="324" y="168" width="12" height="12" class="empty"/>
+  <rect x="336" y="168" width="12" height="12" class="empty"/>
+  <rect x="348" y="168" width="12" height="12" class="empty"/>
+  <rect x="360" y="168" width="12" height="12" class="empty"/>
+  <rect x="372" y="168" width="12" height="12" class="empty"/>
+  <rect x="384" y="168" width="12" height="12" class="empty"/>
+  <rect x="300" y="180" width="12" height="12" class="empty"/>
+  <rect x="312" y="180" width="12" height="12" class="empty"/>
+  <rect x="324" y="180" width="12" height="12" class="empty"/>
+  <rect x="336" y="180" width="12" height="12" class="empty"/>
+  <rect x="348" y="180" width="12" height="12" class="empty"/>
+  <rect x="360" y="180" width="12" height="12" class="empty"/>
+  <rect x="372" y="180" width="12" height="12" class="empty"/>
+  <rect x="384" y="180" width="12" height="12" class="empty"/>
+  <rect x="300" y="192" width="12" height="12" class="empty"/>
+  <rect x="312" y="192" width="12" height="12" class="empty"/>
+  <rect x="324" y="192" width="12" height="12" class="empty"/>
+  <rect x="336" y="192" width="12" height="12" class="empty"/>
+  <rect x="348" y="192" width="12" height="12" class="empty"/>
+  <rect x="360" y="192" width="12" height="12" class="empty"/>
+  <rect x="372" y="192" width="12" height="12" class="empty"/>
+  <rect x="384" y="192" width="12" height="12" class="empty"/>
+  <rect x="300" y="204" width="12" height="12" class="empty"/>
+  <rect x="312" y="204" width="12" height="12" class="empty"/>
+  <rect x="324" y="204" width="12" height="12" class="empty"/>
+  <rect x="336" y="204" width="12" height="12" class="empty"/>
+  <rect x="348" y="204" width="12" height="12" class="empty"/>
+  <rect x="360" y="204" width="12" height="12" class="empty"/>
+  <rect x="372" y="204" width="12" height="12" class="empty"/>
+  <rect x="384" y="204" width="12" height="12" class="empty"/>
+  <rect x="300" y="216" width="12" height="12" class="empty"/>
+  <rect x="312" y="216" width="12" height="12" class="empty"/>
+  <rect x="324" y="216" width="12" height="12" class="empty"/>
+  <rect x="336" y="216" width="12" height="12" class="empty"/>
+  <rect x="348" y="216" width="12" height="12" class="empty"/>
+  <rect x="360" y="216" width="12" height="12" class="empty"/>
+  <rect x="372" y="216" width="12" height="12" class="empty"/>
+  <rect x="384" y="216" width="12" height="12" class="empty"/>
+  <rect x="300" y="228" width="12" height="12" class="empty"/>
+  <rect x="312" y="228" width="12" height="12" class="empty"/>
+  <rect x="324" y="228" width="12" height="12" class="empty"/>
+  <rect x="336" y="228" width="12" height="12" class="empty"/>
+  <rect x="348" y="228" width="12" height="12" class="empty"/>
+  <rect x="360" y="228" width="12" height="12" class="empty"/>
+  <rect x="372" y="228" width="12" height="12" class="empty"/>
+  <rect x="384" y="228" width="12" height="12" class="empty"/>
+  <rect x="300" y="240" width="12" height="12" class="empty"/>
+  <rect x="312" y="240" width="12" height="12" class="empty"/>
+  <rect x="324" y="240" width="12" height="12" class="empty"/>
+  <rect x="336" y="240" width="12" height="12" class="empty"/>
+  <rect x="348" y="240" width="12" height="12" class="empty"/>
+  <rect x="360" y="240" width="12" height="12" class="empty"/>
+  <rect x="372" y="240" width="12" height="12" class="empty"/>
+  <rect x="384" y="240" width="12" height="12" class="empty"/>
+  <rect x="300" y="252" width="12" height="12" class="empty"/>
+  <rect x="312" y="252" width="12" height="12" class="empty"/>
+  <rect x="324" y="252" width="12" height="12" class="empty"/>
+  <rect x="336" y="252" width="12" height="12" class="empty"/>
+  <rect x="348" y="252" width="12" height="12" class="empty"/>
+  <rect x="360" y="252" width="12" height="12" class="empty"/>
+  <rect x="372" y="252" width="12" height="12" class="empty"/>
+  <rect x="384" y="252" width="12" height="12" class="empty"/>
+  <rect x="300" y="264" width="12" height="12" class="empty"/>
+  <rect x="312" y="264" width="12" height="12" class="empty"/>
+  <rect x="324" y="264" width="12" height="12" class="empty"/>
+  <rect x="336" y="264" width="12" height="12" class="empty"/>
+  <rect x="348" y="264" width="12" height="12" class="empty"/>
+  <rect x="360" y="264" width="12" height="12" class="empty"/>
+  <rect x="372" y="264" width="12" height="12" class="empty"/>
+  <rect x="384" y="264" width="12" height="12" class="empty"/>
+  </g>
+  <text x="402" y="74" class="muted a w2 fin"><tspan class="mvar">B</tspan></text>
+  <text x="282" y="292" text-anchor="middle" class="muted a w2 fin"><tspan class="mvar">A</tspan></text>
+  <rect x="300" y="64" width="96" height="12" class="hot a w2 fin"/>
+  <rect x="276" y="84" width="12" height="192" class="hot a w2 fin"/>
+  <text x="412" y="144" class="b a w2 fin">16×8 patch of <tspan class="mvar">C</tspan></text>
+  <text x="412" y="162" class="muted a w2 fin">block: 128×256 tile,</text>
+  <text x="412" y="177" class="muted a w2 fin">256 threads</text>
+  <text x="412" y="202" class="num a w2 fin">24 loads</text>
+  <rect x="301" y="85" width="94" height="190" class="new a w3 fin" fill-opacity="0.55"/>
+  <text x="412" y="220" class="oktext a w3 fin">128 multiply-adds</text>
+  <text x="550" y="104" class="b a w4 fin">loads per multiply-add</text>
+  <text x="550" y="134" class="a w4 fin">8×8: 16 ÷ 64</text>
+  <rect x="550" y="142" width="195.0" height="12" rx="2" class="hot a w4 fin"/>
+  <text x="550" y="178" class="a w4 fin">16×8: 24 ÷ 128</text>
+  <rect x="550" y="186" width="146.2" height="12" rx="2" class="new a w4 fin"/>
+  <text x="20" y="330" class="title a w5 fin">One SM's register file (to scale)</text>
+  <g class="a w5 fin">
+  <rect x="150" y="350" width="440" height="36" class="empty"/>
+  </g>
+  <text x="20" y="365" class="b a w5 fin">8×8 per thread</text>
+  <text x="20" y="381" class="muted a w5 fin">128 regs/thread</text>
+  <rect x="150.0" y="350" width="220.0" height="36" class="blk a w5 fin"/>
+  <text x="260.0" y="373" text-anchor="middle" class="b sm on-blk a w5 fin">256 threads × 128 regs</text>
+  <rect x="370.0" y="350" width="220.0" height="36" class="blk a w5 fin"/>
+  <text x="480.0" y="373" text-anchor="middle" class="b sm on-blk a w5 fin">256 threads × 128 regs</text>
+  <text x="604" y="373" class="oktext a w5 fin" style="font-size:15px">2 blocks per SM</text>
+  <g class="a w6 fin">
+  <rect x="150" y="414" width="440" height="36" class="empty"/>
+  </g>
+  <text x="20" y="429" class="b a w6 fin">16×8 per thread</text>
+  <text x="20" y="445" class="muted a w6 fin">237 regs/thread</text>
+  <rect x="150" y="414" width="407.3" height="36" class="blk a w6 fin"/>
+  <text x="353.7" y="437" text-anchor="middle" class="b sm on-blk a w6 fin">256 threads × 237 regs</text>
+  <rect x="557.3" y="414" width="32.7" height="36" class="hot a w7 fin"/>
+  <text x="590" y="408" text-anchor="end" class="num a w7 fin">no room for block 2</text>
+  <text x="604" y="437" class="num a w7 fin" style="font-size:15px">1 block per SM</text>
+  <text x="20" y="500" class="a w8">Before: 8 values of <tspan class="mvar">A</tspan> and 8 of <tspan class="mvar">B</tspan> per <tspan class="mvar">k</tspan> step.</text>
+  <text x="20" y="500" class="a w9">Every <tspan class="mvar">A</tspan>–<tspan class="mvar">B</tspan> pair updates one entry of the patch.</text>
+  <text x="20" y="500" class="a w10">After: twice the rows means 16 values of <tspan class="mvar">A</tspan>, but still only 8 of <tspan class="mvar">B</tspan>.</text>
+  <text x="20" y="500" class="a w11">Twice the multiply-adds for 1.5× the loads (24 vs 16).</text>
+  <text x="20" y="500" class="a w12">The same 8 <tspan class="mvar">B</tspan> values now serve twice as many rows.</text>
+  <text x="20" y="500" class="a w13">Before: one block's loads could overlap the other's math.</text>
+  <text x="20" y="500" class="a w14">Each thread's 128 running sums must stay in registers.</text>
+  <text x="20" y="500" class="b a w7 fin">A bigger patch trades registers for fewer shared-memory loads per multiply-add.</text>
+</svg>

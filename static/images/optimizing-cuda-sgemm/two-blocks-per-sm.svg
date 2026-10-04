@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 374" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated register file of one SM, drawn to scale. Uncapped, the kernel uses 168 registers per thread, so one block of 256 threads takes most of the file and a second block does not fit in what is left: one block per SM. With __launch_bounds__(256, 2) the compiler caps threads at 128 registers at the cost of a few spills, and each block takes exactly half the file, so two blocks run on each SM.">
+  <style>
+    :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #ddd; --muted: #999; --full: #555; --empty: #1e1e1e; --edge: #777; --probe: #ff8a4c; --ok: #69db7c; --chip: #2a2a2a; }
+    }
+    text { fill: var(--fg); font-size: 14px; }
+    .muted { fill: var(--muted); font-size: 12px; }
+    .title { font-weight: 600; font-size: 15px; }
+    .b { font-weight: 600; }
+    .sm { font-size: 12px; }
+    .empty { fill: var(--empty); stroke: var(--edge); }
+    .chip { fill: var(--chip); stroke: var(--edge); }
+    .hot { fill: var(--probe); fill-opacity: 0.35; stroke: var(--probe); stroke-width: 2; }
+    .over { fill: none; stroke: var(--probe); stroke-width: 2; stroke-dasharray: 6 4; }
+    .blk { fill: var(--ok); fill-opacity: 0.45; stroke: var(--ok); stroke-width: 2; }
+    .num { fill: var(--probe); font-weight: 600; font-size: 13px; }
+    .oktext { fill: var(--ok); font-weight: 600; }
+    .tick { stroke: var(--edge); stroke-width: 0.6; stroke-opacity: 0.6; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; }
+    /* 42.85s loop, 8 steps starting at 0.5, 5, 9.5, 15, 19, 24.8, 29.1, 34.1 s; final frame holds 8s, then fades. */
+    .a { opacity: 0; animation: 42.85s linear infinite; }
+    .st1-2 { animation-name: st1_2; }  /* 0.5s to 5s */
+    @keyframes st1_2 { 0.00%, 11.67% { opacity: 1 } 12.02%, 98.25% { opacity: 0 } 98.60%, 100.00% { opacity: 1 } }
+    .st2 { animation-name: st2; }  /* 5s to end */
+    @keyframes st2 { 0.00%, 11.67% { opacity: 0 } 12.02%, 98.25% { opacity: 1 } 98.60%, 100.00% { opacity: 0 } }
+    .st2-3 { animation-name: st2_3; }  /* 5s to 9.5s */
+    @keyframes st2_3 { 0.00%, 11.67% { opacity: 0 } 12.02%, 22.17% { opacity: 1 } 22.52%, 100.00% { opacity: 0 } }
+    .st3 { animation-name: st3; }  /* 9.5s to end */
+    @keyframes st3 { 0.00%, 22.17% { opacity: 0 } 22.52%, 98.25% { opacity: 1 } 98.60%, 100.00% { opacity: 0 } }
+    .st3-4 { animation-name: st3_4; }  /* 9.5s to 15s */
+    @keyframes st3_4 { 0.00%, 22.17% { opacity: 0 } 22.52%, 35.01% { opacity: 1 } 35.36%, 100.00% { opacity: 0 } }
+    .st4 { animation-name: st4; }  /* 15s to end */
+    @keyframes st4 { 0.00%, 35.01% { opacity: 0 } 35.36%, 98.25% { opacity: 1 } 98.60%, 100.00% { opacity: 0 } }
+    .st4-5 { animation-name: st4_5; }  /* 15s to 19s */
+    @keyframes st4_5 { 0.00%, 35.01% { opacity: 0 } 35.36%, 44.34% { opacity: 1 } 44.69%, 100.00% { opacity: 0 } }
+    .st5 { animation-name: st5; }  /* 19s to end */
+    @keyframes st5 { 0.00%, 44.34% { opacity: 0 } 44.69%, 98.25% { opacity: 1 } 98.60%, 100.00% { opacity: 0 } }
+    .st5-6 { animation-name: st5_6; }  /* 19s to 24.8s */
+    @keyframes st5_6 { 0.00%, 44.34% { opacity: 0 } 44.69%, 57.88% { opacity: 1 } 58.23%, 100.00% { opacity: 0 } }
+    .st6 { animation-name: st6; }  /* 24.8s to end */
+    @keyframes st6 { 0.00%, 57.88% { opacity: 0 } 58.23%, 98.25% { opacity: 1 } 98.60%, 100.00% { opacity: 0 } }
+    .st6-7 { animation-name: st6_7; }  /* 24.8s to 29.1s */
+    @keyframes st6_7 { 0.00%, 57.88% { opacity: 0 } 58.23%, 67.91% { opacity: 1 } 68.26%, 100.00% { opacity: 0 } }
+    .st7 { animation-name: st7; }  /* 29.1s to end */
+    @keyframes st7 { 0.00%, 67.91% { opacity: 0 } 68.26%, 98.25% { opacity: 1 } 98.60%, 100.00% { opacity: 0 } }
+    .st7-8 { animation-name: st7_8; }  /* 29.1s to 34.1s */
+    @keyframes st7_8 { 0.00%, 67.91% { opacity: 0 } 68.26%, 79.58% { opacity: 1 } 79.93%, 100.00% { opacity: 0 } }
+    .st8 { animation-name: st8; }  /* 34.1s to end */
+    @keyframes st8 { 0.00%, 79.58% { opacity: 0 } 79.93%, 98.25% { opacity: 1 } 98.60%, 100.00% { opacity: 0 } }
+    @media (prefers-reduced-motion: reduce) {
+      .a { animation: none; opacity: 0; }
+      .a.fin { opacity: 1; }
+    }
+    </style>
+  <text x="20" y="28" class="title">One SM's register file, drawn to scale</text>
+  <text x="20" y="48" class="muted">A block of 256 threads can only start if all of its registers fit.</text>
+  <text x="20" y="114" class="b">no cap</text>
+  <text x="20" y="132" class="muted a st2 fin">168 regs/thread</text>
+  <rect x="150" y="96" width="440" height="44" class="empty"/>
+  <text x="590" y="156" text-anchor="end" class="muted">end of file</text>
+  <rect x="150" y="96" width="288.8" height="44" class="blk a st2 fin"/>
+  <text x="294.4" y="123" text-anchor="middle" class="b sm a st2 fin">block 1</text>
+  <rect x="590" y="96" width="137.6" height="44" class="hot a st3 fin"/>
+  <rect x="438.8" y="96" width="288.8" height="44" class="over a st3 fin"/>
+  <text x="583.2" y="86" text-anchor="middle" class="num a st3 fin">block 2</text>
+  <text x="514.4" y="123" text-anchor="middle" class="num a st3 fin">left over</text>
+  <text x="658.8" y="123" text-anchor="middle" class="num a st3 fin">doesn't fit</text>
+  <text x="294.4" y="176" text-anchor="middle" class="num a st4 fin" style="font-size:15px">1 block per SM</text>
+  <text x="20" y="216" class="mono a st5 fin">__launch_bounds__(256, 2)</text>
+  <text x="20" y="254" class="b a st5 fin">capped</text>
+  <text x="20" y="272" class="muted a st5 fin">128 regs/thread</text>
+  <g class="a st5 fin">
+  <rect x="150" y="236" width="440" height="44" class="empty"/>
+  <text x="590" y="296" text-anchor="end" class="muted">end of file</text>
+  </g>
+  <rect x="250" y="200" width="110" height="22" rx="4" class="chip a st6 fin"/>
+  <text x="305" y="216" text-anchor="middle" class="num a st6 fin">a few spills</text>
+  <rect x="150" y="236" width="220.0" height="44" class="blk a st7 fin"/>
+  <text x="260.0" y="263" text-anchor="middle" class="b sm a st7 fin">block 1: exactly half</text>
+  <rect x="370.0" y="236" width="220.0" height="44" class="blk a st8 fin"/>
+  <text x="480.0" y="263" text-anchor="middle" class="b sm a st8 fin">block 2</text>
+  <text x="370.0" y="316" text-anchor="middle" class="oktext a st8 fin" style="font-size:15px">2 blocks per SM</text>
+  <text x="20" y="358" class="a st1-2">A resident block holds all its threads' registers until it finishes.</text>
+  <text x="20" y="358" class="a st2-3">Uncapped, the compiler spends registers freely.</text>
+  <text x="20" y="358" class="a st3-4">What is left is too small for a second block, so it sits unused.</text>
+  <text x="20" y="358" class="a st4-5">The T4 hit the same limit.</text>
+  <text x="20" y="358" class="a st5-6">The launch bound tells the compiler to plan for two resident blocks per SM.</text>
+  <text x="20" y="358" class="a st6-7">The price of fewer registers is a little extra memory traffic.</text>
+  <text x="20" y="358" class="a st7-8">256 threads × 128 registers is exactly half the file.</text>
+  <text x="20" y="358" class="b a st8 fin">Capping registers trades a few spills for twice the resident threads.</text>
+</svg>

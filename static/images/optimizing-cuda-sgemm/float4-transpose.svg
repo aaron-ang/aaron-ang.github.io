@@ -1,0 +1,325 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 440" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated float4 loads of A’s tile. Every K step a block copies a 128 by 32 tile of A from global memory into shared memory. Loading one float per load, row 0 of the tile takes 32 loads; with float4, threads t0 to t7 each load 4 floats, so the same bytes take 8 loads, 4 times fewer, and B’s tile loads the same way. Aside: As is stored transposed, so t0’s 4 values go down column 0, one row per k, t1’s 4 values continue down the same column, and t2 to t7 follow down to k = 31; the transpose only changes where values land. Rows continue to k = 31 and columns to row 127 of A.">
+  <style>
+    :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #ddd; --muted: #999; --full: #555; --empty: #1e1e1e; --edge: #777; --probe: #ff8a4c; --ok: #69db7c; --chip: #2a2a2a; }
+    }
+    text { fill: var(--fg); font-size: 14px; }
+    .muted { fill: var(--muted); font-size: 12px; }
+    .title { font-weight: 600; font-size: 15px; }
+    .title2 { font-weight: 600; font-size: 13px; fill: var(--muted); }
+    .b { font-weight: 600; }
+    .sm { font-size: 12px; }
+    .xs { font-size: 11px; }
+    .vd { font-size: 12px; }
+    .mvar { font-family: 'Times New Roman', Times, 'STIX Two Text', serif; font-style: italic; font-size: 1.1em; }
+    .big { font-size: 15px; }
+    .empty { fill: var(--empty); stroke: var(--edge); }
+    .full { fill: var(--full); stroke: var(--edge); }
+    .hot { fill: var(--probe); fill-opacity: 0.35; stroke: var(--probe); stroke-width: 1.5; }
+    .new { fill: var(--ok); fill-opacity: 0.55; stroke: var(--ok); stroke-width: 1; }
+    .newlt { fill: var(--ok); fill-opacity: 0.25; stroke: var(--ok); stroke-width: 1; }
+    .okring { fill: none; stroke: var(--ok); stroke-width: 3; }
+    .badge { fill: var(--ok); fill-opacity: 0.12; stroke: var(--ok); stroke-width: 1.5; }
+    .num { fill: var(--probe); font-weight: 600; font-size: 13px; }
+    .oktext { fill: var(--ok); font-weight: 600; }
+    .arrow { fill: none; stroke: var(--ok); stroke-width: 2; }
+    .arrowhead { fill: var(--ok); }
+    .dash { fill: none; stroke: var(--edge); stroke-width: 1.5; stroke-dasharray: 5 4; }
+    .dash2 { fill: none; stroke: var(--edge); stroke-width: 1; stroke-dasharray: 3 4; }
+    /* 37.0s loop, 6 steps starting at 0.5, 8.65, 14.05, 19.3, 25.85, 31.45 s; final frame holds 4.8s, then fades. */
+    .a { opacity: 0; animation: 37.0s linear infinite; }
+    .st1-2 { animation-name: st1_2; }  /* 0.5s to 8.65s */
+    @keyframes st1_2 { 0.00%, 23.38% { opacity: 1 } 23.78%, 97.97% { opacity: 0 } 98.38%, 100.00% { opacity: 1 } }
+    .st2-3 { animation-name: st2_3; }  /* 8.65s to 14.05s */
+    @keyframes st2_3 { 0.00%, 23.38% { opacity: 0 } 23.78%, 37.97% { opacity: 1 } 38.38%, 100.00% { opacity: 0 } }
+    .st2 { animation-name: st2; }  /* 8.65s to end */
+    @keyframes st2 { 0.00%, 23.38% { opacity: 0 } 23.78%, 97.97% { opacity: 1 } 98.38%, 100.00% { opacity: 0 } }
+    .st3-4 { animation-name: st3_4; }  /* 14.05s to 19.3s */
+    @keyframes st3_4 { 0.00%, 37.97% { opacity: 0 } 38.38%, 52.16% { opacity: 1 } 52.57%, 100.00% { opacity: 0 } }
+    .st3 { animation-name: st3; }  /* 14.05s to end */
+    @keyframes st3 { 0.00%, 37.97% { opacity: 0 } 38.38%, 97.97% { opacity: 1 } 98.38%, 100.00% { opacity: 0 } }
+    .st4-5 { animation-name: st4_5; }  /* 19.3s to 25.85s */
+    @keyframes st4_5 { 0.00%, 52.16% { opacity: 0 } 52.57%, 69.86% { opacity: 1 } 70.27%, 100.00% { opacity: 0 } }
+    .st4 { animation-name: st4; }  /* 19.3s to end */
+    @keyframes st4 { 0.00%, 52.16% { opacity: 0 } 52.57%, 97.97% { opacity: 1 } 98.38%, 100.00% { opacity: 0 } }
+    .st5-6 { animation-name: st5_6; }  /* 25.85s to 31.45s */
+    @keyframes st5_6 { 0.00%, 69.86% { opacity: 0 } 70.27%, 85.00% { opacity: 1 } 85.41%, 100.00% { opacity: 0 } }
+    .st5 { animation-name: st5; }  /* 25.85s to end */
+    @keyframes st5 { 0.00%, 69.86% { opacity: 0 } 70.27%, 97.97% { opacity: 1 } 98.38%, 100.00% { opacity: 0 } }
+    .st6 { animation-name: st6; }  /* 31.45s to end */
+    @keyframes st6 { 0.00%, 85.00% { opacity: 0 } 85.41%, 97.97% { opacity: 1 } 98.38%, 100.00% { opacity: 0 } }
+    @media (prefers-reduced-motion: reduce) {
+      .a { animation: none; opacity: 0; }
+      .a.fin { opacity: 1; }
+    }
+  </style>
+  <text x="20" y="26" class="title">Loading <tspan class="mvar">A</tspan>’s tile: 1 float vs. 4 floats per load</text>
+  <rect x="12" y="44" width="736" height="166" class="dash" rx="8"/>
+  <text x="24" y="68" class="title">global memory</text>
+  <text x="190" y="68" class="muted">row 0 of <tspan class="mvar">A</tspan>’s 128×32 tile: <tspan class="mvar">k</tspan> = 0 … 31</text>
+  <text x="24" y="95" class="muted"><tspan class="mvar">A</tspan>, row 0</text>
+  <rect x="136" y="82" width="14" height="14" class="empty"/>
+  <rect x="150" y="82" width="14" height="14" class="empty"/>
+  <rect x="164" y="82" width="14" height="14" class="empty"/>
+  <rect x="178" y="82" width="14" height="14" class="empty"/>
+  <rect x="192" y="82" width="14" height="14" class="empty"/>
+  <rect x="206" y="82" width="14" height="14" class="empty"/>
+  <rect x="220" y="82" width="14" height="14" class="empty"/>
+  <rect x="234" y="82" width="14" height="14" class="empty"/>
+  <rect x="248" y="82" width="14" height="14" class="empty"/>
+  <rect x="262" y="82" width="14" height="14" class="empty"/>
+  <rect x="276" y="82" width="14" height="14" class="empty"/>
+  <rect x="290" y="82" width="14" height="14" class="empty"/>
+  <rect x="304" y="82" width="14" height="14" class="empty"/>
+  <rect x="318" y="82" width="14" height="14" class="empty"/>
+  <rect x="332" y="82" width="14" height="14" class="empty"/>
+  <rect x="346" y="82" width="14" height="14" class="empty"/>
+  <rect x="360" y="82" width="14" height="14" class="empty"/>
+  <rect x="374" y="82" width="14" height="14" class="empty"/>
+  <rect x="388" y="82" width="14" height="14" class="empty"/>
+  <rect x="402" y="82" width="14" height="14" class="empty"/>
+  <rect x="416" y="82" width="14" height="14" class="empty"/>
+  <rect x="430" y="82" width="14" height="14" class="empty"/>
+  <rect x="444" y="82" width="14" height="14" class="empty"/>
+  <rect x="458" y="82" width="14" height="14" class="empty"/>
+  <rect x="472" y="82" width="14" height="14" class="empty"/>
+  <rect x="486" y="82" width="14" height="14" class="empty"/>
+  <rect x="500" y="82" width="14" height="14" class="empty"/>
+  <rect x="514" y="82" width="14" height="14" class="empty"/>
+  <rect x="528" y="82" width="14" height="14" class="empty"/>
+  <rect x="542" y="82" width="14" height="14" class="empty"/>
+  <rect x="556" y="82" width="14" height="14" class="empty"/>
+  <rect x="570" y="82" width="14" height="14" class="empty"/>
+  <text x="24" y="122" class="b sm a st2 fin">before</text>
+  <text x="70" y="122" class="muted a st2 fin">1 per load</text>
+  <rect x="138" y="110" width="10" height="12" rx="2" class="hot a st2 fin"/>
+  <rect x="152" y="110" width="10" height="12" rx="2" class="hot a st2 fin"/>
+  <rect x="166" y="110" width="10" height="12" rx="2" class="hot a st2 fin"/>
+  <rect x="180" y="110" width="10" height="12" rx="2" class="hot a st2 fin"/>
+  <rect x="194" y="110" width="10" height="12" rx="2" class="hot a st2 fin"/>
+  <rect x="208" y="110" width="10" height="12" rx="2" class="hot a st2 fin"/>
+  <rect x="222" y="110" width="10" height="12" rx="2" class="hot a st2 fin"/>
+  <rect x="236" y="110" width="10" height="12" rx="2" class="hot a st2 fin"/>
+  <rect x="250" y="110" width="10" height="12" rx="2" class="hot a st2 fin"/>
+  <rect x="264" y="110" width="10" height="12" rx="2" class="hot a st2 fin"/>
+  <rect x="278" y="110" width="10" height="12" rx="2" class="hot a st2 fin"/>
+  <rect x="292" y="110" width="10" height="12" rx="2" class="hot a st2 fin"/>
+  <rect x="306" y="110" width="10" height="12" rx="2" class="hot a st2 fin"/>
+  <rect x="320" y="110" width="10" height="12" rx="2" class="hot a st2 fin"/>
+  <rect x="334" y="110" width="10" height="12" rx="2" class="hot a st2 fin"/>
+  <rect x="348" y="110" width="10" height="12" rx="2" class="hot a st2 fin"/>
+  <rect x="362" y="110" width="10" height="12" rx="2" class="hot a st2 fin"/>
+  <rect x="376" y="110" width="10" height="12" rx="2" class="hot a st2 fin"/>
+  <rect x="390" y="110" width="10" height="12" rx="2" class="hot a st2 fin"/>
+  <rect x="404" y="110" width="10" height="12" rx="2" class="hot a st2 fin"/>
+  <rect x="418" y="110" width="10" height="12" rx="2" class="hot a st2 fin"/>
+  <rect x="432" y="110" width="10" height="12" rx="2" class="hot a st2 fin"/>
+  <rect x="446" y="110" width="10" height="12" rx="2" class="hot a st2 fin"/>
+  <rect x="460" y="110" width="10" height="12" rx="2" class="hot a st2 fin"/>
+  <rect x="474" y="110" width="10" height="12" rx="2" class="hot a st2 fin"/>
+  <rect x="488" y="110" width="10" height="12" rx="2" class="hot a st2 fin"/>
+  <rect x="502" y="110" width="10" height="12" rx="2" class="hot a st2 fin"/>
+  <rect x="516" y="110" width="10" height="12" rx="2" class="hot a st2 fin"/>
+  <rect x="530" y="110" width="10" height="12" rx="2" class="hot a st2 fin"/>
+  <rect x="544" y="110" width="10" height="12" rx="2" class="hot a st2 fin"/>
+  <rect x="558" y="110" width="10" height="12" rx="2" class="hot a st2 fin"/>
+  <rect x="572" y="110" width="10" height="12" rx="2" class="hot a st2 fin"/>
+  <text x="600" y="122" class="num a st2 fin"><tspan class="big">32</tspan> loads, 1 float each</text>
+  <text x="24" y="152" class="b sm a st3 fin">float4</text>
+  <text x="70" y="152" class="muted a st3 fin">4 per load</text>
+  <rect x="138" y="140" width="52" height="12" rx="2" class="new a st3 fin"/>
+  <text x="164" y="168" text-anchor="middle" class="muted a st3 fin">t0</text>
+  <rect x="194" y="140" width="52" height="12" rx="2" class="new a st3 fin"/>
+  <text x="220" y="168" text-anchor="middle" class="muted a st3 fin">t1</text>
+  <rect x="250" y="140" width="52" height="12" rx="2" class="new a st3 fin"/>
+  <text x="276" y="168" text-anchor="middle" class="muted a st3 fin">t2</text>
+  <rect x="306" y="140" width="52" height="12" rx="2" class="new a st3 fin"/>
+  <text x="332" y="168" text-anchor="middle" class="muted a st3 fin">t3</text>
+  <rect x="362" y="140" width="52" height="12" rx="2" class="new a st3 fin"/>
+  <text x="388" y="168" text-anchor="middle" class="muted a st3 fin">t4</text>
+  <rect x="418" y="140" width="52" height="12" rx="2" class="new a st3 fin"/>
+  <text x="444" y="168" text-anchor="middle" class="muted a st3 fin">t5</text>
+  <rect x="474" y="140" width="52" height="12" rx="2" class="new a st3 fin"/>
+  <text x="500" y="168" text-anchor="middle" class="muted a st3 fin">t6</text>
+  <rect x="530" y="140" width="52" height="12" rx="2" class="new a st3 fin"/>
+  <text x="556" y="168" text-anchor="middle" class="muted a st3 fin">t7</text>
+  <text x="600" y="152" class="oktext a st3 fin"><tspan class="big">8</tspan> loads, 4 floats each</text>
+  <text x="600" y="170" class="muted a st3 fin"><tspan class="mvar">B</tspan>’s tile too</text>
+  <rect x="190" y="180" width="340" height="22" rx="11" class="badge a st4 fin"/>
+  <text x="360" y="196" text-anchor="middle" class="oktext a st4 fin">same bytes, 4× fewer loads</text>
+  <rect x="12" y="220" width="736" height="182" class="dash2" rx="8"/>
+  <text x="24" y="240" class="title2">shared memory</text>
+  <text x="250" y="240" class="muted"><tspan class="mvar">A</tspan><tspan baseline-shift="sub" font-size="0.7em">s</tspan>, stored transposed: one row per <tspan class="mvar">k</tspan>, one column per row of <tspan class="mvar">A</tspan></text>
+  <text x="120" y="274" text-anchor="middle" class="muted xs"><tspan class="mvar">k</tspan> = 0</text>
+  <rect x="150" y="264" width="12" height="12" class="empty"/>
+  <rect x="162" y="264" width="12" height="12" class="empty"/>
+  <rect x="174" y="264" width="12" height="12" class="empty"/>
+  <rect x="186" y="264" width="12" height="12" class="empty"/>
+  <rect x="198" y="264" width="12" height="12" class="empty"/>
+  <rect x="210" y="264" width="12" height="12" class="empty"/>
+  <rect x="222" y="264" width="12" height="12" class="empty"/>
+  <rect x="234" y="264" width="12" height="12" class="empty"/>
+  <rect x="246" y="264" width="12" height="12" class="empty"/>
+  <rect x="258" y="264" width="12" height="12" class="empty"/>
+  <rect x="270" y="264" width="12" height="12" class="empty"/>
+  <rect x="282" y="264" width="12" height="12" class="empty"/>
+  <rect x="294" y="264" width="12" height="12" class="empty"/>
+  <rect x="306" y="264" width="12" height="12" class="empty"/>
+  <rect x="318" y="264" width="12" height="12" class="empty"/>
+  <rect x="330" y="264" width="12" height="12" class="empty"/>
+  <text x="120" y="286" text-anchor="middle" class="muted xs"><tspan class="mvar">k</tspan> = 1</text>
+  <rect x="150" y="276" width="12" height="12" class="empty"/>
+  <rect x="162" y="276" width="12" height="12" class="empty"/>
+  <rect x="174" y="276" width="12" height="12" class="empty"/>
+  <rect x="186" y="276" width="12" height="12" class="empty"/>
+  <rect x="198" y="276" width="12" height="12" class="empty"/>
+  <rect x="210" y="276" width="12" height="12" class="empty"/>
+  <rect x="222" y="276" width="12" height="12" class="empty"/>
+  <rect x="234" y="276" width="12" height="12" class="empty"/>
+  <rect x="246" y="276" width="12" height="12" class="empty"/>
+  <rect x="258" y="276" width="12" height="12" class="empty"/>
+  <rect x="270" y="276" width="12" height="12" class="empty"/>
+  <rect x="282" y="276" width="12" height="12" class="empty"/>
+  <rect x="294" y="276" width="12" height="12" class="empty"/>
+  <rect x="306" y="276" width="12" height="12" class="empty"/>
+  <rect x="318" y="276" width="12" height="12" class="empty"/>
+  <rect x="330" y="276" width="12" height="12" class="empty"/>
+  <text x="120" y="298" text-anchor="middle" class="muted xs"><tspan class="mvar">k</tspan> = 2</text>
+  <rect x="150" y="288" width="12" height="12" class="empty"/>
+  <rect x="162" y="288" width="12" height="12" class="empty"/>
+  <rect x="174" y="288" width="12" height="12" class="empty"/>
+  <rect x="186" y="288" width="12" height="12" class="empty"/>
+  <rect x="198" y="288" width="12" height="12" class="empty"/>
+  <rect x="210" y="288" width="12" height="12" class="empty"/>
+  <rect x="222" y="288" width="12" height="12" class="empty"/>
+  <rect x="234" y="288" width="12" height="12" class="empty"/>
+  <rect x="246" y="288" width="12" height="12" class="empty"/>
+  <rect x="258" y="288" width="12" height="12" class="empty"/>
+  <rect x="270" y="288" width="12" height="12" class="empty"/>
+  <rect x="282" y="288" width="12" height="12" class="empty"/>
+  <rect x="294" y="288" width="12" height="12" class="empty"/>
+  <rect x="306" y="288" width="12" height="12" class="empty"/>
+  <rect x="318" y="288" width="12" height="12" class="empty"/>
+  <rect x="330" y="288" width="12" height="12" class="empty"/>
+  <text x="120" y="310" text-anchor="middle" class="muted xs"><tspan class="mvar">k</tspan> = 3</text>
+  <rect x="150" y="300" width="12" height="12" class="empty"/>
+  <rect x="162" y="300" width="12" height="12" class="empty"/>
+  <rect x="174" y="300" width="12" height="12" class="empty"/>
+  <rect x="186" y="300" width="12" height="12" class="empty"/>
+  <rect x="198" y="300" width="12" height="12" class="empty"/>
+  <rect x="210" y="300" width="12" height="12" class="empty"/>
+  <rect x="222" y="300" width="12" height="12" class="empty"/>
+  <rect x="234" y="300" width="12" height="12" class="empty"/>
+  <rect x="246" y="300" width="12" height="12" class="empty"/>
+  <rect x="258" y="300" width="12" height="12" class="empty"/>
+  <rect x="270" y="300" width="12" height="12" class="empty"/>
+  <rect x="282" y="300" width="12" height="12" class="empty"/>
+  <rect x="294" y="300" width="12" height="12" class="empty"/>
+  <rect x="306" y="300" width="12" height="12" class="empty"/>
+  <rect x="318" y="300" width="12" height="12" class="empty"/>
+  <rect x="330" y="300" width="12" height="12" class="empty"/>
+  <text x="120" y="322" text-anchor="middle" class="muted xs"><tspan class="mvar">k</tspan> = 4</text>
+  <rect x="150" y="312" width="12" height="12" class="empty"/>
+  <rect x="162" y="312" width="12" height="12" class="empty"/>
+  <rect x="174" y="312" width="12" height="12" class="empty"/>
+  <rect x="186" y="312" width="12" height="12" class="empty"/>
+  <rect x="198" y="312" width="12" height="12" class="empty"/>
+  <rect x="210" y="312" width="12" height="12" class="empty"/>
+  <rect x="222" y="312" width="12" height="12" class="empty"/>
+  <rect x="234" y="312" width="12" height="12" class="empty"/>
+  <rect x="246" y="312" width="12" height="12" class="empty"/>
+  <rect x="258" y="312" width="12" height="12" class="empty"/>
+  <rect x="270" y="312" width="12" height="12" class="empty"/>
+  <rect x="282" y="312" width="12" height="12" class="empty"/>
+  <rect x="294" y="312" width="12" height="12" class="empty"/>
+  <rect x="306" y="312" width="12" height="12" class="empty"/>
+  <rect x="318" y="312" width="12" height="12" class="empty"/>
+  <rect x="330" y="312" width="12" height="12" class="empty"/>
+  <text x="120" y="334" text-anchor="middle" class="muted xs"><tspan class="mvar">k</tspan> = 5</text>
+  <rect x="150" y="324" width="12" height="12" class="empty"/>
+  <rect x="162" y="324" width="12" height="12" class="empty"/>
+  <rect x="174" y="324" width="12" height="12" class="empty"/>
+  <rect x="186" y="324" width="12" height="12" class="empty"/>
+  <rect x="198" y="324" width="12" height="12" class="empty"/>
+  <rect x="210" y="324" width="12" height="12" class="empty"/>
+  <rect x="222" y="324" width="12" height="12" class="empty"/>
+  <rect x="234" y="324" width="12" height="12" class="empty"/>
+  <rect x="246" y="324" width="12" height="12" class="empty"/>
+  <rect x="258" y="324" width="12" height="12" class="empty"/>
+  <rect x="270" y="324" width="12" height="12" class="empty"/>
+  <rect x="282" y="324" width="12" height="12" class="empty"/>
+  <rect x="294" y="324" width="12" height="12" class="empty"/>
+  <rect x="306" y="324" width="12" height="12" class="empty"/>
+  <rect x="318" y="324" width="12" height="12" class="empty"/>
+  <rect x="330" y="324" width="12" height="12" class="empty"/>
+  <text x="120" y="346" text-anchor="middle" class="muted xs"><tspan class="mvar">k</tspan> = 6</text>
+  <rect x="150" y="336" width="12" height="12" class="empty"/>
+  <rect x="162" y="336" width="12" height="12" class="empty"/>
+  <rect x="174" y="336" width="12" height="12" class="empty"/>
+  <rect x="186" y="336" width="12" height="12" class="empty"/>
+  <rect x="198" y="336" width="12" height="12" class="empty"/>
+  <rect x="210" y="336" width="12" height="12" class="empty"/>
+  <rect x="222" y="336" width="12" height="12" class="empty"/>
+  <rect x="234" y="336" width="12" height="12" class="empty"/>
+  <rect x="246" y="336" width="12" height="12" class="empty"/>
+  <rect x="258" y="336" width="12" height="12" class="empty"/>
+  <rect x="270" y="336" width="12" height="12" class="empty"/>
+  <rect x="282" y="336" width="12" height="12" class="empty"/>
+  <rect x="294" y="336" width="12" height="12" class="empty"/>
+  <rect x="306" y="336" width="12" height="12" class="empty"/>
+  <rect x="318" y="336" width="12" height="12" class="empty"/>
+  <rect x="330" y="336" width="12" height="12" class="empty"/>
+  <text x="120" y="358" text-anchor="middle" class="muted xs"><tspan class="mvar">k</tspan> = 7</text>
+  <rect x="150" y="348" width="12" height="12" class="empty"/>
+  <rect x="162" y="348" width="12" height="12" class="empty"/>
+  <rect x="174" y="348" width="12" height="12" class="empty"/>
+  <rect x="186" y="348" width="12" height="12" class="empty"/>
+  <rect x="198" y="348" width="12" height="12" class="empty"/>
+  <rect x="210" y="348" width="12" height="12" class="empty"/>
+  <rect x="222" y="348" width="12" height="12" class="empty"/>
+  <rect x="234" y="348" width="12" height="12" class="empty"/>
+  <rect x="246" y="348" width="12" height="12" class="empty"/>
+  <rect x="258" y="348" width="12" height="12" class="empty"/>
+  <rect x="270" y="348" width="12" height="12" class="empty"/>
+  <rect x="282" y="348" width="12" height="12" class="empty"/>
+  <rect x="294" y="348" width="12" height="12" class="empty"/>
+  <rect x="306" y="348" width="12" height="12" class="empty"/>
+  <rect x="318" y="348" width="12" height="12" class="empty"/>
+  <rect x="330" y="348" width="12" height="12" class="empty"/>
+  <text x="348" y="316" class="muted">…</text>
+  <text x="120" y="375" text-anchor="middle" class="muted vd">⋮</text>
+  <text x="246" y="375" text-anchor="middle" class="muted vd">⋮</text>
+  <text x="150" y="395" class="muted xs">shown: rows 0–15 of <tspan class="mvar">A</tspan> (of 128) across, <tspan class="mvar">k</tspan> = 0–7 (of 32) down</text>
+  <rect x="134" y="80" width="60" height="18" class="okring a st5 fin" rx="2"/>
+  <rect x="136" y="82" width="14" height="14" class="new a st5 fin"/>
+  <rect x="150" y="82" width="14" height="14" class="new a st5 fin"/>
+  <rect x="164" y="82" width="14" height="14" class="new a st5 fin"/>
+  <rect x="178" y="82" width="14" height="14" class="new a st5 fin"/>
+  <path d="M 160.0 174.0 L 156.4 251.4" class="arrow a st5 fin"/>
+  <polygon points="162.4,251.7 156.0,261.0 150.4,251.1" class="arrowhead a st5 fin"/>
+  <rect x="150" y="264" width="12" height="12" class="new a st5 fin"/>
+  <rect x="150" y="276" width="12" height="12" class="new a st5 fin"/>
+  <rect x="150" y="288" width="12" height="12" class="new a st5 fin"/>
+  <rect x="150" y="300" width="12" height="12" class="new a st5 fin"/>
+  <text x="164" y="257" class="oktext xs a st5 fin">t0’s 4 values</text>
+  <rect x="150" y="312" width="12" height="12" class="newlt a st6 fin"/>
+  <rect x="150" y="324" width="12" height="12" class="newlt a st6 fin"/>
+  <rect x="150" y="336" width="12" height="12" class="newlt a st6 fin"/>
+  <rect x="150" y="348" width="12" height="12" class="newlt a st6 fin"/>
+  <rect x="190" y="80" width="60" height="18" class="okring a st6 fin" rx="2"/>
+  <rect x="192" y="82" width="14" height="14" class="newlt a st6 fin"/>
+  <rect x="206" y="82" width="14" height="14" class="newlt a st6 fin"/>
+  <rect x="220" y="82" width="14" height="14" class="newlt a st6 fin"/>
+  <rect x="234" y="82" width="14" height="14" class="newlt a st6 fin"/>
+  <path d="M 163 336 L 172 336" class="arrow a st6 fin" stroke-width="1.5"/>
+  <rect x="172" y="327" width="180" height="18" rx="3" fill="var(--empty)" stroke="var(--ok)" stroke-width="1" class="a st6 fin"/>
+  <text x="178" y="340" class="oktext xs a st6 fin">t1’s 4 values: column 0, <tspan class="mvar">k</tspan> = 4–7</text>
+  <text x="370" y="375" class="muted xs a st6 fin">t2–t7 continue down column 0 to <tspan class="mvar">k</tspan> = 31</text>
+  <text x="20" y="428" class="a st1-2">Every <tspan class="mvar">K</tspan> step, a block copies <tspan class="mvar">A</tspan>’s 128×32 tile from global memory into shared memory.</text>
+  <text x="20" y="428" class="a st2-3">Before: each load moves one float, so row 0 alone takes 32 of them.</text>
+  <text x="20" y="428" class="a st3-4">With float4, each thread moves 4 neighboring floats in one load.</text>
+  <text x="20" y="428" class="a st4-5">Fewer loads to issue for the same tile: that is the whole speedup of this step.</text>
+  <text x="20" y="428" class="a st5-6">Aside: <tspan class="mvar">A</tspan><tspan baseline-shift="sub" font-size="0.7em">s</tspan> is stored transposed, so t0’s 4 values run down column 0, one row per <tspan class="mvar">k</tspan>.</text>
+  <text x="20" y="428" class="b a st6 fin">Wide loads cut global loads 4×; the transpose only changes where the values land.</text>
+</svg>
