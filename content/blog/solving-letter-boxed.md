@@ -18,7 +18,12 @@ A solution traces a path across the square, one letter at a time:
 
 ![FORMED is drawn letter by letter, alternating sides of the square. DASHING starts from its final D and covers the remaining six letters, solving the puzzle in two words.](/images/solving-letter-boxed/puzzle-rules.svg "Solid orange lines trace FORMED; dashed blue lines trace DASHING.")
 
-I first wrote a solver in 2022 as a Java assignment for [CS 112](https://www.cs.bu.edu/courses/cs112/). Since then, I rewrote the same algorithm in [TypeScript](https://www.typescriptlang.org/) (JavaScript with types) to make it work in a browser, migrated it to a [Node.js](https://nodejs.org/) _cloud function_ (code that runs on a provider's servers on request), then to a [Go](https://go.dev) cloud function, and finally back to using local compute in the browser, now with a GPU helping out. You can try the [current version](https://aaron-ang.github.io/letter-boxed) in your browser.
+I first wrote a solver in 2022 as a Java assignment for [CS 112](https://www.cs.bu.edu/courses/cs112/). You can try the [current version](https://aaron-ang.github.io/letter-boxed) in your browser. Since 2022, I have moved the same algorithm four times:
+
+1. I rewrote it in [TypeScript](https://www.typescriptlang.org/) (JavaScript with types) to make it work in a browser.
+2. I migrated it to a [Node.js](https://nodejs.org/) _cloud function_ (code that runs on a provider's servers on request).
+3. I rewrote the cloud function in [Go](https://go.dev).
+4. I moved it back to local compute in the browser, now with a GPU helping out.
 
 This post follows that path, where each move traded one problem for another. The last move was possible because of two changes that don't depend on where the code runs: representing letters as bits, and doing as much work as possible before the search begins.
 
@@ -128,7 +133,7 @@ For one puzzle, the three filters reduce the dictionary as follows:
 
 ![The dictionary passes three filters: GO is too short, SNOW uses a letter not on the square, and GRID puts two same-side letters next to each other. FORMED survives.](/images/solving-letter-boxed/dictionary-filter.svg "The counts are for this puzzle; each puzzle keeps its own few hundred words.")
 
-Only about 1 to 2 in every 100 words survive, and Find Best searches only those words.[^survivors] For each surviving word, it works out up front the facts the search keeps asking about: which letters the word uses (as a bitmask), and which letters it starts and ends with. It stores them alongside the word:
+Only about 1 to 2 in every 100 words survive, and Find Best searches only those _valid words_.[^survivors] For each valid word, it works out up front the facts the search keeps asking about: which letters the word uses (as a bitmask), and which letters it starts and ends with. It stores them alongside the word:
 
 ```ts
 interface ValidWord {
@@ -143,7 +148,7 @@ A few more precomputations follow the same pattern:
 
 - **Letter lookups** are small arrays, built once per puzzle, that give each letter's position in the puzzle, its bit, and its side. Answering any of those questions is a single array read instead of a string search.
 - **An index by first letter** keeps one list per puzzle letter (twelve in all), holding the valid words that start with it. When the next word must start with `D`, the solver reads `D`'s list and only considers those words.
-- **A per-puzzle cache** keeps the filtered word list, and pressing Find Best after Solve reuses it instead of filtering again.
+- **A per-puzzle cache** keeps the list of valid words, and pressing Find Best after Solve reuses it instead of filtering again.
 
 ## Find Best on the GPU
 
@@ -191,9 +196,9 @@ Threads also need a safe way to write their results, because thousands of them m
 
 ### One Dispatch per Level
 
-The CPU drives the search, one word count, or _level_, at a time. First it checks for a one-word solution itself. Then it _dispatches_ the shader, telling the GPU to run one thread per (chain, word) pair, and waits for that pass to finish. The first dispatch extends one-word chains to two words, the next extends those to three, and so on.
+The CPU drives the search, one word count, or _level_, at a time. First it checks for a one-word solution itself. Then it _dispatches_ the shader, telling the GPU to run one thread per (chain, word) pair, and waits for that pass to finish. The first pass extends one-word chains to two words, the next extends those to three, and so on.
 
-The chains themselves never leave the GPU: each pass writes its new chains into a _buffer_, a block of GPU memory, that the next pass reads as its input, and then the two buffers swap roles. After each pass, the CPU _reads back_ only the two counters, plus any solutions, copying them from GPU memory in a single step.
+The chains themselves never leave the GPU: each pass writes its new chains into a _buffer_, a block of GPU memory, that the next pass reads as its input. After each pass, the two buffers swap roles, and the CPU _reads back_ only the two counters, plus any solutions, copying them from GPU memory in a single step.
 
 With those counts, the CPU decides what happens next. If the pass found no solutions, it dispatches again, until it reaches the word limit or runs out of chains. If the pass found any, the search stops, since those solutions have the fewest words.
 
@@ -205,7 +210,7 @@ In a different puzzle, the first solutions only appear on the second pass:
 
 ### CPU Fallback
 
-When a browser or device doesn't support WebGPU, or when a pass produces more chains than the GPU's buffers can hold, the worker runs the same search on the CPU. It uses the same filtered words, masks, and first-letter index, and it also goes one level at a time: all one-word chains, then all two-word chains, and so on up to the word limit, stopping at the first level with a solution.
+When a browser or device doesn't support WebGPU, or when a pass produces more chains than the GPU's buffers can hold, the worker runs the same search on the CPU. It uses the same valid words, masks, and first-letter index. Like the GPU version, it goes one level at a time: all one-word chains, then all two-word chains, and so on up to the word limit, stopping at the first level with a solution.
 
 The CPU version also remembers dead ends, a form of [memoization](https://en.wikipedia.org/wiki/Memoization). A partial chain's future depends only on three things: its last letter, the letters it has covered so far, and how many words it has left.[^reuse] Together, those three make up the chain's _position_.
 
