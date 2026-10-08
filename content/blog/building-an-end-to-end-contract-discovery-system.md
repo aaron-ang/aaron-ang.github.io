@@ -19,7 +19,7 @@ This post will outline the development of RHContract.AI, including an overview o
 
 On a high level, our system processes document data through **three** main stages:
 
-1. Input: ingests a data dump of documents alongside predefined document type and attribute definitions.
+1. Input: ingests a data dump of documents alongside predefined definitions of document types and attributes.
 2. Processing: analyzes and categorizes the documents based on the predefined types.
 3. Output: generates two key deliverables:
    1. A structured directory of organized document types.
@@ -62,7 +62,7 @@ Most documents were in PDF format, making text extraction relatively inexpensive
 
 ![Document Type Distribution](/images/building-an-end-to-end-contract-discovery-system/document-type-distribution.png)
 
-After filtering the subset of documents, nearly **50%** were deemed irrelevant, and **over 10%** were identified as duplicates. This resulted in removing more than half of the documents from the time-consuming attribute extraction process.
+After filtering the subset of documents, nearly **50%** were deemed irrelevant, and **over 10%** were identified as duplicates. This resulted in removing more than half of the documents from attribute extraction, a time-consuming process.
 
 Furthermore, after applying Optical Character Recognition (OCR) to image documents and reclassifying them, 50% of these documents were found to be relevant. This increased the overall proportion of relevant documents to **30%** of the total unprocessed set.
 
@@ -88,15 +88,15 @@ After making considerable headway, we focused on iterative improvements. We cont
 
 This project marked my first deep dive into working with LLMs. Before this, my experience was limited to tinkering with OpenAI's APIs on a small chatbot project when the LLM development ecosystem was still in its early stages.
 
-The LLM landscape has undergone rapid transformation in recent years. Today, developers have access to dozens of tools for building fully-fledged LLM products, with [LangChain](https://www.langchain.com/) serving as a prime example. Despite these upgrades in tooling, some fundamental concepts have remained crucial to success in LLM development.
+The LLM landscape has undergone rapid transformation in recent years. Today, developers have access to dozens of tools for building fully-fledged products on LLMs, with [LangChain](https://www.langchain.com/) serving as a prime example. Despite these upgrades in tooling, some fundamental concepts have remained crucial to success in LLM development.
 
 ### Importance of Quality Input Data
 
-One of the most significant lessons we learned was the critical role of high-quality input data. We quickly realized that the model's performance suffered when overloaded with text and images from documents. To address this, we dedicated substantial effort to refining our input. This involved removing unnecessary text, formatting the remaining content, and selectively serving only the most relevant pages to the model, such as the first page and signature page where most attributes tend to reside. These efforts reduced hallucinations and greatly improved inference time and accuracy.
+One of the most significant lessons we learned was the critical role of input data quality. We quickly realized that the model's performance suffered when overloaded with text and images from documents. To address this, we dedicated substantial effort to refining our input. This involved removing unnecessary text, formatting the remaining content, and selectively serving only the most relevant pages to the model, such as the first page and signature page where most attributes tend to reside. These efforts reduced hallucinations and greatly improved inference time and accuracy.
 
 ### Leveraging External Resources
 
-Our success would not have been possible without the wealth of online resources sharing effective LLM development techniques. Equally important was maintaining open communication with our stakeholders (internal sales team). Through these regular interactions, we gained valuable insights into their pain points and a clearer understanding of business definitions. This knowledge allowed us to craft focused prompts that provided richer context to the LLM, significantly improving its performance.
+Our success would not have been possible without the wealth of online resources sharing effective techniques for LLM development. Equally important was maintaining open communication with our stakeholders (internal sales team). Through these regular interactions, we gained valuable insights into their pain points and a clearer understanding of business definitions. This knowledge allowed us to craft focused prompts that provided richer context to the LLM, significantly improving its performance.
 
 ### Adopting a Startup Mindset
 
@@ -104,4 +104,4 @@ Building this project from scratch required us to operate with a startup mentali
 
 ### Forward-Thinking Approach
 
-Perhaps the most crucial lesson was the importance of being forward-thinking and constantly moving towards what would work best for the product. Our transition from local computing resources to a more powerful cloud-based computing architecture is a great example. Initially, we were experimenting locally on [Ollama](https://ollama.com/) using 4-bit quantized models. However, we soon hit a performance ceiling in terms of speed and accuracy. Recognizing that scaling our product would require more robust computing power, we proposed leveraging high-performance GPUs to our mentors, and were fortunate to be granted access to a 2x [A100 GPU](https://www.nvidia.com/en-us/data-center/a100/) cluster in the cloud (shoutout [ROSA](https://www.redhat.com/en/technologies/cloud-computing/openshift/aws)). This upgrade was key in our continued iteration and improvement of the product.
+Perhaps the most crucial lesson was the importance of being forward-thinking and constantly moving towards what would work best for the product. Our transition from local computing resources to a more powerful computing architecture in the cloud is a great example. Initially, we were experimenting locally on [Ollama](https://ollama.com/) using models quantized to 4 bits. However, we soon hit a performance ceiling in terms of speed and accuracy. Recognizing that scaling our product would require more robust computing power, we proposed leveraging high-performance GPUs to our mentors. We were fortunate to be granted access to a 2x [A100 GPU](https://www.nvidia.com/en-us/data-center/a100/) cluster in the cloud (shoutout [ROSA](https://www.redhat.com/en/technologies/cloud-computing/openshift/aws)). This upgrade was key in our continued iteration and improvement of the product.
