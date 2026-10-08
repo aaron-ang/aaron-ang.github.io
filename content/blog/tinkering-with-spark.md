@@ -11,15 +11,15 @@ In the summer of 2022, I interned at [Shopee](https://shopee.com/) as a product 
 
 Our main tools for data processing and querying were [Presto](https://prestodb.io/) and [Apache Spark](https://spark.apache.org/), supplemented by internal tools that abstracted away much of the underlying engineering complexity.
 
-During my time there, noticeable job failures and delays pushed deadlines back unnecessarily. While I will analyze specific causes and fixes in a later section, an important backdrop was the company-wide resource shortage at the time. It was incredibly expensive to acquire compute resources, and the demand for compute due to increased workloads far outpaced the supply. This was especially challenging for the SnR team, where ML engineers were running intensive experiments on recommendation models that consumed substantial processing power.
+During my time there, noticeable job failures and delays pushed deadlines back unnecessarily. While I will analyze specific causes and fixes in a later section, an important backdrop was the resource shortage across the company at the time. It was incredibly expensive to acquire compute resources, and the demand for compute due to increased workloads far outpaced the supply. This was especially challenging for the SnR team, where ML engineers were running intensive experiments on recommendation models that consumed substantial processing power.
 
 Before we dive into the issue, I will first introduce the key technologies involved—namely Spark and YARN.
 
 ## **What is Spark?**
 
-Apache Spark, originally developed as a research project at UC Berkeley's AMPLab and now maintained by the Apache Software Foundation, is an open-source distributed processing framework for large-scale data workloads. It leverages **in-memory caching** and **optimized query execution** to deliver high performance for analytic queries across massive datasets.
+Apache Spark, originally developed as a research project at UC Berkeley's AMPLab and now maintained by the Apache Software Foundation, is an open-source framework for distributed processing of large-scale data. It leverages **in-memory caching** and **optimized query execution** to deliver high performance for analytic queries across massive datasets.
 
-Spark was designed to overcome the limitations of MapReduce, which relies on a sequential, multi-step process susceptible to disk I/O latency. With Spark, data is read into memory, operations are performed, and results are written back—all in a streamlined process that avoids repeated disk access. The performance gains come from keeping intermediate data in memory where possible and from abstractions like [Resilient Distributed Datasets (RDDs)](https://spark.apache.org/docs/latest/rdd-programming-guide.html#resilient-distributed-datasets-rdds) and later [DataFrames](https://spark.apache.org/docs/latest/sql-programming-guide.html#datasets-and-dataframes), which let Spark plan and optimize whole pipelines instead of writing to disk between every step.
+Spark was designed to overcome the limitations of MapReduce, which relies on a sequential, multi-step process susceptible to disk I/O latency. With Spark, data is read into memory, operations are performed, and results are written back—all in a streamlined process that avoids repeated disk access. The performance gains come from keeping intermediate data in memory where possible. They also come from abstractions like [Resilient Distributed Datasets (RDDs)](https://spark.apache.org/docs/latest/rdd-programming-guide.html#resilient-distributed-datasets-rdds) and later [DataFrames](https://spark.apache.org/docs/latest/sql-programming-guide.html#datasets-and-dataframes), which let Spark plan and optimize whole pipelines instead of writing to disk between every step.
 
 Today, Spark is widely used for machine learning, real-time analytics, interactive queries, and graph processing, making it a cornerstone of modern data engineering and analytics.
 
@@ -27,7 +27,7 @@ Today, Spark is widely used for machine learning, real-time analytics, interacti
 
 [YARN](https://hadoop.apache.org/docs/stable/hadoop-yarn/hadoop-yarn-site/YARN.html), short for *Yet Another Resource Negotiator*, is Hadoop’s cluster resource management framework. Fun fact: “Yet Another” is an idiomatic qualifier programmers often use to acknowledge that many systems are incremental variations of existing ones—other examples include Yacc (Yet Another Compiler-Compiler) and YAML (originally Yet Another Markup Language).
 
-Although I will not discuss YARN optimization in detail here, it is important to understand its role. Modern data architectures often run on clusters with thousands of nodes, where a single master that handles both resource allocation and every job's scheduling (like MapReduce's original JobTracker) becomes a bottleneck. YARN addresses this by **separating** resource management from per-application job scheduling and monitoring.
+Although I will not discuss YARN optimization in detail here, it is important to understand its role. Modern data architectures often run on clusters with thousands of nodes, where a single master that handles both resource allocation and every job's scheduling (like MapReduce's original JobTracker) becomes a bottleneck. YARN addresses this by **separating** resource management from job scheduling and monitoring for each application.
 
 At its core, YARN consists of a **global** ResourceManager (RM) and **per-node** NodeManagers (NMs).
 
@@ -36,7 +36,7 @@ The **ResourceManager** contains two key components:
 - **Scheduler** – Allocates resources among competing applications without tracking their execution state.
 - **ApplicationsManager** – Accepts job submissions and launches the per-application ApplicationMaster (AM).
 
-The **ApplicationMaster** negotiates resources from the Scheduler, manages task execution, and handles application-level fault tolerance and recovery in coordination with the NodeManagers.
+The **ApplicationMaster** negotiates resources from the Scheduler, manages task execution, and handles fault tolerance and recovery at the application level in coordination with the NodeManagers.
 
 Here's how these components work together when a client submits a job:
 
@@ -44,7 +44,7 @@ Here's how these components work together when a client submits a job:
 
 ## **Running Spark on YARN**
 
-Running Spark on YARN allows multiple frameworks (not just Spark) to dynamically share and centrally configure the same cluster resources. YARN’s schedulers handle **categorization**, **isolation**, and **prioritization of workloads**, ensuring resources are efficiently allocated instead of sitting idle. In short, YARN is one of the most widely used cluster managers for running large-scale Spark applications.
+Running Spark on YARN allows multiple frameworks (not just Spark) to dynamically share and centrally configure the same cluster resources. YARN’s schedulers handle **categorization**, **isolation**, and **prioritization of workloads**, ensuring resources are efficiently allocated instead of sitting idle. In short, YARN is one of the most widely used cluster managers for running Spark applications at scale.
 
 ### Components
 
@@ -73,7 +73,7 @@ Cores represent CPU resources allocated to the driver and executors. Increasing 
 Memory allocations are split into two segments: 
 
 1. **On-heap process memory** – for objects, data structures, and operations.
-2. **Overhead (non-heap) memory** (`memoryOverhead`) – for JVM overhead, interned strings, native libraries, and other non-heap uses. This is separate from Spark's own off-heap memory setting (`spark.memory.offHeap.size`).
+2. **Overhead (non-heap) memory** (`memoryOverhead`) – for JVM overhead, interned strings, native libraries, and other non-heap uses. This is separate from Spark's own setting for off-heap memory (`spark.memory.offHeap.size`).
 
 Thus, the container size requested for a driver or executor is roughly `memory + memoryOverhead` (executors also add `spark.memory.offHeap.size` and `spark.executor.pyspark.memory` if set).
 
@@ -107,7 +107,7 @@ From this, we can extract the following setup:
 
 I reviewed the [Spark configuration documentation](https://spark.apache.org/docs/latest/configuration.html) to understand the other parameters and scoured the Internet for possible causes of the observed errors.
 
-Closer inspection of the logs revealed a clear pattern: **driver OOM errors consistently occurred during Broadcast Joins**. Further research pointed me to a [reported Spark Issue](https://issues.apache.org/jira/browse/SPARK-17556) describing this exact behavior. In short, before broadcasting, the driver must collect results from executors, and in some cases the returned data exceeded the driver’s working memory (5GiB), causing the OOM crash.
+Closer inspection of the logs revealed a clear pattern: **driver OOM errors consistently occurred during broadcast joins**. Further research pointed me to a [reported Spark Issue](https://issues.apache.org/jira/browse/SPARK-17556) describing this exact behavior. In short, before broadcasting, the driver must collect results from executors, and in some cases the returned data exceeded the driver’s working memory (5GiB), causing the OOM crash.
 
 Here's what that failure looks like with the default 5GiB driver:
 

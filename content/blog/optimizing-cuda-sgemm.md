@@ -9,24 +9,24 @@ tags = ["Engineering", "Research"]
 
 Most of the time a neural network spends on a GPU goes to one operation, multiplying two matrices. Attention, fully connected layers, and convolutions all reduce to it. The routine that does it for 32-bit floats is called **SGEMM** (single-precision [general matrix multiply](https://en.wikipedia.org/wiki/Basic_Linear_Algebra_Subprograms#Level_3)), and GPU vendors invest heavily in tuning it. NVIDIA's version lives in [cuBLAS](https://developer.nvidia.com/cublas).
 
-For a graduate course at UCSD, my teammate Jerry Ma and I were asked to write our own SGEMM _kernel_, a function that runs on the GPU, in [CUDA](https://docs.nvidia.com/cuda/cuda-programming-guide/index.html) for an [NVIDIA T4](https://www.nvidia.com/en-us/data-center/tesla-t4/) and get as close to cuBLAS as we could. Our starting point was a correct but naive kernel running at around 100 GFLOP/s (billion floating-point operations per second). Our final kernel reached **4,780 GFLOP/s** at $N = 2048$, roughly on par with cuBLAS at that size in our measurements. The code is on [GitHub](https://github.com/aaron-ang/cuda-sgemm).
+For a graduate course at UCSD, my teammate Jerry Ma and I were asked to write our own SGEMM _kernel_, a function that runs on the GPU. We wrote it in [CUDA](https://docs.nvidia.com/cuda/cuda-programming-guide/index.html) for an [NVIDIA T4](https://www.nvidia.com/en-us/data-center/tesla-t4/) and set out to get as close to cuBLAS as we could. Our starting point was a correct but naive kernel running at around 100 GFLOP/s (billion floating-point operations per second). Our final kernel reached **4,780 GFLOP/s** at $N = 2048$, roughly on par with cuBLAS at that size in our measurements. The code is on [GitHub](https://github.com/aaron-ang/cuda-sgemm).
 
 Much of what we did follows Simon Boehm's worklog, [_How to Optimize a CUDA Matmul Kernel for cuBLAS-like Performance_](https://siboehm.com/articles/22/CUDA-MMM), which I'd recommend to anyone curious. This post walks through the same ideas with more background, explaining what each optimization does, why it helps, what we measured on our hardware, and where the remaining performance goes. In late summer of 2026, I returned to this project and built the follow-ups we'd listed on a newer personal GPU, and the post ends with that work.
 
 ## Counting the Work
 
-To multiply an $N \times N$ matrix $A$ by an $N \times N$ matrix $B$, each output entry $C[i][j]$ is the dot product of row $i$ of $A$ and column $j$ of $B$: $N$ multiplications and $N$ additions. With $N^2$ outputs, the whole job is $2N^3$ floating-point operations. For $N = 2048$ that's about 17 billion.
+To multiply an $N \times N$ matrix $A$ by an $N \times N$ matrix $B$, we compute each entry $C[i][j]$ of the result, which this post calls an _output_. Each output is the dot product of row $i$ of $A$ and column $j$ of $B$: $N$ multiplications and $N$ additions. With $N^2$ outputs, the whole job is $2N^3$ floating-point operations, or _flops_. For $N = 2048$ that's about 17 billion.
 
-Each output takes $N$ multiply-adds, and neighboring outputs read the same data again:
+Each output takes $N$ multiply-adds (one multiplication plus one addition), and neighboring outputs read the same data again:
 
 ![One entry of C forms as the dot product of a row of A and a column of B, one multiply-add at a time. The next entry reads the same row of A again.](/images/optimizing-cuda-sgemm/matmul-dot.svg "No kernel can skip any of the $N$ multiply-adds per output. A faster kernel can only fetch each value from main memory fewer times.")
 
 Re-reading the same rows and columns is what every optimization in this post targets, because a T4 can do arithmetic far faster than it can fetch numbers from its main memory:
 
-- **Compute:** 40 [streaming multiprocessors](https://docs.nvidia.com/cuda/cuda-programming-guide/01-introduction/programming-model.html#gpu-hardware-model) (SMs) × 64 floating-point units × ~1.5 GHz × 2 operations per [fused multiply-add](https://en.wikipedia.org/wiki/Multiply%E2%80%93accumulate_operation#Fused_multiply%E2%80%93add) ≈ **7,680 GFLOP/s**.
-- **Memory:** about **320 GB/s** from its off-chip GDDR6 memory, which we'll call _global memory_.
+- **Compute:** 40 [streaming multiprocessors](https://docs.nvidia.com/cuda/cuda-programming-guide/01-introduction/programming-model.html#gpu-hardware-model) (SMs) × 64 floating-point units × ~1.5 GHz × 2 flops per [fused multiply-add](https://en.wikipedia.org/wiki/Multiply%E2%80%93accumulate_operation#Fused_multiply%E2%80%93add) ≈ **7,680 GFLOP/s**.
+- **Memory:** about **320 GB/s** from that main memory, off-chip GDDR6 that CUDA calls _global memory_.
 
-Divide one by the other and you get about 24 flops per byte: to keep the arithmetic units busy, a kernel must do at least that much arithmetic for each byte it fetches from global memory. A kernel's flops per byte fetched is its [_arithmetic intensity_](https://en.wikipedia.org/wiki/Roofline_model#Arithmetic_intensity), and each stage below is an attempt to raise it. A naive dot product reads two 4-byte floats for each multiply-add (counts as 2 operations). That gives an arithmetic intensity of 0.25, about 100× short of 24.
+Divide one by the other and you get about 24 flops per byte. To keep the arithmetic units busy, a kernel must do at least that much arithmetic for each byte it fetches from global memory. A kernel's flops per byte fetched is its [_arithmetic intensity_](https://en.wikipedia.org/wiki/Roofline_model#Arithmetic_intensity), and each stage below is an attempt to raise it. A naive dot product reads two 4-byte floats for each multiply-add (2 flops). That gives an arithmetic intensity of 0.25, about 100× short of 24.
 
 Matrix multiply has plenty of reuse to exploit, because every element of $A$ is needed by $N$ different outputs, and so is every element of $B$. If a kernel fetched each element from global memory only once, its intensity would be $N/4$, or 512 at $N = 2048$, far above 24. Real kernels land in between, and the stages below are steps toward that ceiling.
 
@@ -70,13 +70,13 @@ A comparison of strided and coalesced access for one warp is shown below:
 
 ![Eight threads of one warp load from global memory. Scattered addresses need one transaction each; consecutive addresses share a single wide transaction.](/images/optimizing-cuda-sgemm/coalescing.svg "Eight threads stand in for a warp's 32; the pattern is the same at full width.")
 
-Which pattern you get depends only on how a thread's ID maps to a row and column of $C$. If consecutive threads in a warp handle consecutive _rows_, their reads of $A$ land $N$ floats apart. If they handle consecutive _columns_, their reads of $B$ and writes to $C$ are contiguous. The arithmetic is identical either way, yet the coalesced kernel runs roughly an order of magnitude faster than the naive one, because each warp's loads now combine into a few wide transactions instead of one per thread.
+Which pattern you get depends only on how a thread's ID maps to a row and column of $C$. If consecutive threads in a warp handle consecutive _rows_, their reads of $A$ land $N$ floats apart. If they handle consecutive _columns_, their reads of $B$ and writes to $C$ are contiguous. The arithmetic is identical either way, yet the coalesced kernel runs roughly an order of magnitude faster than the naive one. The speedup comes from the loads: each warp's loads now combine into a few wide transactions instead of one per thread.
 
 ### Stage 2: Shared-Memory Tiling
 
-Even when its loads are coalesced, every thread still streams a whole row of $A$ and a whole column of $B$ from global memory, and neighboring threads fetch the same values over and over. Shared memory lets a thread block fetch each value once for all of its threads.
+Even when its loads are coalesced, every thread still streams a whole row of $A$ and a whole column of $B$ from global memory, and neighboring threads fetch the same values over and over. Shared memory lets a block fetch each value once for all of its threads.
 
-The block is responsible for a square tile of $C$. It walks along the shared dimension $K$ one slice at a time. For each slice, the threads cooperatively load a tile of $A$ and a tile of $B$ into shared memory, wait for each other (`__syncthreads()`), and then every thread computes its partial sums from the on-chip copies.
+The block is responsible for a square tile of $C$. It walks along the shared dimension $K$ in chunks called _$K$ slices_ (_slices_ for short). For each slice, the threads cooperatively load a tile of $A$ and a tile of $B$ into shared memory and wait for each other (`__syncthreads()`). Then every thread computes its partial sums from the on-chip copies.
 
 Each tile is loaded into shared memory once and then read by every thread in the block:
 
@@ -92,9 +92,9 @@ The next step comes in two parts, and both give each thread more work, letting e
 
 First, **1-D tiling**: each thread computes a short column of outputs instead of one. A value it loads from $B$'s tile can then be reused for every output in that column. According to our report, this nearly doubled throughput.
 
-Second, **2-D tiling**: each thread computes an 8×8 patch of $C$. Once a slice is in shared memory, the thread walks through it one step at a time, using the same index $k$ along $K$ as the naive kernel earlier, but now only across the slice. At each step $k$, the thread loads 8 values from column $k$ of $A$'s tile and 8 values from row $k$ of $B$'s tile into registers, then multiplies every $A$ value by every $B$ value. This is an [_outer product_](https://en.wikipedia.org/wiki/Outer_product), and it gets 64 multiply-adds from 16 loads.
+Second, **2-D tiling**: each thread computes an 8×8 _patch_ of $C$, its own share of the block's tile. Once a slice is in shared memory, the thread walks through it one step at a time, using the same index $k$ along $K$ as the naive kernel earlier, but now only across the slice. At each step $k$, the thread loads 8 values from column $k$ of $A$'s tile and 8 values from row $k$ of $B$'s tile into registers, then multiplies every $A$ value by every $B$ value. This is an [_outer product_](https://en.wikipedia.org/wiki/Outer_product), and it gets 64 multiply-adds from 16 loads.
 
-The per-thread outer product is shown below:
+The outer product that each thread computes is shown below:
 
 ![One thread holds an 8×8 patch of C in registers. At each step k it loads 8 values of A and 8 of B, then does all 64 multiply-adds between them.](/images/optimizing-cuda-sgemm/register-tiling.svg "The 64 running sums stay in registers for the whole $K$ loop and are written to $C$ once, at the end.")
 
@@ -121,7 +121,7 @@ Our final configuration:
 
 This configuration is essentially kernel 5 in Boehm's worklog. It took us from ~1,000 to 4,780 GFLOP/s.
 
-Getting here was the hardest part of the project, even though the code is short. We first misread what a "block tile" was, and built a version where each _thread_ tried to compute a large tile on its own. It was slower than 1-D tiling, because loads to shared memory stopped coalescing, and each thread carried more work than it could keep in registers. A conversation with our TA made us realize that a block tile is the output of the whole thread block, which is then divided among the threads. The rest of the kernel follows the same pattern, with the block tile sized for shared memory and each thread's patch sized for its registers.
+Getting here was the hardest part of the project, even though the code is short. We first misread what a "block tile" was, and built a version where each _thread_ tried to compute a large tile on its own. It was slower than 1-D tiling, because loads to shared memory stopped coalescing, and each thread carried more work than it could keep in registers. A conversation with our TA made us realize that a block tile is the output of the whole block, which is then divided among the threads. The rest of the kernel follows the same pattern, with the block tile sized for shared memory and each thread's patch sized for its registers.
 
 ## Tuning the Shape
 
@@ -154,7 +154,7 @@ When $N$ isn't a multiple of 128, the tiles at the right and bottom edges hang o
 
 A [_roofline_](https://people.eecs.berkeley.edu/~kubitron/cs252/handouts/papers/RooflineVyNoYellow.pdf) plot (Williams, Waterman, and Patterson) puts arithmetic intensity on the x-axis and throughput on the y-axis. The "roof" has a slope on the left and a flat ceiling on the right. On the slope, where there is little reuse, throughput is capped by memory bandwidth times intensity. Past the _ridge point_ (about 24 flops per byte on the T4), the ceiling is peak compute.
 
-The 32×32 shared-memory kernel and our final 128×128 kernel sit on the roofline as shown below:
+The shared-memory kernel with 32×32 tiles and our final 128×128 kernel sit on the roofline as shown below:
 
 ![Schematic roofline: a sloped memory roof meets a flat compute roof at the ridge. The 32×32 shared-memory kernel sits left of the ridge, below the memory roof; bigger tiles move it past the ridge, at about 24 flops per byte.](/images/optimizing-cuda-sgemm/roofline.svg "Both axes are log scale, and the positions are schematic, not measured.")
 
@@ -200,7 +200,7 @@ This effect is called [_wave quantization_](https://docs.nvidia.com/deeplearning
 Our final kernel stops at Boehm's kernel 5. The remaining steps in his worklog each address a limit we found above:
 
 - **Fit two blocks per SM.** Shared memory already has room for two, but registers don't. Capping them at 128 per thread with [`__launch_bounds__(256, 2)`](https://docs.nvidia.com/cuda/cuda-programming-guide/05-appendices/cpp-language-extensions.html#launch-bounds) should fit a second block, at the cost of some _spilling_.[^spill] Two blocks per SM would also halve the number of waves, softening the wave quantization problem.
-- **Fix shared-memory [bank conflicts](https://docs.nvidia.com/cuda/cuda-programming-guide/02-basics/writing-cuda-kernels.html#shared-memory-bank-conflicts).** Shared memory is split into 32 banks, and threads in a warp that hit the same bank at once take turns, one _pass_ each. Our reads from $B$'s tile likely put about 2 threads on each bank, so each read takes about 2 passes instead of 1. Padding the arrays, or changing which columns each thread reads, are the usual fixes.
+- **Fix [bank conflicts](https://docs.nvidia.com/cuda/cuda-programming-guide/02-basics/writing-cuda-kernels.html#shared-memory-bank-conflicts) in shared memory.** Shared memory is split into 32 banks, and threads in a warp that hit the same bank at once take turns, one _pass_ each. Our reads from $B$'s tile likely put about 2 threads on each bank, so each read takes about 2 passes instead of 1. Padding the arrays, or changing which columns each thread reads, are the usual fixes.
 - **[Vectorized loads](https://developer.nvidia.com/blog/cuda-pro-tip-increase-performance-with-vectorized-memory-access/).** Loading four floats per instruction (`float4`) instead of one means 4× fewer load instructions.
 - **[Warp tiling](https://github.com/NVIDIA/cutlass/blob/main/media/docs/cpp/efficient_gemm.md).** Give each warp a compact rectangle of the block tile instead of full-width rows. Each warp then reads fewer values from shared memory per step.
 - **[Double buffering](https://en.wikipedia.org/wiki/Multiple_buffering#Double_buffering_for_DMA).** Loading the next $K$ slice while computing the current one hides the `__syncthreads()` wait.
@@ -247,7 +247,7 @@ Following Boehm, this step also stores $A$'s tile transposed in shared memory, t
 
 ![One row of A's tile takes 32 loads one float at a time, and 8 with float4, four floats per load. In shared memory, row 0's values run down column 0 of the transposed tile, t0's four first, then t1's.](/images/optimizing-cuda-sgemm/float4-transpose.svg "Only row 0 of $A$'s tile is traced in global memory; the other rows load the same way.")
 
-Transposing the tile didn't reduce the number of reads from shared memory: in the original layout, one row's values for four consecutive steps already sit side by side, and the compiler was already reading them with one wide read.[^smemreads] I kept the transpose anyway, because the bigger-tile kernel at the end of this post runs 2–4% slower without it.
+Transposing the tile didn't reduce the number of reads from shared memory. In the original layout, one row's values for four consecutive steps already sit side by side, and the compiler was already reading them with one wide read.[^smemreads] I kept the transpose anyway, because the bigger-tile kernel at the end of this post runs 2–4% slower without it.
 
 **Bank-conflict fix: +3%.** Shared memory is split into 32 banks: bank 0 holds columns 0, 32, 64, … of $B$'s tile, bank 1 holds columns 1, 33, 65, …, and so on. When threads in a warp read the same bank at once, they take turns, one pass each.
 
@@ -259,9 +259,9 @@ The fix splits each thread's 8 columns into two groups of 4, placed 64 columns a
 
 **Warp tiling: no gain on its own.** Warp tiling changes which outputs each warp owns. Before, a warp owned 16 full-width rows of the block tile; now it owns a 32×64 region. Its 32×64 region needs 96 values from shared memory per step instead of 144:
 
-![The outputs warp 0 owns in the 128×128 block tile: before, 16 full-width rows; with warp tiling, a 32×64 region. Shaded strips show what it reads from A and B per step: a third less data, but the same shared-memory passes.](/images/optimizing-cuda-sgemm/warp-tiling.svg "Only warp 0 is traced; the other seven warps tile the rest of the block the same way.")
+![The outputs warp 0 owns in the 128×128 block tile: before, 16 full-width rows; with warp tiling, a 32×64 region. Shaded strips show what it reads from A and B per step: a third less data, but the same number of passes.](/images/optimizing-cuda-sgemm/warp-tiling.svg "Only warp 0 is traced; the other seven warps tile the rest of the block the same way.")
 
-The speed didn't change, because the reads it removed were already cheap. Threads in a warp that read the same value get it in a single pass, so most of those 144 values cost nothing extra. The profiler counted the same number of shared-memory passes before and after.[^warptile]
+The speed didn't change, because the reads it removed were already cheap. Threads in a warp that read the same value get it in a single pass, so most of those 144 values cost nothing extra. The profiler counted the same number of passes before and after.[^warptile]
 
 **Smaller $K$ slice: +3%.** Shrinking the $K$ slice from 32 values deep to 16 gave another 3%. The profiler suggests why: writing $A$'s tile transposed into shared memory causes heavy bank conflicts, and the smaller slice halves the passes each store takes.[^writes]
 
@@ -298,7 +298,7 @@ Small probe kernels showed where the time went. With its global loads removed, t
 
 A bigger patch reuses each loaded value more. Each step now does twice the multiply-adds for only 50% more loads from shared memory: 128 multiply-adds from 24 values, up from 64 from 16. In the profiler, the math units went from busy 58% of the time to 70%.
 
-Holding 128 running sums takes 237 registers per thread, enough to push the kernel back to one block per SM. One block per SM didn't hurt, for the same reason the T4 kernel reached 62% of peak at 25% occupancy, as described earlier: each thread has enough independent multiply-adds to issue while its loads are in flight, now 128 instead of 64.
+Holding 128 running sums takes 237 registers per thread, enough to push the kernel back to one block per SM. One block per SM didn't hurt, for the same reason the T4 kernel reached 62% of peak at 25% occupancy, as described earlier. In both kernels, each thread has enough independent multiply-adds to issue while its loads are in flight, now 128 instead of 64.
 
 The 128×256 kernel closed the gap, running 3–4% faster than cuBLAS at both $N = 2048$ and $N = 4096$, within the run-to-run spread. The figure compares one thread's work per step before and after:
 
@@ -324,7 +324,7 @@ This is a known effect. Horace He [showed](https://www.thonking.ai/p/strangely-m
 
 To compare the two kernels' code without the power limit in the way, I also looked at profiler runs. The profiler runs each kernel too briefly for the chip to reach its power limit and lower its clock. At full clock, the big-tile kernel was about 4% faster than cuBLAS's kernel and kept the math units busy 70% of the time, against 62% for cuBLAS.
 
-A profiler can count bank passes for any kernel, including cuBLAS's closed-source one. For the same loads from shared memory, cuBLAS's kernel needed about 3 bank passes for every 4 of ours. I guessed the savings came from how threads map to outputs. In each half of a warp, our threads cover 2 rows of 8 outputs, and by my count a 4×4 square would bring our 4 passes down to 3. The profiler showed the opposite: the square raised them to about 5, and the speed didn't change, which means my model of how passes are counted was wrong. How cuBLAS gets its savings, and whether they matter under the power limit, is still an open question for me.
+A profiler can count the passes that loads from shared memory take in any kernel, including cuBLAS's closed-source one. For the same loads, cuBLAS's kernel needed about 3 passes for every 4 of ours. I guessed the savings came from how threads map to outputs. In each half of a warp, our threads cover 2 rows of 8 outputs, and by my count a 4×4 square would bring our 4 passes down to 3. The profiler showed the opposite: the square raised them to about 5, and the speed didn't change, which means my model of how passes are counted was wrong. How cuBLAS gets its savings, and whether they matter under the power limit, is still an open question for me.
 
 [Tensor cores](https://www.nvidia.com/en-us/data-center/tensor-cores/) would be much faster still, but by rounding the inputs to lower precision they solve a different problem.
 
@@ -346,13 +346,13 @@ The second lesson was to check every explanation against the hardware's hard lim
 
 [^gb10bw]: A simple read kernel reached about 240 GB/s.
 
-[^spill]: A thread spills when it needs more values at once than its registers can hold. The compiler moves the extras to _local memory_, which is private to each thread but lives in the GPU's slow main memory. Each spilled value costs an extra store and a later load.
+[^spill]: A thread spills when it needs more values at once than its registers can hold. The compiler moves the extras to _local memory_, which is private to each thread but lives in the same slow off-chip memory as global memory. Each spilled value costs an extra store and a later load.
 
-[^smemreads]: In the compiled code, each thread issues 128 wide shared-memory reads per $K$ slice in both versions. At $N = 2048$, the profiler counted 16.8 million shared-memory read instructions for each.
+[^smemreads]: In the compiled code, each thread issues 128 wide reads from shared memory per $K$ slice in both versions. For each version at $N = 2048$, the profiler counted 16.8 million instructions that read shared memory.
 
 [^banks]: In the profiler, the bank-conflict counter for shared-memory reads fell from 33.6 million to 54 thousand, and the average number of passes per read fell from 5 to 3. That average covers every shared-memory read in the kernel, not just these reads of $B$, so it doesn't fall to 1.
 
-[^warptile]: The profiler counted about 50 million shared-memory passes in both versions. Traffic to global memory didn't change either: each block still computes a 128×128 tile of $C$ from the same slices of $A$ and $B$, leaving the arithmetic intensity measured against global memory unchanged.
+[^warptile]: The profiler counted about 50 million passes through shared memory in both versions. Traffic to global memory didn't change either: each block still computes a 128×128 tile of $C$ from the same slices of $A$ and $B$, leaving the arithmetic intensity measured against global memory unchanged.
 
 [^writes]: In a transposed store, each thread writes one float, and its bank depends only on which row of $A$'s tile the thread copies. At a $K$ slice of 32, every 8 threads in a warp copy the same row, so 8 threads share each bank and the store takes 8 passes. At a slice of 16, only 4 threads share a row, and the profiler counted 4 passes per store, against 1 for a store without bank conflicts.
 
@@ -366,6 +366,6 @@ The second lesson was to check every explanation against the hardware's hard lim
 
 [^kmajor]: The 128×128 version stores $A$'s tile untransposed, so it can copy $A$ 16 bytes at a time instead of 4. That avoids the bank conflicts on transposed stores from round two. A 256×128 tile, with twice as many rows of $A$ to copy, was 6–10% slower than 128×256.
 
-[^power]: During a 50-second SGEMM run, the chip drew about 95 W, and its clock slid from 2.2 to 2.1 GHz. At 2.1 GHz the chip's peak is about 25.8 TFLOP/s, and cuBLAS's 17,119 GFLOP/s at $N = 4096$ is about two-thirds of that.
+[^power]: While SGEMM ran for 50 seconds, the chip drew about 95 W, and its clock slid from 2.2 to 2.1 GHz. At 2.1 GHz the chip's peak is about 25.8 TFLOP/s, and cuBLAS's 17,119 GFLOP/s at $N = 4096$ is about two-thirds of that.
 
-[^streamk]: Two earlier versions of this split were slower. In the first, each SM worked through one long, unbroken stretch of $K$ steps that crossed tile boundaries, and the SMs drifted so far apart that they stopped sharing data in L2, slowing each tile by about 40%. The second allowed up to 16 pieces per tile and dropped $N = 1025$ to 43% of cuBLAS. The version that worked cuts tiles into 2 to 4 pieces. Before launching the kernel, our launch code estimates how much work the busiest SM would get under each possible split, counting a little extra for adding up the pieces, and uses the split with the least.
+[^streamk]: Two earlier versions of this split were slower. In the first, each SM worked through one long, unbroken stretch of $K$ steps that crossed tile boundaries. The SMs drifted so far apart that they stopped sharing data in L2, slowing each tile by about 40%. The second allowed up to 16 pieces per tile and dropped $N = 1025$ to 43% of cuBLAS. The version that worked cuts tiles into 2 to 4 pieces. Before launching the kernel, our launch code estimates how much work the busiest SM would get under each possible split, with a little extra for adding up the pieces. It then uses the split with the least.

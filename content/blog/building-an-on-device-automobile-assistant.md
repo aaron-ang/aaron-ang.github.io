@@ -33,7 +33,7 @@ A database that stores embeddings (numeric representations of text or images) so
 
 **Quantization**
 
-A compression technique that represents model weights with fewer bits (e.g., 32‑bit to 4-bit) to reduce memory usage and speed up inference, allowing large models to run on resource-constrained on-device hardware.
+A compression technique that represents model weights with fewer bits (e.g., 32‑bit to 4-bit) to reduce memory usage and speed up inference, allowing large models to run on on-device hardware with limited resources.
 
 **On-Device/Edge Inference**
 
@@ -65,7 +65,7 @@ Uses a Vision-Language Model (VLM) to analyze camera feeds (e.g., whether the dr
 
 **Output Queue**
 
-Serves as an intermediary between the core agent system and the output module. This component ensures responses are delivered in the correct order to the Output Module (whether for speech synthesis or user interface), thereby maintaining consistency and reliability in driver-facing outputs.
+Serves as an intermediary between the core agent system and the Output Module. This component ensures responses are delivered in the correct order to the Output Module (whether for speech synthesis or user interface), thereby maintaining consistency and reliability in driver-facing outputs.
 
 **Utilities**
 
@@ -76,7 +76,7 @@ Agents interact with a set of local tools exposed through the [Model Context Pro
     - Configure vehicle environment settings such as climate control, sunroof, and cabin lighting.
     - Send notifications and alerts to the driver.
 - **Personal Assistance**
-    - Retrieve vehicle information from a local vector database (via RAG).
+    - Retrieve vehicle information from a local vector store (via RAG).
     - Control infotainment features, such as Bluetooth connections and media playback.
 
 By exposing these capabilities as modular tools, the system maintains a clean separation between reasoning (agents) and actuation (tools), ensuring extensibility and easier integration with new automotive features in the future.
@@ -126,7 +126,7 @@ The system runs with two models in memory:
 
 Both models are **quantized to 4-bit** and served via [llama.cpp](https://github.com/ggml-org/llama.cpp). We selected [Unsloth’s Dynamic 2.0 GGUF](https://docs.unsloth.ai/basics/unsloth-dynamic-2.0-ggufs) format, which offered the best trade-off between model size and runtime performance among leading quantization methods. This allowed both models to fit **within 14 GB of VRAM**.
 
-We developed the assistant prototype on an [Amazon EC2 g5g.4xlarge](https://aws.amazon.com/ec2/instance-types/g5g/) instance, equipped with 16 Arm‑based Graviton2 vCPUs, 32 GB of RAM, and a T4G Tensor Core GPU with 16 GB of VRAM. The entire compute and memory footprint is largely dedicated to running ML workloads, which aligns with real-world vehicle constraints: a car in 2025 contains [16 GB of DRAM](https://assets.micron.com/adobe/assets/urn:aaid:aem:414b850a-ec3b-43b1-aef7-3b600446ccf2/original/as/automotive-megatrends-white-paper.pdf) on average, with this amount [projected to triple by 2026](https://www.micron.com/about/blog/applications/automotive/new-research-shows-cars-need-more-memory-than-a-rocket). This parity ensures our development environment mirrors the resource budget available for production-capable AI agents. Additionally, the use of Graviton2 supports Arm’s [SOAFEE framework](https://aws.amazon.com/blogs/industries/building-an-automotive-embedded-linux-image-for-edge-using-arm-graviton-yocto-project-soafee), enabling the development and testing of containerized automotive workloads in the cloud before deploying to in-vehicle systems.
+We developed the assistant prototype on an [Amazon EC2 g5g.4xlarge](https://aws.amazon.com/ec2/instance-types/g5g/) instance, equipped with 16 Arm‑based Graviton2 vCPUs, 32 GB of RAM, and a T4G Tensor Core GPU with 16 GB of VRAM. The entire compute and memory footprint is largely dedicated to running ML workloads, which aligns with the constraints of real-world vehicles. On average, a car in 2025 contains [16 GB of DRAM](https://assets.micron.com/adobe/assets/urn:aaid:aem:414b850a-ec3b-43b1-aef7-3b600446ccf2/original/as/automotive-megatrends-white-paper.pdf), and this amount is [projected to triple by 2026](https://www.micron.com/about/blog/applications/automotive/new-research-shows-cars-need-more-memory-than-a-rocket). This parity ensures our development environment mirrors the resource budget available for AI agents in production. Additionally, the use of Graviton2 supports Arm’s [SOAFEE framework](https://aws.amazon.com/blogs/industries/building-an-automotive-embedded-linux-image-for-edge-using-arm-graviton-yocto-project-soafee), enabling the development and testing of containerized automotive workloads in the cloud before deploying to in-vehicle systems.
 
 ### Design Implications
 
@@ -138,7 +138,7 @@ The assistant has been developed in stages, with each stage introducing new perc
 
 #### Level 1: Inspect Vehicle Status using Voice Commands
 
-At the base level, the assistant can retrieve real-time vehicle state from onboard sensors in response to spoken queries (e.g., *“What is the current cabin temperature?”*). This provides immediate, hands-free access to vehicle information.
+At the base level, the assistant can retrieve the vehicle's real-time state from onboard sensors in response to spoken queries (e.g., *“What is the current cabin temperature?”*). This provides immediate, hands-free access to vehicle information.
 
 #### Level 2: Modify Vehicle Status using Voice Commands
 
@@ -146,7 +146,7 @@ Building on retrieval, the assistant can execute driver commands to adjust vehic
 
 #### Level 3: Visual Interpretation and Driver Alerts
 
-With vision integrated, the assistant begins to understand the driving environment through real-time visual input. For instance, it can detect when the vehicle is in a High Occupancy Vehicle (HOV) lane and issue a warning if the occupancy requirement is not met. Here, the assistant reasons over complex, dynamic, real-world situations, interpreting context, not just following instructions.
+With vision integrated, the assistant begins to understand the driving environment through visual input in real time. For instance, it can detect when the vehicle is in a High Occupancy Vehicle (HOV) lane and issue a warning if the occupancy requirement is not met. Here, the assistant reasons over complex, dynamic, real-world situations, interpreting context, not just following instructions.
 
 ![Synthetic highway view: an HOV 2+ sign with vehicles detected ahead](/images/building-an-on-device-automobile-assistant/hov-exterior-highway.jpg)
 
@@ -177,17 +177,17 @@ We compared two common approaches to designing agentic systems.
 1. A **monolithic** architecture, where a single large agent manages all tasks
 2. A **modular** architecture, where a supervisor agent acts as a router and facade for specialized sub-agents.
 
-Internal evaluations indicate that the modular approach scales more effectively and delivers more consistent results. It allows individual components to be updated or extended without disrupting the overall system, much like replacing a car part without rebuilding the entire engine. Our observations are consistent with findings from LangChain, which demonstrate that supervisor-based multi-agent architectures maintain performance as the number of tools grows, while single-agent systems degrade rapidly when overloaded with context or capabilities.
+Internal evaluations indicate that the modular approach scales more effectively and delivers more consistent results. It allows individual components to be updated or extended without disrupting the overall system, much like replacing a car part without rebuilding the entire engine. Our observations are consistent with findings from LangChain. Its benchmarks show that multi-agent architectures built around a supervisor maintain performance as the number of tools grows, while single-agent systems degrade rapidly when overloaded with context or capabilities.
 
 ![Agentic architecture scalability—source: [LangChain](https://blog.langchain.com/benchmarking-multi-agent-architectures/).](/images/building-an-on-device-automobile-assistant/multi-agent-scalability.png)
 
 #### Enabling Real-Time Inference on Constrained Hardware
 
-Running AI models on edge hardware is challenging due to tight compute and memory budgets. To address these constraints, we routed requests between the VLM and the compact LLM and applied 4-bit quantization to both. The larger VLM delivers strong multimodal reasoning but incurs higher latency, so non-vision tasks go to the LLM instead. This division of labor achieves a balance between functionality and responsiveness, enabling real-time multimodal inference for automotive workloads on resource-constrained devices.
+Running AI models on edge hardware is challenging due to tight compute and memory budgets. To address these constraints, we routed requests between the VLM and the compact LLM and applied 4-bit quantization to both. The larger VLM delivers strong multimodal reasoning but incurs higher latency, so non-vision tasks go to the LLM instead. This division of labor achieves a balance between functionality and responsiveness, enabling multimodal inference in real time for automotive workloads on resource-constrained devices.
 
 ![Impact of KV cache warmup on end-to-end latency.](/images/building-an-on-device-automobile-assistant/kv-cache-warmup-latency.png)
 
-We further reduced latency by precomputing the KV cache for the system prompt because it is reused as the prefix for all conversations. In ablation tests, this warm-up procedure delivered an average **2x speedup** in end-to-end latency.
+We further reduced latency by precomputing the KV cache for the system prompt because it is reused as the prefix for all conversations. In ablation tests, this warmup procedure delivered an average **2x speedup** in end-to-end latency.
 
 #### Enhancing Accuracy with On-Device RAG
 
@@ -213,7 +213,7 @@ To transition this agentic, on-device automobile assistant from prototype to rea
 
 Advancing model intelligence on edge hardware requires progress in post-training techniques such as [pruning](https://arxiv.org/pdf/2204.09656), quantization, and [knowledge distillation](https://huggingface.co/blog/Kseniase/kd), which enable compact models to maintain strong performance despite limited parameter capacity. Further reductions in latency depend on improvements in hardware architecture to address memory-bound inference. For example, placing compute closer to memory can minimize data movement bottlenecks. Optimizing memory usage also requires hardware-aware strategies, including [quantization-aware training](https://pytorch.org/blog/quantization-aware-training/), efficient attention implementations, and robust, lightweight model architectures, ensuring models can operate within strict VRAM budgets while remaining functional.
 
-Most critically, safety must be embedded at every layer. Since [Arm's IP supports ISO/SAE 21434 compliance](https://community.arm.com/arm-community-blogs/b/automotive-blog/posts/arm-meets-iso-sae-21434-standard), this system is well-positioned to align with automotive cybersecurity standards. However, deploying such a system at scale requires alignment with industry-wide validation practices and thorough adversarial testing to meet both technical and regulatory requirements. Addressing these interwoven challenges through continued optimization, security risk engineering, and cross-industry collaboration will be vital for bringing safe, capable, and real-time AI assistants to the vehicles of the future.
+Most critically, safety must be embedded at every layer. Since [Arm's IP supports ISO/SAE 21434 compliance](https://community.arm.com/arm-community-blogs/b/automotive-blog/posts/arm-meets-iso-sae-21434-standard), this system is well-positioned to align with automotive cybersecurity standards. However, deploying such a system at scale requires alignment with validation practices across the industry and thorough adversarial testing to meet both technical and regulatory requirements. Addressing these interwoven challenges through continued optimization, security risk engineering, and cross-industry collaboration will be vital for putting safe and capable AI assistants that respond in real time into the vehicles of the future.
 
 ## **Looking Ahead: The Future of In-Car Intelligence**
 
@@ -225,8 +225,8 @@ By leveraging [world models](https://deepmind.google/discover/blog/genie-3-a-new
 
 **Personalized, Continual Learning**
 
-Future assistants will continuously adapt to each driver. Efficient fine-tuning techniques like [QLoRA](https://wandb.ai/sauravmaheshkar/QLoRA/reports/What-is-QLoRA---Vmlldzo2MTI2OTc5) could allow models to adapt to the users' unique preferences, driving style, and specific vehicle vocabulary over time, making interactions feel more natural and tailored to each individual.
+Future assistants will continuously adapt to each driver. Efficient techniques for fine-tuning, like [QLoRA](https://wandb.ai/sauravmaheshkar/QLoRA/reports/What-is-QLoRA---Vmlldzo2MTI2OTc5), could allow models to adapt to the users' unique preferences, driving style, and specific vehicle vocabulary over time, making interactions feel more natural and tailored to each individual.
 
 ## Closing Thoughts
 
-We are only scratching the surface of what’s possible when powerful, privacy-first AI resides directly in your car. The agentic assistant developed here demonstrates that intelligent, collaborative, and extensible in-vehicle AI is within reach, and that every incremental advance in software and hardware brings us closer to cars that are not just a mode of transport, but truly intelligent and intuitive partners on every journey.
+We are only scratching the surface of what’s possible when powerful, privacy-first AI resides directly in your car. The agentic assistant developed here demonstrates that intelligent, collaborative, and extensible in-vehicle AI is within reach. Every incremental advance in software and hardware brings us closer to cars that are not just a mode of transport, but truly intelligent and intuitive partners on every journey.
