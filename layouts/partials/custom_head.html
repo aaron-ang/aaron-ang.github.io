@@ -2,10 +2,14 @@
 <style>
   figure { margin: 1.5rem 0; text-align: center; }
   figure img { margin: 0 auto; }
-  figcaption { font-size: 0.85em; color: #888; margin-top: 0.4rem; }
+  figcaption { font-size: 0.85em; color: #666; margin-top: 0.4rem; }
+  @media (prefers-color-scheme: dark) { figcaption { color: #9fb3ba; } }
+  /* Wide tables and display math scroll inside their own box on narrow screens. */
+  table { display: block; width: max-content; max-width: 100%; overflow-x: auto; }
+  math[display="block"] { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
   pre:not(.mermaid) { padding: 0.8rem 1rem; box-sizing: border-box; }
   pre:not(.mermaid) code { display: block; padding: 0; }
-  pre.mermaid { background: none; text-align: center; margin: 0; }
+  pre.mermaid { background: none; text-align: center; margin: 0; overflow-x: auto; }
   .mermaid-figure figcaption { text-align: left; }
   .table-figure table { margin: 0 auto; }
   .table-figure th, .table-figure td { text-align: left; }
