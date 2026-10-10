@@ -23,7 +23,7 @@ Here's how a handful of writes flow through this path, from the WAL and Memtable
 
 ## Compaction
 
-Compaction can be thought of as garbage collection for the LSM tree. It removes keys that are duplicated and/or marked for deletion. Under the hood, it utilizes a [multiway merge algorithm](https://www.baeldung.com/cs/2-way-vs-k-way-merge#k-way-merge-algorithms) to merge multiple SSTables into a new SSTable.
+Compaction can be thought of as garbage collection for the LSM tree. It removes keys that are duplicated and/or marked for deletion. Under the hood, it uses a [multiway merge](https://www.baeldung.com/cs/2-way-vs-k-way-merge#k-way-merge-algorithms) to combine several SSTables into one. Because each input is already sorted, the merge reads all inputs in parallel and repeatedly writes out the smallest key at their fronts. When the same key appears in more than one input, only the newest entry is kept.
 
 In most implementations, a dedicated background thread is used to perform compaction. There are many ways to customize how and when compaction gets triggered with different tradeoffs. Below are two classic compaction strategies.
 
@@ -123,13 +123,13 @@ Since a key may live in any of several sorted runs, a read may need to probe mul
 
 ### Bloom Filter
 
-A Bloom filter is a **probabilistic** data structure that provides an efficient way to verify that an entry is **certainly not** in a set. A detailed explanation of how Bloom filters work under the hood can be found [here](https://www.educative.io/answers/what-is-a-bloom-filter). Essentially, Bloom filters are kept in memory and checked before touching disk to reduce the amount of (expensive) disk reads. The SSTable will only be searched if the Bloom filter indicates that the key **may be present**. Note that standard Bloom filters only help point queries, i.e., getting the value of a specific key, and cannot determine the presence of a key range. Variants exist for these cases: RocksDB's [prefix Bloom filters](https://github.com/facebook/rocksdb/wiki/Prefix-Seek) speed up scans over keys sharing a prefix, and range filters like [SuRF](https://www.cs.cmu.edu/~huanche1/publications/surf_paper.pdf) can answer "is any key in this range present?"
+A Bloom filter is a **probabilistic** data structure that provides an efficient way to verify that an entry is **certainly not** in a set. It hashes each key to a few bits in a bit array; if any of those bits is 0, the key was never added ([how Bloom filters work](https://www.educative.io/answers/what-is-a-bloom-filter)). Bloom filters are kept in memory and checked before touching disk to reduce the amount of (expensive) disk reads. The SSTable will only be searched if the Bloom filter indicates that the key **may be present**. Note that standard Bloom filters only help point queries, i.e., getting the value of a specific key, and cannot determine the presence of a key range. Variants exist for these cases: RocksDB's [prefix Bloom filters](https://github.com/facebook/rocksdb/wiki/Prefix-Seek) speed up scans over keys sharing a prefix, and range filters like [SuRF](https://www.cs.cmu.edu/~huanche1/publications/surf_paper.pdf) can answer "is any key in this range present?"
 
 ### Sparse Index / Fence Pointers
 
-As the size of deeper levels increases, even using binary search to find a key can become expensive, since each step of a binary search on disk costs an I/O. To put this into perspective, RocksDB reports that close to **90%** of storage data resides in the last level ([Dong et al., 2017](https://www.cidrdb.org/cidr2017/papers/p82-dong-cidr17.pdf)). Fence pointers, which together form a sparse index, mitigate the potentially large read cost by keeping a **subset of keys** in each SSTable **mapped in-memory**. With this key mapping, ranges can be quickly skipped, narrowing the search space and significantly reducing lookup time.
+As the size of deeper levels increases, even using binary search to find a key can become expensive, since each step of a binary search on disk costs an I/O. To put this into perspective, RocksDB reports that close to **90%** of storage data resides in the last level ([Dong et al., 2017](https://www.cidrdb.org/cidr2017/papers/p82-dong-cidr17.pdf)). Fence pointers, which together form a sparse index, mitigate the potentially large read cost by keeping a **subset of keys** in each SSTable **mapped in-memory**. With this key mapping, ranges can be quickly skipped, narrowing the search to one block and cutting lookup time.
 
-The sparse index, containing the key mapping, is typically encoded at the end of the file or as a separate index file. When an SSTable is read, its sparse index is loaded into memory and subsequently used for key lookups during read operations. Since SSTables are immutable, compaction writes fresh sparse indexes for the new SSTables it produces.
+The sparse index, containing the key mapping, is typically encoded at the end of the file or as a separate index file. When an SSTable is read, its sparse index is loaded into memory and then used for key lookups during read operations. Since SSTables are immutable, compaction writes fresh sparse indexes for the new SSTables it produces.
 
 Putting the two together, below are two lookups: one key that costs a single disk read, and one that the Bloom filters rule out without ever touching disk:
 
@@ -155,7 +155,7 @@ At Boston University’s Data-intensive Systems and Computing (DiSC) Lab, resear
 
 ### Read Amplification
 
-Read amplification refers to the number of **disk reads per query**. As discussed earlier, read optimizations such as Bloom filters and fence pointers significantly reduce read amplification by selectively processing read requests or reducing the search space.
+Read amplification refers to the number of **disk reads per query**. As discussed earlier, read optimizations such as Bloom filters and fence pointers reduce read amplification by selectively processing read requests or reducing the search space.
 
 ### Write Amplification
 
@@ -163,7 +163,7 @@ Write amplification refers to the **ratio** of the amount of physical data **wri
 
 ### Space Amplification
 
-Space amplification refers to the **ratio** of the amount of physical data stored on the **storage device** to the amount of logical data in the **database**. Similar to write amplification, the compaction strategy employed significantly impacts space amplification. Size-tiered compaction generally results in **higher space amplification** compared to leveled compaction. In size-tiered compaction, when an SSTable in the deepest tier becomes very large, compaction requires substantial temporary space, since the input SSTables can only be deleted after the new, larger SSTable is fully written. Moreover, overwritten or deleted keys persist in the SSTable until it is eventually merged, leading to wasted space.
+Space amplification refers to the **ratio** of the amount of physical data stored on the **storage device** to the amount of logical data in the **database**. Similar to write amplification, the compaction strategy has a large effect on space amplification. Size-tiered compaction generally results in **higher space amplification** compared to leveled compaction. In size-tiered compaction, when an SSTable in the deepest tier becomes very large, compaction requires substantial temporary space, since the input SSTables can only be deleted after the new, larger SSTable is fully written. Overwritten or deleted keys also persist in the SSTable until it is eventually merged, leading to wasted space.
 
 ### Tradeoffs
 
@@ -171,9 +171,9 @@ There are often tradeoffs between different amplification metrics. For instance,
 
 ### What I’m working on
 
-At the DiSC Lab, I’m working on extending [MySQL](https://github.com/mysql/mysql-server) to incorporate application support for a novel delete engine called [Lethe](https://disc-projects.bu.edu/lethe/) for LSM trees. Lethe provides persistence guarantees for primary delete operations. A write-up of the motivations of the project and current progress can be found [here](https://drive.google.com/file/d/17RJTovDi_5fxiH6S1vnm1BJ2yGSO2W2m/view?usp=sharing). I will also provide a concise summary below.
+At the DiSC Lab, I’m working on extending [MySQL](https://github.com/mysql/mysql-server) to incorporate application support for a novel delete engine called [Lethe](https://disc-projects.bu.edu/lethe/) for LSM trees. Lethe provides persistence guarantees for primary delete operations. The [project write-up](https://drive.google.com/file/d/17RJTovDi_5fxiH6S1vnm1BJ2yGSO2W2m/view?usp=sharing) covers its motivation and progress in full; a short summary follows.
 
-We previously discussed that deletions in an LSM tree are “lazily” materialized, meaning the “deleted” key is physically removed from the system only during compactions. Furthermore, a tombstone might need to reach the last level of the LSM tree for the associated key to be physically removed, requiring compactions through every level. As the size of the tree grows, compaction might be delayed, and the process itself could be time-consuming. This introduces a significant challenge, as the duration between a deletion request from the client and the actual physical deletion of the key could extend to days or even months. Such a delay poses a considerable privacy risk for companies, particularly those committed to specific turnaround times for personal data removal (e.g., 30 days). In cases where company data is compromised, the persistence of user data beyond the stipulated period could result in legal complications for these organizations.
+We previously discussed that deletions in an LSM tree are “lazily” materialized, meaning the “deleted” key is physically removed from the system only during compactions. A tombstone might also need to reach the last level of the LSM tree for the associated key to be physically removed, requiring compactions through every level. As the size of the tree grows, compaction might be delayed, and the process itself could be time-consuming. This becomes a real problem, as the duration between a deletion request from the client and the actual physical deletion of the key could extend to days or even months. Such a delay poses a considerable privacy risk for companies, particularly those committed to specific turnaround times for personal data removal (e.g., 30 days). In cases where company data is compromised, the persistence of user data beyond the stipulated period could result in legal complications for these organizations.
 
 Lethe caps that wait with a *delete persistence threshold* (DPT): the longest a deleted key may stay on disk. Our SQL extension sets it per table or per statement, e.g. `DELETE ... WITH DPT = D` for a threshold of D seconds, like 30 days for the example above. To meet it, each level gives a tombstone a share of D,[^dpt] and a file that overstays its share is compacted down right away.
 

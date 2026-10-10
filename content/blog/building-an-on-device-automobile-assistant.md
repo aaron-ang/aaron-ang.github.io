@@ -5,13 +5,11 @@ slug = "building-an-on-device-automobile-assistant"
 tags = ["AI", "Engineering"]
 +++
 
-**Disclaimer:** I wrote my first blog post two years ago, proud to have done it without any help from LLMs. This time, I have fully embraced them to speed up and sharpen my writing. That said, most LLM-generated text tends to share the same stylistic tone, so copy-pasting isn’t ideal. For technical posts like this, the challenge is balancing clarity with brevity. The core ideas still have to come from the writer, but LLMs provide the vocabulary and structure that make those ideas easier to read. I don’t expect that dynamic to change. Creative work, whether writing or coding, remains an iterative process, where each step refines the alignment between prose and concept.
-
 ## **Introduction: The Era of AI-Defined Vehicles**
 
-The automotive industry is entering a new era: the [AI-defined vehicle](https://newsroom.arm.com/blog/what-are-ai-defined-vehicles). Arm envisions embedding AI at the core of automotive compute, enabling vehicles to sense, reason, and adapt in real time to driver needs and the environment. With platforms like [Zena CSS](https://www.arm.com/products/automotive/compute-subsystems/zena), powerful and secure AI processing can now happen directly inside the vehicle. Local intelligence not only enhances privacy and responsiveness but also unlocks new levels of safety, convenience, and personalization.
+The automotive industry is entering a new era: the [AI-defined vehicle](https://newsroom.arm.com/blog/what-are-ai-defined-vehicles). Arm envisions embedding AI at the core of automotive compute, enabling vehicles to sense, reason, and adapt in real time to driver needs and the environment. With platforms like [Zena CSS](https://www.arm.com/products/automotive/compute-subsystems/zena), powerful and secure AI processing can now happen directly inside the vehicle. Running AI locally keeps driver data in the car and avoids network delays, which also helps safety, convenience, and personalization.
 
-This project is a step toward this vision: building an on-device, agentic multimodal assistant that demonstrates how modular, collaborative AI can enhance in-vehicle experiences, all running efficiently on local hardware. In this paradigm, AI agents are integral, proactive partners for drivers, collaborating to assist with everything from diagnostics to environmental control.
+This post describes an on-device assistant we built toward that vision. A supervisor routes each spoken or visual request to small agents for guardrails, vehicle control, retrieval, and vision, and every model runs on local hardware. The sections below cover the architecture, what made real-time inference possible, and what is still needed before deployment.
 
 ## **Glossary**
 
@@ -37,7 +35,7 @@ A compression technique that represents model weights with fewer bits (e.g., 32�
 
 **On-Device/Edge Inference**
 
-Running AI models directly on the vehicle’s compute, enhancing privacy and reliability.
+Running AI models directly on the vehicle’s compute, which keeps data private and works without a network.
 
 ## **System Architecture: Modular Intelligence on the Edge**
 
@@ -65,53 +63,52 @@ Uses a Vision-Language Model (VLM) to analyze camera feeds (e.g., whether the dr
 
 **Output Queue**
 
-Serves as an intermediary between the core agent system and the Output Module. This component ensures responses are delivered in the correct order to the Output Module (whether for speech synthesis or user interface), thereby maintaining consistency and reliability in driver-facing outputs.
+Serves as an intermediary between the core agent system and the Output Module. This component ensures responses are delivered in the correct order to the Output Module (whether for speech synthesis or user interface), so the driver never hears or sees replies out of order.
 
 **Utilities**
 
-Agents interact with a set of local tools exposed through the [Model Context Protocol (MCP)](https://modelcontextprotocol.io/docs/getting-started/intro) server or as direct function calls. These tools represent the assistant’s interface to the vehicle and its supporting systems. In the current prototype, they are stubbed with mock data, but the design anticipates integration with real automotive subsystems.
+Agents interact with a set of local tools exposed through a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/docs/getting-started/intro) server or as direct function calls. MCP is an open standard that describes each tool's name, inputs, and outputs in one format, so any model can discover and call it. These tools represent the assistant’s interface to the vehicle and its supporting systems. In the current prototype, they are stubbed with mock data, but the design anticipates integration with real automotive subsystems.
 
 - **Driving and Safety**
-    - Contact emergency services in the event of a crash or detected hazard.
-    - Configure vehicle environment settings such as climate control, sunroof, and cabin lighting.
-    - Send notifications and alerts to the driver.
+  - Contact emergency services in the event of a crash or detected hazard.
+  - Configure vehicle environment settings such as climate control, sunroof, and cabin lighting.
+  - Send notifications and alerts to the driver.
 - **Personal Assistance**
-    - Retrieve vehicle information from a local vector store (via RAG).
-    - Control infotainment features, such as Bluetooth connections and media playback.
+  - Retrieve vehicle information from a local vector store (via RAG).
+  - Control infotainment features, such as Bluetooth connections and media playback.
 
 By exposing these capabilities as modular tools, the system maintains a clean separation between reasoning (agents) and actuation (tools), ensuring extensibility and easier integration with new automotive features in the future.
 
 ### Example Input-Output Sequence
 
-Suppose the driver says, *“Pair my phone to the car’s Bluetooth.”*
+Suppose the driver says, _“Pair my phone to the car’s Bluetooth.”_
 
 1. **Input Module**
-    
-    Transcribes the driver’s speech into text.
-    
-2. **Core**
-    1. **Guardrail Agent**
-        
-        Validates the request to ensure it is safe and within scope.
-        
-    2. **Supervisor Agent**
-        
-        Interprets the intent as an environment control task and routes it to the Vehicle Control Agent.
-        
-    3. **Vehicle Control Agent**
-        
-        Calls the Automobile MCP tool to handle Bluetooth pairing with the driver’s device and outputs the result.
-        
-    4. **Output Queue**
-        
-        Buffers the result, ensuring it is delivered in order and not interrupted by concurrent tasks.
-        
-3. **Output Module**
-    
-    Sends responses to the TTS client and UI.
-    
 
-The assistant then confirms: *“Your device has been paired successfully.”*
+   Transcribes the driver’s speech into text.
+
+2. **Core**
+   1. **Guardrail Agent**
+
+      Validates the request to ensure it is safe and within scope.
+
+   2. **Supervisor Agent**
+
+      Interprets the intent as an environment control task and routes it to the Vehicle Control Agent.
+
+   3. **Vehicle Control Agent**
+
+      Calls the Automobile MCP tool to handle Bluetooth pairing with the driver’s device and outputs the result.
+
+   4. **Output Queue**
+
+      Buffers the result, ensuring it is delivered in order and not interrupted by concurrent tasks.
+
+3. **Output Module**
+
+   Sends responses to the TTS client and UI.
+
+The assistant then confirms: _“Your device has been paired successfully.”_
 
 The following logs capture how the system executes the request in real time. Each entry corresponds to a step in the pipeline. Excluding the time required to connect the Bluetooth device, the agent workflow completes in **under five seconds**.
 
@@ -138,11 +135,11 @@ The assistant has been developed in stages, with each stage introducing new perc
 
 #### Level 1: Inspect Vehicle Status using Voice Commands
 
-At the base level, the assistant can retrieve the vehicle's real-time state from onboard sensors in response to spoken queries (e.g., *“What is the current cabin temperature?”*). This provides immediate, hands-free access to vehicle information.
+At the base level, the assistant can retrieve the vehicle's real-time state from onboard sensors in response to spoken queries (e.g., _“What is the current cabin temperature?”_). This provides immediate, hands-free access to vehicle information.
 
 #### Level 2: Modify Vehicle Status using Voice Commands
 
-Building on retrieval, the assistant can execute driver commands to adjust vehicle settings (e.g., *“Set the temperature to 70 degrees”*). This shifts the role of the assistant from an information source to an active participant in the vehicle operation.
+Building on retrieval, the assistant can execute driver commands to adjust vehicle settings (e.g., _“Set the temperature to 70 degrees”_). This shifts the role of the assistant from an information source to an active participant in the vehicle operation.
 
 #### Level 3: Visual Interpretation and Driver Alerts
 
@@ -189,7 +186,7 @@ Running AI models on edge hardware is challenging due to tight compute and memor
 
 We further reduced latency by precomputing the KV cache for the system prompt because it is reused as the prefix for all conversations. In ablation tests, this warmup procedure delivered an average **2x speedup** in end-to-end latency.
 
-#### Enhancing Accuracy with On-Device RAG
+#### Improving Accuracy with On-Device RAG
 
 Incorporating RAG transformed the assistant’s responsiveness and reliability. By embedding a knowledge base like the car manual, the assistant can answer context-aware, technical questions swiftly and privately without an internet connection. This dramatically improves real-time usefulness and driver trust.
 
@@ -211,7 +208,7 @@ Our architecture enforces strict constraints on agent behavior to ensure safety 
 
 To transition this agentic, on-device automobile assistant from prototype to real-world deployment, we must carefully balance four interdependent priorities: **model intelligence**, **latency**, **memory usage**, and **safety**.
 
-Advancing model intelligence on edge hardware requires progress in post-training techniques such as [pruning](https://arxiv.org/pdf/2204.09656), quantization, and [knowledge distillation](https://huggingface.co/blog/Kseniase/kd), which enable compact models to maintain strong performance despite limited parameter capacity. Further reductions in latency depend on improvements in hardware architecture to address memory-bound inference. For example, placing compute closer to memory can minimize data movement bottlenecks. Optimizing memory usage also requires hardware-aware strategies, including [quantization-aware training](https://pytorch.org/blog/quantization-aware-training/), efficient attention implementations, and robust, lightweight model architectures, ensuring models can operate within strict VRAM budgets while remaining functional.
+Advancing model intelligence on edge hardware requires progress in post-training techniques. [Pruning](https://arxiv.org/pdf/2204.09656) removes weights that contribute little, and [knowledge distillation](https://huggingface.co/blog/Kseniase/kd) trains a small model to copy a large one. Together with quantization, these techniques enable compact models to maintain strong performance despite limited parameter capacity. Further reductions in latency depend on improvements in hardware architecture to address memory-bound inference. For example, placing compute closer to memory can minimize data movement bottlenecks. Optimizing memory usage also requires hardware-aware strategies, including [quantization-aware training](https://pytorch.org/blog/quantization-aware-training/), efficient attention implementations, and lightweight model architectures, ensuring models can operate within strict VRAM budgets while remaining functional.
 
 Most critically, safety must be embedded at every layer. Since [Arm's IP supports ISO/SAE 21434 compliance](https://community.arm.com/arm-community-blogs/b/automotive-blog/posts/arm-meets-iso-sae-21434-standard), this system is well-positioned to align with automotive cybersecurity standards. However, deploying such a system at scale requires alignment with validation practices across the industry and thorough adversarial testing to meet both technical and regulatory requirements. Addressing these interwoven challenges through continued optimization, security risk engineering, and cross-industry collaboration will be vital for putting safe and capable AI assistants that respond in real time into the vehicles of the future.
 
@@ -221,12 +218,14 @@ This prototype is just the beginning. The next frontiers for on-device assistant
 
 **Proactive, Context-Aware Reasoning**
 
-By leveraging [world models](https://deepmind.google/discover/blog/genie-3-a-new-frontier-for-world-models/), AI systems that learn and simulate real-world dynamics, future assistants can not only respond to human inputs and predefined triggers, but also anticipate scenarios, plan actions, and adapt to long-term consequences. Training these models in rich virtual environments will allow them to handle complex driving conditions safely and reliably, before ever hitting the road.
+By using [world models](https://deepmind.google/discover/blog/genie-3-a-new-frontier-for-world-models/), AI systems that learn and simulate real-world dynamics, future assistants can not only respond to human inputs and predefined triggers, but also anticipate scenarios, plan actions, and adapt to long-term consequences. Training these models in rich virtual environments will allow them to handle complex driving conditions safely and reliably, before ever hitting the road.
 
 **Personalized, Continual Learning**
 
-Future assistants will continuously adapt to each driver. Efficient techniques for fine-tuning, like [QLoRA](https://wandb.ai/sauravmaheshkar/QLoRA/reports/What-is-QLoRA---Vmlldzo2MTI2OTc5), could allow models to adapt to the users' unique preferences, driving style, and specific vehicle vocabulary over time, making interactions feel more natural and tailored to each individual.
+Future assistants will continuously adapt to each driver. [QLoRA](https://wandb.ai/sauravmaheshkar/QLoRA/reports/What-is-QLoRA---Vmlldzo2MTI2OTc5) is one efficient fine-tuning technique: it freezes a 4-bit model and trains only a few small added weight matrices. Techniques like it could allow models to adapt to the users' unique preferences, driving style, and specific vehicle vocabulary over time, making interactions feel more natural and tailored to each individual.
 
 ## Closing Thoughts
 
 We are only scratching the surface of what’s possible when powerful, privacy-first AI resides directly in your car. The agentic assistant developed here demonstrates that intelligent, collaborative, and extensible in-vehicle AI is within reach. Every incremental advance in software and hardware brings us closer to cars that are not just a mode of transport, but truly intelligent and intuitive partners on every journey.
+
+_Unlike my first post, I wrote this one with help from LLMs. The ideas are mine; the LLMs helped with wording and structure, and I edited their output so it would not read like generic generated text._

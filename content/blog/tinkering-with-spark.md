@@ -5,6 +5,8 @@ slug = "tinkering-with-spark"
 tags = ["Data", "Engineering"]
 +++
 
+Two Spark settings stopped our daily jobs from crashing with out-of-memory errors and made their stages finish faster: more cores per executor, and more memory for the driver. This post explains how Spark runs on a YARN cluster, how I traced the crashes to broadcast joins, and why those two changes fixed them.
+
 ## Background
 
 In the summer of 2022, I interned at [Shopee](https://shopee.com/) as a product analyst on the Search and Recommendation (SnR) data team. My primary responsibility was to deliver reliable and actionable analytics for product managers. Because we frequently ran large-scale queries throughout the day, any job delays or failures directly impacted reporting timelines and slowed progress toward feature improvements or releases.
@@ -17,7 +19,7 @@ Before we dive into the issue, I will first introduce the key technologies invol
 
 ## **What is Spark?**
 
-Apache Spark, originally developed as a research project at UC Berkeley's AMPLab and now maintained by the Apache Software Foundation, is an open-source framework for distributed processing of large-scale data. It leverages **in-memory caching** and **optimized query execution** to deliver high performance for analytic queries across massive datasets.
+Apache Spark, originally developed as a research project at UC Berkeley's AMPLab and now maintained by the Apache Software Foundation, is an open-source framework for distributed processing of large-scale data. It uses **in-memory caching** and **optimized query execution** to deliver high performance for analytic queries across massive datasets.
 
 Spark was designed to overcome the limitations of MapReduce, which relies on a sequential, multi-step process susceptible to disk I/O latency. With Spark, data is read into memory, operations are performed, and results are written back—all in a streamlined process that avoids repeated disk access. The performance gains come from keeping intermediate data in memory where possible. They also come from abstractions like [Resilient Distributed Datasets (RDDs)](https://spark.apache.org/docs/latest/rdd-programming-guide.html#resilient-distributed-datasets-rdds) and later [DataFrames](https://spark.apache.org/docs/latest/sql-programming-guide.html#datasets-and-dataframes), which let Spark plan and optimize whole pipelines instead of writing to disk between every step.
 
@@ -152,7 +154,7 @@ Although I followed an iterative cycle of consolidating evidence, forming hypoth
 
 ## Closing Thoughts
 
-This endeavor was a valuable learning experience. Although fixing Spark pipelines was outside the scope of my responsibilities as a product analyst intern, I recognized the significant operational impact of leaving the issue unresolved and proposed addressing it. I’m grateful to my team and manager for granting me the flexibility and trust to pursue this side project. Given my limited understanding of systems at that time, I had to learn everything from scratch. While I achieved tangible results, progress came through continuous iteration and learning from mistakes. I also discovered that there is no one-size-fits-all solution—each Spark job or query is inherently unique, so improvements varied across jobs. Despite the challenges, I thoroughly enjoyed the process. I embraced failure as part of the norm, stayed open to experimentation, and ultimately developed an interest in systems that I pursued further in subsequent college semesters.
+This project was a valuable learning experience. Although fixing Spark pipelines was outside the scope of my responsibilities as a product analyst intern, I saw how much the failing jobs were delaying our reports and proposed fixing them. I’m grateful to my team and manager for granting me the flexibility and trust to pursue this side project. Given my limited understanding of systems at that time, I had to learn everything from scratch. While I achieved tangible results, progress came through continuous iteration and learning from mistakes. I also discovered that there is no one-size-fits-all solution—each Spark job or query is inherently unique, so improvements varied across jobs. Despite the challenges, I thoroughly enjoyed the process. I embraced failure as part of the norm, stayed open to experimentation, and ultimately developed an interest in systems that I pursued further in subsequent college semesters.
 
 ## References
 

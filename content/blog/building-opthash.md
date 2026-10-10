@@ -7,7 +7,7 @@ tags = ["Design", "Research", "Engineering"]
 
 ## From Paper to Code
 
-Earlier this year, I watched [Quanta's video on 2025's biggest breakthroughs in computer science](https://www.quantamagazine.org/videos/2025s-biggest-breakthroughs-in-computer-science/). The one that stuck with me was a paper that disproved a 40-year-old conjecture about open-addressed hash tables.
+Earlier this year, I watched [Quanta's video on 2025's biggest breakthroughs in computer science](https://www.quantamagazine.org/videos/2025s-biggest-breakthroughs-in-computer-science/). The one that stuck with me was a paper that disproved a 40-year-old conjecture about open-addressed hash tables. This post follows my Rust implementation of that paper: the low-level tricks that made it fast, and why I removed several of them to keep the code faithful to the paper.
 
 In [open addressing](https://en.wikipedia.org/wiki/Open_addressing), every key and value lives directly in one array. When a key hashes to a slot that is already taken, the table walks a fixed sequence of other slots, called the _probe sequence_, until it finds an empty one. As the table fills, a key steps past more occupied slots before it finds room, and the walk gets longer and slower.
 
@@ -45,7 +45,7 @@ Funnel also splits the table into shrinking levels, but each main level is divid
 
 My first version translated both constructions as literally as I could. It was easy to check against the paper, but it was slow.
 
-## Making It Fast
+## Low-level Optimizations
 
 Version 1 mapped the paper's structures straight onto Rust structs. The code uses one name, _levels_, for both Elastic's arrays and Funnel's levels. In Version 1, each level owned a `Vec<Option<Entry>>`. The code mirrored the paper's diagrams. However, every level was its own allocation, every probe chased a pointer to reach it, and every slot the probe rejected had already pulled a full entry into cache just to read its tag.
 
@@ -74,6 +74,8 @@ block-beta
 
 With control bytes in place, opthash adopted the rest of SwissTable's probe design, seven-bit fingerprints and SIMD control-byte scans, and switched to the [`foldhash`](https://github.com/orlp/foldhash) hasher. Rounding sizes to powers of two let the code map a hash to a slot with a bit mask (`hash & (size - 1)`) instead of a much slower division (`hash % size`). The single arena kept all control bytes close together and cut allocation traffic.
 
+## Performance Sensitivity
+
 All of this made the maps faster but harder to measure. A layout change can move unrelated data or code across a cache-line boundary. A struct field or a hot loop that used to fit in one cache line may now span two, and the processor has to fetch both. Even when a run gets faster, it doesn't reveal which change helped, and re-running the same comparison can give a different answer.
 
 A mini-hash experiment, which never made it into the code, showed how inconsistent those results could be.[^mini-hash] It stored 4 extra bytes of hash per slot so a lookup could reject more slots before comparing keys. The first run showed three Funnel workloads in the Python bindings improving by 33 to 39 percent. It looked like a clear win until I noticed the two runs had landed on different classes of CPU core, one clocked a gigahertz faster than the other. Rerun with both pinned to the same core, most of the win disappeared:
@@ -99,7 +101,7 @@ Smaller experiments went through the same checks.[^small-experiments] Later on, 
 
 Better measurement caught wins that were noise and wins that only held on one machine. The same measurements also exposed a bigger problem. Some optimizations that measured well had changed which slots the algorithms visited, notably power-of-two level sizes and changed probing arithmetic. The maps were faster because they were no longer quite the paper's algorithms.
 
-## Returning to the Paper
+## Recalibrating with the Paper
 
 Lining the code up against the paper showed that the drift had more than one cause. Several optimizations had each changed which slots a key tried or the order it tried them in. Funnel also had bugs of its own: some inserts skipped the main levels and went straight to the special area, and special area C did not always pick the emptier of its two buckets.[^funnel-fixes] Fixing these one at a time wouldn't have been enough, because I couldn't be sure I had found them all. For that, I needed a version of each map that followed the paper exactly, to compare the optimized code against.
 
@@ -194,7 +196,10 @@ exact rewrite
 The totals look alike because both runs lasted five seconds. But the exact version is slower and completed far fewer lookups in that time. To compare the two fairly, each counter has to be divided by the number of lookups. The regression table above lists Elastic's successful-lookup (Hit) time as 3.7 ns before the rewrite and 32 ns after. Dividing the five seconds by each time gives the number of lookups each version completed:
 
 $$
-\frac{5\ \text{s}}{3.7\ \text{ns}} \approx 1.35 \text{ billion (v0.10.3)} \qquad \frac{5\ \text{s}}{32\ \text{ns}} \approx 156 \text{ million (exact)}
+\begin{aligned}
+\frac{5\ \text{s}}{3.7\ \text{ns}} &\approx 1.35 \text{ billion (v0.10.3)} \\
+\frac{5\ \text{s}}{32\ \text{ns}} &\approx 156 \text{ million (exact)}
+\end{aligned}
 $$
 
 Dividing each counter by those counts gives the cost of a single lookup. These are estimates, since the benchmark loop adds a little work of its own, but the differences are far larger than that overhead:
@@ -217,7 +222,7 @@ Insert behaves differently, because there the exact version also takes about 10 
 
 The first round of tuning showed the exact version had room to improve. Streamlining the hot paths made Elastic insertion more than 4x faster without changing which slots it visits.[^hot-paths] That narrowed the project's question to how fast the paper's constructions can get on their own, with the library features kept out of the way.
 
-## Beyond the Paper
+## Keeping Extensions Separate
 
 A real library must also delete, clear, grow, and handle a key running out of slots to try. To keep that code from changing how the paper places keys, opthash splits a table's lifecycle into epochs. Inside an epoch, inserts and lookups follow the paper exactly.[^hashing] Everything else, from growth to cleanup after deletes, runs as separate library code between epochs, and each run starts a new epoch under the paper's rules.
 

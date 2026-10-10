@@ -7,11 +7,11 @@ tags = ["AI", "Engineering"]
 
 ## Background
 
-Red Hat's Sales and Deal Management team recently faced a significant challenge: migrating **hundreds of thousands** of documents from our legacy [Salesforce CRM](https://www.salesforce.com/crm/) to the new [Sales Cloud](https://www.salesforce.com/sales/) system. This migration is necessary to maintain efficient access to historical contract data, which is crucial for generating new contracts with existing clients and partners. The sheer volume of documents made manual migration impractical, risking millions in potential revenue and increased operational costs due to inefficient contract analysis.
+Red Hat's Sales and Deal Management team recently faced a hard problem: migrating **hundreds of thousands** of documents from our legacy [Salesforce CRM](https://www.salesforce.com/crm/) to the new [Sales Cloud](https://www.salesforce.com/sales/) system. This migration is necessary to maintain efficient access to historical contract data, which the team needs to draft new contracts with existing clients and partners. The sheer volume of documents made manual migration impractical, risking millions in potential revenue and increased operational costs due to inefficient contract analysis.
 
-To address this, we developed **RHContract.AI**, a contract discovery tool that utilizes large language models (LLMs) to extract relevant attributes from legacy contracts and facilitate migration to the new system.
+To address this, we developed **RHContract.AI**, a contract discovery tool that uses large language models (LLMs) to extract key fields from legacy contracts and move them into the new system.
 
-This post will outline the development of RHContract.AI, including an overview of the system, technical details, and insights into the development process. I'll also share my personal journey in building this product, including the challenges we overcame and the valuable lessons learned along the way.
+This post covers how the system works, how we got attribute extraction above 90% accuracy, and what I learned building it.
 
 ## Product Overview
 
@@ -36,7 +36,7 @@ We focused on delivering these essential capabilities for our Minimum Viable Pro
 
 ### Development Approach
 
-Our development process was structured around implementing each key feature as a distinct stage. This approach offered enhanced visibility into the system's performance at each step of the process, allowing us to iterate quickly and improve individual components as needed. By compartmentalizing features, we could easily identify bottlenecks, optimize specific stages, and ensure the overall system was functioning efficiently before moving on to the next phase of development.
+Our development process was structured around implementing each key feature as a distinct stage. This approach gave us better visibility into the system's performance at each step of the process, allowing us to iterate quickly and improve individual components as needed. By compartmentalizing features, we could easily identify bottlenecks, optimize specific stages, and ensure the overall system was functioning efficiently before moving on to the next phase of development.
 
 ### Performance Metrics
 
@@ -64,11 +64,11 @@ Most documents were in PDF format, making text extraction relatively inexpensive
 
 After filtering the subset of documents, nearly **50%** were deemed irrelevant, and **over 10%** were identified as duplicates. This resulted in removing more than half of the documents from attribute extraction, a time-consuming process.
 
-Furthermore, after applying Optical Character Recognition (OCR) to image documents and reclassifying them, 50% of these documents were found to be relevant. This increased the overall proportion of relevant documents to **30%** of the total unprocessed set.
+After we applied Optical Character Recognition (OCR) to image documents and reclassifying them, 50% of these documents were found to be relevant. This increased the overall proportion of relevant documents to **30%** of the total unprocessed set.
 
 ## Attribute Extraction
 
-Following document classification, we tackled the challenge of extracting relevant attributes from each document type. Our initial experiments with traditional LLMs did not yield promising results. The primary issue was the **distortion of document structure during PDF text extraction**, which led to mixed-up words and sentences, causing LLMs to misinterpret the content. To overcome this, we shifted our focus to multimodal LLMs, specifically [**InternVL2**](https://huggingface.co/OpenGVLab/InternVL2-26B) by OpenGVLab, an Apache 2.0 licensed model with 26 billion parameters. This approach was significantly more effective. By feeding both the document image and text into the model, we observed a huge increase in attribute extraction accuracy, often surpassing **90%** — an improvement of several orders of magnitude over our initial attempts.
+Following document classification, we tackled the challenge of extracting relevant attributes from each document type. Our initial experiments with traditional LLMs did not yield promising results. The primary issue was the **distortion of document structure during PDF text extraction**, which led to mixed-up words and sentences, causing LLMs to misinterpret the content. To overcome this, we shifted our focus to multimodal LLMs, specifically [**InternVL2**](https://huggingface.co/OpenGVLab/InternVL2-26B) by OpenGVLab, an Apache 2.0 licensed model with 26 billion parameters. This approach worked much better. By feeding both the document image and text into the model, we observed a huge increase in attribute extraction accuracy, often surpassing **90%** — an improvement of several orders of magnitude over our initial attempts.
 
 The InternVL2 model, particularly its text component InternLM2Chat, showed stronger instruction comprehension than the LLMs we had tried before. Unlike our previous attempts, where we struggled to get clean JSON outputs, InternLM2Chat consistently delivered well-formed JSON that we could easily [parse with Pydantic Models](https://pydantic.dev/docs/validation/dev/concepts/models/). Although inference latency increased slightly, the trade-off was worth it given the accuracy boost. Additionally, working with JSON made our lives easier down the line. We could quickly merge the output into Pandas DataFrames and export to CSV or other compatible formats.
 
@@ -80,28 +80,28 @@ Signature detection was another hurdle to overcome in our contract analysis proc
 
 We came up with the idea of segmenting the signature page into two distinct parts: one for the client's signature and another for Red Hat's. We extended our keyword search algorithm to identify relevant coordinates and extract these specific sections as images. These signature snippets were then appended to the original first page, as illustrated in the image above (with redactions for privacy reasons).
 
-This refined approach yielded two significant benefits. Firstly, we observed a substantial improvement in accuracy, with rates increasing to between **85%** and **95%**. Secondly, the inference time improved due to the reduced image size, allowing us to process larger batches using the same compute.
+This approach gave us two benefits. Firstly, we observed a substantial improvement in accuracy, with rates increasing to between **85%** and **95%**. Secondly, the inference time improved due to the reduced image size, allowing us to process larger batches using the same compute.
 
-After making considerable headway, we focused on iterative improvements. We continuously refined our prompts, striving for a balance between conciseness and specificity. Our goal has been to optimize the trade-off between processing speed and accuracy, which has been crucial in enhancing the overall performance of our signature detection system.
+After making considerable headway, we focused on iterative improvements. We continuously refined our prompts, striving for a balance between conciseness and specificity. Our goal has been to optimize the trade-off between processing speed and accuracy, and that balance decided how well our signature detection worked.
 
 ## Lessons Learned
 
 This project marked my first deep dive into working with LLMs. Before this, my experience was limited to tinkering with OpenAI's APIs on a small chatbot project when the LLM development ecosystem was still in its early stages.
 
-The LLM landscape has undergone rapid transformation in recent years. Today, developers have access to dozens of tools for building fully-fledged products on LLMs, with [LangChain](https://www.langchain.com/) serving as a prime example. Despite these upgrades in tooling, some fundamental concepts have remained crucial to success in LLM development.
+The LLM landscape has undergone rapid transformation in recent years. Today, developers have access to dozens of tools for building fully-fledged products on LLMs, with [LangChain](https://www.langchain.com/) serving as a prime example. Despite these upgrades in tooling, some basic ideas still decide whether an LLM project works.
 
 ### Importance of Quality Input Data
 
-One of the most significant lessons we learned was the critical role of input data quality. We quickly realized that the model's performance suffered when overloaded with text and images from documents. To address this, we dedicated substantial effort to refining our input. This involved removing unnecessary text, formatting the remaining content, and selectively serving only the most relevant pages to the model, such as the first page and signature page where most attributes tend to reside. These efforts reduced hallucinations and greatly improved inference time and accuracy.
+One of our biggest lessons was that input quality decides output quality. We quickly realized that the model's performance suffered when overloaded with text and images from documents. To address this, we dedicated substantial effort to refining our input. This involved removing unnecessary text, formatting the remaining content, and selectively serving only the most relevant pages to the model, such as the first page and signature page where most attributes tend to reside. These efforts reduced hallucinations and greatly improved inference time and accuracy.
 
 ### Leveraging External Resources
 
-Our success would not have been possible without the wealth of online resources sharing effective techniques for LLM development. Equally important was maintaining open communication with our stakeholders (internal sales team). Through these regular interactions, we gained valuable insights into their pain points and a clearer understanding of business definitions. This knowledge allowed us to craft focused prompts that provided richer context to the LLM, significantly improving its performance.
+Our success would not have been possible without the wealth of online resources sharing effective techniques for LLM development. Equally important was maintaining open communication with our stakeholders (internal sales team). Through these regular interactions, we gained valuable insights into their pain points and a clearer understanding of business definitions. This knowledge allowed us to craft focused prompts that provided richer context to the LLM and improved its answers.
 
 ### Adopting a Startup Mindset
 
-Building this project from scratch required us to operate with a startup mentality. This approach meant moving fast and being willing to discard previous work when necessary. While I enjoyed the thrill of rapid progress and quick accomplishments, I also had to come to terms with the fact that our past ideas might not always be useful in the next sprint. We regularly had to throw out about half of the previous sprint's work. For instance, I invested significant effort early in the project in developing an experiment to compare performance between various open-source models. When we pivoted to multimodal LLMs and settled on a single model, my work became obsolete. Rather than viewing this as a setback, I recognized it as a necessary step in our progress.
+Building this project from scratch required us to operate with a startup mentality. This approach meant moving fast and being willing to discard previous work when necessary. While I enjoyed the thrill of rapid progress and quick accomplishments, I also had to come to terms with the fact that our past ideas might not always be useful in the next sprint. We regularly had to throw out about half of the previous sprint's work. For instance, I put a lot of effort early in the project in developing an experiment to compare performance between various open-source models. When we pivoted to multimodal LLMs and settled on a single model, my work became obsolete. Rather than viewing this as a setback, I recognized it as a necessary step in our progress.
 
 ### Forward-Thinking Approach
 
-Perhaps the most crucial lesson was the importance of being forward-thinking and constantly moving towards what would work best for the product. Our transition from local computing resources to a more powerful computing architecture in the cloud is a great example. Initially, we were experimenting locally on [Ollama](https://ollama.com/) using models quantized to 4 bits. However, we soon hit a performance ceiling in terms of speed and accuracy. Recognizing that scaling our product would require more robust computing power, we proposed leveraging high-performance GPUs to our mentors. We were fortunate to be granted access to a 2x [A100 GPU](https://www.nvidia.com/en-us/data-center/a100/) cluster in the cloud (shoutout [ROSA](https://www.redhat.com/en/technologies/cloud-computing/openshift/aws)). This upgrade was key in our continued iteration and improvement of the product.
+Perhaps the most important lesson was the importance of being forward-thinking and constantly moving towards what would work best for the product. Our transition from local computing resources to a more powerful computing architecture in the cloud is a great example. Initially, we were experimenting locally on [Ollama](https://ollama.com/) using models quantized to 4 bits. However, we soon hit a performance ceiling in terms of speed and accuracy. Recognizing that scaling our product would require more computing power, we asked our mentors for high-performance GPUs. We were fortunate to be granted access to a 2x [A100 GPU](https://www.nvidia.com/en-us/data-center/a100/) cluster in the cloud (shoutout [ROSA](https://www.redhat.com/en/technologies/cloud-computing/openshift/aws)). This upgrade was key in our continued iteration and improvement of the product.

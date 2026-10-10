@@ -5,17 +5,13 @@ slug = "my-thoughts-on-dashboards-are-dead-3-years-later"
 tags = ["AI", "Data"]
 +++
 
-**Disclaimer:** Excluding the TL;DR section, this article was written **without** any assistance from LLMs such as ChatGPT. While ChatGPT will probably write a better article than I do, my motivation is to express some candid thoughts and share my experiences. Writing this took way longer than it should have, but it’s always a nice feeling to pen down my reflections and have a finished product to show.
-
-## TL;DR (with the help of ChatGPT 🤖)
-
-Responding to a Medium article that I chanced upon, I discuss the evolving role of dashboards in data teams. While dashboards are not dying, the focus has shifted towards delivering information in the best way possible. Drawing from my personal experiences interning at fintech and e-commerce companies, I share insights on the varying needs for data presentation and the challenges faced in managing dashboards. I also explore the potential impact of AI on data teams and suggest that embracing AI can enhance workflows and create new opportunities for data practitioners. I conclude by expressing optimism about the future of technology roles and the value we can find in working with AI.
+Dashboards are not dying, but they are no longer the default answer. I interned on data teams at a fintech startup and a large e-commerce company. Both taught me that the real question is how to deliver each piece of information, and sometimes the answer is still a dashboard. This post walks through those two teams, then looks at how AI might change data work.
 
 ## Summary of the [original Medium article](https://towardsdatascience.com/dashboards-are-dead-3-years-later-72347757bfa6) by Taylor Brownlow
 
 Taylor Brownlow, a data advocate, argues that dashboards are dying (not dead), not because of anything wrong with dashboards, but rather with **everything around them**, such as relationships, communication, processes, and people. With a rapidly growing offering of data-provisioning alternatives, data teams have been moving away from **“how to make this dashboard great”** towards **“what’s the best way to deliver this information?”** Brownlow shares three persistent problems data teams need to solve to make that leap forward.
 
-First, data teams have been quick to integrate modern data pipelines and environments into the technical stack, but they have yet to figure out how to **leverage that innovation to deliver greater value to stakeholders**. Next, data teams must learn to build trust (internally and externally) not just through reliability and accuracy but also through **communication** and creating a **safe space for mistakes**. Finally, data teams should consider adopting tools that prioritize **collaboration**, **data transparency, and experimental flexibility**.
+First, data teams have been quick to integrate modern data pipelines and environments into the technical stack, but they have yet to figure out how to **use that innovation to deliver greater value to stakeholders**. Next, data teams must learn to build trust (internally and externally) not just through reliability and accuracy but also through **communication** and creating a **safe space for mistakes**. Finally, data teams should consider adopting tools that prioritize **collaboration**, **data transparency, and experimental flexibility**.
 
 Overall, Brownlow is optimistic about the [nascent changes](https://blog.count.co/what-will-analyst-2-0-look-like/) happening in the data industry.
 
@@ -41,11 +37,11 @@ In the Search and Recommendation (SnR) team, analysts worked closely with produc
 
 **Two things** stood out to me during my time at Shopee.
 
-**First,** analysts sometimes faced long query times (between 30 minutes and an hour). Granted, we were querying against terabytes (sometimes petabytes) of data, but our data infrastructure should have been robust enough to handle it. We implemented comprehensive [data marts](https://aws.amazon.com/what-is/data-mart/#:~:text=A%20data%20mart%20is%20a,department%2Dspecific%20information%20more%20efficiently.) and adopted tools like [Presto](https://prestodb.io/) and [Spark](https://spark.apache.org/sql/) to power big data analytics. So, why were processing times still unbearably long? The root cause, I later learned, was that our ML engineers were also running their experiments. If you know anything about training models, it is that it takes up a ton of resources. And those resources were shared among the entire SnR team.
+**First,** analysts sometimes faced long query times (between 30 minutes and an hour). Granted, we were querying against terabytes (sometimes petabytes) of data, but our data infrastructure should have been strong enough to handle it. We implemented comprehensive [data marts](https://aws.amazon.com/what-is/data-mart/#:~:text=A%20data%20mart%20is%20a,department%2Dspecific%20information%20more%20efficiently.) and adopted tools like [Presto](https://prestodb.io/) and [Spark](https://spark.apache.org/sql/) to power big data analytics. So, why were processing times still unbearably long? The root cause, I later learned, was that our ML engineers were also running their experiments. If you know anything about training models, it is that it takes up a ton of resources. And those resources were shared among the entire SnR team.
 
 Okay, so why not just scale horizontally by buying up machines? Recall that [Q3 2022 was a hot mess for tech companies](https://www.cnbc.com/2022/11/09/tech-layoffs-2022.html), and [Shopee wasn’t an exception](https://www.fool.com/investing/2022/08/19/why-sea-limited-stock-was-falling-this-week/). Because of long wait times, if I ran a query in the Web UI, I couldn’t lock my computer or put it to sleep. Else, I risked losing all progress that the query had made. The workaround? Deploy queries as jobs on the cloud and pipe the output into Google Sheets.
 
-For less important (but still large) queries, it didn’t make sense to go through all the trouble of deployment. There were “prime” periods throughout the day to run queries, and I knew this from… you guessed it: a dashboard. It was embedded in the internal tool for server monitoring. When the load was low, queries that would have run in 10 minutes ran in just a few seconds. Those real-time metrics were also crucial for validating performance improvements when I experimented on optimizing Spark parameters for batch jobs. Feel free to read my article about tuning Spark if you are interested.
+For less important (but still large) queries, it didn’t make sense to go through all the trouble of deployment. There were “prime” periods throughout the day to run queries, and I knew this from… you guessed it: a dashboard. It was embedded in the internal tool for server monitoring. When the load was low, queries that would have run in 10 minutes ran in just a few seconds. Those real-time metrics also showed whether my changes helped when I experimented with Spark parameters for batch jobs. I wrote about that work in [Tinkering with Spark](/tinkering-with-spark/).
 
 **Second,** dashboard management was disorganized. We used [Redash](https://redash.io/) for most of our dashboards. Unlike at FS, the data team at Shopee SnR usually reports to PMs in the same team. Perhaps because of this, rules around data organization were not very strict. Redash is a great open-source tool with pretty much all the features you would want to build a great dashboard. The downside, however, is finding past dashboards quickly. You could only rely on the search bar to locate dashboards by name or tags. There was no directory or repository to group dashboards. To make matters worse, dashboards made by developers for monitoring experiments as well as draft(!!) dashboards were floating around the platform, all of which were of no use to us analysts.
 
@@ -57,11 +53,11 @@ The index dashboard also became the landing page for analysts and PMs who wished
 
 Three months flew by, and it was time to go. I gave this gig my all and was pleased with my contributions. More importantly, this internship taught me so much about product and engineering at a large tech company.
 
-Intrigued by how systems scale and perform in the context of big data, I was drawn to explore deeper into the technical aspects of data processing and management. And so I took a leap of faith and delved into academic research in Data and Systems. I eventually joined the [Data intensive Systems and Computing (DiSC) Lab at BU](https://disc.bu.edu). I wrote a brief introduction to Log-Structured Merge-Tree — the underlying data structure of modern key-value stores which the lab is researching on. The article can be found here.
+Intrigued by how systems scale and perform in the context of big data, I was drawn to explore deeper into the technical aspects of data processing and management. And so I took a leap of faith and delved into academic research in Data and Systems. I eventually joined the [Data intensive Systems and Computing (DiSC) Lab at BU](https://disc.bu.edu). I wrote a brief introduction to Log-Structured Merge-Tree — the underlying data structure of modern key-value stores which the lab is researching: [Intro to LSM Tree](/intro-to-lsm-tree/).
 
 ### Are Dashboards Dying?
 
-The data teams I have been a part of had a healthy understanding of the limitations of dashboards and only utilized them when necessary. Personally, I still believe dashboards are here to stay for a few reasons:
+The data teams I have been a part of had a healthy understanding of the limitations of dashboards and only used them when necessary. Personally, I still believe dashboards are here to stay for a few reasons:
 
 - Infrastructure teams heavily rely on dashboards to monitor production services
 - Dashboards tell a story bluntly but elegantly
@@ -75,7 +71,7 @@ Since everyone is talking about AI these days, I figured to include a section on
 - While analysts are the storytellers and influencers of decision-making, generative AI **might** be able to provide a more unbiased, concise, and accurate depiction of the data. This will remove the need for data self-serve through mediums like dashboards and for analysts to come up with these insights organically
 - AI can help with [data cleaning](https://youtu.be/p6Yw0Bx5dbw?t=94), and create and run experiments such as A/B testing, all of which represents the bulk of work for data scientists
 
-To remain robust, data scientists and analysts should not fear such colossal tech advancements but instead, learn to adopt them into their current workflow.
+To stay relevant, data scientists and analysts should not fear such colossal tech advancements but instead, learn to adopt them into their current workflow.
 
 - Data scientists and analysts could potentially cross over to research and engineering roles
 - Data practitioners could become the architects who design frameworks for data presentation and data delivery that will be built and run by AI
@@ -84,11 +80,13 @@ The possibilities for integrating workflows with AI are endless. With that, I fo
 
 ![The AI-assisted development lifecycle: research, develop, integrate, automate](/images/my-thoughts-on-dashboards-are-dead-3-years-later/dev-lifecycle-with-ai.png)
 
-This is nothing new. Tech companies with a research arm are probably implementing something similar. What I’m implying is that this cycle will be increasingly adopted across tech teams and accelerated within teams that already use this. To quote the writer William Gibson, *“The future is already here – it's just not evenly distributed.”*
+This is nothing new. Tech companies with a research arm are probably implementing something similar. What I’m implying is that this cycle will be increasingly adopted across tech teams and accelerated within teams that already use this. To quote the writer William Gibson, _“The future is already here – it's just not evenly distributed.”_
 
 ## Closing Thoughts
 
 Computing’s core tenet has always been automation. Pivotal inventions in the early days include the [Turing-Welchman Decoder](https://www.tnmoc.org/bombe#:~:text=The%20Turing%2DWelchman%20Bombe%20machine,during%20the%20Second%20World%20War.) and [Grace Hopper’s Compiler](https://www.computinghistory.org.uk/det/5487/Grace-Hopper-completes-the-A-0-Compiler/). Computing aims to replace the mundane and allows us to channel our energy toward more meaningful pursuits. While AI has already begun to [challenge us aggressively in the creative space](https://www.nytimes.com/2022/09/02/technology/ai-artificial-intelligence-artists.html), I am confident that we will soon discover [new areas of value in working with technology](https://www.wired.com/wiredinsider/2018/04/ai-future-work/), like we always have. After all, AI is just another one of our inventions. Thanks for reading :)
+
+_I wrote this article without help from LLMs such as ChatGPT. ChatGPT might write a better one, but I wanted to share candid thoughts in my own words._
 
 ## Suggested Reading
 
