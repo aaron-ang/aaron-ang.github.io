@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 394" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated test setup, built bottom-up: L0 is an AWS c5n.metal bare-metal host, L1 is a QEMU guest running our modified KVM with tdp_mmu=0, min_alloc_pages=32 and lru_mmu=0 or 1, and L2 is a nested guest running redis-server driven by redis-benchmark. L2's page faults are handled by L1's KVM MMU.">
+  <style>
+    :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #ddd; --muted: #999; --full: #555; --empty: #1e1e1e; --edge: #777; --probe: #ff8a4c; --ok: #69db7c; --chip: #2a2a2a; }
+    }
+    text { fill: var(--fg); font-size: 14px; }
+    .muted { fill: var(--muted); font-size: 12px; }
+    .title { font-weight: 600; font-size: 15px; }
+    .b { font-weight: 600; }
+    .full { fill: var(--full); stroke: var(--edge); }
+    .empty { fill: var(--empty); stroke: var(--edge); }
+    .chip { fill: var(--chip); stroke: var(--edge); }
+    .num { fill: var(--probe); font-weight: 600; font-size: 13px; }
+    .arrow { fill: none; stroke: var(--probe); stroke-width: 2.5; }
+    .arrowhead { fill: var(--probe); }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    /* 31.07s loop, 5 steps starting at 0.5, 7.1, 12.7, 19.3, 24.4 s; final frame holds 5.92s, then fades. */
+    .a { opacity: 0; animation: 31.07s linear infinite; }
+    .w1 { animation-name: w1; }  /* 0.50s to end */
+    @keyframes w1 { 0.00%, 100.00% { opacity: 1 } }
+    .w2 { animation-name: w2; }  /* 7.10s to end */
+    @keyframes w2 { 0.00%, 22.85% { opacity: 0 } 23.33%, 97.59% { opacity: 1 } 98.07%, 100.00% { opacity: 0 } }
+    .w3 { animation-name: w3; }  /* 12.70s to end */
+    @keyframes w3 { 0.00%, 40.88% { opacity: 0 } 41.36%, 97.59% { opacity: 1 } 98.07%, 100.00% { opacity: 0 } }
+    .w4 { animation-name: w4; }  /* 19.30s to end */
+    @keyframes w4 { 0.00%, 62.12% { opacity: 0 } 62.60%, 97.59% { opacity: 1 } 98.07%, 100.00% { opacity: 0 } }
+    .w5 { animation-name: w5; }  /* 24.40s to end */
+    @keyframes w5 { 0.00%, 78.53% { opacity: 0 } 79.02%, 97.59% { opacity: 1 } 98.07%, 100.00% { opacity: 0 } }
+    .w6 { animation-name: w6; }  /* 0.50s to 7.10s */
+    @keyframes w6 { 0.00%, 22.85% { opacity: 1 } 23.33%, 97.59% { opacity: 0 } 98.07%, 100.00% { opacity: 1 } }
+    .w7 { animation-name: w7; }  /* 7.10s to 12.70s */
+    @keyframes w7 { 0.00%, 22.85% { opacity: 0 } 23.33%, 40.88% { opacity: 1 } 41.36%, 100.00% { opacity: 0 } }
+    .w8 { animation-name: w8; }  /* 12.70s to 19.30s */
+    @keyframes w8 { 0.00%, 40.88% { opacity: 0 } 41.36%, 62.12% { opacity: 1 } 62.60%, 100.00% { opacity: 0 } }
+    .w9 { animation-name: w9; }  /* 19.30s to 24.40s */
+    @keyframes w9 { 0.00%, 62.12% { opacity: 0 } 62.60%, 78.53% { opacity: 1 } 79.02%, 100.00% { opacity: 0 } }
+    @media (prefers-reduced-motion: reduce) {
+      .a { animation: none; opacity: 0; }
+      .a.fin { opacity: 1; }
+    }
+  </style>
+  <text x="20" y="28" class="title">Test setup: nested virtualization</text>
+  <g class="a w1 fin">
+  <rect x="20" y="272" width="540" height="70" rx="6" class="chip"/>
+  <rect x="34" y="286" width="44" height="28" rx="4" class="full"/>
+  <text x="56" y="305" text-anchor="middle" class="b">L0</text>
+  <text x="96" y="297" class="b">AWS c5n.metal (bare metal)</text>
+  <text x="96" y="317" class="muted">physical host that runs the L1 VM</text>
+  </g>
+  <g class="a w2 fin">
+  <rect x="20" y="142" width="540" height="118" rx="6" class="chip"/>
+  <rect x="34" y="156" width="44" height="28" rx="4" class="full"/>
+  <text x="56" y="175" text-anchor="middle" class="b">L1</text>
+  <text x="96" y="167" class="b">QEMU guest running our modified KVM</text>
+  <text x="96" y="187" class="muted">kselftests: mmu_stress_test, demand_paging_test</text>
+  </g>
+  <g class="a w3 fin">
+  <rect x="96" y="200" width="360" height="28" rx="4" class="empty" style="stroke:var(--probe)"/>
+  <text x="106" y="219" class="mono num" style="font-size:12px">tdp_mmu=0, min_alloc_pages=32, lru_mmu=0/1</text>
+  <text x="96" y="248" class="muted" xml:space="preserve">lru_mmu=0: upstream FIFO    lru_mmu=1: CLOCK</text>
+  </g>
+  <g class="a w4 fin">
+  <rect x="20" y="60" width="540" height="70" rx="6" class="chip"/>
+  <rect x="34" y="74" width="44" height="28" rx="4" class="full"/>
+  <text x="56" y="93" text-anchor="middle" class="b">L2</text>
+  <text x="96" y="85" class="b">Nested guest running redis-server</text>
+  <text x="96" y="105" class="muted">driven by redis-benchmark</text>
+  </g>
+  <g class="a w5 fin">
+  <path d="M 582 100 L 582 176" class="arrow"/>
+  <polygon points="582.0,186.0 575.4,174.0 588.6,174.0" class="arrowhead"/>
+  <text x="596" y="124" class="num">L2's page faults</text>
+  <text x="596" y="142" class="num">are handled by</text>
+  <text x="596" y="160" class="num">L1's KVM MMU</text>
+  </g>
+  <text x="20" y="378" class="a w6">Bare metal: hardware virtualization is available to L1.</text>
+  <text x="20" y="378" class="a w7">Our KVM runs here, as the hypervisor for L2.</text>
+  <text x="20" y="378" class="a w8">The legacy MMU holds our change; a small cache forces evictions.</text>
+  <text x="20" y="378" class="a w9">Redis keeps L2 touching memory at a steady rate.</text>
+  <text x="20" y="378" class="b a w5 fin">The benchmark&#8217;s page faults land on the code we changed.</text>
+</svg>

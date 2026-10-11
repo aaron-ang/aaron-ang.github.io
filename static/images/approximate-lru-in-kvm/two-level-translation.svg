@@ -1,0 +1,163 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated shadow paging: the guest page table maps guest virtual to guest physical pages, and KVM's memslots map guest physical pages to host memory. The shadow page table holds the combined result and is the only table the CPU walks. Touching 0x5000 hits a filled entry. Touching 0x4000 faults; KVM looks up 0x4000 to 0x9000 in the guest table, then 0x9000 to 0x79000 in its memslots, and stores 0x79000 in the shadow entry.">
+  <style>
+    :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #ddd; --muted: #999; --full: #555; --empty: #1e1e1e; --edge: #777; --probe: #ff8a4c; --ok: #69db7c; --chip: #2a2a2a; }
+    }
+    text { fill: var(--fg); font-size: 14px; }
+    .muted { fill: var(--muted); font-size: 12px; }
+    .title { font-weight: 600; font-size: 15px; }
+    .b { font-weight: 600; }
+    .sm { font-size: 12px; }
+    .full { fill: var(--full); stroke: var(--edge); }
+    .empty { fill: var(--empty); stroke: var(--edge); }
+    .slot { fill: none; stroke: var(--edge); stroke-dasharray: 4 3; }
+    .chip { fill: var(--chip); stroke: var(--edge); }
+    .ring { fill: none; stroke: var(--probe); stroke-width: 3; }
+    .cur { fill: none; stroke: var(--fg); stroke-width: 2.5; }
+    .okring { fill: none; stroke: var(--ok); stroke-width: 3; }
+    .new { fill: var(--ok); }
+    .zapped { fill: var(--empty); stroke: var(--edge); stroke-dasharray: 5 3; }
+    .num { fill: var(--probe); font-weight: 600; font-size: 13px; }
+    .oktext { fill: var(--ok); font-weight: 600; font-size: 13px; }
+    .tag { font-weight: 600; font-size: 12px; }
+    .onhot { fill: var(--empty); font-weight: 600; }
+    .arrowhead { fill: var(--edge); }
+    .arrow { fill: none; stroke: var(--probe); stroke-width: 2.5; }
+    .probehead { fill: var(--probe); }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    /* 49.22s loop, 11 steps starting at 0.5, 5.7, 13.7, 23, 25.3, 29.1, 31.6, 34.9, 37.2, 39.6, 42.9 s; final frame holds 5.57s, then fades. */
+    .a { opacity: 0; animation: 49.22s linear infinite; }
+    .w1 { animation-name: w1; }  /* 0.50s to end */
+    @keyframes w1 { 0.00%, 100.00% { opacity: 1 } }
+    .w2 { animation-name: w2; }  /* 5.70s to end */
+    @keyframes w2 { 0.00%, 11.58% { opacity: 0 } 11.89%, 98.48% { opacity: 1 } 98.78%, 100.00% { opacity: 0 } }
+    .w3 { animation-name: w3; }  /* 13.70s to end */
+    @keyframes w3 { 0.00%, 27.83% { opacity: 0 } 28.14%, 98.48% { opacity: 1 } 98.78%, 100.00% { opacity: 0 } }
+    .w4 { animation-name: w4; }  /* 13.70s to 39.60s */
+    @keyframes w4 { 0.00%, 27.83% { opacity: 0 } 28.14%, 80.46% { opacity: 1 } 80.76%, 100.00% { opacity: 0 } }
+    .w5 { animation-name: w5; }  /* 39.60s to end */
+    @keyframes w5 { 0.00%, 80.46% { opacity: 0 } 80.76%, 98.48% { opacity: 1 } 98.78%, 100.00% { opacity: 0 } }
+    .w6 { animation-name: w6; }  /* 23.00s to 25.30s */
+    @keyframes w6 { 0.00%, 46.73% { opacity: 0 } 47.03%, 51.40% { opacity: 1 } 51.71%, 100.00% { opacity: 0 } }
+    .w7 { animation-name: w7; }  /* 25.30s to end */
+    @keyframes w7 { 0.00%, 51.40% { opacity: 0 } 51.71%, 98.48% { opacity: 1 } 98.78%, 100.00% { opacity: 0 } }
+    .w8 { animation-name: w8; }  /* 29.10s to 42.90s */
+    @keyframes w8 { 0.00%, 59.12% { opacity: 0 } 59.43%, 87.16% { opacity: 1 } 87.46%, 100.00% { opacity: 0 } }
+    .w9 { animation-name: w9; }  /* 31.60s to 42.90s */
+    @keyframes w9 { 0.00%, 64.20% { opacity: 0 } 64.51%, 87.16% { opacity: 1 } 87.46%, 100.00% { opacity: 0 } }
+    .w10 { animation-name: w10; }  /* 42.90s to end */
+    @keyframes w10 { 0.00%, 87.16% { opacity: 0 } 87.46%, 98.48% { opacity: 1 } 98.78%, 100.00% { opacity: 0 } }
+    .w11 { animation-name: w11; }  /* 34.90s to end */
+    @keyframes w11 { 0.00%, 70.91% { opacity: 0 } 71.21%, 98.48% { opacity: 1 } 98.78%, 100.00% { opacity: 0 } }
+    .w12 { animation-name: w12; }  /* 37.20s to end */
+    @keyframes w12 { 0.00%, 75.58% { opacity: 0 } 75.88%, 98.48% { opacity: 1 } 98.78%, 100.00% { opacity: 0 } }
+    .w13 { animation-name: w13; }  /* 5.70s to 13.70s */
+    @keyframes w13 { 0.00%, 11.58% { opacity: 0 } 11.89%, 27.83% { opacity: 1 } 28.14%, 100.00% { opacity: 0 } }
+    .w14 { animation-name: w14; }  /* 13.70s to 23.00s */
+    @keyframes w14 { 0.00%, 27.83% { opacity: 0 } 28.14%, 46.73% { opacity: 1 } 47.03%, 100.00% { opacity: 0 } }
+    .w15 { animation-name: w15; }  /* 25.30s to 29.10s */
+    @keyframes w15 { 0.00%, 51.40% { opacity: 0 } 51.71%, 59.12% { opacity: 1 } 59.43%, 100.00% { opacity: 0 } }
+    .w16 { animation-name: w16; }  /* 29.10s to 31.60s */
+    @keyframes w16 { 0.00%, 59.12% { opacity: 0 } 59.43%, 64.20% { opacity: 1 } 64.51%, 100.00% { opacity: 0 } }
+    .w17 { animation-name: w17; }  /* 31.60s to 34.90s */
+    @keyframes w17 { 0.00%, 64.20% { opacity: 0 } 64.51%, 70.91% { opacity: 1 } 71.21%, 100.00% { opacity: 0 } }
+    .w18 { animation-name: w18; }  /* 34.90s to 37.20s */
+    @keyframes w18 { 0.00%, 70.91% { opacity: 0 } 71.21%, 75.58% { opacity: 1 } 75.88%, 100.00% { opacity: 0 } }
+    .w19 { animation-name: w19; }  /* 37.20s to 39.60s */
+    @keyframes w19 { 0.00%, 75.58% { opacity: 0 } 75.88%, 80.46% { opacity: 1 } 80.76%, 100.00% { opacity: 0 } }
+    .w20 { animation-name: w20; }  /* 39.60s to 42.90s */
+    @keyframes w20 { 0.00%, 80.46% { opacity: 0 } 80.76%, 87.16% { opacity: 1 } 87.46%, 100.00% { opacity: 0 } }
+    @media (prefers-reduced-motion: reduce) {
+      .a { animation: none; opacity: 0; }
+      .a.fin { opacity: 1; }
+    }
+  </style>
+  <text x="20" y="28" class="title">Shadow paging: two tables combined into one</text>
+  <g class="a w1 fin">
+  <text x="170" y="66" text-anchor="middle" class="b">Guest page table</text>
+  <text x="170" y="82" text-anchor="middle" class="muted">kept by the guest OS</text>
+  <rect x="60" y="90" width="220" height="24" class="full"/>
+  <text x="115" y="107" text-anchor="middle" class="sm b">guest virtual</text>
+  <text x="225" y="107" text-anchor="middle" class="sm b">guest physical</text>
+  <rect x="60" y="114" width="110" height="26" class="empty"/>
+  <rect x="170" y="114" width="110" height="26" class="empty"/>
+  <text x="115" y="132" text-anchor="middle" class="mono sm">0x4000</text>
+  <text x="225" y="132" text-anchor="middle" class="mono sm">0x9000</text>
+  <rect x="60" y="140" width="110" height="26" class="empty"/>
+  <rect x="170" y="140" width="110" height="26" class="empty"/>
+  <text x="115" y="158" text-anchor="middle" class="mono sm">0x5000</text>
+  <text x="225" y="158" text-anchor="middle" class="mono sm">0x2000</text>
+  <rect x="60" y="166" width="110" height="26" class="empty"/>
+  <rect x="170" y="166" width="110" height="26" class="empty"/>
+  <text x="115" y="184" text-anchor="middle" class="mono sm">0x6000</text>
+  <text x="225" y="184" text-anchor="middle" class="mono sm">0xB000</text>
+  </g>
+  <g class="a w2 fin">
+  <text x="590" y="66" text-anchor="middle" class="b">KVM memslots</text>
+  <text x="590" y="82" text-anchor="middle" class="muted">kept by the host, resolved by host page tables</text>
+  <rect x="480" y="90" width="220" height="24" class="full"/>
+  <text x="535" y="107" text-anchor="middle" class="sm b">guest physical</text>
+  <text x="645" y="107" text-anchor="middle" class="sm b">host physical</text>
+  <rect x="480" y="114" width="110" height="26" class="empty"/>
+  <rect x="590" y="114" width="110" height="26" class="empty"/>
+  <text x="535" y="132" text-anchor="middle" class="mono sm">0x9000</text>
+  <text x="645" y="132" text-anchor="middle" class="mono sm">0x79000</text>
+  <rect x="480" y="140" width="110" height="26" class="empty"/>
+  <rect x="590" y="140" width="110" height="26" class="empty"/>
+  <text x="535" y="158" text-anchor="middle" class="mono sm">0x2000</text>
+  <text x="645" y="158" text-anchor="middle" class="mono sm">0x72000</text>
+  <rect x="480" y="166" width="110" height="26" class="empty"/>
+  <rect x="590" y="166" width="110" height="26" class="empty"/>
+  <text x="535" y="184" text-anchor="middle" class="mono sm">0xB000</text>
+  <text x="645" y="184" text-anchor="middle" class="mono sm">0x7B000</text>
+  </g>
+  <g class="a w3 fin">
+  <text x="380" y="238" text-anchor="middle" class="b">Shadow page table</text>
+  <text x="380" y="254" text-anchor="middle" class="muted">built by KVM, walked by the CPU</text>
+  <rect x="255" y="262" width="250" height="24" class="full"/>
+  <text x="317.5" y="279" text-anchor="middle" class="sm b">guest virtual</text>
+  <text x="442.5" y="279" text-anchor="middle" class="sm b">host physical</text>
+  <rect x="255" y="286" width="125" height="26" class="empty"/>
+  <rect x="380" y="286" width="125" height="26" class="slot"/>
+  <text x="317.5" y="304" text-anchor="middle" class="mono sm">0x4000</text>
+  <rect x="255" y="312" width="125" height="26" class="empty"/>
+  <rect x="380" y="312" width="125" height="26" class="empty"/>
+  <text x="317.5" y="330" text-anchor="middle" class="mono sm">0x5000</text>
+  <text x="442.5" y="330" text-anchor="middle" class="mono sm">0x72000</text>
+  <rect x="255" y="338" width="125" height="26" class="empty"/>
+  <rect x="380" y="338" width="125" height="26" class="slot"/>
+  <text x="317.5" y="356" text-anchor="middle" class="mono sm">0x6000</text>
+  </g>
+  <text x="442.5" y="304" text-anchor="middle" class="muted a w4">not present</text>
+  <text x="442.5" y="356" text-anchor="middle" class="muted a w3 fin">not present</text>
+  <rect x="380" y="286" width="125" height="26" class="empty a w5 fin"/>
+  <text x="442.5" y="304" text-anchor="middle" class="mono sm a w5 fin">0x79000</text>
+  <rect x="255" y="312" width="250" height="26" class="ring a w6"/>
+  <rect x="255" y="312" width="250" height="26" class="okring a w7 fin"/>
+  <rect x="255" y="286" width="250" height="26" class="ring a w8"/>
+  <text x="243" y="304" text-anchor="end" class="num a w9">page fault</text>
+  <rect x="255" y="286" width="250" height="26" class="okring a w10 fin"/>
+  <text x="243" y="304" text-anchor="end" class="oktext a w10 fin">filled on fault</text>
+  <rect x="60" y="114" width="220" height="26" class="ring a w11 fin"/>
+  <g class="a w12 fin">
+  <rect x="480" y="114" width="220" height="26" class="ring"/>
+  <path d="M 284 127 L 470 127" class="arrow"/>
+  <polygon points="476,127 466,132.5 466,121.5" class="probehead"/>
+  <text x="380" y="119" text-anchor="middle" class="num">look up 0x9000</text>
+  </g>
+  <g class="a w5 fin">
+  <path d="M 704 127 C 744 127, 744 299, 515 299" class="arrow"/>
+  <polygon points="509,299 519,293.5 519,304.5" class="probehead"/>
+  </g>
+  <text x="20" y="404" class="a w13">The guest never sees real memory addresses.</text>
+  <text x="20" y="404" class="a w14">The CPU walks only one table, so KVM combines the two.</text>
+  <text x="20" y="404" class="a w6">The guest touches 0x5000.</text>
+  <text x="20" y="404" class="a w15">With its entry filled, the CPU needs one lookup.</text>
+  <text x="20" y="404" class="a w16">Now the guest touches 0x4000.</text>
+  <text x="20" y="404" class="a w17">KVM fills entries only on first use.</text>
+  <text x="20" y="404" class="a w18">First, the guest's table.</text>
+  <text x="20" y="404" class="a w19">Then its memslots.</text>
+  <text x="20" y="404" class="a w20">KVM stores the combined result.</text>
+  <text x="20" y="404" class="b a w10 fin">Each page faults once; after that the CPU translates it alone.</text>
+</svg>

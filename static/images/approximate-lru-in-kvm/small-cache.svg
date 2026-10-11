@@ -1,0 +1,206 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 278" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated CLOCK sweep with a 32-page cache, pages marked on creation or on fill. Every page is marked again between evictions, so in one eviction call the hand clears every bit on the first lap without zapping, then keeps going and zaps from the tail in FIFO order.">
+  <style>
+    :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #ddd; --muted: #999; --full: #555; --empty: #1e1e1e; --edge: #777; --probe: #ff8a4c; --ok: #69db7c; --chip: #2a2a2a; }
+    }
+    text { fill: var(--fg); font-size: 14px; }
+    .muted { fill: var(--muted); font-size: 12px; }
+    .title { font-weight: 600; font-size: 15px; }
+    .b { font-weight: 600; }
+    .sm { font-size: 13px; }
+    .full { fill: var(--full); stroke: var(--edge); }
+    .empty { fill: var(--empty); stroke: var(--edge); }
+    .ring { fill: none; stroke: var(--probe); stroke-width: 3; }
+    .okring { fill: none; stroke: var(--ok); stroke-width: 3; }
+    .hot { fill: var(--probe); }
+    .num { fill: var(--probe); font-weight: 600; font-size: 13px; }
+    .oktext { fill: var(--ok); font-weight: 600; font-size: 13px; }
+    .onhot { fill: var(--empty); font-weight: 600; }
+    .rule { stroke: var(--edge); stroke-dasharray: 3 4; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    /* 51.38s loop, 13 steps starting at 0.5, 7.2, 16.1, 22.5, 24.3, 26.1, 27.9, 29.7, 31.5, 33.3, 35.1, 43, 45.1 s; final frame holds 5.53s, then fades. */
+    .a { opacity: 0; animation: 51.38s linear infinite; }
+    .w1 { animation-name: w1; }  /* 0.50s to 7.20s */
+    @keyframes w1 { 0.00%, 14.01% { opacity: 1 } 14.31%, 98.54% { opacity: 0 } 98.83%, 100.00% { opacity: 1 } }
+    .w2 { animation-name: w2; }  /* 7.20s to 33.30s */
+    @keyframes w2 { 0.00%, 14.01% { opacity: 0 } 14.31%, 64.81% { opacity: 1 } 65.10%, 100.00% { opacity: 0 } }
+    .w3 { animation-name: w3; }  /* 33.30s to end */
+    @keyframes w3 { 0.00%, 64.81% { opacity: 0 } 65.10%, 98.54% { opacity: 1 } 98.83%, 100.00% { opacity: 0 } }
+    .w4 { animation-name: w4; }  /* 7.20s to 31.50s */
+    @keyframes w4 { 0.00%, 14.01% { opacity: 0 } 14.31%, 61.31% { opacity: 1 } 61.60%, 100.00% { opacity: 0 } }
+    .w5 { animation-name: w5; }  /* 31.50s to end */
+    @keyframes w5 { 0.00%, 61.31% { opacity: 0 } 61.60%, 98.54% { opacity: 1 } 98.83%, 100.00% { opacity: 0 } }
+    .w6 { animation-name: w6; }  /* 7.20s to 29.70s */
+    @keyframes w6 { 0.00%, 14.01% { opacity: 0 } 14.31%, 57.80% { opacity: 1 } 58.10%, 100.00% { opacity: 0 } }
+    .w7 { animation-name: w7; }  /* 29.70s to end */
+    @keyframes w7 { 0.00%, 57.80% { opacity: 0 } 58.10%, 98.54% { opacity: 1 } 98.83%, 100.00% { opacity: 0 } }
+    .w8 { animation-name: w8; }  /* 7.20s to 27.90s */
+    @keyframes w8 { 0.00%, 14.01% { opacity: 0 } 14.31%, 54.30% { opacity: 1 } 54.59%, 100.00% { opacity: 0 } }
+    .w9 { animation-name: w9; }  /* 27.90s to end */
+    @keyframes w9 { 0.00%, 54.30% { opacity: 0 } 54.59%, 98.54% { opacity: 1 } 98.83%, 100.00% { opacity: 0 } }
+    .w10 { animation-name: w10; }  /* 7.20s to 26.10s */
+    @keyframes w10 { 0.00%, 14.01% { opacity: 0 } 14.31%, 50.80% { opacity: 1 } 51.09%, 100.00% { opacity: 0 } }
+    .w11 { animation-name: w11; }  /* 26.10s to end */
+    @keyframes w11 { 0.00%, 50.80% { opacity: 0 } 51.09%, 98.54% { opacity: 1 } 98.83%, 100.00% { opacity: 0 } }
+    .w12 { animation-name: w12; }  /* 7.20s to 24.30s */
+    @keyframes w12 { 0.00%, 14.01% { opacity: 0 } 14.31%, 47.29% { opacity: 1 } 47.59%, 100.00% { opacity: 0 } }
+    .w13 { animation-name: w13; }  /* 24.30s to end */
+    @keyframes w13 { 0.00%, 47.29% { opacity: 0 } 47.59%, 98.54% { opacity: 1 } 98.83%, 100.00% { opacity: 0 } }
+    .w14 { animation-name: w14; }  /* 7.20s to 22.50s */
+    @keyframes w14 { 0.00%, 14.01% { opacity: 0 } 14.31%, 43.79% { opacity: 1 } 44.08%, 100.00% { opacity: 0 } }
+    .w15 { animation-name: w15; }  /* 22.50s to end */
+    @keyframes w15 { 0.00%, 43.79% { opacity: 0 } 44.08%, 98.54% { opacity: 1 } 98.83%, 100.00% { opacity: 0 } }
+    .w16 { animation-name: w16; }  /* 7.20s to 16.10s */
+    @keyframes w16 { 0.00%, 14.01% { opacity: 0 } 14.31%, 31.34% { opacity: 1 } 31.63%, 100.00% { opacity: 0 } }
+    .w17 { animation-name: w17; }  /* 16.10s to end */
+    @keyframes w17 { 0.00%, 31.34% { opacity: 0 } 31.63%, 98.54% { opacity: 1 } 98.83%, 100.00% { opacity: 0 } }
+    .w18 { animation-name: w18; }  /* 33.30s to 35.10s */
+    @keyframes w18 { 0.00%, 64.81% { opacity: 0 } 65.10%, 68.31% { opacity: 1 } 68.61%, 100.00% { opacity: 0 } }
+    .w19 { animation-name: w19; }  /* 31.50s to 33.30s */
+    @keyframes w19 { 0.00%, 61.31% { opacity: 0 } 61.60%, 64.81% { opacity: 1 } 65.10%, 100.00% { opacity: 0 } }
+    .w20 { animation-name: w20; }  /* 29.70s to 31.50s */
+    @keyframes w20 { 0.00%, 57.80% { opacity: 0 } 58.10%, 61.31% { opacity: 1 } 61.60%, 100.00% { opacity: 0 } }
+    .w21 { animation-name: w21; }  /* 27.90s to 29.70s */
+    @keyframes w21 { 0.00%, 54.30% { opacity: 0 } 54.59%, 57.80% { opacity: 1 } 58.10%, 100.00% { opacity: 0 } }
+    .w22 { animation-name: w22; }  /* 26.10s to 27.90s */
+    @keyframes w22 { 0.00%, 50.80% { opacity: 0 } 51.09%, 54.30% { opacity: 1 } 54.59%, 100.00% { opacity: 0 } }
+    .w23 { animation-name: w23; }  /* 24.30s to 26.10s */
+    @keyframes w23 { 0.00%, 47.29% { opacity: 0 } 47.59%, 50.80% { opacity: 1 } 51.09%, 100.00% { opacity: 0 } }
+    .w24 { animation-name: w24; }  /* 22.50s to 24.30s */
+    @keyframes w24 { 0.00%, 43.79% { opacity: 0 } 44.08%, 47.29% { opacity: 1 } 47.59%, 100.00% { opacity: 0 } }
+    .w25 { animation-name: w25; }  /* 16.10s to 22.50s */
+    @keyframes w25 { 0.00%, 31.34% { opacity: 0 } 31.63%, 43.79% { opacity: 1 } 44.08%, 100.00% { opacity: 0 } }
+    .w26 { animation-name: w26; }  /* 35.10s to 43.00s */
+    @keyframes w26 { 0.00%, 68.31% { opacity: 0 } 68.61%, 83.69% { opacity: 1 } 83.98%, 100.00% { opacity: 0 } }
+    .w27 { animation-name: w27; }  /* 43.00s to end */
+    @keyframes w27 { 0.00%, 83.69% { opacity: 0 } 83.98%, 98.54% { opacity: 1 } 98.83%, 100.00% { opacity: 0 } }
+    .w28 { animation-name: w28; }  /* 35.10s to end */
+    @keyframes w28 { 0.00%, 68.31% { opacity: 0 } 68.61%, 98.54% { opacity: 1 } 98.83%, 100.00% { opacity: 0 } }
+    .w29 { animation-name: w29; }  /* 45.10s to end */
+    @keyframes w29 { 0.00%, 87.78% { opacity: 0 } 88.07%, 98.54% { opacity: 1 } 98.83%, 100.00% { opacity: 0 } }
+    @media (prefers-reduced-motion: reduce) {
+      .a { animation: none; opacity: 0; }
+      .a.fin { opacity: 1; }
+    }
+  </style>
+  <text x="20" y="28" class="title">Small cache: 32 pages</text>
+  <text x="20" y="48" class="muted">Each small box is a page's lru_ref bit.</text>
+  <text x="60" y="92" class="muted">head (newest)</text>
+  <text x="684" y="92" text-anchor="end" class="muted">tail (oldest)</text>
+  <text x="372" y="92" text-anchor="middle" class="muted">8 of the 32 pages shown</text>
+  <rect x="60" y="102" width="64" height="44" rx="4" class="full"/>
+  <rect x="81" y="113" width="22" height="22" rx="3" class="empty"/>
+  <text x="92" y="129" text-anchor="middle" class="b sm a w1">0</text>
+  <text x="92" y="129" text-anchor="middle" class="b sm a w2">1</text>
+  <text x="92" y="129" text-anchor="middle" class="b sm a w3 fin">0</text>
+  <rect x="77" y="109" width="30" height="30" rx="5" class="okring a w2"/>
+  <rect x="77" y="109" width="30" height="30" rx="5" class="ring a w3 fin"/>
+  <rect x="140" y="102" width="64" height="44" rx="4" class="full"/>
+  <rect x="161" y="113" width="22" height="22" rx="3" class="empty"/>
+  <text x="172" y="129" text-anchor="middle" class="b sm a w1">0</text>
+  <text x="172" y="129" text-anchor="middle" class="b sm a w4">1</text>
+  <text x="172" y="129" text-anchor="middle" class="b sm a w5 fin">0</text>
+  <rect x="157" y="109" width="30" height="30" rx="5" class="okring a w4"/>
+  <rect x="157" y="109" width="30" height="30" rx="5" class="ring a w5 fin"/>
+  <rect x="220" y="102" width="64" height="44" rx="4" class="full"/>
+  <rect x="241" y="113" width="22" height="22" rx="3" class="empty"/>
+  <text x="252" y="129" text-anchor="middle" class="b sm a w1">0</text>
+  <text x="252" y="129" text-anchor="middle" class="b sm a w6">1</text>
+  <text x="252" y="129" text-anchor="middle" class="b sm a w7 fin">0</text>
+  <rect x="237" y="109" width="30" height="30" rx="5" class="okring a w6"/>
+  <rect x="237" y="109" width="30" height="30" rx="5" class="ring a w7 fin"/>
+  <rect x="300" y="102" width="64" height="44" rx="4" class="full"/>
+  <rect x="321" y="113" width="22" height="22" rx="3" class="empty"/>
+  <text x="332" y="129" text-anchor="middle" class="b sm a w1">0</text>
+  <text x="332" y="129" text-anchor="middle" class="b sm a w8">1</text>
+  <text x="332" y="129" text-anchor="middle" class="b sm a w9 fin">0</text>
+  <rect x="317" y="109" width="30" height="30" rx="5" class="okring a w8"/>
+  <rect x="317" y="109" width="30" height="30" rx="5" class="ring a w9 fin"/>
+  <rect x="380" y="102" width="64" height="44" rx="4" class="full"/>
+  <rect x="401" y="113" width="22" height="22" rx="3" class="empty"/>
+  <text x="412" y="129" text-anchor="middle" class="b sm a w1">0</text>
+  <text x="412" y="129" text-anchor="middle" class="b sm a w10">1</text>
+  <text x="412" y="129" text-anchor="middle" class="b sm a w11 fin">0</text>
+  <rect x="397" y="109" width="30" height="30" rx="5" class="okring a w10"/>
+  <rect x="397" y="109" width="30" height="30" rx="5" class="ring a w11 fin"/>
+  <rect x="460" y="102" width="64" height="44" rx="4" class="full"/>
+  <rect x="481" y="113" width="22" height="22" rx="3" class="empty"/>
+  <text x="492" y="129" text-anchor="middle" class="b sm a w1">0</text>
+  <text x="492" y="129" text-anchor="middle" class="b sm a w12">1</text>
+  <text x="492" y="129" text-anchor="middle" class="b sm a w13 fin">0</text>
+  <rect x="477" y="109" width="30" height="30" rx="5" class="okring a w12"/>
+  <rect x="477" y="109" width="30" height="30" rx="5" class="ring a w13 fin"/>
+  <rect x="540" y="102" width="64" height="44" rx="4" class="full"/>
+  <rect x="561" y="113" width="22" height="22" rx="3" class="empty"/>
+  <text x="572" y="129" text-anchor="middle" class="b sm a w1">0</text>
+  <text x="572" y="129" text-anchor="middle" class="b sm a w14">1</text>
+  <text x="572" y="129" text-anchor="middle" class="b sm a w15 fin">0</text>
+  <rect x="557" y="109" width="30" height="30" rx="5" class="okring a w14"/>
+  <rect x="557" y="109" width="30" height="30" rx="5" class="ring a w15 fin"/>
+  <rect x="620" y="102" width="64" height="44" rx="4" class="full"/>
+  <rect x="641" y="113" width="22" height="22" rx="3" class="empty"/>
+  <text x="652" y="129" text-anchor="middle" class="b sm a w1">0</text>
+  <text x="652" y="129" text-anchor="middle" class="b sm a w16">1</text>
+  <text x="652" y="129" text-anchor="middle" class="b sm a w17 fin">0</text>
+  <rect x="637" y="109" width="30" height="30" rx="5" class="okring a w16"/>
+  <rect x="637" y="109" width="30" height="30" rx="5" class="ring a w17 fin"/>
+  <g class="a w18">
+  <polygon points="92,152 85,164 99,164" style="fill:var(--fg)"/>
+  <text x="92" y="180" text-anchor="middle" class="muted">clock_hand</text>
+  </g>
+  <g class="a w19">
+  <polygon points="172,152 165,164 179,164" style="fill:var(--fg)"/>
+  <text x="172" y="180" text-anchor="middle" class="muted">clock_hand</text>
+  </g>
+  <g class="a w20">
+  <polygon points="252,152 245,164 259,164" style="fill:var(--fg)"/>
+  <text x="252" y="180" text-anchor="middle" class="muted">clock_hand</text>
+  </g>
+  <g class="a w21">
+  <polygon points="332,152 325,164 339,164" style="fill:var(--fg)"/>
+  <text x="332" y="180" text-anchor="middle" class="muted">clock_hand</text>
+  </g>
+  <g class="a w22">
+  <polygon points="412,152 405,164 419,164" style="fill:var(--fg)"/>
+  <text x="412" y="180" text-anchor="middle" class="muted">clock_hand</text>
+  </g>
+  <g class="a w23">
+  <polygon points="492,152 485,164 499,164" style="fill:var(--fg)"/>
+  <text x="492" y="180" text-anchor="middle" class="muted">clock_hand</text>
+  </g>
+  <g class="a w24">
+  <polygon points="572,152 565,164 579,164" style="fill:var(--fg)"/>
+  <text x="572" y="180" text-anchor="middle" class="muted">clock_hand</text>
+  </g>
+  <g class="a w25">
+  <polygon points="652,152 645,164 659,164" style="fill:var(--fg)"/>
+  <text x="652" y="180" text-anchor="middle" class="muted">clock_hand</text>
+  </g>
+  <g class="a w26">
+  <polygon points="572,152 565,164 579,164" style="fill:var(--fg)"/>
+  <text x="572" y="180" text-anchor="middle" class="muted">clock_hand</text>
+  </g>
+  <g class="a w27 fin">
+  <polygon points="492,152 485,164 499,164" style="fill:var(--fg)"/>
+  <text x="492" y="180" text-anchor="middle" class="muted">clock_hand</text>
+  </g>
+  <g class="a w28 fin">
+  <rect x="616" y="98" width="72" height="52" rx="6" class="ring"/>
+  <rect x="620" y="102" width="64" height="44" rx="4" class="hot"/>
+  <text x="652" y="129" text-anchor="middle" class="onhot">zap</text>
+  </g>
+  <g class="a w27 fin">
+  <rect x="536" y="98" width="72" height="52" rx="6" class="ring"/>
+  <rect x="540" y="102" width="64" height="44" rx="4" class="hot"/>
+  <text x="572" y="129" text-anchor="middle" class="onhot">zap</text>
+  </g>
+  <text x="60" y="204" class="oktext a w16">every page marked since the last lap</text>
+  <text x="60" y="204" class="num a w17 fin">lap 1: clear each bit, zap nothing</text>
+  <text x="60" y="224" class="num a w28 fin">lap 2, same call: zap from the tail, oldest first</text>
+  <text x="20" y="260" class="a w1">Pages are marked when they are created or filled.</text>
+  <text x="20" y="260" class="a w16">With so few pages, the guest touches all of them between evictions.</text>
+  <text x="20" y="260" class="a w25">One eviction call: lap 1 clears, then it keeps going.</text>
+  <text x="20" y="260" class="a w26">The same call holds mmu_lock, so nothing marks a page between laps.</text>
+  <text x="20" y="260" class="b a w29 fin">When every page looks recently used, CLOCK falls back to FIFO order.</text>
+</svg>

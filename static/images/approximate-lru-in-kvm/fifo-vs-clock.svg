@@ -1,0 +1,334 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 380" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated comparison of FIFO and textbook CLOCK on the access trace A B E A B with four slots. FIFO zaps recently used page A to load E, then refaults A and B, for 3 faults. CLOCK clears the referenced bits of A and B, zaps C instead, and finishes with 1 fault.">
+  <style>
+    :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg: #ddd; --muted: #999; --full: #555; --empty: #1e1e1e; --edge: #777; --probe: #ff8a4c; --ok: #69db7c; --chip: #2a2a2a; }
+    }
+    text { fill: var(--fg); font-size: 14px; }
+    .muted { fill: var(--muted); font-size: 12px; }
+    .title { font-weight: 600; font-size: 15px; }
+    .b { font-weight: 600; }
+    .sm { font-size: 12px; }
+    .full { fill: var(--full); stroke: var(--edge); }
+    .empty { fill: var(--empty); stroke: var(--edge); }
+    .slot { fill: none; stroke: var(--edge); stroke-dasharray: 4 3; }
+    .chip { fill: var(--chip); stroke: var(--edge); }
+    .ring { fill: none; stroke: var(--probe); stroke-width: 3; }
+    .cur { fill: none; stroke: var(--fg); stroke-width: 2.5; }
+    .okring { fill: none; stroke: var(--ok); stroke-width: 3; }
+    .new { fill: var(--ok); }
+    .zapped { fill: var(--empty); stroke: var(--edge); stroke-dasharray: 5 3; }
+    .num { fill: var(--probe); font-weight: 600; font-size: 13px; }
+    .oktext { fill: var(--ok); font-weight: 600; font-size: 13px; }
+    .tag { font-weight: 600; font-size: 12px; }
+    .onhot { fill: var(--empty); font-weight: 600; }
+    .arrowhead { fill: var(--edge); }
+    .arrow { fill: none; stroke: var(--probe); stroke-width: 2.5; }
+    .probehead { fill: var(--probe); }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    /* 71.83s loop, 19 steps starting at 0.5, 7.7, 9.2, 13.3, 14.8, 17.6, 19.9, 25.4, 27.5, 34.1, 38.4, 43.4, 46.8, 51.1, 53.2, 56, 59.8, 61.9, 64.7 s; final frame holds 6.38s, then fades. */
+    .a { opacity: 0; animation: 71.83s linear infinite; }
+    .w1 { animation-name: w1; }  /* 7.70s to 9.20s */
+    @keyframes w1 { 0.00%, 10.72% { opacity: 0 } 10.93%, 12.81% { opacity: 1 } 13.02%, 100.00% { opacity: 0 } }
+    .w2 { animation-name: w2; }  /* 13.30s to 14.80s */
+    @keyframes w2 { 0.00%, 18.52% { opacity: 0 } 18.72%, 20.60% { opacity: 1 } 20.81%, 100.00% { opacity: 0 } }
+    .w3 { animation-name: w3; }  /* 19.90s to 25.40s */
+    @keyframes w3 { 0.00%, 27.70% { opacity: 0 } 27.91%, 35.36% { opacity: 1 } 35.57%, 100.00% { opacity: 0 } }
+    .w4 { animation-name: w4; }  /* 25.40s to 27.50s */
+    @keyframes w4 { 0.00%, 35.36% { opacity: 0 } 35.57%, 38.28% { opacity: 1 } 38.49%, 100.00% { opacity: 0 } }
+    .w5 { animation-name: w5; }  /* 46.80s to 51.10s */
+    @keyframes w5 { 0.00%, 65.15% { opacity: 0 } 65.36%, 71.14% { opacity: 1 } 71.35%, 100.00% { opacity: 0 } }
+    .w6 { animation-name: w6; }  /* 51.10s to 53.20s */
+    @keyframes w6 { 0.00%, 71.14% { opacity: 0 } 71.35%, 74.06% { opacity: 1 } 74.27%, 100.00% { opacity: 0 } }
+    .w7 { animation-name: w7; }  /* 56.00s to 59.80s */
+    @keyframes w7 { 0.00%, 77.96% { opacity: 0 } 78.17%, 83.25% { opacity: 1 } 83.46%, 100.00% { opacity: 0 } }
+    .w8 { animation-name: w8; }  /* 59.80s to 61.90s */
+    @keyframes w8 { 0.00%, 83.25% { opacity: 0 } 83.46%, 86.18% { opacity: 1 } 86.38%, 100.00% { opacity: 0 } }
+    .w9 { animation-name: w9; }  /* 9.20s to 13.30s */
+    @keyframes w9 { 0.00%, 12.81% { opacity: 0 } 13.02%, 18.52% { opacity: 1 } 18.72%, 100.00% { opacity: 0 } }
+    .w10 { animation-name: w10; }  /* 14.80s to 17.60s */
+    @keyframes w10 { 0.00%, 20.60% { opacity: 0 } 20.81%, 24.50% { opacity: 1 } 24.71%, 100.00% { opacity: 0 } }
+    .w11 { animation-name: w11; }  /* 27.50s to 34.10s */
+    @keyframes w11 { 0.00%, 38.28% { opacity: 0 } 38.49%, 47.47% { opacity: 1 } 47.68%, 100.00% { opacity: 0 } }
+    .w12 { animation-name: w12; }  /* 34.10s to 38.40s */
+    @keyframes w12 { 0.00%, 47.47% { opacity: 0 } 47.68%, 53.46% { opacity: 1 } 53.67%, 100.00% { opacity: 0 } }
+    .w13 { animation-name: w13; }  /* 38.40s to 43.40s */
+    @keyframes w13 { 0.00%, 53.46% { opacity: 0 } 53.67%, 60.42% { opacity: 1 } 60.63%, 100.00% { opacity: 0 } }
+    .w14 { animation-name: w14; }  /* 43.40s to 46.80s */
+    @keyframes w14 { 0.00%, 60.42% { opacity: 0 } 60.63%, 65.15% { opacity: 1 } 65.36%, 100.00% { opacity: 0 } }
+    .w15 { animation-name: w15; }  /* 53.20s to 56.00s */
+    @keyframes w15 { 0.00%, 74.06% { opacity: 0 } 74.27%, 77.96% { opacity: 1 } 78.17%, 100.00% { opacity: 0 } }
+    .w16 { animation-name: w16; }  /* 61.90s to 64.70s */
+    @keyframes w16 { 0.00%, 86.18% { opacity: 0 } 86.38%, 90.07% { opacity: 1 } 90.28%, 100.00% { opacity: 0 } }
+    .w17 { animation-name: w17; }  /* 7.70s to 13.30s */
+    @keyframes w17 { 0.00%, 10.72% { opacity: 0 } 10.93%, 18.52% { opacity: 1 } 18.72%, 100.00% { opacity: 0 } }
+    .w18 { animation-name: w18; }  /* 13.30s to 17.60s */
+    @keyframes w18 { 0.00%, 18.52% { opacity: 0 } 18.72%, 24.50% { opacity: 1 } 24.71%, 100.00% { opacity: 0 } }
+    .w19 { animation-name: w19; }  /* 17.60s to 46.80s */
+    @keyframes w19 { 0.00%, 24.50% { opacity: 0 } 24.71%, 65.15% { opacity: 1 } 65.36%, 100.00% { opacity: 0 } }
+    .w20 { animation-name: w20; }  /* 46.80s to 56.00s */
+    @keyframes w20 { 0.00%, 65.15% { opacity: 0 } 65.36%, 77.96% { opacity: 1 } 78.17%, 100.00% { opacity: 0 } }
+    .w21 { animation-name: w21; }  /* 56.00s to 64.70s */
+    @keyframes w21 { 0.00%, 77.96% { opacity: 0 } 78.17%, 90.07% { opacity: 1 } 90.28%, 100.00% { opacity: 0 } }
+    .w22 { animation-name: w22; }  /* 17.60s to 19.90s */
+    @keyframes w22 { 0.00%, 24.50% { opacity: 0 } 24.71%, 27.70% { opacity: 1 } 27.91%, 100.00% { opacity: 0 } }
+    .w23 { animation-name: w23; }  /* 0.50s to 19.90s */
+    @keyframes w23 { 0.00%, 27.70% { opacity: 1 } 27.91%, 98.96% { opacity: 0 } 99.16%, 100.00% { opacity: 1 } }
+    .w24 { animation-name: w24; }  /* 25.40s to end */
+    @keyframes w24 { 0.00%, 35.36% { opacity: 0 } 35.57%, 98.96% { opacity: 1 } 99.16%, 100.00% { opacity: 0 } }
+    .w25 { animation-name: w25; }  /* 0.50s to 46.80s */
+    @keyframes w25 { 0.00%, 65.15% { opacity: 1 } 65.36%, 98.96% { opacity: 0 } 99.16%, 100.00% { opacity: 1 } }
+    .w26 { animation-name: w26; }  /* 51.10s to end */
+    @keyframes w26 { 0.00%, 71.14% { opacity: 0 } 71.35%, 98.96% { opacity: 1 } 99.16%, 100.00% { opacity: 0 } }
+    .w27 { animation-name: w27; }  /* 0.50s to 56.00s */
+    @keyframes w27 { 0.00%, 77.96% { opacity: 1 } 78.17%, 98.96% { opacity: 0 } 99.16%, 100.00% { opacity: 1 } }
+    .w28 { animation-name: w28; }  /* 59.80s to end */
+    @keyframes w28 { 0.00%, 83.25% { opacity: 0 } 83.46%, 98.96% { opacity: 1 } 99.16%, 100.00% { opacity: 0 } }
+    .w29 { animation-name: w29; }  /* 7.70s to 19.90s */
+    @keyframes w29 { 0.00%, 10.72% { opacity: 0 } 10.93%, 27.70% { opacity: 1 } 27.91%, 100.00% { opacity: 0 } }
+    .w30 { animation-name: w30; }  /* 13.30s to 46.80s */
+    @keyframes w30 { 0.00%, 18.52% { opacity: 0 } 18.72%, 65.15% { opacity: 1 } 65.36%, 100.00% { opacity: 0 } }
+    .w31 { animation-name: w31; }  /* 19.90s to end */
+    @keyframes w31 { 0.00%, 27.70% { opacity: 0 } 27.91%, 98.96% { opacity: 1 } 99.16%, 100.00% { opacity: 0 } }
+    .w32 { animation-name: w32; }  /* 46.80s to end */
+    @keyframes w32 { 0.00%, 65.15% { opacity: 0 } 65.36%, 98.96% { opacity: 1 } 99.16%, 100.00% { opacity: 0 } }
+    .w33 { animation-name: w33; }  /* 56.00s to end */
+    @keyframes w33 { 0.00%, 77.96% { opacity: 0 } 78.17%, 98.96% { opacity: 1 } 99.16%, 100.00% { opacity: 0 } }
+    .w34 { animation-name: w34; }  /* 0.50s to 25.40s */
+    @keyframes w34 { 0.00%, 35.36% { opacity: 1 } 35.57%, 98.96% { opacity: 0 } 99.16%, 100.00% { opacity: 1 } }
+    .w35 { animation-name: w35; }  /* 25.40s to 51.10s */
+    @keyframes w35 { 0.00%, 35.36% { opacity: 0 } 35.57%, 71.14% { opacity: 1 } 71.35%, 100.00% { opacity: 0 } }
+    .w36 { animation-name: w36; }  /* 51.10s to 59.80s */
+    @keyframes w36 { 0.00%, 71.14% { opacity: 0 } 71.35%, 83.25% { opacity: 1 } 83.46%, 100.00% { opacity: 0 } }
+    .w37 { animation-name: w37; }  /* 25.40s to 46.80s */
+    @keyframes w37 { 0.00%, 35.36% { opacity: 0 } 35.57%, 65.15% { opacity: 1 } 65.36%, 100.00% { opacity: 0 } }
+    .w38 { animation-name: w38; }  /* 51.10s to 56.00s */
+    @keyframes w38 { 0.00%, 71.14% { opacity: 0 } 71.35%, 77.96% { opacity: 1 } 78.17%, 100.00% { opacity: 0 } }
+    .w39 { animation-name: w39; }  /* 59.80s to 64.70s */
+    @keyframes w39 { 0.00%, 83.25% { opacity: 0 } 83.46%, 90.07% { opacity: 1 } 90.28%, 100.00% { opacity: 0 } }
+    .w40 { animation-name: w40; }  /* 64.70s to end */
+    @keyframes w40 { 0.00%, 90.07% { opacity: 0 } 90.28%, 98.96% { opacity: 1 } 99.16%, 100.00% { opacity: 0 } }
+    .w41 { animation-name: w41; }  /* 0.50s to 38.40s */
+    @keyframes w41 { 0.00%, 53.46% { opacity: 1 } 53.67%, 98.96% { opacity: 0 } 99.16%, 100.00% { opacity: 1 } }
+    .w42 { animation-name: w42; }  /* 43.40s to end */
+    @keyframes w42 { 0.00%, 60.42% { opacity: 0 } 60.63%, 98.96% { opacity: 1 } 99.16%, 100.00% { opacity: 0 } }
+    .w43 { animation-name: w43; }  /* 0.50s to 9.20s */
+    @keyframes w43 { 0.00%, 12.81% { opacity: 1 } 13.02%, 98.96% { opacity: 0 } 99.16%, 100.00% { opacity: 1 } }
+    .w44 { animation-name: w44; }  /* 9.20s to 27.50s */
+    @keyframes w44 { 0.00%, 12.81% { opacity: 0 } 13.02%, 38.28% { opacity: 1 } 38.49%, 100.00% { opacity: 0 } }
+    .w45 { animation-name: w45; }  /* 27.50s to 53.20s */
+    @keyframes w45 { 0.00%, 38.28% { opacity: 0 } 38.49%, 74.06% { opacity: 1 } 74.27%, 100.00% { opacity: 0 } }
+    .w46 { animation-name: w46; }  /* 53.20s to end */
+    @keyframes w46 { 0.00%, 74.06% { opacity: 0 } 74.27%, 98.96% { opacity: 1 } 99.16%, 100.00% { opacity: 0 } }
+    .w47 { animation-name: w47; }  /* 0.50s to 14.80s */
+    @keyframes w47 { 0.00%, 20.60% { opacity: 1 } 20.81%, 98.96% { opacity: 0 } 99.16%, 100.00% { opacity: 1 } }
+    .w48 { animation-name: w48; }  /* 14.80s to 34.10s */
+    @keyframes w48 { 0.00%, 20.60% { opacity: 0 } 20.81%, 47.47% { opacity: 1 } 47.68%, 100.00% { opacity: 0 } }
+    .w49 { animation-name: w49; }  /* 34.10s to 61.90s */
+    @keyframes w49 { 0.00%, 47.47% { opacity: 0 } 47.68%, 86.18% { opacity: 1 } 86.38%, 100.00% { opacity: 0 } }
+    .w50 { animation-name: w50; }  /* 61.90s to end */
+    @keyframes w50 { 0.00%, 86.18% { opacity: 0 } 86.38%, 98.96% { opacity: 1 } 99.16%, 100.00% { opacity: 0 } }
+    .w51 { animation-name: w51; }  /* 38.40s to end */
+    @keyframes w51 { 0.00%, 53.46% { opacity: 0 } 53.67%, 98.96% { opacity: 1 } 99.16%, 100.00% { opacity: 0 } }
+    .w52 { animation-name: w52; }  /* 0.50s to 34.10s */
+    @keyframes w52 { 0.00%, 47.47% { opacity: 1 } 47.68%, 98.96% { opacity: 0 } 99.16%, 100.00% { opacity: 1 } }
+    .w53 { animation-name: w53; }  /* 9.20s to 14.80s */
+    @keyframes w53 { 0.00%, 12.81% { opacity: 0 } 13.02%, 20.60% { opacity: 1 } 20.81%, 100.00% { opacity: 0 } }
+    .w54 { animation-name: w54; }  /* 43.40s to 53.20s */
+    @keyframes w54 { 0.00%, 60.42% { opacity: 0 } 60.63%, 74.06% { opacity: 1 } 74.27%, 100.00% { opacity: 0 } }
+    .w55 { animation-name: w55; }  /* 53.20s to 61.90s */
+    @keyframes w55 { 0.00%, 74.06% { opacity: 0 } 74.27%, 86.18% { opacity: 1 } 86.38%, 100.00% { opacity: 0 } }
+    .w56 { animation-name: w56; }  /* 0.50s to 43.40s */
+    @keyframes w56 { 0.00%, 60.42% { opacity: 1 } 60.63%, 98.96% { opacity: 0 } 99.16%, 100.00% { opacity: 1 } }
+    .w57 { animation-name: w57; }  /* 43.40s to 64.70s */
+    @keyframes w57 { 0.00%, 60.42% { opacity: 0 } 60.63%, 90.07% { opacity: 1 } 90.28%, 100.00% { opacity: 0 } }
+    .w58 { animation-name: w58; }  /* 0.50s to 7.70s */
+    @keyframes w58 { 0.00%, 10.72% { opacity: 1 } 10.93%, 98.96% { opacity: 0 } 99.16%, 100.00% { opacity: 1 } }
+    @media (prefers-reduced-motion: reduce) {
+      .a { animation: none; opacity: 0; }
+      .a.fin { opacity: 1; }
+    }
+    .mvar { font-family: 'Times New Roman', Times, 'STIX Two Text', serif; font-style: italic; font-size: 1.1em; }
+  </style>
+  <g class="a w1">
+  <rect x="10" y="98" width="740" height="106" rx="8" style="fill:var(--chip)"/>
+  <rect x="10" y="106" width="5" height="90" rx="2" style="fill:var(--probe)"/>
+  </g>
+  <g class="a w2">
+  <rect x="10" y="98" width="740" height="106" rx="8" style="fill:var(--chip)"/>
+  <rect x="10" y="106" width="5" height="90" rx="2" style="fill:var(--probe)"/>
+  </g>
+  <g class="a w3">
+  <rect x="10" y="98" width="740" height="106" rx="8" style="fill:var(--chip)"/>
+  <rect x="10" y="106" width="5" height="90" rx="2" style="fill:var(--probe)"/>
+  </g>
+  <g class="a w4">
+  <rect x="10" y="98" width="740" height="106" rx="8" style="fill:var(--chip)"/>
+  <rect x="10" y="106" width="5" height="90" rx="2" style="fill:var(--probe)"/>
+  </g>
+  <g class="a w5">
+  <rect x="10" y="98" width="740" height="106" rx="8" style="fill:var(--chip)"/>
+  <rect x="10" y="106" width="5" height="90" rx="2" style="fill:var(--probe)"/>
+  </g>
+  <g class="a w6">
+  <rect x="10" y="98" width="740" height="106" rx="8" style="fill:var(--chip)"/>
+  <rect x="10" y="106" width="5" height="90" rx="2" style="fill:var(--probe)"/>
+  </g>
+  <g class="a w7">
+  <rect x="10" y="98" width="740" height="106" rx="8" style="fill:var(--chip)"/>
+  <rect x="10" y="106" width="5" height="90" rx="2" style="fill:var(--probe)"/>
+  </g>
+  <g class="a w8">
+  <rect x="10" y="98" width="740" height="106" rx="8" style="fill:var(--chip)"/>
+  <rect x="10" y="106" width="5" height="90" rx="2" style="fill:var(--probe)"/>
+  </g>
+  <g class="a w9">
+  <rect x="10" y="228" width="740" height="106" rx="8" style="fill:var(--chip)"/>
+  <rect x="10" y="236" width="5" height="90" rx="2" style="fill:var(--probe)"/>
+  </g>
+  <g class="a w10">
+  <rect x="10" y="228" width="740" height="106" rx="8" style="fill:var(--chip)"/>
+  <rect x="10" y="236" width="5" height="90" rx="2" style="fill:var(--probe)"/>
+  </g>
+  <g class="a w11">
+  <rect x="10" y="228" width="740" height="106" rx="8" style="fill:var(--chip)"/>
+  <rect x="10" y="236" width="5" height="90" rx="2" style="fill:var(--probe)"/>
+  </g>
+  <g class="a w12">
+  <rect x="10" y="228" width="740" height="106" rx="8" style="fill:var(--chip)"/>
+  <rect x="10" y="236" width="5" height="90" rx="2" style="fill:var(--probe)"/>
+  </g>
+  <g class="a w13">
+  <rect x="10" y="228" width="740" height="106" rx="8" style="fill:var(--chip)"/>
+  <rect x="10" y="236" width="5" height="90" rx="2" style="fill:var(--probe)"/>
+  </g>
+  <g class="a w14">
+  <rect x="10" y="228" width="740" height="106" rx="8" style="fill:var(--chip)"/>
+  <rect x="10" y="236" width="5" height="90" rx="2" style="fill:var(--probe)"/>
+  </g>
+  <g class="a w15">
+  <rect x="10" y="228" width="740" height="106" rx="8" style="fill:var(--chip)"/>
+  <rect x="10" y="236" width="5" height="90" rx="2" style="fill:var(--probe)"/>
+  </g>
+  <g class="a w16">
+  <rect x="10" y="228" width="740" height="106" rx="8" style="fill:var(--chip)"/>
+  <rect x="10" y="236" width="5" height="90" rx="2" style="fill:var(--probe)"/>
+  </g>
+  <text x="20" y="28" class="title">Same trace, 4 slots: FIFO vs textbook CLOCK</text>
+  <text x="20" y="66" class="muted">access trace</text>
+  <rect x="140" y="46" width="36" height="30" rx="4" class="chip"/>
+  <text x="158" y="66" text-anchor="middle" class="b"><tspan class="mvar">A</tspan></text>
+  <rect x="137" y="43" width="42" height="36" rx="5" class="cur a w17"/>
+  <rect x="184" y="46" width="36" height="30" rx="4" class="chip"/>
+  <text x="202" y="66" text-anchor="middle" class="b"><tspan class="mvar">B</tspan></text>
+  <rect x="181" y="43" width="42" height="36" rx="5" class="cur a w18"/>
+  <rect x="228" y="46" width="36" height="30" rx="4" class="chip"/>
+  <text x="246" y="66" text-anchor="middle" class="b"><tspan class="mvar">E</tspan></text>
+  <rect x="225" y="43" width="42" height="36" rx="5" class="cur a w19"/>
+  <rect x="272" y="46" width="36" height="30" rx="4" class="chip"/>
+  <text x="290" y="66" text-anchor="middle" class="b"><tspan class="mvar">A</tspan></text>
+  <rect x="269" y="43" width="42" height="36" rx="5" class="cur a w20"/>
+  <rect x="316" y="46" width="36" height="30" rx="4" class="chip"/>
+  <text x="334" y="66" text-anchor="middle" class="b"><tspan class="mvar">B</tspan></text>
+  <rect x="313" y="43" width="42" height="36" rx="5" class="cur a w21"/>
+  <text x="370" y="66" class="num a w22">miss in both caches</text>
+  <text x="24" y="130" class="title">FIFO</text>
+  <text x="24" y="148" class="muted">upstream</text>
+  <rect x="140" y="108" width="60" height="48" rx="4" class="full"/>
+  <rect x="212" y="108" width="60" height="48" rx="4" class="full"/>
+  <rect x="284" y="108" width="60" height="48" rx="4" class="full"/>
+  <rect x="356" y="108" width="60" height="48" rx="4" class="full"/>
+  <text x="170" y="138" text-anchor="middle" class="b a w23"><tspan class="mvar">A</tspan></text>
+  <text x="170" y="138" text-anchor="middle" class="b a w24 fin"><tspan class="mvar">E</tspan></text>
+  <text x="242" y="138" text-anchor="middle" class="b a w25"><tspan class="mvar">B</tspan></text>
+  <text x="242" y="138" text-anchor="middle" class="b a w26 fin"><tspan class="mvar">A</tspan></text>
+  <text x="314" y="138" text-anchor="middle" class="b a w27"><tspan class="mvar">C</tspan></text>
+  <text x="314" y="138" text-anchor="middle" class="b a w28 fin"><tspan class="mvar">B</tspan></text>
+  <rect x="140" y="108" width="60" height="48" rx="4" class="zapped a w3"/>
+  <rect x="212" y="108" width="60" height="48" rx="4" class="zapped a w5"/>
+  <rect x="284" y="108" width="60" height="48" rx="4" class="zapped a w7"/>
+  <text x="386" y="138" text-anchor="middle" class="b"><tspan class="mvar">D</tspan></text>
+  <rect x="136" y="104" width="68" height="56" rx="6" class="okring a w29"/>
+  <rect x="208" y="104" width="68" height="56" rx="6" class="okring a w30"/>
+  <rect x="136" y="104" width="68" height="56" rx="6" class="ring a w31 fin"/>
+  <rect x="208" y="104" width="68" height="56" rx="6" class="ring a w32 fin"/>
+  <rect x="280" y="104" width="68" height="56" rx="6" class="ring a w33 fin"/>
+  <polygon points="170,164 163,175 177,175" class="arrowhead a w34"/>
+  <polygon points="242,164 235,175 249,175" class="arrowhead a w35"/>
+  <polygon points="314,164 307,175 321,175" class="arrowhead a w36"/>
+  <polygon points="386,164 379,175 393,175" class="arrowhead a w28 fin"/>
+  <text x="140" y="194" class="muted">▲ oldest page, zapped next</text>
+  <text x="440" y="128" class="oktext a w17">hit</text>
+  <text x="440" y="128" class="oktext a w18">hit</text>
+  <text x="440" y="128" class="num a w3">miss: zap oldest (<tspan class="mvar">A</tspan>)</text>
+  <text x="440" y="128" class="num a w37">load <tspan class="mvar">E</tspan></text>
+  <text x="440" y="128" class="num a w5">miss: zap oldest (<tspan class="mvar">B</tspan>)</text>
+  <text x="440" y="128" class="num a w38">load <tspan class="mvar">A</tspan></text>
+  <text x="440" y="128" class="num a w7">miss: zap oldest (<tspan class="mvar">C</tspan>)</text>
+  <text x="440" y="128" class="num a w39">load <tspan class="mvar">B</tspan></text>
+  <text x="440" y="150" class="b a w34">faults: 0</text>
+  <text x="440" y="150" class="b a w35">faults: 1</text>
+  <text x="440" y="150" class="b a w36">faults: 2</text>
+  <text x="440" y="150" class="b a w39">faults: 3</text>
+  <text x="440" y="150" class="num a w40 fin">faults: 3</text>
+  <text x="24" y="260" class="title">CLOCK</text>
+  <text x="24" y="278" class="muted">textbook</text>
+  <rect x="140" y="238" width="60" height="48" rx="4" class="full"/>
+  <rect x="174" y="252" width="20" height="20" rx="3" class="empty"/>
+  <rect x="212" y="238" width="60" height="48" rx="4" class="full"/>
+  <rect x="246" y="252" width="20" height="20" rx="3" class="empty"/>
+  <rect x="284" y="238" width="60" height="48" rx="4" class="full"/>
+  <rect x="318" y="252" width="20" height="20" rx="3" class="empty"/>
+  <rect x="356" y="238" width="60" height="48" rx="4" class="full"/>
+  <rect x="390" y="252" width="20" height="20" rx="3" class="empty"/>
+  <text x="158" y="268" text-anchor="middle" class="b"><tspan class="mvar">A</tspan></text>
+  <text x="230" y="268" text-anchor="middle" class="b"><tspan class="mvar">B</tspan></text>
+  <rect x="284" y="238" width="60" height="48" rx="4" class="zapped a w13"/>
+  <text x="302" y="268" text-anchor="middle" class="b a w41"><tspan class="mvar">C</tspan></text>
+  <text x="302" y="268" text-anchor="middle" class="b a w42 fin"><tspan class="mvar">E</tspan></text>
+  <text x="374" y="268" text-anchor="middle" class="b"><tspan class="mvar">D</tspan></text>
+  <text x="184" y="267" text-anchor="middle" class="muted b a w43">0</text>
+  <text x="184" y="267" text-anchor="middle" class="sm b a w44">1</text>
+  <text x="184" y="267" text-anchor="middle" class="muted b a w45">0</text>
+  <text x="184" y="267" text-anchor="middle" class="sm b a w46 fin">1</text>
+  <text x="256" y="267" text-anchor="middle" class="muted b a w47">0</text>
+  <text x="256" y="267" text-anchor="middle" class="sm b a w48">1</text>
+  <text x="256" y="267" text-anchor="middle" class="muted b a w49">0</text>
+  <text x="256" y="267" text-anchor="middle" class="sm b a w50 fin">1</text>
+  <text x="328" y="267" text-anchor="middle" class="muted b a w41">0</text>
+  <text x="328" y="267" text-anchor="middle" class="sm b a w42 fin">1</text>
+  <text x="400" y="267" text-anchor="middle" class="muted b">0</text>
+  <rect x="136" y="234" width="68" height="56" rx="6" class="okring a w44"/>
+  <rect x="208" y="234" width="68" height="56" rx="6" class="okring a w48"/>
+  <rect x="136" y="234" width="68" height="56" rx="6" class="ring a w45"/>
+  <rect x="208" y="234" width="68" height="56" rx="6" class="ring a w49"/>
+  <rect x="280" y="234" width="68" height="56" rx="6" class="ring a w51 fin"/>
+  <rect x="136" y="234" width="68" height="56" rx="6" class="okring a w46 fin"/>
+  <rect x="208" y="234" width="68" height="56" rx="6" class="okring a w50 fin"/>
+  <polygon points="170,294 163,305 177,305" class="arrowhead a w52"/>
+  <polygon points="242,294 235,305 249,305" class="arrowhead a w12"/>
+  <polygon points="314,294 307,305 321,305" class="arrowhead a w13"/>
+  <polygon points="386,294 379,305 393,305" class="arrowhead a w42 fin"/>
+  <text x="140" y="324" class="muted">▲ clock_hand</text>
+  <text x="240" y="324" class="muted">small box: referenced bit (a new page starts at 1)</text>
+  <text x="440" y="258" class="oktext a w53">hit: set <tspan class="mvar">A</tspan>'s referenced bit</text>
+  <text x="440" y="258" class="oktext a w10">hit: set <tspan class="mvar">B</tspan>'s referenced bit</text>
+  <text x="440" y="258" class="num a w11">A's bit is 1: clear it, skip</text>
+  <text x="440" y="258" class="num a w12">B's bit is 1: clear it, skip</text>
+  <text x="440" y="258" class="num a w13"><tspan class="mvar">C</tspan>'s bit is 0: zap <tspan class="mvar">C</tspan></text>
+  <text x="440" y="258" class="num a w54">load <tspan class="mvar">E</tspan>, move hand on</text>
+  <text x="440" y="258" class="oktext a w55">hit: set <tspan class="mvar">A</tspan>'s referenced bit</text>
+  <text x="440" y="258" class="oktext a w16">hit: set <tspan class="mvar">B</tspan>'s referenced bit</text>
+  <text x="440" y="280" class="b a w56">faults: 0</text>
+  <text x="440" y="280" class="b a w57">faults: 1</text>
+  <text x="440" y="280" class="oktext a w40 fin">faults: 1</text>
+  <text x="20" y="364" class="a w58">Both caches start with the same pages, all unreferenced.</text>
+  <text x="20" y="364" class="a w9">CLOCK also records the use.</text>
+  <text x="20" y="364" class="a w3">FIFO evicts by age, so the page just used goes first.</text>
+  <text x="20" y="364" class="a w11"><tspan class="mvar">A</tspan> was used since the hand last passed: second chance.</text>
+  <text x="20" y="364" class="a w12"><tspan class="mvar">B</tspan> gets the same.</text>
+  <text x="20" y="364" class="a w13"><tspan class="mvar">C</tspan> is the first page nobody used.</text>
+  <text x="20" y="364" class="a w5">FIFO pays for throwing out <tspan class="mvar">A</tspan>.</text>
+  <text x="20" y="364" class="a w7">And again for <tspan class="mvar">B</tspan>.</text>
+  <text x="20" y="364" class="b a w40 fin">Checking recent use kept the hot pages; FIFO threw them out by age.</text>
+</svg>
