@@ -78,7 +78,7 @@ To stay relevant, data scientists and analysts should not fear such colossal tec
 
 The possibilities for integrating workflows with AI are endless. With that, I foresee the future of technology roles model this life cycle:
 
-![The AI-assisted development lifecycle: research, develop, integrate, automate](/images/my-thoughts-on-dashboards-are-dead-3-years-later/dev-lifecycle-with-ai.png)
+![The AI-assisted development lifecycle: research, develop, integrate, automate](/images/my-thoughts-on-dashboards-are-dead-3-years-later/dev-lifecycle-with-ai.png "A possible cycle for AI-assisted work: automate established tasks while people explore what to build next.")
 
 This is nothing new. Tech companies with a research arm are probably implementing something similar. What I’m implying is that this cycle will be increasingly adopted across tech teams and accelerated within teams that already use this. To quote the writer William Gibson, _“The future is already here – it's just not evenly distributed.”_
 

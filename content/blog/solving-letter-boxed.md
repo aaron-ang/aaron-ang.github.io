@@ -14,7 +14,7 @@ tags = ["Design", "Engineering"]
 
 A solution traces a path across the square, one letter at a time. Most of this post uses the puzzle in the figure below as its example puzzle. Its sides are MSO, HGD, RIE and NAF:
 
-![FORMED is drawn letter by letter, alternating sides of the square. DASHING starts from its final D and covers the remaining six letters, solving the puzzle in two words.](/images/solving-letter-boxed/puzzle-rules.svg "Solid orange lines trace FORMED; dashed blue lines trace DASHING.")
+![FORMED is drawn letter by letter, alternating sides of the square. DASHING starts from its final D and covers the remaining six letters, solving the puzzle in two words.](/images/solving-letter-boxed/puzzle-rules.svg)
 
 I first wrote a Letter Boxed solver in Java for [CS 112](https://www.cs.bu.edu/courses/cs112/) in 2022. It later became a [TypeScript](https://www.typescriptlang.org/) web app, but non-trivial puzzles could freeze the page while the search ran. To keep the page responsive and to explore cloud computing, I moved the search to a [Node.js](https://nodejs.org/) _cloud function_ and later rewrote that function in [Go](https://go.dev). The [current version](https://aaron-ang.github.io/letter-boxed) brings the search back to the browser, without blocking the page.
 

@@ -50,7 +50,7 @@ On YARN, Spark shares resources with other frameworks. The scheduler can categor
 
 Running a Spark application in cluster mode follows the same flow, with a few differences (highlighted in blue):
 
-![The same flow in Spark's cluster mode: the ApplicationMaster also runs the Spark Driver, the granted containers become executors, and the driver sends them tasks, which report results back.](/images/tinkering-with-spark/spark-on-yarn.svg "Blue marks what Spark changes in the YARN flow. Adapted from [Sujith Jay](https://sujithjay.com/spark/with-yarn).")
+![The same flow in Spark's cluster mode: the ApplicationMaster also runs the Spark Driver, the granted containers become executors, and the driver sends them tasks, which report results back.](/images/tinkering-with-spark/spark-on-yarn.svg "Adapted from [Sujith Jay](https://sujithjay.com/spark/with-yarn).")
 
 #### Spark Driver
 
@@ -102,8 +102,12 @@ spark.sql.shuffle.partitions=400
 
 This configuration gives the following setup:
 
-- **Driver**: 1 core, 5GiB memory (+2GiB overhead)
-- **Executors**: 10 instances, each with 1 core, 16GiB memory (+4GiB overhead)
+{{< table title="Initial Spark resources" >}}
+| Role | Instances | Cores each | Memory each | Overhead each |
+|---|:---:|:---:|:---:|:---:|
+| Driver | 1 | 1 | 5 GiB | 2 GiB |
+| Executor | 10 | 1 | 16 GiB | 4 GiB |
+{{< /table >}}
 
 The next step was reviewing the [Spark configuration documentation](https://spark.apache.org/docs/latest/configuration.html) to understand the parameters and searching the web for the errors in our logs to find possible causes.
 

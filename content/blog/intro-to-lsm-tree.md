@@ -27,20 +27,16 @@ Compaction can be thought of as garbage collection for the LSM tree. It removes 
 
 In most implementations, a dedicated background thread is used to perform compaction. There are many ways to customize how and when compaction gets triggered with different tradeoffs. Below are two classic compaction strategies.
 
-### Leveled Compaction
+### Leveled and Size-Tiered Compaction
 
-- Each level is a sorted run consisting of multiple SSTables
-- When the run of **level $i$ is full**, it is merged into the run of level **$i+1$**
-- Good read performance and lower space amplification since no duplicate keys are present in each level
-
-### Size-Tiered Compaction
-
-- Organizes SSTables into sorted runs based on their size
-- Every level must accumulate $T$ runs before they are sort-merged
-- When the number of **runs $\geq T$**, the whole level is merged into a single **larger sorted run** in the next tier
-- Good ingestion performance since runs are lazily merged
-
-### Tiered vs Leveled Compaction
+{{< table title="Two classic compaction strategies" >}}
+| Aspect | Leveled | Size-tiered |
+|---|---|---|
+| Layout | One sorted run of multiple SSTables per level | Sorted runs grouped by size |
+| Trigger | Level $i$ is full | A level accumulates at least $T$ runs |
+| Merge | Merge the full level’s run into level $i+1$ | Merge the level’s runs into one larger run in the next tier |
+| Main benefit | Good reads and lower space amplification, with no duplicate keys within a level | Good ingestion performance through lazy merging |
+{{< /table >}}
 
 To see where each strategy spends its merging effort, below is the same three flushes fed into a leveled tree and a tiered tree side by side:
 
@@ -92,7 +88,7 @@ The table below shows the compaction granularity used by several production stor
 
 Partial compaction requires choosing which data files to compact.
 
-![Source: [*Constructing and Analyzing the LSM Compaction Design Space*](https://vldb.org/pvldb/vol14/p2216-sarkar.pdf)](/images/intro-to-lsm-tree/data-movement-policy.png)
+![Source: [*Constructing and Analyzing the LSM Compaction Design Space*](https://vldb.org/pvldb/vol14/p2216-sarkar.pdf)](/images/intro-to-lsm-tree/data-movement-policy.png "Round robin, least overlap, and coldest-file policies choose different files for compaction. Source: [Constructing and Analyzing the LSM Compaction Design Space](https://vldb.org/pvldb/vol14/p2216-sarkar.pdf).")
 
 Here are several policies (non-exhaustive), each with its own strengths:
 
@@ -135,13 +131,13 @@ The sparse index, containing the key mapping, is typically encoded at the end of
 
 Putting the two together, below are two lookups: one key that costs a single disk read, and one that the Bloom filters rule out without ever touching disk:
 
-![get(42) skips L0 on its Bloom filter; L1's filter says maybe, and the fence pointers pick one block, so it costs one disk read. get(57) is ruled out by every filter and never touches disk.](/images/intro-to-lsm-tree/read-path.svg "Everything left of the dashed line lives in memory, so only the SSTable blocks cost a disk read.")
+![get(42) skips L0 on its Bloom filter; L1's filter says maybe, and the fence pointers pick one block, so it costs one disk read. get(57) is ruled out by every filter and never touches disk.](/images/intro-to-lsm-tree/read-path.svg)
 
 ### Block Cache
 
 The block cache keeps recently read data blocks in memory and, optionally, metadata blocks such as Bloom filters and fence pointers. When the block cache is initially empty, it fetches the necessary pages from the on-disk files. It may also prefetch data pages to improve read performance. Reads consult the block cache first and perform disk I/O only if the requested block is not in the cache. Compaction deletes its input SSTables and makes their cached pages useless: reads may miss the cache until it warms up again. Separately, production systems like RocksDB keep a _Manifest File_, a log of which SSTables live at each level and their key ranges, as shown below.
 
-![Source: [*Optimizing Space Amplification in RocksDB*](https://www.semanticscholar.org/paper/Optimizing-Space-Amplification-in-RocksDB-Dong-Callaghan/9b90568faad1fd394737b79503571b7f5f0b2f4b)](/images/intro-to-lsm-tree/block-cache-manifest.png)
+![Source: [*Optimizing Space Amplification in RocksDB*](https://www.semanticscholar.org/paper/Optimizing-Space-Amplification-in-RocksDB-Dong-Callaghan/9b90568faad1fd394737b79503571b7f5f0b2f4b)](/images/intro-to-lsm-tree/block-cache-manifest.png "The Manifest records the SSTables at each level; each SSTable contains an index and data blocks. Source: [Optimizing Space Amplification in RocksDB](https://www.semanticscholar.org/paper/Optimizing-Space-Amplification-in-RocksDB-Dong-Callaghan/9b90568faad1fd394737b79503571b7f5f0b2f4b).")
 
 ## Deletion
 

@@ -25,7 +25,7 @@ The table is split into arrays, each half the size of the previous one, and an i
 
 The largest array fills to about 75 percent first. Subsequent batches work on a neighboring pair: the larger $A_i$ and the smaller $A_{i+1}$. A batch brings $A_i$ close to full and $A_{i+1}$ to 75 percent, ready for the next pair:
 
-![Elastic fills its arrays in batches. Each array fills to 75 percent while it is the smaller of its pair, then to nearly full while it is the larger. After that, the next batch moves one array down.](/images/building-opthash/elastic-fill.svg "Blue is the filled part of each array.")
+![Elastic fills its arrays in batches. Each array fills to 75 percent while it is the smaller of its pair, then to nearly full while it is the larger. After that, the next batch moves one array down.](/images/building-opthash/elastic-fill.svg)
 
 Within each batch, the free space in $A_i$ and $A_{i+1}$ determines how an insertion proceeds. Those two occupancy checks select one of three cases; Case 1 is the one that limits the probes in $A_i$ before falling back to $A_{i+1}$:
 
@@ -55,7 +55,13 @@ The paper counts each probe as one step, but the processor has to execute the in
 
 Version 2 moved the control bytes out of the entries while retaining a separate allocation for each level. A lookup could then inspect the metadata without first accessing the associated key and value. Version 3 brought all the levels into one arena ([opthash#68](https://github.com/aaron-ang/opthash-rs/pull/68)), with pointers and counts retaining their logical boundaries and the control bytes placed together in the allocation.
 
-For the earlier probe at $A_i[203]$, these changes affect where the lookup finds the information it needs. Version 1 reads the tag alongside the entry; Version 2 checks a separate control byte before deciding whether to read the key; and Version 3 places that byte with the other levels’ metadata in the shared arena:
+For the earlier probe at $A_i[203]$, the three versions differ in where the lookup finds the information it needs:
+
+1. **Version 1** reads the tag alongside the entry.
+2. **Version 2** checks a separate control byte before deciding whether to read the key.
+3. **Version 3** places that byte with the other levels’ metadata in the shared arena.
+
+The diagram shows the three layouts:
 
 ```mermaid {caption="Yellow represents control data, gaps are separate allocations. In version 1, the control tag lives inside each slot, and checking it loads the whole entry. From version 2 on, each slot gets a control byte: 0 for empty, 0x80 for a deleted slot (a [tombstone](https://en.wikipedia.org/wiki/Lazy_deletion)), or a 7-bit hash fingerprint."}
 block-beta
@@ -113,12 +119,18 @@ The existing placement tests ran after the first resize. Because resizing restor
 
 The rewrite established one fixed choice of parameters for each construction ([opthash#115](https://github.com/aaron-ang/opthash-rs/pull/115)). An optimized implementation had to preserve that choice’s slots and probe order, while remaining free to change how it checked them. This ruled out changes to level sizes and probing arithmetic, but retained the layout and metadata techniques that could operate within those rules:
 
-| Removed: changed which slots get probed | Kept: changes only how slots are checked |
-| --------------------------------------- | ---------------------------------------- |
-| Power-of-two level sizes[^sizing]       | Single arena                             |
-| Triangular Elastic probing              | Control bytes with fingerprints          |
-| Altered probe budgets                   | SIMD control-byte scans                  |
-| Reserve policy tuned for speed          |                                          |
+**Removed because they changed the probe slots or order:**
+
+- Power-of-two level sizes[^sizing]
+- Triangular Elastic probing
+- Altered probe budgets
+- Reserve policy tuned for speed
+
+**Kept because they only changed how slots were checked:**
+
+- Single arena
+- Control bytes with fingerprints
+- SIMD control-byte scans
 
 ### A Reference to Compare Against
 

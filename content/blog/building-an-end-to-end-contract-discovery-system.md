@@ -23,7 +23,7 @@ On a high level, the system processes document data through **three** main stage
    1. A structured directory of organized document types.
    2. A DataFrame that maps file names to their extracted attributes.
 
-![High-level Architecture of Document Processing Pipeline](/images/building-an-end-to-end-contract-discovery-system/pipeline-architecture.png)
+![High-level Architecture of Document Processing Pipeline](/images/building-an-end-to-end-contract-discovery-system/pipeline-architecture.png "The pipeline turns a document dump into categorized files and a table of extracted attributes.")
 
 ### Key Features
 
@@ -60,7 +60,7 @@ Deduplication came first: compare file-content hashes and mark matching files as
 
 Most files were PDFs, so [PyMuPDF](https://pymupdf.readthedocs.io/en/latest/) gave us an inexpensive way to extract their text. PDFs without text went into an image category for later processing. We kept revising the keyword rules until the relevant/irrelevant classification reached a steady state.
 
-![Document Type Distribution](/images/building-an-end-to-end-contract-discovery-system/document-type-distribution.png)
+![Document Type Distribution](/images/building-an-end-to-end-contract-discovery-system/document-type-distribution.png "Filtering and deduplication remove more than half the documents before attribute extraction.")
 
 After filtering the subset of documents, nearly **50%** were deemed irrelevant, and **over 10%** were identified as duplicates. This resulted in removing more than half of the documents from attribute extraction, a time-consuming process.
 
@@ -78,7 +78,7 @@ We also needed to determine whether a contract had been signed by Red Hat, the c
 
 To address this issue, we came up with the idea to segment the signature page into two distinct parts: one for the client's signature and another for Red Hat's. The keyword search algorithm was extended to identify relevant coordinates and extract these specific sections as images. These signature snippets were then appended to the original first page, as illustrated in the image below (with redactions for privacy reasons).
 
-![Text + Image → JSON](/images/building-an-end-to-end-contract-discovery-system/text-image-to-json.png)
+![Text + Image → JSON](/images/building-an-end-to-end-contract-discovery-system/text-image-to-json.png "Cropped signature sections accompany the first page, giving the model a smaller input for attribute and signature extraction. Private fields are redacted.")
 
 This approach gave two benefits. Firstly, accuracy improved substantially, with rates increasing to between **85%** and **95%**. Secondly, the inference time improved due to the reduced image size, allowing larger batches to be processed using the same compute.
 
