@@ -25,7 +25,7 @@ The table is split into arrays, each half the size of the previous one, and an i
 
 The largest array fills to about 75 percent first. Subsequent batches work on a neighboring pair: the larger $A_i$ and the smaller $A_{i+1}$. A batch brings $A_i$ close to full and $A_{i+1}$ to 75 percent, ready for the next pair:
 
-![Elastic fills its arrays in batches. Each array fills to 75 percent while it is the smaller of its pair, then to nearly full while it is the larger. After that, the next batch moves one array down.](/images/building-opthash/elastic-fill.svg "Blue is the filled part of each array.")
+![Elastic fills its arrays in batches. Each array fills to 75 percent while it is the smaller of its pair, then to nearly full while it is the larger. After that, the next batch moves one array down.](/images/building-opthash/elastic-fill.svg)
 
 Within each batch, the free space in $A_i$ and $A_{i+1}$ determines how an insertion proceeds. Those two occupancy checks select one of three cases; Case 1 is the one that limits the probes in $A_i$ before falling back to $A_{i+1}$:
 

@@ -92,7 +92,7 @@ The table below shows the compaction granularity used by several production stor
 
 Partial compaction requires choosing which data files to compact.
 
-![Source: [*Constructing and Analyzing the LSM Compaction Design Space*](https://vldb.org/pvldb/vol14/p2216-sarkar.pdf)](/images/intro-to-lsm-tree/data-movement-policy.png)
+![Source: [*Constructing and Analyzing the LSM Compaction Design Space*](https://vldb.org/pvldb/vol14/p2216-sarkar.pdf)](/images/intro-to-lsm-tree/data-movement-policy.png "Round robin, least overlap, and coldest-file policies choose different files for compaction. Source: [Constructing and Analyzing the LSM Compaction Design Space](https://vldb.org/pvldb/vol14/p2216-sarkar.pdf).")
 
 Here are several policies (non-exhaustive), each with its own strengths:
 
@@ -135,13 +135,13 @@ The sparse index, containing the key mapping, is typically encoded at the end of
 
 Putting the two together, below are two lookups: one key that costs a single disk read, and one that the Bloom filters rule out without ever touching disk:
 
-![get(42) skips L0 on its Bloom filter; L1's filter says maybe, and the fence pointers pick one block, so it costs one disk read. get(57) is ruled out by every filter and never touches disk.](/images/intro-to-lsm-tree/read-path.svg "Everything left of the dashed line lives in memory, so only the SSTable blocks cost a disk read.")
+![get(42) skips L0 on its Bloom filter; L1's filter says maybe, and the fence pointers pick one block, so it costs one disk read. get(57) is ruled out by every filter and never touches disk.](/images/intro-to-lsm-tree/read-path.svg)
 
 ### Block Cache
 
 The block cache keeps recently read data blocks in memory and, optionally, metadata blocks such as Bloom filters and fence pointers. When the block cache is initially empty, it fetches the necessary pages from the on-disk files. It may also prefetch data pages to improve read performance. Reads consult the block cache first and perform disk I/O only if the requested block is not in the cache. Compaction deletes its input SSTables and makes their cached pages useless: reads may miss the cache until it warms up again. Separately, production systems like RocksDB keep a _Manifest File_, a log of which SSTables live at each level and their key ranges, as shown below.
 
-![Source: [*Optimizing Space Amplification in RocksDB*](https://www.semanticscholar.org/paper/Optimizing-Space-Amplification-in-RocksDB-Dong-Callaghan/9b90568faad1fd394737b79503571b7f5f0b2f4b)](/images/intro-to-lsm-tree/block-cache-manifest.png)
+![Source: [*Optimizing Space Amplification in RocksDB*](https://www.semanticscholar.org/paper/Optimizing-Space-Amplification-in-RocksDB-Dong-Callaghan/9b90568faad1fd394737b79503571b7f5f0b2f4b)](/images/intro-to-lsm-tree/block-cache-manifest.png "The Manifest records the SSTables at each level; each SSTable contains an index and data blocks. Source: [Optimizing Space Amplification in RocksDB](https://www.semanticscholar.org/paper/Optimizing-Space-Amplification-in-RocksDB-Dong-Callaghan/9b90568faad1fd394737b79503571b7f5f0b2f4b).")
 
 ## Deletion
 

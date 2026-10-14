@@ -50,7 +50,7 @@ On YARN, Spark shares resources with other frameworks. The scheduler can categor
 
 Running a Spark application in cluster mode follows the same flow, with a few differences (highlighted in blue):
 
-![The same flow in Spark's cluster mode: the ApplicationMaster also runs the Spark Driver, the granted containers become executors, and the driver sends them tasks, which report results back.](/images/tinkering-with-spark/spark-on-yarn.svg "Blue marks what Spark changes in the YARN flow. Adapted from [Sujith Jay](https://sujithjay.com/spark/with-yarn).")
+![The same flow in Spark's cluster mode: the ApplicationMaster also runs the Spark Driver, the granted containers become executors, and the driver sends them tasks, which report results back.](/images/tinkering-with-spark/spark-on-yarn.svg "Adapted from [Sujith Jay](https://sujithjay.com/spark/with-yarn).")
 
 #### Spark Driver
 
