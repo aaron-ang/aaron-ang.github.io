@@ -1,0 +1,103 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 280 320"
+  width="280"
+  height="320"
+  role="img"
+  aria-labelledby="title desc"
+  font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif"
+>
+  <title id="title">Avoiding bank conflicts</title>
+  <desc id="desc">Only the first four-float reads of threads 0 and 4 are shown. Before, they request columns 0–3 and 32–35, both in banks 0–3. After, thread 4 reads columns 16–19, avoiding those banks.</desc>
+  <style>
+    /* ONS chart typography: 20px title, 16px subheading, 14px labels/annotations.
+    https://service-manual.ons.gov.uk/data-visualisation/build-specifications/typography */
+    :root {
+      --fg: #222;
+      --muted: #707071;
+      --load: #b83c0b;
+      --ok: #237a36;
+      --type-heading: 20px;
+      --type-subheading: 16px;
+      --type-label: 14px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --fg: #ddd;
+        --muted: #aaa;
+        --load: #ff9a64;
+        --ok: #82df92;
+      }
+    }
+    text {
+      fill: var(--fg);
+      font-variant-numeric: lining-nums tabular-nums;
+      font-size: var(--type-label);
+    }
+    .title {
+      font-weight: 700;
+    }
+    .sub {
+      font-weight: 600;
+    }
+    .note {
+      fill: var(--muted);
+    }
+    .load {
+      fill: var(--load);
+      fill-opacity: 0.15;
+      stroke: var(--load);
+    }
+    .ok {
+      fill: var(--ok);
+      fill-opacity: 0.15;
+      stroke: var(--ok);
+    }
+    .arrow {
+      stroke: var(--fg);
+      fill: none;
+      stroke-width: 1.5;
+    }
+    /* Typography adapted from ONS chart guidance:
+    https://service-manual.ons.gov.uk/data-visualisation/build-specifications/typography
+    20px headings, 16px subheadings, 14px labels at native display width.
+    Variables compensate for the original graphics coordinate scale. */
+    .type-heading {
+      font-size: var(--type-heading);
+    }
+    .type-subheading {
+      font-size: var(--type-subheading);
+    }
+
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M0 0L10 5L0 10z" fill="var(--fg)" />
+    </marker>
+  </defs>
+  <text x="12" y="26" class="title type-heading">Avoiding bank conflicts</text>
+  <text x="12" y="54" class="note">First four-float read; t0 and t4.</text>
+  <text x="12" y="87" class="sub type-subheading">Before: same banks</text>
+  <text x="12" y="110" class="">Columns</text>
+  <text x="171" y="110" class="">Banks</text>
+  <rect x="12" y="121" width="108" height="30" rx="2" class="load" />
+  <text x="66.0" y="141.0" class="" text-anchor="middle">t0: 0–3</text>
+  <rect x="12" y="163" width="108" height="30" rx="2" class="load" />
+  <text x="66.0" y="183.0" class="" text-anchor="middle">t4: 32–35</text>
+  <rect x="171" y="142" width="97" height="30" rx="2" class="load" />
+  <text x="219.5" y="162.0" class="" text-anchor="middle">0–3</text>
+  <line x1="120" y1="136" x2="171" y2="151" class="arrow" marker-end="url(#arrow)" />
+  <line x1="120" y1="178" x2="171" y2="164" class="arrow" marker-end="url(#arrow)" />
+  <text x="171" y="197" class="">Two passes</text>
+  <text x="12" y="231" class="sub type-subheading">After: different banks</text>
+  <rect x="12" y="244" width="108" height="28" rx="2" class="ok" />
+  <text x="66.0" y="263.0" class="" text-anchor="middle">t0: 0–3</text>
+  <rect x="171" y="244" width="97" height="28" rx="2" class="ok" />
+  <text x="219.5" y="263.0" class="" text-anchor="middle">0–3</text>
+  <line x1="120" y1="258" x2="171" y2="258" class="arrow" marker-end="url(#arrow)" />
+  <rect x="12" y="284" width="108" height="28" rx="2" class="ok" />
+  <text x="66.0" y="303.0" class="" text-anchor="middle">t4: 16–19</text>
+  <rect x="171" y="284" width="97" height="28" rx="2" class="ok" />
+  <text x="219.5" y="303.0" class="" text-anchor="middle">16–19</text>
+  <line x1="120" y1="298" x2="171" y2="298" class="arrow" marker-end="url(#arrow)" />
+</svg>

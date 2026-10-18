@@ -1,0 +1,98 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 280 390"
+  width="280"
+  height="390"
+  role="img"
+  aria-labelledby="title desc"
+  font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif"
+>
+  <title id="title">Driver runs out of memory</title>
+  <desc id="desc">Four executors send data to a 5 GiB driver. Collection exceeds its memory, so it crashes before broadcasting.</desc>
+  <style>
+    /* ONS chart typography: 20px title, 16px subheading, 14px labels/annotations.
+    https://service-manual.ons.gov.uk/data-visualisation/build-specifications/typography */
+    :root {
+      --fg: #222;
+      --muted: #707071;
+      --edge: #999;
+      --chip: #f5f5f5;
+      --load: #b83c0b;
+      --type-heading: 20px;
+      --type-subheading: 16px;
+      --type-label: 14px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --fg: #ddd;
+        --muted: #aaa;
+        --edge: #888;
+        --chip: #292929;
+        --load: #ff9a64;
+      }
+    }
+    text {
+      fill: var(--fg);
+      font-variant-numeric: lining-nums tabular-nums;
+      font-size: var(--type-label);
+    }
+    .title {
+      font-weight: 700;
+    }
+    .note {
+      fill: var(--muted);
+    }
+    .box {
+      fill: var(--chip);
+      stroke: var(--edge);
+    }
+    .outline {
+      fill: none;
+      stroke: var(--edge);
+    }
+    .load {
+      fill: var(--load);
+      fill-opacity: 0.15;
+      stroke: var(--load);
+    }
+    .arrow {
+      stroke: var(--fg);
+      fill: none;
+      stroke-width: 1.5;
+    }
+    /* Typography adapted from ONS chart guidance:
+    https://service-manual.ons.gov.uk/data-visualisation/build-specifications/typography
+    20px headings, 16px subheadings, 14px labels at native display width.
+    Variables compensate for the original graphics coordinate scale. */
+    .type-heading {
+      font-size: var(--type-heading);
+    }
+    .type-subheading {
+      font-size: var(--type-subheading);
+    }
+
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M0 0L10 5L0 10z" fill="var(--fg)" />
+    </marker>
+  </defs>
+  <text x="12" y="26" class="title type-heading">Driver runs out</text>
+  <text x="12" y="52" class="title type-heading">of memory</text>
+  <text x="12" y="80" class="note">spark.driver.memory=5g</text>
+  <rect x="6" y="100" width="268" height="106" class="outline" />
+  <rect x="12" y="112" width="120" height="33" rx="2" class="box" />
+  <text x="72.0" y="133.5" class="" text-anchor="middle">Executor 1</text>
+  <rect x="148" y="112" width="120" height="33" rx="2" class="box" />
+  <text x="208.0" y="133.5" class="" text-anchor="middle">Executor 2</text>
+  <rect x="12" y="159" width="120" height="33" rx="2" class="box" />
+  <text x="72.0" y="180.5" class="" text-anchor="middle">Executor 3</text>
+  <rect x="148" y="159" width="120" height="33" rx="2" class="box" />
+  <text x="208.0" y="180.5" class="" text-anchor="middle">Executor 4</text>
+  <line x1="140" y1="205" x2="140" y2="238" class="arrow" marker-end="url(#arrow)" />
+  <rect x="32" y="246" width="216" height="45" rx="2" class="load" />
+  <text x="140.0" y="273.5" class="" text-anchor="middle">Driver: 5 GiB</text>
+  <text x="12" y="321" class="">Collection exceeds memory.</text>
+  <text x="12" y="341" class="">OutOfMemoryError;</text>
+  <text x="12" y="361" class="">broadcast never happens.</text>
+</svg>

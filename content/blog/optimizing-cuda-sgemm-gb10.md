@@ -9,18 +9,25 @@ In late summer 2026, I returned to the SGEMM (single-precision matrix multiply) 
 
 The starting configuration is unchanged: a block of 256 threads computes a 128×128 tile of $C$, with each thread keeping an 8×8 patch of running sums in registers. To update those sums, the block works through $K$, the inputs' shared dimension, copying slices of $A$ and $B$ from global memory into shared memory. Each thread then reads the shared copies into registers for its multiply-adds. Global memory is off-chip, while shared memory is the on-chip scratchpad of a streaming multiprocessor (SM). Part 1 improved throughput by reusing inputs across outputs; this follow-up examines the cost of moving those inputs and how much independent work the GPU has available while loads are in progress.
 
-The course project stopped around kernel 5 of Simon Boehm's [worklog](https://siboehm.com/articles/22/CUDA-MMM), so the later kernels provided a starting point for this solo follow-up. The T4 analysis had suggested several things to investigate: instruction overhead, a register count that allowed only one block per SM, and matrix sizes that left some SMs idle. On the GB10, these experiments eventually brought the kernel to roughly cuBLAS's throughput, although several plausible changes did little to help.
+The course project stopped around kernel 5 of Simon Boehm's [worklog](https://siboehm.com/articles/22/CUDA-MMM), so the later kernels provided a starting point for this solo follow-up. The T4 analysis had suggested several things to investigate: instruction overhead, a register count that allowed only one block per SM, and matrix sizes that left some SMs idle. On the GB10, these experiments eventually brought the kernel to roughly cuBLAS's throughput, although some changes that seemed promising brought little improvement.
 
 ## The GB10
 
 All timings in this post come from the GB10, the Blackwell chip in NVIDIA's [DGX Spark](https://www.nvidia.com/en-us/products/workstations/dgx-spark/). I refer to the initial sequence of changes below as _round two_, following the course project in Part 1.
 
-The GB10 has almost four times the T4's peak FP32 throughput, but slightly less memory bandwidth. Its resources differ in a few other ways too:
+The GB10 has almost four times the T4’s peak FP32 throughput,[^gb10peak] but about 15% less memory bandwidth:
 
-- 48 SMs rather than 40.
-- 100 KB of shared memory per SM rather than 64 KB. The register file is still 64K registers.
-- About 29.5 TFLOP/s of peak FP32 compute, versus 7.68 on the T4.[^gb10peak] A TFLOP/s is a trillion floating-point operations per second.
-- One memory shared by CPU and GPU, with 273 GB/s of bandwidth. That is about 15% less than the T4's 320 GB/s.
+{{< table title="T4 and GB10 hardware resources" >}}
+| Resource | T4 | GB10 |
+|---|:---:|:---:|
+| SMs | 40 | 48 |
+| Shared memory per SM | 64 KB | 100 KB |
+| 32-bit registers per SM | 65,536 | 65,536 |
+| Peak FP32 throughput | 7.68 TFLOP/s | ~29.5 TFLOP/s |
+| Memory bandwidth | 320 GB/s | 273 GB/s |
+{{< /table >}}
+
+A TFLOP/s is a trillion floating-point operations per second. The GB10’s memory is shared by the CPU and GPU.
 
 To measure the remaining gap, I benchmarked both the course kernel and cuBLAS on the GB10; the T4 timings from Part 1 serve only as background. cuBLAS runs with [TF32](https://developer.nvidia.com/blog/accelerating-ai-training-with-tf32-tensor-cores/) disabled so that both implementations use full-precision FP32 inputs. Allowing cuBLAS to use lower-precision inputs would change the comparison.
 
@@ -57,11 +64,11 @@ Fitting that budget requires the compiler to spill 72 bytes per thread, equivale
 
 A [`float4` load](https://developer.nvidia.com/blog/cuda-pro-tip-increase-performance-with-vectorized-memory-access/) transfers four floats in one instruction, reducing the global-load instruction count to a quarter of the scalar version's count. The next kernel combines these loads with a transpose of $A$ in shared memory and improves throughput by 21% at $N = 2048$. Testing the two changes separately showed that, at this size, the gain came from the wider global loads rather than the transpose.
 
-![One row of A's tile takes 32 loads one float at a time, and 8 with float4, four floats per load. In shared memory, row 0's values run down column 0 of the transposed tile, t0's four first, then t1's.](/images/optimizing-cuda-sgemm/float4-transpose.svg "Only row 0 of $A$'s tile is traced in global memory; the other rows load the same way.")
+![A row of 32 floats requires 32 scalar global-load instructions or eight float4 instructions, with the same bytes transferred.](/images/optimizing-cuda-sgemm/float4-loads.svg "One row of the input tile is shown; widening the loads does not change its size.")
 
 The transpose follows Boehm’s kernel and has a separate purpose. Thread 0 needs eight values from a column of $A$ at each step through the slice. Transposing the shared copy places them next to one another, permitting two wide reads instead of eight scalar ones:
 
-
+![At k = 0, thread 0’s eight A values are 32 floats apart before transposition and adjacent afterward.](/images/optimizing-cuda-sgemm/shared-transpose.svg "The layout permits two four-float reads; the compiled instruction counts below test whether it actually saves instructions.")
 
 The compiled kernels showed why the expected saving did not appear: without the transpose, the compiler already combined values from successive loop steps into wide reads. Both layouts issued the same number of shared-memory read instructions.[^transpose] I kept the transpose because removing it from a later kernel with a larger per-thread patch reduced throughput by 2–4%.
 
@@ -71,7 +78,7 @@ The [bank conflicts](https://docs.nvidia.com/cuda/cuda-programming-guide/02-basi
 
 In the previous layout, each thread handled eight consecutive columns of $B$. Bank numbers repeat every 32 columns, causing some threads to request different values from the same banks. Splitting each thread’s columns into two groups of four lets neighboring threads use different banks. The two groups are read by separate instructions, and the rows assigned from $A$ receive the same split.[^bank-mapping]
 
-![A map of 32 shared-memory banks while 8 threads each read 16 bytes of B's tile. With 8 contiguous columns per thread, neighboring threads start 8 columns apart and pairs share banks; with each thread's columns split into two groups of 4, neighbors start 4 columns apart and each bank serves one thread.](/images/optimizing-cuda-sgemm/bank-conflicts.svg "Hardware serves a 16-byte read 8 threads at a time; these 8 stand for every group in the warp.")
+![Threads 0 and 4 first request different values from banks 0–3. After regrouping, thread 4 uses banks 16–19 instead, avoiding that conflict.](/images/optimizing-cuda-sgemm/bank-conflicts.svg "Only two threads’ first four-float reads are shown; the same regrouping applies to the other threads.")
 
 The revised mapping cuts the profiler’s shared-memory read bank-conflict count from 33.6 million to 54 thousand, but improves throughput by only about 3%.[^bank-passes]
 
@@ -95,11 +102,11 @@ After reducing load instructions and bank conflicts, the kernel is within about 
 
 [Double buffering](https://en.wikipedia.org/wiki/Multiple_buffering#Double_buffering_for_DMA) provides a second shared-memory buffer so that loads for the next slice can overlap computation on the current slice. In this version, the global loads first bring the next slice into registers. After computation on the current slice finishes, the threads store those prefetched values into the other shared-memory buffer, synchronize, and swap the buffers’ roles:
 
-
+![While slice 1 is used for computation from buffer 0, slice 2 is fetched into registers. After computation, it is stored in buffer 1, followed by synchronization and a buffer-role swap.](/images/optimizing-cuda-sgemm/buffer-movement.svg "The next slice waits in registers until it can be stored in the other shared-memory buffer.")
 
 This could reduce time spent waiting at `__syncthreads()`, but the measured gain is only about 2%. One possible explanation is that the two resident blocks already provide much of this overlap, with one block computing while the other waits. A second buffer allows overlap within a block as well, at the cost of doubling its shared-memory use:
 
-![Timelines of loads and compute. With one buffer they alternate; with two, the next slice loads during the current compute. Two blocks with one buffer each take turns computing, hiding the same loads while doing twice the work.](/images/optimizing-cuda-sgemm/double-buffering.svg "The second buffer doubles the block's shared memory, which is the price of overlapping its own loads.")
+![Schematic timelines compare alternating loads and computation, overlapping them within one block, and overlapping work from two resident blocks.](/images/optimizing-cuda-sgemm/buffer-overlap.svg "Two resident blocks share the SM’s execution resources; their timeline contains twice as much work as either one-block example.")
 
 The GB10 supports another way to overlap data movement: [`cp.async`](https://docs.nvidia.com/cuda/cuda-programming-guide/index.html), introduced with Ampere after the T4's Turing architecture. This instruction copies directly from global to shared memory without passing through registers, and allows the kernel to queue slices across several buffers, or _stages_. It seemed worth testing whether that mechanism could reduce the remaining gap to cuBLAS.
 
@@ -128,11 +135,11 @@ cuBLAS's logs suggested another direction. At $N = 4096$, it selected a [CUTLASS
 
 The larger patch lets each thread reuse its inputs across more multiply-adds. Thread 0 now loads 24 values for 128 multiply-adds per step, compared with 16 values for 64 previously. Computation doubles while loads increase by only half, reducing the shared-memory loads from four to three per 16 multiply-adds. Math-unit utilization rises from 58% to 70%.
 
-
+![An 8×8 patch uses 16 shared-memory loads for 64 multiply-adds per step; a 16×8 patch uses 24 for 128.](/images/optimizing-cuda-sgemm/thread-tile-reuse.svg "One thread at one step through K: computation doubles while loads increase by half.")
 
 Holding the larger patch raises the register count to 237 per thread, leaving room for only one block per SM again. This gives up the second block that helped at the start, but each thread now has 128 independent multiply-adds per step to issue while loads are in progress. As in the [T4 kernel](/optimizing-cuda-sgemm/#occupancy), independent work within each thread helps keep the SM busy without high occupancy.
 
-![An 8×8 patch takes 16 loads for 64 multiply-adds per step; a 16×8 patch takes 24 loads for 128. The larger patch's registers leave room for one block per SM instead of two.](/images/optimizing-cuda-sgemm/bigger-thread-tile.svg "One thread's view is shown; all 256 threads in the block do the same.")
+![Two 256-thread blocks fit at 128 registers per thread. At 237 registers per thread, the larger patch leaves space for only one block.](/images/optimizing-cuda-sgemm/thread-tile-registers.svg "Register use is drawn to scale for the SM’s 65,536-register file.")
 
 The larger patch closes the remaining gap at $N = 2048$ and $N = 4096$. Interpreting the small lead in the table requires accounting for the GB10’s power limit, which I discuss below.
 

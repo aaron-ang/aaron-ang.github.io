@@ -2,6 +2,13 @@
 <style>
   figure { margin: 1.5rem 0; text-align: center; }
   figure img { margin: 0 auto; }
+  /* Marked diagrams keep their native type size; compact artwork fits phones. */
+  .diagram-scroll { max-width: 100%; overflow-x: auto; text-align: left; }
+  .diagram-scroll img { display: block; width: var(--diagram-width); max-width: none; height: auto; }
+  .diagram-scroll:focus-visible { outline: 2px solid var(--link-color); outline-offset: 4px; }
+  @media (max-width: 480px) {
+    .diagram-compact img { width: min(100%, 320px); }
+  }
   figcaption { font-size: 0.85em; color: #666; margin-top: 0.4rem; }
   @media (prefers-color-scheme: dark) { figcaption { color: #9fb3ba; } }
   /* Wide tables and display math scroll inside their own box on narrow screens. */

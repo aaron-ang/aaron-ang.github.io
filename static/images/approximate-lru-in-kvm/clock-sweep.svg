@@ -1,156 +1,339 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 430" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated CLOCK sweep: eight shadow pages in a ring, each with a referenced bit. The clock hand clears pages whose referenced bit is 1 and skips them, and zaps pages whose bit is 0, stopping after two zaps. The hand stays where it stopped, at F, for the next eviction.">
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 720 408"
+  font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+  role="img"
+  aria-label="Animated CLOCK sweep: eight shadow pages in a ring, each with a referenced bit. The clock hand clears pages whose referenced bit is 1 and skips them, and zaps pages whose bit is 0, stopping after two zaps. The hand stays where it stopped, at F, for the next eviction."
+  width="720"
+  height="408"
+  data-diagram-width="720"
+>
   <style>
-    :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; }
+    :root {
+      --fg: #222;
+      --full: #cfcfcf;
+      --empty: #ffffff;
+      --edge: #999;
+      --probe: #d9480f;
+      --ok: #2b8a3e;
+      --muted: #707071;
+      --label-load: #8a2c0a;
+      --label-compute: #237a36;
+      --type-heading: 21.11110929px;
+      --type-subheading: 16.88888743px;
+      --type-label: 14.77777651px;
+    }
     @media (prefers-color-scheme: dark) {
-      :root { --fg: #ddd; --muted: #999; --full: #555; --empty: #1e1e1e; --edge: #777; --probe: #ff8a4c; --ok: #69db7c; --chip: #2a2a2a; }
+      :root {
+        --fg: #ddd;
+        --full: #555;
+        --empty: #1e1e1e;
+        --edge: #777;
+        --probe: #ff8a4c;
+        --ok: #69db7c;
+      }
     }
-    text { fill: var(--fg); font-size: 14px; }
-    .muted { fill: var(--muted); font-size: 12px; }
-    .title { font-weight: 600; font-size: 15px; }
-    .b { font-weight: 600; }
-    .sm { font-size: 12px; }
-    .full { fill: var(--full); stroke: var(--edge); }
-    .empty { fill: var(--empty); stroke: var(--edge); }
-    .ring { fill: none; stroke: var(--probe); stroke-width: 3; }
-    .okring { fill: none; stroke: var(--ok); stroke-width: 3; }
-    .hot { fill: var(--probe); }
-    .freed { fill: var(--empty); stroke: var(--ok); stroke-width: 2; stroke-dasharray: 5 3; }
-    .num { fill: var(--probe); font-weight: 600; font-size: 13px; }
-    .oktext { fill: var(--ok); font-weight: 600; font-size: 13px; }
-    .onhot { fill: var(--empty); font-weight: 600; }
-    .arrow { fill: none; stroke: var(--probe); stroke-width: 3; }
-    .arrowhead { fill: var(--probe); }
+    text {
+      fill: var(--fg);
+      font-variant-numeric: lining-nums tabular-nums;
+      font-size: var(--type-label);
+    }
+    .muted {
+      fill: var(--muted);
+    }
+    .full {
+      fill: var(--full);
+      stroke: var(--edge);
+    }
+    .empty {
+      fill: var(--empty);
+      stroke: var(--edge);
+    }
+    .ring {
+      fill: none;
+      stroke: var(--probe);
+      stroke-width: 3;
+    }
+    .okring {
+      fill: none;
+      stroke: var(--ok);
+      stroke-width: 3;
+    }
+    .hot {
+      fill: var(--probe);
+    }
+    .num {
+      font-weight: 600;
+      fill: var(--label-load);
+    }
+    .oktext {
+      font-weight: 600;
+      fill: var(--label-compute);
+    }
+    .onhot {
+      fill: var(--empty);
+      font-weight: 600;
+    }
+    .arrow {
+      fill: none;
+      stroke: var(--probe);
+      stroke-width: 3;
+    }
+    .arrowhead {
+      fill: var(--probe);
+    }
     /* 38.43s loop, 7 steps starting at 0.5, 6.5, 13.1, 16.5, 22.4, 25.8, 31.4 s; final frame holds 6.28s, then fades. */
-    .a { opacity: 0; animation: 38.43s linear infinite; }
-    .w1 { animation-name: w1; }  /* 0.50s to 6.50s */
-    @keyframes w1 { 0.00%, 16.91% { opacity: 1 } 17.30%, 98.05% { opacity: 0 } 98.44%, 100.00% { opacity: 1 } }
-    .w2 { animation-name: w2; }  /* 6.50s to end */
-    @keyframes w2 { 0.00%, 16.91% { opacity: 0 } 17.30%, 98.05% { opacity: 1 } 98.44%, 100.00% { opacity: 0 } }
-    .w3 { animation-name: w3; }  /* 0.50s to 13.10s */
-    @keyframes w3 { 0.00%, 34.09% { opacity: 1 } 34.48%, 98.05% { opacity: 0 } 98.44%, 100.00% { opacity: 1 } }
-    .w4 { animation-name: w4; }  /* 13.10s to end */
-    @keyframes w4 { 0.00%, 34.09% { opacity: 0 } 34.48%, 98.05% { opacity: 1 } 98.44%, 100.00% { opacity: 0 } }
-    .w5 { animation-name: w5; }  /* 0.50s to 22.40s */
-    @keyframes w5 { 0.00%, 58.29% { opacity: 1 } 58.68%, 98.05% { opacity: 0 } 98.44%, 100.00% { opacity: 1 } }
-    .w6 { animation-name: w6; }  /* 22.40s to end */
-    @keyframes w6 { 0.00%, 58.29% { opacity: 0 } 58.68%, 98.05% { opacity: 1 } 98.44%, 100.00% { opacity: 0 } }
-    .w7 { animation-name: w7; }  /* 16.50s to end */
-    @keyframes w7 { 0.00%, 42.94% { opacity: 0 } 43.33%, 98.05% { opacity: 1 } 98.44%, 100.00% { opacity: 0 } }
-    .w8 { animation-name: w8; }  /* 25.80s to end */
-    @keyframes w8 { 0.00%, 67.14% { opacity: 0 } 67.53%, 98.05% { opacity: 1 } 98.44%, 100.00% { opacity: 0 } }
-    .w9 { animation-name: w9; }  /* 31.40s to end */
-    @keyframes w9 { 0.00%, 81.71% { opacity: 0 } 82.10%, 98.05% { opacity: 1 } 98.44%, 100.00% { opacity: 0 } }
-    .w10 { animation-name: w10; }  /* 13.10s to 16.50s */
-    @keyframes w10 { 0.00%, 34.09% { opacity: 0 } 34.48%, 42.94% { opacity: 1 } 43.33%, 100.00% { opacity: 0 } }
-    .w11 { animation-name: w11; }  /* 16.50s to 22.40s */
-    @keyframes w11 { 0.00%, 42.94% { opacity: 0 } 43.33%, 58.29% { opacity: 1 } 58.68%, 100.00% { opacity: 0 } }
-    .w12 { animation-name: w12; }  /* 22.40s to 25.80s */
-    @keyframes w12 { 0.00%, 58.29% { opacity: 0 } 58.68%, 67.14% { opacity: 1 } 67.53%, 100.00% { opacity: 0 } }
-    .w13 { animation-name: w13; }  /* 25.80s to 31.40s */
-    @keyframes w13 { 0.00%, 67.14% { opacity: 0 } 67.53%, 81.71% { opacity: 1 } 82.10%, 100.00% { opacity: 0 } }
-    .w14 { animation-name: w14; }  /* 6.50s to 13.10s */
-    @keyframes w14 { 0.00%, 16.91% { opacity: 0 } 17.30%, 34.09% { opacity: 1 } 34.48%, 100.00% { opacity: 0 } }
-    @media (prefers-reduced-motion: reduce) {
-      .a { animation: none; opacity: 0; }
-      .a.fin { opacity: 1; }
+    .a {
+      opacity: 0;
+      animation: 38.43s linear infinite;
     }
-    .mvar { font-family: 'Times New Roman', Times, 'STIX Two Text', serif; font-style: italic; font-size: 1.1em; }
+    .w1 {
+      animation-name: w1;
+    } /* 0.50s to 6.50s */
+    @keyframes w1 {
+      0.00%, 16.91% { opacity: 1; }
+      17.30%, 98.05% { opacity: 0; }
+      98.44%, 100.00% { opacity: 1; }
+    }
+    .w2 {
+      animation-name: w2;
+    } /* 6.50s to end */
+    @keyframes w2 {
+      0.00%, 16.91% { opacity: 0; }
+      17.30%, 98.05% { opacity: 1; }
+      98.44%, 100.00% { opacity: 0; }
+    }
+    .w3 {
+      animation-name: w3;
+    } /* 0.50s to 13.10s */
+    @keyframes w3 {
+      0.00%, 34.09% { opacity: 1; }
+      34.48%, 98.05% { opacity: 0; }
+      98.44%, 100.00% { opacity: 1; }
+    }
+    .w4 {
+      animation-name: w4;
+    } /* 13.10s to end */
+    @keyframes w4 {
+      0.00%, 34.09% { opacity: 0; }
+      34.48%, 98.05% { opacity: 1; }
+      98.44%, 100.00% { opacity: 0; }
+    }
+    .w5 {
+      animation-name: w5;
+    } /* 0.50s to 22.40s */
+    @keyframes w5 {
+      0.00%, 58.29% { opacity: 1; }
+      58.68%, 98.05% { opacity: 0; }
+      98.44%, 100.00% { opacity: 1; }
+    }
+    .w6 {
+      animation-name: w6;
+    } /* 22.40s to end */
+    @keyframes w6 {
+      0.00%, 58.29% { opacity: 0; }
+      58.68%, 98.05% { opacity: 1; }
+      98.44%, 100.00% { opacity: 0; }
+    }
+    .w7 {
+      animation-name: w7;
+    } /* 16.50s to end */
+    @keyframes w7 {
+      0.00%, 42.94% { opacity: 0; }
+      43.33%, 98.05% { opacity: 1; }
+      98.44%, 100.00% { opacity: 0; }
+    }
+    .w8 {
+      animation-name: w8;
+    } /* 25.80s to end */
+    @keyframes w8 {
+      0.00%, 67.14% { opacity: 0; }
+      67.53%, 98.05% { opacity: 1; }
+      98.44%, 100.00% { opacity: 0; }
+    }
+    .w9 {
+      animation-name: w9;
+    } /* 31.40s to end */
+    @keyframes w9 {
+      0.00%, 81.71% { opacity: 0; }
+      82.10%, 98.05% { opacity: 1; }
+      98.44%, 100.00% { opacity: 0; }
+    }
+    .w10 {
+      animation-name: w10;
+    } /* 13.10s to 16.50s */
+    @keyframes w10 {
+      0.00%, 34.09% { opacity: 0; }
+      34.48%, 42.94% { opacity: 1; }
+      43.33%, 100.00% { opacity: 0; }
+    }
+    .w11 {
+      animation-name: w11;
+    } /* 16.50s to 22.40s */
+    @keyframes w11 {
+      0.00%, 42.94% { opacity: 0; }
+      43.33%, 58.29% { opacity: 1; }
+      58.68%, 100.00% { opacity: 0; }
+    }
+    .w12 {
+      animation-name: w12;
+    } /* 22.40s to 25.80s */
+    @keyframes w12 {
+      0.00%, 58.29% { opacity: 0; }
+      58.68%, 67.14% { opacity: 1; }
+      67.53%, 100.00% { opacity: 0; }
+    }
+    .w13 {
+      animation-name: w13;
+    } /* 25.80s to 31.40s */
+    @keyframes w13 {
+      0.00%, 67.14% { opacity: 0; }
+      67.53%, 81.71% { opacity: 1; }
+      82.10%, 100.00% { opacity: 0; }
+    }
+    .w14 {
+      animation-name: w14;
+    } /* 6.50s to 13.10s */
+    @keyframes w14 {
+      0.00%, 16.91% { opacity: 0; }
+      17.30%, 34.09% { opacity: 1; }
+      34.48%, 100.00% { opacity: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .a {
+        animation: none;
+        opacity: 0;
+      }
+      .a.fin {
+        opacity: 1;
+      }
+    }
+    .mvar {
+      font-family: "Times New Roman", Times, "STIX Two Text", serif;
+      font-style: italic;
+    }
+    .title {
+      font-weight: 700;
+    }
+    .b {
+      font-weight: 600;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --muted: #aaa;
+        --label-load: #ff9a64;
+        --label-compute: #82df92;
+      }
+    }
+    /* Typography adapted from ONS chart guidance:
+    https://service-manual.ons.gov.uk/data-visualisation/build-specifications/typography
+    20px headings, 16px subheadings, 14px labels at native display width.
+    Variables compensate for the original graphics coordinate scale. */
+    .type-heading {
+      font-size: var(--type-heading);
+    }
+    .type-subheading {
+      font-size: var(--type-subheading);
+    }
+
   </style>
-  <text x="20" y="28" class="title">Our change: CLOCK (second chance) eviction</text>
-  <text x="20" y="48" class="muted">Same active_mmu_pages list, drawn as a ring. Pages never move; clock_hand sweeps tail → head and wraps.</text>
-  <circle cx="200" cy="222" r="130" fill="none" stroke="var(--edge)" stroke-dasharray="3 5"/>
-  <text x="246" y="82" class="muted">tail (oldest)</text>
-  <text x="102" y="100.076" text-anchor="middle" class="muted">head (newest)</text>
-  <rect x="168" y="70" width="64" height="44" rx="4" class="full"/>
-  <text x="187" y="97" text-anchor="middle" class="b"><tspan class="mvar">A</tspan></text>
-  <rect x="203" y="81" width="22" height="22" rx="3" class="empty"/>
-  <text x="214" y="97" text-anchor="middle" class="sm b a w1">1</text>
-  <text x="214" y="97" text-anchor="middle" class="muted b a w2 fin">0</text>
-  <rect x="259.924" y="108.076" width="64" height="44" rx="4" class="full"/>
-  <text x="278.924" y="135.076" text-anchor="middle" class="b"><tspan class="mvar">B</tspan></text>
-  <rect x="294.924" y="119.076" width="22" height="22" rx="3" class="empty"/>
-  <text x="305.924" y="135.076" text-anchor="middle" class="sm b a w3">1</text>
-  <text x="305.924" y="135.076" text-anchor="middle" class="muted b a w4 fin">0</text>
-  <rect x="298" y="200" width="64" height="44" rx="4" class="full"/>
-  <text x="317" y="227" text-anchor="middle" class="b"><tspan class="mvar">C</tspan></text>
-  <rect x="333" y="211" width="22" height="22" rx="3" class="empty"/>
-  <text x="344" y="227" text-anchor="middle" class="muted b">0</text>
-  <rect x="259.924" y="291.924" width="64" height="44" rx="4" class="full"/>
-  <text x="278.924" y="318.924" text-anchor="middle" class="b"><tspan class="mvar">D</tspan></text>
-  <rect x="294.924" y="302.924" width="22" height="22" rx="3" class="empty"/>
-  <text x="305.924" y="318.924" text-anchor="middle" class="sm b a w5">1</text>
-  <text x="305.924" y="318.924" text-anchor="middle" class="muted b a w6 fin">0</text>
-  <rect x="168" y="330" width="64" height="44" rx="4" class="full"/>
-  <text x="187" y="357" text-anchor="middle" class="b"><tspan class="mvar">E</tspan></text>
-  <rect x="203" y="341" width="22" height="22" rx="3" class="empty"/>
-  <text x="214" y="357" text-anchor="middle" class="muted b">0</text>
-  <rect x="76.076" y="291.924" width="64" height="44" rx="4" class="full"/>
-  <text x="95.076" y="318.924" text-anchor="middle" class="b"><tspan class="mvar">F</tspan></text>
-  <rect x="111.076" y="302.924" width="22" height="22" rx="3" class="empty"/>
-  <text x="122.076" y="318.924" text-anchor="middle" class="sm b">1</text>
-  <rect x="38" y="200" width="64" height="44" rx="4" class="full"/>
-  <text x="57" y="227" text-anchor="middle" class="b"><tspan class="mvar">G</tspan></text>
-  <rect x="73" y="211" width="22" height="22" rx="3" class="empty"/>
-  <text x="84" y="227" text-anchor="middle" class="muted b">0</text>
-  <rect x="76.076" y="108.076" width="64" height="44" rx="4" class="full"/>
-  <text x="95.076" y="135.076" text-anchor="middle" class="b"><tspan class="mvar">H</tspan></text>
-  <rect x="111.076" y="119.076" width="22" height="22" rx="3" class="empty"/>
-  <text x="122.076" y="135.076" text-anchor="middle" class="sm b">1</text>
-  <rect x="164" y="66" width="72" height="52" rx="6" class="ring a w2 fin"/>
-  <rect x="255.924" y="104.076" width="72" height="52" rx="6" class="ring a w4 fin"/>
-  <rect x="294" y="196" width="72" height="52" rx="6" class="ring a w7 fin"/>
-  <rect x="255.924" y="287.924" width="72" height="52" rx="6" class="ring a w6 fin"/>
-  <rect x="164" y="326" width="72" height="52" rx="6" class="ring a w8 fin"/>
-  <g class="a w7 fin">
-  <rect x="298" y="200" width="64" height="44" rx="4" class="hot"/>
-  <text x="330" y="219" text-anchor="middle" class="onhot"><tspan class="mvar">C</tspan></text>
-  <text x="330" y="236" text-anchor="middle" class="onhot" style="font-size:11px">zapped</text>
+  <g transform="scale(0.9473684210526315)">
+    <text x="20" y="28" class="title type-heading">Our change: CLOCK (second chance) eviction</text>
+    <text x="20" y="48" class="muted">Same active_mmu_pages list, drawn as a ring. Pages never move; clock_hand sweeps tail → head and wraps.</text>
+    <circle cx="200" cy="222" r="130" fill="none" stroke="var(--edge)" stroke-dasharray="3 5" />
+    <text x="246" y="82" class="muted">tail (oldest)</text>
+    <text x="102" y="100.076" text-anchor="middle" class="muted">head (newest)</text>
+    <rect x="168" y="70" width="64" height="44" rx="4" class="full" />
+    <text x="187" y="97" text-anchor="middle" class="b type-subheading"><tspan class="mvar">A</tspan></text>
+    <rect x="203" y="81" width="22" height="22" rx="3" class="empty" />
+    <text x="214" y="97" text-anchor="middle" class="sm b a w1">1</text>
+    <text x="214" y="97" text-anchor="middle" class="muted b a w2 fin">0</text>
+    <rect x="259.924" y="108.076" width="64" height="44" rx="4" class="full" />
+    <text x="278.924" y="135.076" text-anchor="middle" class="b type-subheading"><tspan class="mvar">B</tspan></text>
+    <rect x="294.924" y="119.076" width="22" height="22" rx="3" class="empty" />
+    <text x="305.924" y="135.076" text-anchor="middle" class="sm b a w3">1</text>
+    <text x="305.924" y="135.076" text-anchor="middle" class="muted b a w4 fin">0</text>
+    <rect x="298" y="200" width="64" height="44" rx="4" class="full" />
+    <text x="317" y="227" text-anchor="middle" class="b type-subheading"><tspan class="mvar">C</tspan></text>
+    <rect x="333" y="211" width="22" height="22" rx="3" class="empty" />
+    <text x="344" y="227" text-anchor="middle" class="muted b">0</text>
+    <rect x="259.924" y="291.924" width="64" height="44" rx="4" class="full" />
+    <text x="278.924" y="318.924" text-anchor="middle" class="b type-subheading"><tspan class="mvar">D</tspan></text>
+    <rect x="294.924" y="302.924" width="22" height="22" rx="3" class="empty" />
+    <text x="305.924" y="318.924" text-anchor="middle" class="sm b a w5">1</text>
+    <text x="305.924" y="318.924" text-anchor="middle" class="muted b a w6 fin">0</text>
+    <rect x="168" y="330" width="64" height="44" rx="4" class="full" />
+    <text x="187" y="357" text-anchor="middle" class="b type-subheading"><tspan class="mvar">E</tspan></text>
+    <rect x="203" y="341" width="22" height="22" rx="3" class="empty" />
+    <text x="214" y="357" text-anchor="middle" class="muted b">0</text>
+    <rect x="76.076" y="291.924" width="64" height="44" rx="4" class="full" />
+    <text x="95.076" y="318.924" text-anchor="middle" class="b type-subheading"><tspan class="mvar">F</tspan></text>
+    <rect x="111.076" y="302.924" width="22" height="22" rx="3" class="empty" />
+    <text x="122.076" y="318.924" text-anchor="middle" class="sm b">1</text>
+    <rect x="38" y="200" width="64" height="44" rx="4" class="full" />
+    <text x="57" y="227" text-anchor="middle" class="b type-subheading"><tspan class="mvar">G</tspan></text>
+    <rect x="73" y="211" width="22" height="22" rx="3" class="empty" />
+    <text x="84" y="227" text-anchor="middle" class="muted b">0</text>
+    <rect x="76.076" y="108.076" width="64" height="44" rx="4" class="full" />
+    <text x="95.076" y="135.076" text-anchor="middle" class="b type-subheading"><tspan class="mvar">H</tspan></text>
+    <rect x="111.076" y="119.076" width="22" height="22" rx="3" class="empty" />
+    <text x="122.076" y="135.076" text-anchor="middle" class="sm b">1</text>
+    <rect x="164" y="66" width="72" height="52" rx="6" class="ring a w2 fin" />
+    <rect x="255.924" y="104.076" width="72" height="52" rx="6" class="ring a w4 fin" />
+    <rect x="294" y="196" width="72" height="52" rx="6" class="ring a w7 fin" />
+    <rect x="255.924" y="287.924" width="72" height="52" rx="6" class="ring a w6 fin" />
+    <rect x="164" y="326" width="72" height="52" rx="6" class="ring a w8 fin" />
+    <g class="a w7 fin">
+      <rect x="298" y="200" width="64" height="44" rx="4" class="hot" />
+      <text x="330" y="219" text-anchor="middle" class="onhot"><tspan class="mvar">C</tspan></text>
+      <text x="330" y="236" text-anchor="middle" class="onhot">zapped</text>
+    </g>
+    <g class="a w8 fin">
+      <rect x="168" y="330" width="64" height="44" rx="4" class="hot" />
+      <text x="200" y="349" text-anchor="middle" class="onhot"><tspan class="mvar">E</tspan></text>
+      <text x="200" y="366" text-anchor="middle" class="onhot">zapped</text>
+    </g>
+    <rect x="72.076" y="287.924" width="72" height="52" rx="6" class="okring a w9 fin" />
+    <circle cx="200" cy="222" r="5" fill="var(--probe)" />
+    <g class="a w3">
+      <path d="M 200 222 L 200.0 156.0" class="arrow" />
+      <polygon points="200.0,148.0 207.2,161.0 192.8,161.0" class="arrowhead" />
+    </g>
+    <g class="a w10">
+      <path d="M 200 222 L 246.7 175.3" class="arrow" />
+      <polygon points="252.3,169.7 248.2,184.0 238.0,173.8" class="arrowhead" />
+    </g>
+    <g class="a w11">
+      <path d="M 200 222 L 266.0 222.0" class="arrow" />
+      <polygon points="274.0,222.0 261.0,229.2 261.0,214.8" class="arrowhead" />
+    </g>
+    <g class="a w12">
+      <path d="M 200 222 L 246.7 268.7" class="arrow" />
+      <polygon points="252.3,274.3 238.0,270.2 248.2,260.0" class="arrowhead" />
+    </g>
+    <g class="a w13">
+      <path d="M 200 222 L 200.0 288.0" class="arrow" />
+      <polygon points="200.0,296.0 192.8,283.0 207.2,283.0" class="arrowhead" />
+    </g>
+    <g class="a w9 fin">
+      <path d="M 200 222 L 153.3 268.7" class="arrow" />
+      <polygon points="147.7,274.3 151.8,260.0 162.0,270.2" class="arrowhead" />
+    </g>
+    <text x="186" y="214" text-anchor="end" class="muted">clock_hand</text>
+    <text x="420" y="92" class="title type-heading">Need 2 free pages</text>
+    <text x="408" y="114" class="muted">referenced = 1: clear it to 0 and skip (second chance)</text>
+    <text x="420" y="132" class="muted">referenced = 0: zap the page</text>
+    <text x="420" y="176" class="a w2 fin"><tspan class="mvar">A</tspan>: referenced 1 → 0, skip</text>
+    <text x="420" y="202" class="a w4 fin"><tspan class="mvar">B</tspan>: referenced 1 → 0, skip</text>
+    <text x="420" y="228" class="num a w7 fin"><tspan class="mvar">C</tspan>: referenced 0 → zap (1 of 2)</text>
+    <text x="420" y="254" class="a w6 fin"><tspan class="mvar">D</tspan>: referenced 1 → 0, skip</text>
+    <text x="420" y="280" class="num a w8 fin"><tspan class="mvar">E</tspan>: referenced 0 → zap (2 of 2)</text>
+    <text x="420" y="306" class="oktext a w9 fin"><tspan class="mvar">F</tspan>: next eviction starts here</text>
+    <text x="420" y="372" class="muted">Active roots are always skipped (none shown).</text>
+    <text x="20" y="414" class="a w1">Each eviction starts where the last one stopped; here, at the tail.</text>
+    <text x="20" y="414" class="a w14"><tspan class="mvar">A</tspan> survives this lap: it was used since the hand last passed.</text>
+    <text x="20" y="414" class="a w11"><tspan class="mvar">C</tspan> has bit 0: unused since the hand last passed it.</text>
+    <text x="20" y="414" class="a w13">Two pages freed. The sweep stops.</text>
+    <text x="20" y="414" class="b a w9 fin type-subheading">Only pages unused since the hand last passed get evicted.</text>
   </g>
-  <g class="a w8 fin">
-  <rect x="168" y="330" width="64" height="44" rx="4" class="hot"/>
-  <text x="200" y="349" text-anchor="middle" class="onhot"><tspan class="mvar">E</tspan></text>
-  <text x="200" y="366" text-anchor="middle" class="onhot" style="font-size:11px">zapped</text>
-  </g>
-  <rect x="72.076" y="287.924" width="72" height="52" rx="6" class="okring a w9 fin"/>
-  <circle cx="200" cy="222" r="5" fill="var(--probe)"/>
-  <g class="a w3">
-  <path d="M 200 222 L 200.0 156.0" class="arrow"/>
-  <polygon points="200.0,148.0 207.2,161.0 192.8,161.0" class="arrowhead"/>
-  </g>
-  <g class="a w10">
-  <path d="M 200 222 L 246.7 175.3" class="arrow"/>
-  <polygon points="252.3,169.7 248.2,184.0 238.0,173.8" class="arrowhead"/>
-  </g>
-  <g class="a w11">
-  <path d="M 200 222 L 266.0 222.0" class="arrow"/>
-  <polygon points="274.0,222.0 261.0,229.2 261.0,214.8" class="arrowhead"/>
-  </g>
-  <g class="a w12">
-  <path d="M 200 222 L 246.7 268.7" class="arrow"/>
-  <polygon points="252.3,274.3 238.0,270.2 248.2,260.0" class="arrowhead"/>
-  </g>
-  <g class="a w13">
-  <path d="M 200 222 L 200.0 288.0" class="arrow"/>
-  <polygon points="200.0,296.0 192.8,283.0 207.2,283.0" class="arrowhead"/>
-  </g>
-  <g class="a w9 fin">
-  <path d="M 200 222 L 153.3 268.7" class="arrow"/>
-  <polygon points="147.7,274.3 151.8,260.0 162.0,270.2" class="arrowhead"/>
-  </g>
-  <text x="186" y="214" text-anchor="end" class="muted">clock_hand</text>
-  <text x="420" y="92" class="title">Need 2 free pages</text>
-  <text x="420" y="114" class="muted">referenced = 1: clear it to 0 and skip (second chance)</text>
-  <text x="420" y="132" class="muted">referenced = 0: zap the page</text>
-  <text x="420" y="176" class="a w2 fin"><tspan class="mvar">A</tspan>: referenced 1 → 0, skip</text>
-  <text x="420" y="202" class="a w4 fin"><tspan class="mvar">B</tspan>: referenced 1 → 0, skip</text>
-  <text x="420" y="228" class="num a w7 fin"><tspan class="mvar">C</tspan>: referenced 0 → zap (1 of 2)</text>
-  <text x="420" y="254" class="a w6 fin"><tspan class="mvar">D</tspan>: referenced 1 → 0, skip</text>
-  <text x="420" y="280" class="num a w8 fin"><tspan class="mvar">E</tspan>: referenced 0 → zap (2 of 2)</text>
-  <text x="420" y="306" class="oktext a w9 fin"><tspan class="mvar">F</tspan>: next eviction starts here</text>
-  <text x="420" y="372" class="muted">Active roots are always skipped (none shown).</text>
-  <text x="20" y="414" class="a w1">Each eviction starts where the last one stopped; here, at the tail.</text>
-  <text x="20" y="414" class="a w14"><tspan class="mvar">A</tspan> survives this lap: it was used since the hand last passed.</text>
-  <text x="20" y="414" class="a w11"><tspan class="mvar">C</tspan> has bit 0: unused since the hand last passed it.</text>
-  <text x="20" y="414" class="a w13">Two pages freed. The sweep stops.</text>
-  <text x="20" y="414" class="b a w9 fin">Only pages unused since the hand last passed get evicted.</text>
 </svg>

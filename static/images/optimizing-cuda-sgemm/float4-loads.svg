@@ -1,0 +1,185 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 640 270"
+  role="img"
+  aria-labelledby="title desc"
+  font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif"
+  width="640"
+  height="270"
+  data-diagram-width="640"
+>
+  <title id="title">Wider loads move the same row with fewer instructions</title>
+  <desc id="desc">A 32-float row uses 32 scalar global-load instructions or eight float4 instructions. Both transfer the same 128 bytes.</desc>
+  <style>
+    :root {
+      --fg: #222;
+      --muted: #656565;
+      --edge: #999;
+      --load: #b83c0b;
+      --compute: #237a36;
+      --type-heading: 20px;
+      --type-subheading: 16px;
+      --type-label: 14px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --fg: #ddd;
+        --muted: #aaa;
+        --edge: #888;
+        --load: #ff9a64;
+        --compute: #82df92;
+      }
+    }
+    text {
+      fill: var(--fg);
+      font-variant-numeric: lining-nums tabular-nums;
+      font-size: var(--type-label);
+    }
+    .small {
+      fill: var(--muted);
+    }
+    .outline {
+      fill: none;
+      stroke: var(--edge);
+    }
+    .loadbox {
+      fill: var(--load);
+      fill-opacity: 0.15;
+      stroke: var(--load);
+      stroke-width: 1.5;
+    }
+    .computebox {
+      fill: var(--compute);
+      fill-opacity: 0.16;
+      stroke: var(--compute);
+      stroke-width: 1.5;
+    }
+    .title {
+      font-weight: 700;
+    }
+    .bold {
+      font-weight: 600;
+    }
+    /* Typography adapted from ONS chart guidance:
+    https://service-manual.ons.gov.uk/data-visualisation/build-specifications/typography
+    20px headings, 16px subheadings, 14px labels at native display width.
+    Variables compensate for the original graphics coordinate scale. */
+    .type-heading {
+      font-size: var(--type-heading);
+    }
+    .type-subheading {
+      font-size: var(--type-subheading);
+    }
+
+  </style>
+  <text x="20" y="30" class="title type-heading">Wider loads move the same row with fewer instructions</text>
+  <text x="20" y="61" class="small">One row of A: 32 floats, or 128 bytes</text>
+  <text x="20" y="88" class="bold type-subheading">Scalar</text>
+  <rect x="62" y="101" width="16" height="25" rx="0" class="outline" />
+  <rect x="78" y="101" width="16" height="25" rx="0" class="outline" />
+  <rect x="94" y="101" width="16" height="25" rx="0" class="outline" />
+  <rect x="110" y="101" width="16" height="25" rx="0" class="outline" />
+  <rect x="126" y="101" width="16" height="25" rx="0" class="outline" />
+  <rect x="142" y="101" width="16" height="25" rx="0" class="outline" />
+  <rect x="158" y="101" width="16" height="25" rx="0" class="outline" />
+  <rect x="174" y="101" width="16" height="25" rx="0" class="outline" />
+  <rect x="190" y="101" width="16" height="25" rx="0" class="outline" />
+  <rect x="206" y="101" width="16" height="25" rx="0" class="outline" />
+  <rect x="222" y="101" width="16" height="25" rx="0" class="outline" />
+  <rect x="238" y="101" width="16" height="25" rx="0" class="outline" />
+  <rect x="254" y="101" width="16" height="25" rx="0" class="outline" />
+  <rect x="270" y="101" width="16" height="25" rx="0" class="outline" />
+  <rect x="286" y="101" width="16" height="25" rx="0" class="outline" />
+  <rect x="302" y="101" width="16" height="25" rx="0" class="outline" />
+  <rect x="318" y="101" width="16" height="25" rx="0" class="outline" />
+  <rect x="334" y="101" width="16" height="25" rx="0" class="outline" />
+  <rect x="350" y="101" width="16" height="25" rx="0" class="outline" />
+  <rect x="366" y="101" width="16" height="25" rx="0" class="outline" />
+  <rect x="382" y="101" width="16" height="25" rx="0" class="outline" />
+  <rect x="398" y="101" width="16" height="25" rx="0" class="outline" />
+  <rect x="414" y="101" width="16" height="25" rx="0" class="outline" />
+  <rect x="430" y="101" width="16" height="25" rx="0" class="outline" />
+  <rect x="446" y="101" width="16" height="25" rx="0" class="outline" />
+  <rect x="462" y="101" width="16" height="25" rx="0" class="outline" />
+  <rect x="478" y="101" width="16" height="25" rx="0" class="outline" />
+  <rect x="494" y="101" width="16" height="25" rx="0" class="outline" />
+  <rect x="510" y="101" width="16" height="25" rx="0" class="outline" />
+  <rect x="526" y="101" width="16" height="25" rx="0" class="outline" />
+  <rect x="542" y="101" width="16" height="25" rx="0" class="outline" />
+  <rect x="558" y="101" width="16" height="25" rx="0" class="outline" />
+  <rect x="63" y="102" width="14" height="23" rx="0" class="loadbox" />
+  <rect x="79" y="102" width="14" height="23" rx="0" class="loadbox" />
+  <rect x="95" y="102" width="14" height="23" rx="0" class="loadbox" />
+  <rect x="111" y="102" width="14" height="23" rx="0" class="loadbox" />
+  <rect x="127" y="102" width="14" height="23" rx="0" class="loadbox" />
+  <rect x="143" y="102" width="14" height="23" rx="0" class="loadbox" />
+  <rect x="159" y="102" width="14" height="23" rx="0" class="loadbox" />
+  <rect x="175" y="102" width="14" height="23" rx="0" class="loadbox" />
+  <rect x="191" y="102" width="14" height="23" rx="0" class="loadbox" />
+  <rect x="207" y="102" width="14" height="23" rx="0" class="loadbox" />
+  <rect x="223" y="102" width="14" height="23" rx="0" class="loadbox" />
+  <rect x="239" y="102" width="14" height="23" rx="0" class="loadbox" />
+  <rect x="255" y="102" width="14" height="23" rx="0" class="loadbox" />
+  <rect x="271" y="102" width="14" height="23" rx="0" class="loadbox" />
+  <rect x="287" y="102" width="14" height="23" rx="0" class="loadbox" />
+  <rect x="303" y="102" width="14" height="23" rx="0" class="loadbox" />
+  <rect x="319" y="102" width="14" height="23" rx="0" class="loadbox" />
+  <rect x="335" y="102" width="14" height="23" rx="0" class="loadbox" />
+  <rect x="351" y="102" width="14" height="23" rx="0" class="loadbox" />
+  <rect x="367" y="102" width="14" height="23" rx="0" class="loadbox" />
+  <rect x="383" y="102" width="14" height="23" rx="0" class="loadbox" />
+  <rect x="399" y="102" width="14" height="23" rx="0" class="loadbox" />
+  <rect x="415" y="102" width="14" height="23" rx="0" class="loadbox" />
+  <rect x="431" y="102" width="14" height="23" rx="0" class="loadbox" />
+  <rect x="447" y="102" width="14" height="23" rx="0" class="loadbox" />
+  <rect x="463" y="102" width="14" height="23" rx="0" class="loadbox" />
+  <rect x="479" y="102" width="14" height="23" rx="0" class="loadbox" />
+  <rect x="495" y="102" width="14" height="23" rx="0" class="loadbox" />
+  <rect x="511" y="102" width="14" height="23" rx="0" class="loadbox" />
+  <rect x="527" y="102" width="14" height="23" rx="0" class="loadbox" />
+  <rect x="543" y="102" width="14" height="23" rx="0" class="loadbox" />
+  <rect x="559" y="102" width="14" height="23" rx="0" class="loadbox" />
+  <text x="318" y="151" text-anchor="middle">32 instructions × 1 float</text>
+  <text x="20" y="168" class="bold type-subheading">float4</text>
+  <rect x="62" y="181" width="16" height="25" rx="0" class="outline" />
+  <rect x="78" y="181" width="16" height="25" rx="0" class="outline" />
+  <rect x="94" y="181" width="16" height="25" rx="0" class="outline" />
+  <rect x="110" y="181" width="16" height="25" rx="0" class="outline" />
+  <rect x="126" y="181" width="16" height="25" rx="0" class="outline" />
+  <rect x="142" y="181" width="16" height="25" rx="0" class="outline" />
+  <rect x="158" y="181" width="16" height="25" rx="0" class="outline" />
+  <rect x="174" y="181" width="16" height="25" rx="0" class="outline" />
+  <rect x="190" y="181" width="16" height="25" rx="0" class="outline" />
+  <rect x="206" y="181" width="16" height="25" rx="0" class="outline" />
+  <rect x="222" y="181" width="16" height="25" rx="0" class="outline" />
+  <rect x="238" y="181" width="16" height="25" rx="0" class="outline" />
+  <rect x="254" y="181" width="16" height="25" rx="0" class="outline" />
+  <rect x="270" y="181" width="16" height="25" rx="0" class="outline" />
+  <rect x="286" y="181" width="16" height="25" rx="0" class="outline" />
+  <rect x="302" y="181" width="16" height="25" rx="0" class="outline" />
+  <rect x="318" y="181" width="16" height="25" rx="0" class="outline" />
+  <rect x="334" y="181" width="16" height="25" rx="0" class="outline" />
+  <rect x="350" y="181" width="16" height="25" rx="0" class="outline" />
+  <rect x="366" y="181" width="16" height="25" rx="0" class="outline" />
+  <rect x="382" y="181" width="16" height="25" rx="0" class="outline" />
+  <rect x="398" y="181" width="16" height="25" rx="0" class="outline" />
+  <rect x="414" y="181" width="16" height="25" rx="0" class="outline" />
+  <rect x="430" y="181" width="16" height="25" rx="0" class="outline" />
+  <rect x="446" y="181" width="16" height="25" rx="0" class="outline" />
+  <rect x="462" y="181" width="16" height="25" rx="0" class="outline" />
+  <rect x="478" y="181" width="16" height="25" rx="0" class="outline" />
+  <rect x="494" y="181" width="16" height="25" rx="0" class="outline" />
+  <rect x="510" y="181" width="16" height="25" rx="0" class="outline" />
+  <rect x="526" y="181" width="16" height="25" rx="0" class="outline" />
+  <rect x="542" y="181" width="16" height="25" rx="0" class="outline" />
+  <rect x="558" y="181" width="16" height="25" rx="0" class="outline" />
+  <rect x="63" y="182" width="62" height="23" rx="0" class="computebox" />
+  <rect x="127" y="182" width="62" height="23" rx="0" class="computebox" />
+  <rect x="191" y="182" width="62" height="23" rx="0" class="computebox" />
+  <rect x="255" y="182" width="62" height="23" rx="0" class="computebox" />
+  <rect x="319" y="182" width="62" height="23" rx="0" class="computebox" />
+  <rect x="383" y="182" width="62" height="23" rx="0" class="computebox" />
+  <rect x="447" y="182" width="62" height="23" rx="0" class="computebox" />
+  <rect x="511" y="182" width="62" height="23" rx="0" class="computebox" />
+  <text x="318" y="231" text-anchor="middle">8 instructions × 4 floats</text>
+</svg>

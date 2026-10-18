@@ -1,83 +1,263 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 180" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated broadcast join failure: with the default 5 GiB of driver memory, the driver runs out of memory while collecting results from executors, so the broadcast never happens.">
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 720 171"
+  font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+  role="img"
+  aria-label="Animated broadcast join failure: with the default 5 GiB of driver memory, the driver runs out of memory while collecting results from executors, so the broadcast never happens."
+  width="720"
+  height="171"
+  data-diagram-width="720"
+>
   <style>
-    :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; }
-    @media (prefers-color-scheme: dark) {
-      :root { --fg: #ddd; --muted: #999; --full: #555; --empty: #1e1e1e; --edge: #777; --probe: #ff8a4c; --ok: #69db7c; --chip: #2a2a2a; }
+    :root {
+      --fg: #222;
+      --full: #cfcfcf;
+      --empty: #ffffff;
+      --edge: #999;
+      --probe: #d9480f;
+      --chip: #f4f4f4;
+      --muted: #707071;
+      --label-load: #8a2c0a;
+      --type-heading: 21.11110929px;
+      --type-subheading: 16.888887px;
+      --type-label: 14.77777651px;
     }
-    text { fill: var(--fg); font-size: 14px; }
-    .muted { fill: var(--muted); font-size: 12px; }
-    .title { font-weight: 600; font-size: 15px; }
-    .label { font-weight: 600; }
-    .box { fill: var(--chip); stroke: var(--edge); }
-    .empty { fill: var(--empty); stroke: var(--edge); }
-    .chunk, .seg { fill: var(--full); stroke: var(--edge); }
-    .over { fill: var(--probe); stroke: var(--probe); }
-    .limit { fill: none; stroke: var(--fg); stroke-width: 1.5; }
-    .limitline { stroke: var(--fg); stroke-width: 2; }
-    .new { fill: var(--ok); }
-    .num { fill: var(--probe); font-weight: 600; font-size: 12px; }
-    .bad { fill: var(--probe); font-weight: 600; font-size: 15px; }
-    .oktext { fill: var(--ok); font-weight: 600; }
-    .garrow { fill: none; stroke: var(--edge); stroke-width: 1.5; }
-    .ghead { fill: var(--edge); }
-    .okarrow { fill: none; stroke: var(--ok); stroke-width: 2; }
-    .okhead { fill: var(--ok); }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --fg: #ddd;
+        --full: #555;
+        --empty: #1e1e1e;
+        --edge: #777;
+        --probe: #ff8a4c;
+        --chip: #2a2a2a;
+      }
+    }
+    text {
+      fill: var(--fg);
+      font-variant-numeric: lining-nums tabular-nums;
+      font-size: var(--type-label);
+    }
+    .muted {
+      fill: var(--muted);
+    }
+    .label {
+      font-weight: 600;
+    }
+    .box {
+      fill: var(--chip);
+      stroke: var(--edge);
+    }
+    .empty {
+      fill: var(--empty);
+      stroke: var(--edge);
+    }
+    .chunk {
+      fill: var(--full);
+      stroke: var(--edge);
+    }
+    .seg {
+      fill: var(--full);
+      stroke: var(--edge);
+    }
+    .over {
+      fill: var(--probe);
+      stroke: var(--probe);
+    }
+    .limit {
+      fill: none;
+      stroke: var(--fg);
+      stroke-width: 1.5;
+    }
+    .limitline {
+      stroke: var(--fg);
+      stroke-width: 2;
+    }
+    .num {
+      font-weight: 600;
+      fill: var(--label-load);
+    }
+    .bad {
+      font-weight: 600;
+      fill: var(--label-load);
+    }
+    .garrow {
+      fill: none;
+      stroke: var(--edge);
+      stroke-width: 1.5;
+    }
+    .ghead {
+      fill: var(--edge);
+    }
 
     /* 10.65s loop. Steps: chunk 1 lands 1.1s, chunk 2 2.7s, chunk 3 + overflow 4.3s, OOM text 5.6s; hold to 9.9s, fade out to 10.05s, chunks return by loop end. */
-    .w { opacity: 0; animation: 10.65s linear infinite; }
-    .mv { animation: 10.65s linear infinite; }
-    .m1 { animation-name: m1; }  /* A chunk 1: 0.5s to 1.1s */
-    @keyframes m1 { 0.00% { opacity: 1; transform: translate(0px, 0px) } 4.69% { opacity: 1; transform: translate(0px, 0px) } 10.33% { opacity: 1; transform: translate(194px, 46px) } 10.89% { opacity: 0; transform: translate(194px, 46px) } 94.37% { opacity: 0; transform: translate(194px, 46px) } 94.41% { opacity: 0; transform: translate(0px, 0px) } 100.00% { opacity: 1; transform: translate(0px, 0px) } }
-    .m2 { animation-name: m2; }  /* A chunk 2: 2.1s to 2.7s */
-    @keyframes m2 { 0.00% { opacity: 1; transform: translate(0px, 0px) } 19.72% { opacity: 1; transform: translate(0px, 0px) } 25.35% { opacity: 1; transform: translate(194px, 14px) } 25.92% { opacity: 0; transform: translate(194px, 14px) } 94.37% { opacity: 0; transform: translate(194px, 14px) } 94.41% { opacity: 0; transform: translate(0px, 0px) } 100.00% { opacity: 1; transform: translate(0px, 0px) } }
-    .m3 { animation-name: m3; }  /* A chunk 3: 3.7s to 4.3s */
-    @keyframes m3 { 0.00% { opacity: 1; transform: translate(0px, 0px) } 34.74% { opacity: 1; transform: translate(0px, 0px) } 40.38% { opacity: 1; transform: translate(194px, -18px) } 40.94% { opacity: 0; transform: translate(194px, -18px) } 94.37% { opacity: 0; transform: translate(194px, -18px) } 94.41% { opacity: 0; transform: translate(0px, 0px) } 100.00% { opacity: 1; transform: translate(0px, 0px) } }
-    .w4 { animation-name: w4; }  /* A bar segment 1: 1.1s to 9.9s */
-    @keyframes w4 { 0.00%, 9.86% { opacity: 0 } 10.33%, 92.96% { opacity: 1 } 94.37%, 100.00% { opacity: 0 } }
-    .w5 { animation-name: w5; }  /* A bar segment 2: 2.7s to 9.9s */
-    @keyframes w5 { 0.00%, 24.88% { opacity: 0 } 25.35%, 92.96% { opacity: 1 } 94.37%, 100.00% { opacity: 0 } }
-    .w6 { animation-name: w6; }  /* A bar segment 3: 4.3s to 9.9s */
-    @keyframes w6 { 0.00%, 39.91% { opacity: 0 } 40.38%, 92.96% { opacity: 1 } 94.37%, 100.00% { opacity: 0 } }
-    .w7 { animation-name: w7; }  /* A overflow: 4.3s to 9.9s */
-    @keyframes w7 { 0.00%, 39.91% { opacity: 0 } 40.38%, 92.96% { opacity: 1 } 94.37%, 100.00% { opacity: 0 } }
-    .w8 { animation-name: w8; }  /* A overflow label: 4.3s to 9.9s */
-    @keyframes w8 { 0.00%, 39.91% { opacity: 0 } 40.38%, 92.96% { opacity: 1 } 94.37%, 100.00% { opacity: 0 } }
-    .w9 { animation-name: w9; }  /* A OOM text: 5.6s to 9.9s */
-    @keyframes w9 { 0.00%, 52.58% { opacity: 0 } 53.99%, 92.96% { opacity: 1 } 94.37%, 100.00% { opacity: 0 } }
-    @media (prefers-reduced-motion: reduce) {
-      .w, .mv { animation: none; opacity: 0; }
-      .w.fin { opacity: 1; }
+    .w {
+      opacity: 0;
+      animation: 10.65s linear infinite;
     }
+    .mv {
+      animation: 10.65s linear infinite;
+    }
+    .m1 {
+      animation-name: m1;
+    } /* A chunk 1: 0.5s to 1.1s */
+    @keyframes m1 {
+      0.00% { opacity: 1; transform: translate(0px, 0px); }
+      4.69% { opacity: 1; transform: translate(0px, 0px); }
+      10.33% { opacity: 1; transform: translate(194px, 46px); }
+      10.89% { opacity: 0; transform: translate(194px, 46px); }
+      94.37% { opacity: 0; transform: translate(194px, 46px); }
+      94.41% { opacity: 0; transform: translate(0px, 0px); }
+      100.00% { opacity: 1; transform: translate(0px, 0px); }
+    }
+    .m2 {
+      animation-name: m2;
+    } /* A chunk 2: 2.1s to 2.7s */
+    @keyframes m2 {
+      0.00% { opacity: 1; transform: translate(0px, 0px); }
+      19.72% { opacity: 1; transform: translate(0px, 0px); }
+      25.35% { opacity: 1; transform: translate(194px, 14px); }
+      25.92% { opacity: 0; transform: translate(194px, 14px); }
+      94.37% { opacity: 0; transform: translate(194px, 14px); }
+      94.41% { opacity: 0; transform: translate(0px, 0px); }
+      100.00% { opacity: 1; transform: translate(0px, 0px); }
+    }
+    .m3 {
+      animation-name: m3;
+    } /* A chunk 3: 3.7s to 4.3s */
+    @keyframes m3 {
+      0.00% { opacity: 1; transform: translate(0px, 0px); }
+      34.74% { opacity: 1; transform: translate(0px, 0px); }
+      40.38% { opacity: 1; transform: translate(194px, -18px); }
+      40.94% { opacity: 0; transform: translate(194px, -18px); }
+      94.37% { opacity: 0; transform: translate(194px, -18px); }
+      94.41% { opacity: 0; transform: translate(0px, 0px); }
+      100.00% { opacity: 1; transform: translate(0px, 0px); }
+    }
+    .w4 {
+      animation-name: w4;
+    } /* A bar segment 1: 1.1s to 9.9s */
+    @keyframes w4 {
+      0.00%, 9.86% { opacity: 0; }
+      10.33%, 92.96% { opacity: 1; }
+      94.37%, 100.00% { opacity: 0; }
+    }
+    .w5 {
+      animation-name: w5;
+    } /* A bar segment 2: 2.7s to 9.9s */
+    @keyframes w5 {
+      0.00%, 24.88% { opacity: 0; }
+      25.35%, 92.96% { opacity: 1; }
+      94.37%, 100.00% { opacity: 0; }
+    }
+    .w6 {
+      animation-name: w6;
+    } /* A bar segment 3: 4.3s to 9.9s */
+    @keyframes w6 {
+      0.00%, 39.91% { opacity: 0; }
+      40.38%, 92.96% { opacity: 1; }
+      94.37%, 100.00% { opacity: 0; }
+    }
+    .w7 {
+      animation-name: w7;
+    } /* A overflow: 4.3s to 9.9s */
+    @keyframes w7 {
+      0.00%, 39.91% { opacity: 0; }
+      40.38%, 92.96% { opacity: 1; }
+      94.37%, 100.00% { opacity: 0; }
+    }
+    .w8 {
+      animation-name: w8;
+    } /* A overflow label: 4.3s to 9.9s */
+    @keyframes w8 {
+      0.00%, 39.91% { opacity: 0; }
+      40.38%, 92.96% { opacity: 1; }
+      94.37%, 100.00% { opacity: 0; }
+    }
+    .w9 {
+      animation-name: w9;
+    } /* A OOM text: 5.6s to 9.9s */
+    @keyframes w9 {
+      0.00%, 52.58% { opacity: 0; }
+      53.99%, 92.96% { opacity: 1; }
+      94.37%, 100.00% { opacity: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .w {
+        animation: none;
+        opacity: 0;
+      }
+      .mv {
+        animation: none;
+        opacity: 0;
+      }
+      .w.fin {
+        opacity: 1;
+      }
+    }
+    .title {
+      font-weight: 700;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --muted: #aaa;
+        --label-load: #ff9a64;
+      }
+    }
+    /* Typography adapted from ONS chart guidance:
+    https://service-manual.ons.gov.uk/data-visualisation/build-specifications/typography
+    20px headings, 16px subheadings, 14px labels at native display width.
+    Variables compensate for the original graphics coordinate scale. */
+    .type-heading {
+      font-size: var(--type-heading);
+    }
+    .type-subheading {
+      font-size: var(--type-subheading);
+    }
+
   </style>
-  <text x="20" y="26" class="title">spark.driver.memory=5g <tspan class="muted">(default)</tspan></text>
-  <rect x="300" y="55" width="210" height="100" rx="6" class="box"/>
-  <text x="316" y="80" class="label">Driver</text>
-  <rect x="316" y="92" width="150" height="22" rx="3" class="empty"/>
-  <text x="316" y="136" class="muted">driver memory: 5 GiB</text>
-  <g class=""><path d="M 154 59 L 289.4 102.3" class="garrow"/><polygon points="287.0,106.7 298,105 290.0,97.2" class="ghead"/></g>
-  <g class=""><path d="M 154 91 L 289.0 104.1" class="garrow"/><polygon points="287.6,109.0 298,105 288.5,99.1" class="ghead"/></g>
-  <g class=""><path d="M 154 123 L 289.1 106.1" class="garrow"/><polygon points="288.7,111.2 298,105 287.5,101.3" class="ghead"/></g>
-  <g class=""><path d="M 154 155 L 289.5 108.0" class="garrow"/><polygon points="290.2,113.0 298,105 286.9,103.6" class="ghead"/></g>
-  <rect x="30" y="46" width="120" height="26" rx="4" class="box"/>
-  <text x="40" y="64" style="font-size:13px">Executor 1</text>
-  <rect x="30" y="78" width="120" height="26" rx="4" class="box"/>
-  <text x="40" y="96" style="font-size:13px">Executor 2</text>
-  <rect x="30" y="110" width="120" height="26" rx="4" class="box"/>
-  <text x="40" y="128" style="font-size:13px">Executor 3</text>
-  <rect x="30" y="142" width="120" height="26" rx="4" class="box"/>
-  <text x="40" y="160" style="font-size:13px">Executor 4</text>
-  <rect x="128" y="51" width="16" height="16" rx="2" class="chunk mv m1"/>
-  <rect x="128" y="83" width="16" height="16" rx="2" class="chunk mv m2"/>
-  <rect x="128" y="115" width="16" height="16" rx="2" class="chunk mv m3"/>
-  <rect x="128" y="147" width="16" height="16" rx="2" class="chunk"/>
-  <rect x="316.00" y="92" width="60.00" height="22" class="seg w w4 fin"/>
-  <rect x="376.00" y="92" width="60.00" height="22" class="seg w w5 fin"/>
-  <rect x="436.00" y="92" width="60.00" height="22" class="seg w w6 fin"/>
-  <rect x="316" y="92" width="180.00" height="22" class="over w w7 fin"/>
-  <rect x="316" y="92" width="150" height="22" rx="3" class="limit"/>
-  <line x1="466" y1="86" x2="466" y2="120" class="limitline"/>
-  <text x="500.0" y="82" text-anchor="end" class="num w w8 fin">over 5 GiB</text>
-  <text x="535" y="98" class="bad w w9 fin">OutOfMemoryError</text>
-  <text x="535" y="118" class="muted w w9 fin">driver crashes mid-collection;</text>
-  <text x="535" y="134" class="muted w w9 fin">broadcast never happens</text>
+  <g transform="scale(0.9473684210526315)">
+    <text x="20" y="26" class="title type-heading">spark.driver.memory=5g <tspan class="muted">(default)</tspan></text>
+    <rect x="300" y="55" width="210" height="100" rx="6" class="box" />
+    <text x="316" y="80" class="label">Driver</text>
+    <rect x="316" y="92" width="150" height="22" rx="3" class="empty" />
+    <text x="316" y="136" class="muted">driver memory: 5 GiB</text>
+    <g class="">
+      <path d="M 154 59 L 289.4 102.3" class="garrow" />
+      <polygon points="287.0,106.7 298,105 290.0,97.2" class="ghead" />
+    </g>
+    <g class="">
+      <path d="M 154 91 L 289.0 104.1" class="garrow" />
+      <polygon points="287.6,109.0 298,105 288.5,99.1" class="ghead" />
+    </g>
+    <g class="">
+      <path d="M 154 123 L 289.1 106.1" class="garrow" />
+      <polygon points="288.7,111.2 298,105 287.5,101.3" class="ghead" />
+    </g>
+    <g class="">
+      <path d="M 154 155 L 289.5 108.0" class="garrow" />
+      <polygon points="290.2,113.0 298,105 286.9,103.6" class="ghead" />
+    </g>
+    <rect x="30" y="46" width="120" height="26" rx="4" class="box" />
+    <text x="40" y="64">Executor 1</text>
+    <rect x="30" y="78" width="120" height="26" rx="4" class="box" />
+    <text x="40" y="96">Executor 2</text>
+    <rect x="30" y="110" width="120" height="26" rx="4" class="box" />
+    <text x="40" y="128">Executor 3</text>
+    <rect x="30" y="142" width="120" height="26" rx="4" class="box" />
+    <text x="40" y="160">Executor 4</text>
+    <rect x="128" y="51" width="16" height="16" rx="2" class="chunk mv m1" />
+    <rect x="128" y="83" width="16" height="16" rx="2" class="chunk mv m2" />
+    <rect x="128" y="115" width="16" height="16" rx="2" class="chunk mv m3" />
+    <rect x="128" y="147" width="16" height="16" rx="2" class="chunk" />
+    <rect x="316.00" y="92" width="60.00" height="22" class="seg w w4 fin" />
+    <rect x="376.00" y="92" width="60.00" height="22" class="seg w w5 fin" />
+    <rect x="436.00" y="92" width="60.00" height="22" class="seg w w6 fin" />
+    <rect x="316" y="92" width="180.00" height="22" class="over w w7 fin" />
+    <rect x="316" y="92" width="150" height="22" rx="3" class="limit" />
+    <line x1="466" y1="86" x2="466" y2="120" class="limitline" />
+    <text x="500.0" y="82" text-anchor="end" class="num w w8 fin">over 5 GiB</text>
+    <text x="535" y="98" class="bad w w9 fin">OutOfMemoryError</text>
+    <text x="535" y="118" class="muted w w9 fin">driver crashes mid-collection;</text>
+    <text x="535" y="134" class="muted w w9 fin">broadcast never happens</text>
+  </g>
 </svg>

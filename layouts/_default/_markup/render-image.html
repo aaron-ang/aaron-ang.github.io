@@ -1,5 +1,32 @@
+{{- $diagramWidth := 0 -}}
+{{- $compactDiagram := "" -}}
+{{- $localPath := printf "static/%s" (strings.TrimPrefix "/" .Destination) -}}
+{{- if and (strings.HasSuffix (lower .Destination) ".svg") (fileExists $localPath) -}}
+  {{- $spec := findRESubmatch `data-diagram-width="([0-9]+)"` (readFile $localPath) 1 -}}
+  {{- with $spec -}}
+    {{- $diagramWidth = int (index (index . 0) 1) -}}
+    {{- $mobilePath := strings.TrimSuffix ".svg" $.Destination | printf "%s-mobile.svg" -}}
+    {{- if fileExists (printf "static/%s" (strings.TrimPrefix "/" $mobilePath)) -}}
+      {{- $compactDiagram = $mobilePath -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $scrollDiagram := gt $diagramWidth 0 -}}
 <figure>
+  {{- if $scrollDiagram }}
+  <div class="diagram-scroll{{ if $compactDiagram }} diagram-compact{{ end }}" style="{{ printf "--diagram-width: %dpx;" $diagramWidth | safeCSS }}" tabindex="0" role="region" aria-label="Diagram; scroll horizontally if needed">
+  {{- end }}
+  {{- if $compactDiagram }}
+  <picture>
+    <source media="(max-width: 480px)" srcset="{{ $compactDiagram | safeURL }}">
+  {{- end }}
   <img src="{{ .Destination | safeURL }}" alt="{{ .PlainText }}" loading="lazy">
+  {{- if $compactDiagram }}
+  </picture>
+  {{- end }}
+  {{- if $scrollDiagram }}
+  </div>
+  {{- end }}
   {{- /* Only an explicit title becomes a visible caption; alt text stays on the image. */}}
   {{- with .Title }}
   <figcaption>{{ . | markdownify }}</figcaption>

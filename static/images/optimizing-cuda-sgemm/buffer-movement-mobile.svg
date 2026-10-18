@@ -1,0 +1,89 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 280 382"
+  width="280"
+  height="382"
+  role="img"
+  aria-labelledby="title desc"
+  font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif"
+>
+  <title id="title">Current and next slices</title>
+  <desc id="desc">Compute slice 1 from shared buffer 0 while fetching slice 2 from global memory into registers. After computation, store the prefetched values into buffer 1, synchronize and swap buffer roles.</desc>
+  <style>
+    /* ONS chart typography: 20px title, 16px subheading, 14px labels/annotations.
+    https://service-manual.ons.gov.uk/data-visualisation/build-specifications/typography */
+    :root {
+      --fg: #222;
+      --load: #b83c0b;
+      --ok: #237a36;
+      --type-heading: 20px;
+      --type-subheading: 16px;
+      --type-label: 14px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --fg: #ddd;
+        --load: #ff9a64;
+        --ok: #82df92;
+      }
+    }
+    text {
+      fill: var(--fg);
+      font-variant-numeric: lining-nums tabular-nums;
+      font-size: var(--type-label);
+    }
+    .title {
+      font-weight: 700;
+    }
+    .sub {
+      font-weight: 600;
+    }
+    .load {
+      fill: var(--load);
+      fill-opacity: 0.15;
+      stroke: var(--load);
+    }
+    .ok {
+      fill: var(--ok);
+      fill-opacity: 0.15;
+      stroke: var(--ok);
+    }
+    .arrow {
+      stroke: var(--fg);
+      fill: none;
+      stroke-width: 1.5;
+    }
+    /* Typography adapted from ONS chart guidance:
+    https://service-manual.ons.gov.uk/data-visualisation/build-specifications/typography
+    20px headings, 16px subheadings, 14px labels at native display width.
+    Variables compensate for the original graphics coordinate scale. */
+    .type-heading {
+      font-size: var(--type-heading);
+    }
+    .type-subheading {
+      font-size: var(--type-subheading);
+    }
+
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M0 0L10 5L0 10z" fill="var(--fg)" />
+    </marker>
+  </defs>
+  <text x="12" y="26" class="title type-heading">Current and next slices</text>
+  <text x="12" y="60" class="sub type-subheading">Compute with slice 1</text>
+  <rect x="12" y="75" width="108" height="37" rx="2" class="ok" />
+  <text x="66.0" y="98.5" class="" text-anchor="middle">buffer 0</text>
+  <rect x="166" y="75" width="102" height="37" rx="2" class="ok" />
+  <text x="217.0" y="98.5" class="" text-anchor="middle">compute</text>
+  <line x1="120" y1="94" x2="166" y2="94" class="arrow" marker-end="url(#arrow)" />
+  <text x="12" y="151" class="sub type-subheading">Meanwhile, fetch slice 2</text>
+  <rect x="70" y="169" width="140" height="36" rx="2" class="load" />
+  <text x="140.0" y="192.0" class="" text-anchor="middle">global memory</text>
+  <line x1="140" y1="205" x2="140" y2="232" class="arrow" marker-end="url(#arrow)" />
+  <rect x="70" y="237" width="140" height="36" rx="2" class="load" />
+  <text x="140.0" y="260.0" class="" text-anchor="middle">registers</text>
+  <text x="12" y="304" class="sub type-subheading">After computation finishes:</text>
+  <text x="12" y="329" class="">Store into buffer 1,</text>
+  <text x="12" y="349" class="">synchronize, then swap roles.</text>
+</svg>

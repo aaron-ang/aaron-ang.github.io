@@ -1,0 +1,132 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 640 392"
+  role="img"
+  aria-labelledby="title desc"
+  font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif"
+  width="640"
+  height="392"
+  data-diagram-width="640"
+>
+  <title id="title">A larger patch reuses each input across more outputs</title>
+  <desc id="desc">For one thread at one k step, an 8×8 patch loads 8 A values and 8 B values for 64 multiply-adds. A 16×8 patch loads 16 A and 8 B values for 128 multiply-adds. Loads rise from 16 to 24 while multiply-adds double.</desc>
+  <style>
+    :root {
+      --fg: #222;
+      --muted: #656565;
+      --edge: #999;
+      --load: #b83c0b;
+      --compute: #237a36;
+      --type-heading: 20px;
+      --type-subheading: 16px;
+      --type-label: 14px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --fg: #ddd;
+        --muted: #aaa;
+        --edge: #888;
+        --load: #ff9a64;
+        --compute: #82df92;
+      }
+    }
+    text {
+      fill: var(--fg);
+      font-variant-numeric: lining-nums tabular-nums;
+      font-size: var(--type-label);
+    }
+    .small {
+      fill: var(--muted);
+    }
+    .load {
+      fill: var(--load);
+    }
+    .loadbox {
+      fill: var(--load);
+      fill-opacity: 0.15;
+      stroke: var(--load);
+      stroke-width: 1.5;
+    }
+    .computebox {
+      fill: var(--compute);
+      fill-opacity: 0.16;
+      stroke: var(--compute);
+      stroke-width: 1.5;
+    }
+    .grid {
+      stroke: var(--edge);
+      stroke-width: 0.6;
+    }
+    .title {
+      font-weight: 700;
+    }
+    .bold {
+      font-weight: 600;
+    }
+    /* Typography adapted from ONS chart guidance:
+    https://service-manual.ons.gov.uk/data-visualisation/build-specifications/typography
+    20px headings, 16px subheadings, 14px labels at native display width.
+    Variables compensate for the original graphics coordinate scale. */
+    .type-heading {
+      font-size: var(--type-heading);
+    }
+    .type-subheading {
+      font-size: var(--type-subheading);
+    }
+
+  </style>
+  <text x="20" y="30" class="title type-heading">A larger patch reuses each input across more outputs</text>
+  <text x="152" y="71" class="bold type-subheading" text-anchor="middle">8×8 patch</text>
+  <rect x="108" y="120" width="88" height="88" rx="0" class="computebox" />
+  <line x1="119" y1="120" x2="119" y2="208" class="grid" />
+  <line x1="130" y1="120" x2="130" y2="208" class="grid" />
+  <line x1="141" y1="120" x2="141" y2="208" class="grid" />
+  <line x1="152" y1="120" x2="152" y2="208" class="grid" />
+  <line x1="163" y1="120" x2="163" y2="208" class="grid" />
+  <line x1="174" y1="120" x2="174" y2="208" class="grid" />
+  <line x1="185" y1="120" x2="185" y2="208" class="grid" />
+  <line x1="108" y1="131" x2="196" y2="131" class="grid" />
+  <line x1="108" y1="142" x2="196" y2="142" class="grid" />
+  <line x1="108" y1="153" x2="196" y2="153" class="grid" />
+  <line x1="108" y1="164" x2="196" y2="164" class="grid" />
+  <line x1="108" y1="175" x2="196" y2="175" class="grid" />
+  <line x1="108" y1="186" x2="196" y2="186" class="grid" />
+  <line x1="108" y1="197" x2="196" y2="197" class="grid" />
+  <rect x="108" y="99" width="88" height="12" rx="0" class="loadbox" />
+  <rect x="87" y="120" width="12" height="88" rx="0" class="loadbox" />
+  <text x="152" y="91" class="small" text-anchor="middle">8 from B</text>
+  <text x="73" y="164.0" class="load" text-anchor="middle">8</text>
+  <text x="73" y="184.0" class="small" text-anchor="middle">A</text>
+  <text x="152" y="330" text-anchor="middle">16 loads → 64 multiply-adds</text>
+  <text x="460" y="71" class="bold type-subheading" text-anchor="middle">16×8 patch</text>
+  <rect x="416" y="120" width="88" height="176" rx="0" class="computebox" />
+  <line x1="427" y1="120" x2="427" y2="296" class="grid" />
+  <line x1="438" y1="120" x2="438" y2="296" class="grid" />
+  <line x1="449" y1="120" x2="449" y2="296" class="grid" />
+  <line x1="460" y1="120" x2="460" y2="296" class="grid" />
+  <line x1="471" y1="120" x2="471" y2="296" class="grid" />
+  <line x1="482" y1="120" x2="482" y2="296" class="grid" />
+  <line x1="493" y1="120" x2="493" y2="296" class="grid" />
+  <line x1="416" y1="131" x2="504" y2="131" class="grid" />
+  <line x1="416" y1="142" x2="504" y2="142" class="grid" />
+  <line x1="416" y1="153" x2="504" y2="153" class="grid" />
+  <line x1="416" y1="164" x2="504" y2="164" class="grid" />
+  <line x1="416" y1="175" x2="504" y2="175" class="grid" />
+  <line x1="416" y1="186" x2="504" y2="186" class="grid" />
+  <line x1="416" y1="197" x2="504" y2="197" class="grid" />
+  <line x1="416" y1="208" x2="504" y2="208" class="grid" />
+  <line x1="416" y1="219" x2="504" y2="219" class="grid" />
+  <line x1="416" y1="230" x2="504" y2="230" class="grid" />
+  <line x1="416" y1="241" x2="504" y2="241" class="grid" />
+  <line x1="416" y1="252" x2="504" y2="252" class="grid" />
+  <line x1="416" y1="263" x2="504" y2="263" class="grid" />
+  <line x1="416" y1="274" x2="504" y2="274" class="grid" />
+  <line x1="416" y1="285" x2="504" y2="285" class="grid" />
+  <rect x="416" y="99" width="88" height="12" rx="0" class="loadbox" />
+  <rect x="395" y="120" width="12" height="176" rx="0" class="loadbox" />
+  <text x="460" y="91" class="small" text-anchor="middle">8 from B</text>
+  <text x="381" y="208.0" class="load" text-anchor="middle">16</text>
+  <text x="381" y="228.0" class="small" text-anchor="middle">A</text>
+  <text x="460" y="330" text-anchor="middle">24 loads → 128 multiply-adds</text>
+  <text x="320" y="370" class="bold type-subheading" text-anchor="middle">Loads per 16 multiply-adds: 4 → 3</text>
+</svg>

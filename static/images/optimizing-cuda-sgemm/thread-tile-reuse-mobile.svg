@@ -1,0 +1,117 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 280 402"
+  width="280"
+  height="402"
+  role="img"
+  aria-labelledby="title desc"
+  font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif"
+>
+  <title id="title">Larger thread patches</title>
+  <desc id="desc">An 8×8 patch needs 16 input loads for 64 multiply-adds per k step. A 16×8 patch needs 24 for 128. Shared-memory loads per 16 multiply-adds fall from four to three.</desc>
+  <style>
+    /* ONS chart typography: 20px title, 16px subheading, 14px labels/annotations.
+    https://service-manual.ons.gov.uk/data-visualisation/build-specifications/typography */
+    :root {
+      --fg: #222;
+      --muted: #707071;
+      --edge: #999;
+      --ok: #237a36;
+      --type-heading: 20px;
+      --type-subheading: 16px;
+      --type-label: 14px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --fg: #ddd;
+        --muted: #aaa;
+        --edge: #888;
+        --ok: #82df92;
+      }
+    }
+    text {
+      fill: var(--fg);
+      font-variant-numeric: lining-nums tabular-nums;
+      font-size: var(--type-label);
+    }
+    .title {
+      font-weight: 700;
+    }
+    .sub {
+      font-weight: 600;
+    }
+    .note {
+      fill: var(--muted);
+    }
+    .ok {
+      fill: var(--ok);
+      fill-opacity: 0.15;
+      stroke: var(--ok);
+    }
+    .grid {
+      stroke: var(--edge);
+      stroke-width: 0.5;
+    }
+    /* Typography adapted from ONS chart guidance:
+    https://service-manual.ons.gov.uk/data-visualisation/build-specifications/typography
+    20px headings, 16px subheadings, 14px labels at native display width.
+    Variables compensate for the original graphics coordinate scale. */
+    .type-heading {
+      font-size: var(--type-heading);
+    }
+    .type-subheading {
+      font-size: var(--type-subheading);
+    }
+
+  </style>
+  <text x="12" y="26" class="title type-heading">Larger thread patches</text>
+  <text x="12" y="54" class="note">One thread at one k step.</text>
+  <text x="12" y="82" class="sub type-subheading">8×8 patch</text>
+  <rect x="25" y="94" width="64" height="56" rx="2" class="ok" />
+  <line x1="33" y1="94" x2="33" y2="150" class="grid" />
+  <line x1="41" y1="94" x2="41" y2="150" class="grid" />
+  <line x1="49" y1="94" x2="49" y2="150" class="grid" />
+  <line x1="57" y1="94" x2="57" y2="150" class="grid" />
+  <line x1="65" y1="94" x2="65" y2="150" class="grid" />
+  <line x1="73" y1="94" x2="73" y2="150" class="grid" />
+  <line x1="81" y1="94" x2="81" y2="150" class="grid" />
+  <line x1="25" y1="101" x2="89" y2="101" class="grid" />
+  <line x1="25" y1="108" x2="89" y2="108" class="grid" />
+  <line x1="25" y1="115" x2="89" y2="115" class="grid" />
+  <line x1="25" y1="122" x2="89" y2="122" class="grid" />
+  <line x1="25" y1="129" x2="89" y2="129" class="grid" />
+  <line x1="25" y1="136" x2="89" y2="136" class="grid" />
+  <line x1="25" y1="143" x2="89" y2="143" class="grid" />
+  <text x="113" y="112" class="">8 A + 8 B</text>
+  <text x="113" y="132" class="">16 loads</text>
+  <text x="113" y="152" class="">64 multiply-adds</text>
+  <text x="12" y="201" class="sub type-subheading">16×8 patch</text>
+  <rect x="25" y="213" width="64" height="112" rx="2" class="ok" />
+  <line x1="33" y1="213" x2="33" y2="325" class="grid" />
+  <line x1="41" y1="213" x2="41" y2="325" class="grid" />
+  <line x1="49" y1="213" x2="49" y2="325" class="grid" />
+  <line x1="57" y1="213" x2="57" y2="325" class="grid" />
+  <line x1="65" y1="213" x2="65" y2="325" class="grid" />
+  <line x1="73" y1="213" x2="73" y2="325" class="grid" />
+  <line x1="81" y1="213" x2="81" y2="325" class="grid" />
+  <line x1="25" y1="220" x2="89" y2="220" class="grid" />
+  <line x1="25" y1="227" x2="89" y2="227" class="grid" />
+  <line x1="25" y1="234" x2="89" y2="234" class="grid" />
+  <line x1="25" y1="241" x2="89" y2="241" class="grid" />
+  <line x1="25" y1="248" x2="89" y2="248" class="grid" />
+  <line x1="25" y1="255" x2="89" y2="255" class="grid" />
+  <line x1="25" y1="262" x2="89" y2="262" class="grid" />
+  <line x1="25" y1="269" x2="89" y2="269" class="grid" />
+  <line x1="25" y1="276" x2="89" y2="276" class="grid" />
+  <line x1="25" y1="283" x2="89" y2="283" class="grid" />
+  <line x1="25" y1="290" x2="89" y2="290" class="grid" />
+  <line x1="25" y1="297" x2="89" y2="297" class="grid" />
+  <line x1="25" y1="304" x2="89" y2="304" class="grid" />
+  <line x1="25" y1="311" x2="89" y2="311" class="grid" />
+  <line x1="25" y1="318" x2="89" y2="318" class="grid" />
+  <text x="113" y="231" class="">16 A + 8 B</text>
+  <text x="113" y="251" class="">24 loads</text>
+  <text x="113" y="271" class="">128 multiply-adds</text>
+  <text x="12" y="361" class="sub type-subheading">Loads per 16 multiply-adds:</text>
+  <text x="12" y="381" class="sub type-subheading">4 → 3</text>
+</svg>
