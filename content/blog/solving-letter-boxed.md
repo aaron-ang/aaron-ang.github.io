@@ -42,7 +42,7 @@ After successfully finding an initial solution, the button changes to **Find Bes
 
 The web app has gone through three versions: v1 ran the search on the browser's main thread, v2 moved it to a cloud server, and v3 brought it back to the browser in a [_Web Worker_](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API). The worker runs the search in a background thread so the page stays responsive. The figure below compares these versions:
 
-![Three setups: in 2022 the solver blocks the browser's main thread. In 2023 a cloud function solves it over the network. In 2026 a Web Worker solves it locally, with WebGPU for Find Best.](/images/solving-letter-boxed/architecture-evolution.svg "The tabs replay each year's setup in turn; the final frame shows 2026, with a one-line summary of the earlier years.")
+![Three web versions: v1 blocks the browser's main thread; v2 solves puzzles in a cloud function over the network; v3 solves locally in a Web Worker, with WebGPU for Find Best.](/images/solving-letter-boxed/architecture-evolution.svg)
 
 ### v1: On the Main Thread
 

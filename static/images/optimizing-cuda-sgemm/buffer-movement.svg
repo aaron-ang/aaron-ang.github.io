@@ -1,0 +1,106 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 640 318"
+  role="img"
+  aria-labelledby="title desc"
+  font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif"
+  width="640"
+  height="318"
+  data-diagram-width="640"
+>
+  <title id="title">Two buffers keep the current and next slices apart</title>
+  <desc id="desc">While the threads compute slice 1 from shared buffer 0, global loads fetch slice 2 into registers. After computation, those registers are stored into buffer 1, threads synchronize, and the buffer roles swap. This is ordinary double buffering, before cp.async.</desc>
+  <style>
+    :root {
+      --fg: #222;
+      --muted: #656565;
+      --edge: #999;
+      --load: #b83c0b;
+      --compute: #237a36;
+      --type-heading: 20px;
+      --type-subheading: 16px;
+      --type-label: 14px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --fg: #ddd;
+        --muted: #aaa;
+        --edge: #888;
+        --load: #ff9a64;
+        --compute: #82df92;
+      }
+    }
+    text {
+      fill: var(--fg);
+      font-variant-numeric: lining-nums tabular-nums;
+      font-size: var(--type-label);
+    }
+    .small {
+      fill: var(--muted);
+    }
+    .outline {
+      fill: none;
+      stroke: var(--edge);
+    }
+    .loadbox {
+      fill: var(--load);
+      fill-opacity: 0.15;
+      stroke: var(--load);
+      stroke-width: 1.5;
+    }
+    .computebox {
+      fill: var(--compute);
+      fill-opacity: 0.16;
+      stroke: var(--compute);
+      stroke-width: 1.5;
+    }
+    .arrow {
+      fill: none;
+      stroke: var(--fg);
+      stroke-width: 1.6;
+    }
+    .dash {
+      stroke-dasharray: 5 4;
+    }
+    .title {
+      font-weight: 700;
+    }
+    .bold {
+      font-weight: 600;
+    }
+    /* Typography adapted from ONS chart guidance:
+    https://service-manual.ons.gov.uk/data-visualisation/build-specifications/typography
+    20px headings, 16px subheadings, 14px labels at native display width.
+    Variables compensate for the original graphics coordinate scale. */
+    .type-heading {
+      font-size: var(--type-heading);
+    }
+    .type-subheading {
+      font-size: var(--type-subheading);
+    }
+
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="var(--fg)" />
+    </marker>
+  </defs>
+  <text x="20" y="30" class="title type-heading">Two buffers keep the current and next slices apart</text>
+  <text x="20" y="66" class="bold type-subheading">During computation on slice 1</text>
+  <rect x="20" y="89" width="155" height="49" rx="4" class="loadbox" />
+  <text x="97.5" y="119.5" text-anchor="middle">global: slice 2</text>
+  <rect x="230" y="89" width="155" height="49" rx="4" class="loadbox" />
+  <text x="307.5" y="119.5" text-anchor="middle">registers</text>
+  <rect x="440" y="89" width="180" height="49" rx="4" class="outline" />
+  <text x="530.0" y="119.5" text-anchor="middle">buffer 1: next</text>
+  <line x1="175" y1="113" x2="230" y2="113" class="arrow" marker-end="url(#arrow)" />
+  <line x1="385" y1="113" x2="440" y2="113" class="arrow dash" marker-end="url(#arrow)" />
+  <text x="308" y="162" class="small" text-anchor="middle">prefetched values</text>
+  <text x="530" y="162" class="small" text-anchor="middle">store after compute</text>
+  <rect x="20" y="187" width="180" height="49" rx="4" class="computebox" />
+  <text x="110.0" y="217.5" text-anchor="middle">buffer 0: slice 1</text>
+  <rect x="320" y="187" width="300" height="49" rx="4" class="computebox" />
+  <text x="470.0" y="217.5" text-anchor="middle">multiply-adds on slice 1</text>
+  <line x1="200" y1="212" x2="320" y2="212" class="arrow" marker-end="url(#arrow)" />
+  <text x="20" y="280" class="bold type-subheading">Then: store slice 2 → synchronize → swap buffer roles.</text>
+</svg>

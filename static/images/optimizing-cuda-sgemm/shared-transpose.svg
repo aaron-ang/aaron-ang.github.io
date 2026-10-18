@@ -1,0 +1,138 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 640 308"
+  role="img"
+  aria-labelledby="title desc"
+  font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif"
+  width="640"
+  height="308"
+  data-diagram-width="640"
+>
+  <title id="title">Transposing A puts a thread’s inputs together</title>
+  <desc id="desc">At k = 0, thread 0 needs A rows 0 through 7. Before transposition those values are 32 floats apart; after transposition they are adjacent. This illustrates the intended layout benefit, not the actual instruction count of the compiled kernels.</desc>
+  <style>
+    :root {
+      --fg: #222;
+      --muted: #656565;
+      --edge: #999;
+      --load: #b83c0b;
+      --compute: #237a36;
+      --type-heading: 20px;
+      --type-subheading: 16px;
+      --type-label: 14px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --fg: #ddd;
+        --muted: #aaa;
+        --edge: #888;
+        --load: #ff9a64;
+        --compute: #82df92;
+      }
+    }
+    text {
+      fill: var(--fg);
+      font-variant-numeric: lining-nums tabular-nums;
+      font-size: var(--type-label);
+    }
+    .small {
+      fill: var(--muted);
+    }
+    .outline {
+      fill: none;
+      stroke: var(--edge);
+    }
+    .loadbox {
+      fill: var(--load);
+      fill-opacity: 0.15;
+      stroke: var(--load);
+      stroke-width: 1.5;
+    }
+    .computebox {
+      fill: var(--compute);
+      fill-opacity: 0.16;
+      stroke: var(--compute);
+      stroke-width: 1.5;
+    }
+    .title {
+      font-weight: 700;
+    }
+    .bold {
+      font-weight: 600;
+    }
+    /* Typography adapted from ONS chart guidance:
+    https://service-manual.ons.gov.uk/data-visualisation/build-specifications/typography
+    20px headings, 16px subheadings, 14px labels at native display width.
+    Variables compensate for the original graphics coordinate scale. */
+    .type-heading {
+      font-size: var(--type-heading);
+    }
+    .type-subheading {
+      font-size: var(--type-subheading);
+    }
+
+  </style>
+  <text x="20" y="30" class="title type-heading">Transposing A puts a thread’s inputs together</text>
+  <text x="20" y="60" class="small">Thread 0 needs A[0, k] through A[7, k] at one k step.</text>
+  <text x="20" y="89" class="bold type-subheading">Before: column values, 32 floats apart</text>
+  <rect x="62" y="104" width="48" height="31" rx="0" class="loadbox" />
+  <text x="86" y="126" text-anchor="middle">r0</text>
+  <text x="86" y="158" class="small" text-anchor="middle">0</text>
+  <text x="116" y="126" class="small" text-anchor="middle">…</text>
+  <rect x="127" y="104" width="48" height="31" rx="0" class="loadbox" />
+  <text x="151" y="126" text-anchor="middle">r1</text>
+  <text x="151" y="158" class="small" text-anchor="middle">32</text>
+  <text x="181" y="126" class="small" text-anchor="middle">…</text>
+  <rect x="192" y="104" width="48" height="31" rx="0" class="loadbox" />
+  <text x="216" y="126" text-anchor="middle">r2</text>
+  <text x="216" y="158" class="small" text-anchor="middle">64</text>
+  <text x="246" y="126" class="small" text-anchor="middle">…</text>
+  <rect x="257" y="104" width="48" height="31" rx="0" class="loadbox" />
+  <text x="281" y="126" text-anchor="middle">r3</text>
+  <text x="281" y="158" class="small" text-anchor="middle">96</text>
+  <text x="311" y="126" class="small" text-anchor="middle">…</text>
+  <rect x="322" y="104" width="48" height="31" rx="0" class="loadbox" />
+  <text x="346" y="126" text-anchor="middle">r4</text>
+  <text x="346" y="158" class="small" text-anchor="middle">128</text>
+  <text x="376" y="126" class="small" text-anchor="middle">…</text>
+  <rect x="387" y="104" width="48" height="31" rx="0" class="loadbox" />
+  <text x="411" y="126" text-anchor="middle">r5</text>
+  <text x="411" y="158" class="small" text-anchor="middle">160</text>
+  <text x="441" y="126" class="small" text-anchor="middle">…</text>
+  <rect x="452" y="104" width="48" height="31" rx="0" class="loadbox" />
+  <text x="476" y="126" text-anchor="middle">r6</text>
+  <text x="476" y="158" class="small" text-anchor="middle">192</text>
+  <text x="506" y="126" class="small" text-anchor="middle">…</text>
+  <rect x="517" y="104" width="48" height="31" rx="0" class="loadbox" />
+  <text x="541" y="126" text-anchor="middle">r7</text>
+  <text x="541" y="158" class="small" text-anchor="middle">224</text>
+  <text x="20" y="181" class="small">Float offsets shown for k = 0.</text>
+  <text x="20" y="205" class="bold type-subheading">Transposed: eight adjacent values</text>
+  <rect x="62" y="220" width="65" height="31" rx="0" class="computebox" />
+  <text x="94.5" y="242" text-anchor="middle">r0</text>
+  <text x="86" y="274" class="small" text-anchor="middle">0</text>
+  <rect x="127" y="220" width="65" height="31" rx="0" class="computebox" />
+  <text x="159.5" y="242" text-anchor="middle">r1</text>
+  <text x="151" y="274" class="small" text-anchor="middle">1</text>
+  <rect x="192" y="220" width="65" height="31" rx="0" class="computebox" />
+  <text x="224.5" y="242" text-anchor="middle">r2</text>
+  <text x="216" y="274" class="small" text-anchor="middle">2</text>
+  <rect x="257" y="220" width="65" height="31" rx="0" class="computebox" />
+  <text x="289.5" y="242" text-anchor="middle">r3</text>
+  <text x="281" y="274" class="small" text-anchor="middle">3</text>
+  <rect x="322" y="220" width="65" height="31" rx="0" class="computebox" />
+  <text x="354.5" y="242" text-anchor="middle">r4</text>
+  <text x="346" y="274" class="small" text-anchor="middle">4</text>
+  <rect x="387" y="220" width="65" height="31" rx="0" class="computebox" />
+  <text x="419.5" y="242" text-anchor="middle">r5</text>
+  <text x="411" y="274" class="small" text-anchor="middle">5</text>
+  <rect x="452" y="220" width="65" height="31" rx="0" class="computebox" />
+  <text x="484.5" y="242" text-anchor="middle">r6</text>
+  <text x="476" y="274" class="small" text-anchor="middle">6</text>
+  <rect x="517" y="220" width="65" height="31" rx="0" class="computebox" />
+  <text x="549.5" y="242" text-anchor="middle">r7</text>
+  <text x="541" y="274" class="small" text-anchor="middle">7</text>
+  <rect x="62" y="217" width="260" height="37" rx="4" class="outline" />
+  <rect x="322" y="217" width="260" height="37" rx="4" class="outline" />
+  <text x="20" y="297" class="small">Two groups of four can be read with wide instructions.</text>
+</svg>

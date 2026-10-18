@@ -1,0 +1,81 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 280 292"
+  width="280"
+  height="292"
+  role="img"
+  aria-labelledby="title desc"
+  font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif"
+>
+  <title id="title">Register use per SM</title>
+  <desc id="desc">A 65,536-register SM holds two 256-thread blocks at 128 registers per thread. At 237 registers per thread, one block uses 60,672 registers and leaves only 4,864.</desc>
+  <style>
+    /* ONS chart typography: 20px title, 16px subheading, 14px labels/annotations.
+    https://service-manual.ons.gov.uk/data-visualisation/build-specifications/typography */
+    :root {
+      --fg: #222;
+      --muted: #707071;
+      --edge: #999;
+      --ok: #237a36;
+      --type-heading: 20px;
+      --type-subheading: 16px;
+      --type-label: 14px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --fg: #ddd;
+        --muted: #aaa;
+        --edge: #888;
+        --ok: #82df92;
+      }
+    }
+    text {
+      fill: var(--fg);
+      font-variant-numeric: lining-nums tabular-nums;
+      font-size: var(--type-label);
+    }
+    .title {
+      font-weight: 700;
+    }
+    .sub {
+      font-weight: 600;
+    }
+    .note {
+      fill: var(--muted);
+    }
+    .outline {
+      fill: none;
+      stroke: var(--edge);
+    }
+    .ok {
+      fill: var(--ok);
+      fill-opacity: 0.15;
+      stroke: var(--ok);
+    }
+    /* Typography adapted from ONS chart guidance:
+    https://service-manual.ons.gov.uk/data-visualisation/build-specifications/typography
+    20px headings, 16px subheadings, 14px labels at native display width.
+    Variables compensate for the original graphics coordinate scale. */
+    .type-heading {
+      font-size: var(--type-heading);
+    }
+    .type-subheading {
+      font-size: var(--type-subheading);
+    }
+
+  </style>
+  <text x="12" y="26" class="title type-heading">Register use per SM</text>
+  <text x="12" y="54" class="note">65,536 registers in total;</text>
+  <text x="12" y="74" class="note">256 threads per block.</text>
+  <text x="12" y="111" class="sub type-subheading">8×8 patch: 128 per thread</text>
+  <rect x="12" y="127" width="256" height="35" rx="2" class="outline" />
+  <rect x="12" y="127" width="128" height="35" rx="2" class="ok" />
+  <rect x="140" y="127" width="128" height="35" rx="2" class="ok" />
+  <text x="76" y="149" class="" text-anchor="middle">block 1</text>
+  <text x="204" y="149" class="" text-anchor="middle">block 2</text>
+  <text x="12" y="201" class="sub type-subheading">16×8 patch: 237 per thread</text>
+  <rect x="12" y="217" width="256" height="35" rx="2" class="outline" />
+  <rect x="12" y="217" width="237.0" height="35" rx="2" class="ok" />
+  <text x="120" y="239" class="" text-anchor="middle">block 1: 60,672</text>
+  <text x="12" y="280" class="note">4,864 left; no second block.</text>
+</svg>

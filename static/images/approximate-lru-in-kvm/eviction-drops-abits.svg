@@ -1,165 +1,315 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 310" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated diagram of one last-level shadow page whose 512 entries map the 4 KiB guest pages of one 2 MiB region. The CPU has set the accessed bits of the entries for the hot pages. When the cache is full, the eviction policy zaps the page and its accessed bits are discarded with it. Host reclaim then asks KVM which pages were used recently, finds no shadow entries, sees every page as not used, and swaps out pages including the hot ones.">
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 720 294"
+  font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+  role="img"
+  aria-label="Animated diagram of one last-level shadow page whose 512 entries map the 4 KiB guest pages of one 2 MiB region. The CPU has set the accessed bits of the entries for the hot pages. When the cache is full, the eviction policy zaps the page and its accessed bits are discarded with it. Host reclaim then asks KVM which pages were used recently, finds no shadow entries, sees every page as not used, and swaps out pages including the hot ones."
+  width="720"
+  height="294"
+  data-diagram-width="720"
+>
   <style>
-    :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; }
+    :root {
+      --fg: #222;
+      --full: #cfcfcf;
+      --empty: #ffffff;
+      --edge: #999;
+      --probe: #d9480f;
+      --ok: #2b8a3e;
+      --muted: #707071;
+      --label-load: #8a2c0a;
+      --label-compute: #237a36;
+      --type-heading: 21.11110929px;
+      --type-subheading: 16.88888743px;
+      --type-label: 14.77777651px;
+    }
     @media (prefers-color-scheme: dark) {
-      :root { --fg: #ddd; --muted: #999; --full: #555; --empty: #1e1e1e; --edge: #777; --probe: #ff8a4c; --ok: #69db7c; --chip: #2a2a2a; }
+      :root {
+        --fg: #ddd;
+        --full: #555;
+        --empty: #1e1e1e;
+        --edge: #777;
+        --probe: #ff8a4c;
+        --ok: #69db7c;
+      }
     }
-    text { fill: var(--fg); font-size: 14px; }
-    .muted { fill: var(--muted); font-size: 12px; }
-    .title { font-weight: 600; font-size: 15px; }
-    .b { font-weight: 600; }
-    .full { fill: var(--full); stroke: var(--edge); }
-    .empty { fill: var(--empty); stroke: var(--edge); }
-    .ring { fill: none; stroke: var(--probe); stroke-width: 3; }
-    .hot { fill: var(--probe); }
-    .abit { fill: var(--ok); stroke: var(--ok); }
-    .num { fill: var(--probe); font-weight: 600; font-size: 13px; }
-    .oktext { fill: var(--ok); font-weight: 600; font-size: 13px; }
-    .onhot { fill: var(--empty); font-weight: 600; }
-    .hl { font-size: 11px; font-weight: 600; }
-    .onhl { fill: var(--empty); font-size: 11px; font-weight: 600; }
-    .map { stroke: var(--edge); stroke-dasharray: 2 3; }
-    .rule { stroke: var(--edge); stroke-dasharray: 3 4; }
+    text {
+      fill: var(--fg);
+      font-variant-numeric: lining-nums tabular-nums;
+      font-size: var(--type-label);
+    }
+    .muted {
+      fill: var(--muted);
+    }
+    .full {
+      fill: var(--full);
+      stroke: var(--edge);
+    }
+    .empty {
+      fill: var(--empty);
+      stroke: var(--edge);
+    }
+    .ring {
+      fill: none;
+      stroke: var(--probe);
+      stroke-width: 3;
+    }
+    .hot {
+      fill: var(--probe);
+    }
+    .abit {
+      fill: var(--ok);
+      stroke: var(--ok);
+    }
+    .num {
+      font-weight: 600;
+      fill: var(--label-load);
+    }
+    .oktext {
+      font-weight: 600;
+      fill: var(--label-compute);
+    }
+    .onhot {
+      fill: var(--empty);
+      font-weight: 600;
+    }
+    .hl {
+      font-weight: 600;
+    }
+    .onhl {
+      fill: var(--empty);
+      font-weight: 600;
+    }
+    .map {
+      stroke: var(--edge);
+      stroke-dasharray: 2 3;
+    }
+    .rule {
+      stroke: var(--edge);
+      stroke-dasharray: 3 4;
+    }
     /* 28.37s loop, 5 steps starting at 0, 6.4, 12.3, 17.5, 21.7 s; final frame holds 6.03s, then fades. */
-    .a { opacity: 0; animation: 28.37s linear infinite; }
-    .w1 { animation-name: w1; }  /* 0.00s to 6.40s */
-    @keyframes w1 { 0.00%, 22.56% { opacity: 1 } 23.01%, 97.75% { opacity: 0 } 98.20%, 100.00% { opacity: 1 } }
-    .w2 { animation-name: w2; }  /* 6.40s to end */
-    @keyframes w2 { 0.00%, 22.56% { opacity: 0 } 23.01%, 97.75% { opacity: 1 } 98.20%, 100.00% { opacity: 0 } }
-    .w3 { animation-name: w3; }  /* 6.40s to 12.30s */
-    @keyframes w3 { 0.00%, 22.56% { opacity: 0 } 23.01%, 43.36% { opacity: 1 } 43.81%, 100.00% { opacity: 0 } }
-    .w4 { animation-name: w4; }  /* 12.30s to end */
-    @keyframes w4 { 0.00%, 43.36% { opacity: 0 } 43.81%, 97.75% { opacity: 1 } 98.20%, 100.00% { opacity: 0 } }
-    .w5 { animation-name: w5; }  /* 12.30s to 17.50s */
-    @keyframes w5 { 0.00%, 43.36% { opacity: 0 } 43.81%, 61.68% { opacity: 1 } 62.13%, 100.00% { opacity: 0 } }
-    .w6 { animation-name: w6; }  /* 17.50s to end */
-    @keyframes w6 { 0.00%, 61.68% { opacity: 0 } 62.13%, 97.75% { opacity: 1 } 98.20%, 100.00% { opacity: 0 } }
-    .w7 { animation-name: w7; }  /* 17.50s to 21.70s */
-    @keyframes w7 { 0.00%, 61.68% { opacity: 0 } 62.13%, 76.49% { opacity: 1 } 76.94%, 100.00% { opacity: 0 } }
-    .w8 { animation-name: w8; }  /* 21.70s to end */
-    @keyframes w8 { 0.00%, 76.49% { opacity: 0 } 76.94%, 97.75% { opacity: 1 } 98.20%, 100.00% { opacity: 0 } }
-    @media (prefers-reduced-motion: reduce) {
-      .a { animation: none; opacity: 0; }
-      .a.fin { opacity: 1; }
+    .a {
+      opacity: 0;
+      animation: 28.37s linear infinite;
     }
+    .w1 {
+      animation-name: w1;
+    } /* 0.00s to 6.40s */
+    @keyframes w1 {
+      0.00%, 22.56% { opacity: 1; }
+      23.01%, 97.75% { opacity: 0; }
+      98.20%, 100.00% { opacity: 1; }
+    }
+    .w2 {
+      animation-name: w2;
+    } /* 6.40s to end */
+    @keyframes w2 {
+      0.00%, 22.56% { opacity: 0; }
+      23.01%, 97.75% { opacity: 1; }
+      98.20%, 100.00% { opacity: 0; }
+    }
+    .w3 {
+      animation-name: w3;
+    } /* 6.40s to 12.30s */
+    @keyframes w3 {
+      0.00%, 22.56% { opacity: 0; }
+      23.01%, 43.36% { opacity: 1; }
+      43.81%, 100.00% { opacity: 0; }
+    }
+    .w4 {
+      animation-name: w4;
+    } /* 12.30s to end */
+    @keyframes w4 {
+      0.00%, 43.36% { opacity: 0; }
+      43.81%, 97.75% { opacity: 1; }
+      98.20%, 100.00% { opacity: 0; }
+    }
+    .w5 {
+      animation-name: w5;
+    } /* 12.30s to 17.50s */
+    @keyframes w5 {
+      0.00%, 43.36% { opacity: 0; }
+      43.81%, 61.68% { opacity: 1; }
+      62.13%, 100.00% { opacity: 0; }
+    }
+    .w6 {
+      animation-name: w6;
+    } /* 17.50s to end */
+    @keyframes w6 {
+      0.00%, 61.68% { opacity: 0; }
+      62.13%, 97.75% { opacity: 1; }
+      98.20%, 100.00% { opacity: 0; }
+    }
+    .w7 {
+      animation-name: w7;
+    } /* 17.50s to 21.70s */
+    @keyframes w7 {
+      0.00%, 61.68% { opacity: 0; }
+      62.13%, 76.49% { opacity: 1; }
+      76.94%, 100.00% { opacity: 0; }
+    }
+    .w8 {
+      animation-name: w8;
+    } /* 21.70s to end */
+    @keyframes w8 {
+      0.00%, 76.49% { opacity: 0; }
+      76.94%, 97.75% { opacity: 1; }
+      98.20%, 100.00% { opacity: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .a {
+        animation: none;
+        opacity: 0;
+      }
+      .a.fin {
+        opacity: 1;
+      }
+    }
+    .title {
+      font-weight: 700;
+    }
+    .b {
+      font-weight: 600;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --muted: #aaa;
+        --label-load: #ff9a64;
+        --label-compute: #82df92;
+      }
+    }
+    /* Typography adapted from ONS chart guidance:
+    https://service-manual.ons.gov.uk/data-visualisation/build-specifications/typography
+    20px headings, 16px subheadings, 14px labels at native display width.
+    Variables compensate for the original graphics coordinate scale. */
+    .type-heading {
+      font-size: var(--type-heading);
+    }
+    .type-subheading {
+      font-size: var(--type-subheading);
+    }
+
   </style>
-  <text x="20" y="28" class="title">Zapping a shadow page discards its accessed (A) bits</text>
-  <text x="20" y="48" class="muted">One last-level shadow page maps one 2 MiB region: 512 entries, one per 4 KiB guest page (16 drawn).</text>
-  <text x="20" y="64" class="muted">Small box above an entry: its A bit. H: hot guest page; unmarked pages are cold.</text>
-  <text x="20" y="122" class="b">shadow page</text>
-  <text x="20" y="138" class="muted">512 entries</text>
-  <rect x="130" y="110" width="16" height="28" rx="2" class="full"/>
-  <rect x="148" y="110" width="16" height="28" rx="2" class="full"/>
-  <rect x="166" y="110" width="16" height="28" rx="2" class="full"/>
-  <rect x="184" y="110" width="16" height="28" rx="2" class="full"/>
-  <rect x="202" y="110" width="16" height="28" rx="2" class="full"/>
-  <rect x="220" y="110" width="16" height="28" rx="2" class="full"/>
-  <rect x="238" y="110" width="16" height="28" rx="2" class="full"/>
-  <rect x="256" y="110" width="16" height="28" rx="2" class="full"/>
-  <rect x="274" y="110" width="16" height="28" rx="2" class="full"/>
-  <rect x="292" y="110" width="16" height="28" rx="2" class="full"/>
-  <rect x="310" y="110" width="16" height="28" rx="2" class="full"/>
-  <rect x="328" y="110" width="16" height="28" rx="2" class="full"/>
-  <rect x="346" y="110" width="16" height="28" rx="2" class="full"/>
-  <rect x="364" y="110" width="16" height="28" rx="2" class="full"/>
-  <rect x="382" y="110" width="16" height="28" rx="2" class="full"/>
-  <rect x="400" y="110" width="16" height="28" rx="2" class="full"/>
-  <g class="a w1">
-  <text x="118" y="105" text-anchor="end" class="muted">A bits</text>
-  <rect x="133" y="98" width="10" height="8" rx="1" class="empty"/>
-  <rect x="151" y="98" width="10" height="8" rx="1" class="abit"/>
-  <rect x="169" y="98" width="10" height="8" rx="1" class="abit"/>
-  <rect x="187" y="98" width="10" height="8" rx="1" class="empty"/>
-  <rect x="205" y="98" width="10" height="8" rx="1" class="empty"/>
-  <rect x="223" y="98" width="10" height="8" rx="1" class="abit"/>
-  <rect x="241" y="98" width="10" height="8" rx="1" class="abit"/>
-  <rect x="259" y="98" width="10" height="8" rx="1" class="empty"/>
-  <rect x="277" y="98" width="10" height="8" rx="1" class="empty"/>
-  <rect x="295" y="98" width="10" height="8" rx="1" class="abit"/>
-  <rect x="313" y="98" width="10" height="8" rx="1" class="empty"/>
-  <rect x="331" y="98" width="10" height="8" rx="1" class="empty"/>
-  <rect x="349" y="98" width="10" height="8" rx="1" class="abit"/>
-  <rect x="367" y="98" width="10" height="8" rx="1" class="abit"/>
-  <rect x="385" y="98" width="10" height="8" rx="1" class="empty"/>
-  <rect x="403" y="98" width="10" height="8" rx="1" class="empty"/>
-  <line x1="138" y1="141" x2="138" y2="193" class="map"/>
-  <line x1="156" y1="141" x2="156" y2="193" class="map"/>
-  <line x1="174" y1="141" x2="174" y2="193" class="map"/>
-  <line x1="192" y1="141" x2="192" y2="193" class="map"/>
-  <line x1="210" y1="141" x2="210" y2="193" class="map"/>
-  <line x1="228" y1="141" x2="228" y2="193" class="map"/>
-  <line x1="246" y1="141" x2="246" y2="193" class="map"/>
-  <line x1="264" y1="141" x2="264" y2="193" class="map"/>
-  <line x1="282" y1="141" x2="282" y2="193" class="map"/>
-  <line x1="300" y1="141" x2="300" y2="193" class="map"/>
-  <line x1="318" y1="141" x2="318" y2="193" class="map"/>
-  <line x1="336" y1="141" x2="336" y2="193" class="map"/>
-  <line x1="354" y1="141" x2="354" y2="193" class="map"/>
-  <line x1="372" y1="141" x2="372" y2="193" class="map"/>
-  <line x1="390" y1="141" x2="390" y2="193" class="map"/>
-  <line x1="408" y1="141" x2="408" y2="193" class="map"/>
-  <text x="450" y="129" class="oktext">A bit set on hot entries</text>
+  <g transform="scale(0.9473684210526315)">
+    <text x="20" y="28" class="title type-heading">Zapping a shadow page discards its accessed (A) bits</text>
+    <text x="20" y="48" class="muted">One last-level shadow page maps one 2 MiB region: 512 entries, one per 4 KiB guest page (16 drawn).</text>
+    <text x="20" y="64" class="muted">Small box above an entry: its A bit. H: hot guest page; unmarked pages are cold.</text>
+    <text x="20" y="122" class="b type-subheading">shadow page</text>
+    <text x="20" y="138" class="muted">512 entries</text>
+    <rect x="130" y="110" width="16" height="28" rx="2" class="full" />
+    <rect x="148" y="110" width="16" height="28" rx="2" class="full" />
+    <rect x="166" y="110" width="16" height="28" rx="2" class="full" />
+    <rect x="184" y="110" width="16" height="28" rx="2" class="full" />
+    <rect x="202" y="110" width="16" height="28" rx="2" class="full" />
+    <rect x="220" y="110" width="16" height="28" rx="2" class="full" />
+    <rect x="238" y="110" width="16" height="28" rx="2" class="full" />
+    <rect x="256" y="110" width="16" height="28" rx="2" class="full" />
+    <rect x="274" y="110" width="16" height="28" rx="2" class="full" />
+    <rect x="292" y="110" width="16" height="28" rx="2" class="full" />
+    <rect x="310" y="110" width="16" height="28" rx="2" class="full" />
+    <rect x="328" y="110" width="16" height="28" rx="2" class="full" />
+    <rect x="346" y="110" width="16" height="28" rx="2" class="full" />
+    <rect x="364" y="110" width="16" height="28" rx="2" class="full" />
+    <rect x="382" y="110" width="16" height="28" rx="2" class="full" />
+    <rect x="400" y="110" width="16" height="28" rx="2" class="full" />
+    <g class="a w1">
+      <text x="118" y="105" text-anchor="end" class="muted">A bits</text>
+      <rect x="133" y="98" width="10" height="8" rx="1" class="empty" />
+      <rect x="151" y="98" width="10" height="8" rx="1" class="abit" />
+      <rect x="169" y="98" width="10" height="8" rx="1" class="abit" />
+      <rect x="187" y="98" width="10" height="8" rx="1" class="empty" />
+      <rect x="205" y="98" width="10" height="8" rx="1" class="empty" />
+      <rect x="223" y="98" width="10" height="8" rx="1" class="abit" />
+      <rect x="241" y="98" width="10" height="8" rx="1" class="abit" />
+      <rect x="259" y="98" width="10" height="8" rx="1" class="empty" />
+      <rect x="277" y="98" width="10" height="8" rx="1" class="empty" />
+      <rect x="295" y="98" width="10" height="8" rx="1" class="abit" />
+      <rect x="313" y="98" width="10" height="8" rx="1" class="empty" />
+      <rect x="331" y="98" width="10" height="8" rx="1" class="empty" />
+      <rect x="349" y="98" width="10" height="8" rx="1" class="abit" />
+      <rect x="367" y="98" width="10" height="8" rx="1" class="abit" />
+      <rect x="385" y="98" width="10" height="8" rx="1" class="empty" />
+      <rect x="403" y="98" width="10" height="8" rx="1" class="empty" />
+      <line x1="138" y1="141" x2="138" y2="193" class="map" />
+      <line x1="156" y1="141" x2="156" y2="193" class="map" />
+      <line x1="174" y1="141" x2="174" y2="193" class="map" />
+      <line x1="192" y1="141" x2="192" y2="193" class="map" />
+      <line x1="210" y1="141" x2="210" y2="193" class="map" />
+      <line x1="228" y1="141" x2="228" y2="193" class="map" />
+      <line x1="246" y1="141" x2="246" y2="193" class="map" />
+      <line x1="264" y1="141" x2="264" y2="193" class="map" />
+      <line x1="282" y1="141" x2="282" y2="193" class="map" />
+      <line x1="300" y1="141" x2="300" y2="193" class="map" />
+      <line x1="318" y1="141" x2="318" y2="193" class="map" />
+      <line x1="336" y1="141" x2="336" y2="193" class="map" />
+      <line x1="354" y1="141" x2="354" y2="193" class="map" />
+      <line x1="372" y1="141" x2="372" y2="193" class="map" />
+      <line x1="390" y1="141" x2="390" y2="193" class="map" />
+      <line x1="408" y1="141" x2="408" y2="193" class="map" />
+      <text x="450" y="129" class="oktext">A bit set on hot entries</text>
+    </g>
+    <text x="20" y="208" class="b type-subheading">guest pages</text>
+    <text x="20" y="224" class="muted">4 KiB each</text>
+    <rect x="130" y="196" width="16" height="28" rx="2" class="empty" />
+    <rect x="148" y="196" width="16" height="28" rx="2" class="full" />
+    <text x="156" y="214" text-anchor="middle" class="hl">H</text>
+    <rect x="166" y="196" width="16" height="28" rx="2" class="full" />
+    <text x="174" y="214" text-anchor="middle" class="hl">H</text>
+    <rect x="184" y="196" width="16" height="28" rx="2" class="empty" />
+    <rect x="202" y="196" width="16" height="28" rx="2" class="empty" />
+    <rect x="220" y="196" width="16" height="28" rx="2" class="full" />
+    <text x="228" y="214" text-anchor="middle" class="hl">H</text>
+    <rect x="238" y="196" width="16" height="28" rx="2" class="full" />
+    <text x="246" y="214" text-anchor="middle" class="hl">H</text>
+    <rect x="256" y="196" width="16" height="28" rx="2" class="empty" />
+    <rect x="274" y="196" width="16" height="28" rx="2" class="empty" />
+    <rect x="292" y="196" width="16" height="28" rx="2" class="full" />
+    <text x="300" y="214" text-anchor="middle" class="hl">H</text>
+    <rect x="310" y="196" width="16" height="28" rx="2" class="empty" />
+    <rect x="328" y="196" width="16" height="28" rx="2" class="empty" />
+    <rect x="346" y="196" width="16" height="28" rx="2" class="full" />
+    <text x="354" y="214" text-anchor="middle" class="hl">H</text>
+    <rect x="364" y="196" width="16" height="28" rx="2" class="full" />
+    <text x="372" y="214" text-anchor="middle" class="hl">H</text>
+    <rect x="382" y="196" width="16" height="28" rx="2" class="empty" />
+    <rect x="400" y="196" width="16" height="28" rx="2" class="empty" />
+    <line x1="20" y1="262" x2="740" y2="262" class="rule" />
+    <g class="a w2 fin">
+      <rect x="124" y="93" width="298" height="50" rx="6" class="ring" />
+      <rect x="128" y="108" width="290" height="32" rx="3" class="hot" />
+      <text x="273" y="129" text-anchor="middle" class="onhot">zapped</text>
+      <text x="450" y="129" class="num">zapped: A bits discarded</text>
+    </g>
+    <g class="a w4 fin">
+      <rect x="124" y="190" width="298" height="40" rx="6" class="ring" />
+      <text x="450" y="207" class="num">host reclaim: all “not used”</text>
+      <text x="450" y="223" class="muted">KVM finds no shadow entry</text>
+    </g>
+    <g class="a w6 fin">
+      <rect x="148" y="196" width="16" height="28" rx="2" class="hot" />
+      <text x="156" y="214" text-anchor="middle" class="onhl">H</text>
+      <rect x="166" y="196" width="16" height="28" rx="2" class="hot" />
+      <text x="174" y="214" text-anchor="middle" class="onhl">H</text>
+      <rect x="184" y="196" width="16" height="28" rx="2" class="hot" />
+      <rect x="220" y="196" width="16" height="28" rx="2" class="hot" />
+      <text x="228" y="214" text-anchor="middle" class="onhl">H</text>
+      <rect x="238" y="196" width="16" height="28" rx="2" class="hot" />
+      <text x="246" y="214" text-anchor="middle" class="onhl">H</text>
+      <rect x="274" y="196" width="16" height="28" rx="2" class="hot" />
+      <rect x="292" y="196" width="16" height="28" rx="2" class="hot" />
+      <text x="300" y="214" text-anchor="middle" class="onhl">H</text>
+      <rect x="346" y="196" width="16" height="28" rx="2" class="hot" />
+      <text x="354" y="214" text-anchor="middle" class="onhl">H</text>
+      <rect x="364" y="196" width="16" height="28" rx="2" class="hot" />
+      <text x="372" y="214" text-anchor="middle" class="onhl">H</text>
+      <rect x="382" y="196" width="16" height="28" rx="2" class="hot" />
+      <text x="450" y="245" class="num">swapped out, hot pages too</text>
+    </g>
+    <text x="20" y="292" class="a w1">The CPU has set the accessed bit on each hot page's entry; cold entries stay clear.</text>
+    <text x="20" y="292" class="a w3">The cache is full, and the eviction policy zaps this shadow page. Its accessed bits go with it.</text>
+    <text x="20" y="292" class="a w5">Host reclaim asks which pages were used recently. Without entries, KVM reports none as used.</text>
+    <text x="20" y="292" class="a w7">Host reclaim swaps out pages from the region, hot ones included.</text>
+    <text x="20" y="292" class="b a w8 fin type-subheading">Evicting a shadow page erases its record of use, whichever policy picked it.</text>
   </g>
-  <text x="20" y="208" class="b">guest pages</text>
-  <text x="20" y="224" class="muted">4 KiB each</text>
-  <rect x="130" y="196" width="16" height="28" rx="2" class="empty"/>
-  <rect x="148" y="196" width="16" height="28" rx="2" class="full"/>
-  <text x="156" y="214" text-anchor="middle" class="hl">H</text>
-  <rect x="166" y="196" width="16" height="28" rx="2" class="full"/>
-  <text x="174" y="214" text-anchor="middle" class="hl">H</text>
-  <rect x="184" y="196" width="16" height="28" rx="2" class="empty"/>
-  <rect x="202" y="196" width="16" height="28" rx="2" class="empty"/>
-  <rect x="220" y="196" width="16" height="28" rx="2" class="full"/>
-  <text x="228" y="214" text-anchor="middle" class="hl">H</text>
-  <rect x="238" y="196" width="16" height="28" rx="2" class="full"/>
-  <text x="246" y="214" text-anchor="middle" class="hl">H</text>
-  <rect x="256" y="196" width="16" height="28" rx="2" class="empty"/>
-  <rect x="274" y="196" width="16" height="28" rx="2" class="empty"/>
-  <rect x="292" y="196" width="16" height="28" rx="2" class="full"/>
-  <text x="300" y="214" text-anchor="middle" class="hl">H</text>
-  <rect x="310" y="196" width="16" height="28" rx="2" class="empty"/>
-  <rect x="328" y="196" width="16" height="28" rx="2" class="empty"/>
-  <rect x="346" y="196" width="16" height="28" rx="2" class="full"/>
-  <text x="354" y="214" text-anchor="middle" class="hl">H</text>
-  <rect x="364" y="196" width="16" height="28" rx="2" class="full"/>
-  <text x="372" y="214" text-anchor="middle" class="hl">H</text>
-  <rect x="382" y="196" width="16" height="28" rx="2" class="empty"/>
-  <rect x="400" y="196" width="16" height="28" rx="2" class="empty"/>
-  <line x1="20" y1="262" x2="740" y2="262" class="rule"/>
-  <g class="a w2 fin">
-  <rect x="124" y="93" width="298" height="50" rx="6" class="ring"/>
-  <rect x="128" y="108" width="290" height="32" rx="3" class="hot"/>
-  <text x="273" y="129" text-anchor="middle" class="onhot">zapped</text>
-  <text x="450" y="129" class="num">zapped: A bits discarded</text>
-  </g>
-  <g class="a w4 fin">
-  <rect x="124" y="190" width="298" height="40" rx="6" class="ring"/>
-  <text x="450" y="207" class="num">host reclaim: all “not used”</text>
-  <text x="450" y="223" class="muted">KVM finds no shadow entry</text>
-  </g>
-  <g class="a w6 fin">
-  <rect x="148" y="196" width="16" height="28" rx="2" class="hot"/>
-  <text x="156" y="214" text-anchor="middle" class="onhl">H</text>
-  <rect x="166" y="196" width="16" height="28" rx="2" class="hot"/>
-  <text x="174" y="214" text-anchor="middle" class="onhl">H</text>
-  <rect x="184" y="196" width="16" height="28" rx="2" class="hot"/>
-  <rect x="220" y="196" width="16" height="28" rx="2" class="hot"/>
-  <text x="228" y="214" text-anchor="middle" class="onhl">H</text>
-  <rect x="238" y="196" width="16" height="28" rx="2" class="hot"/>
-  <text x="246" y="214" text-anchor="middle" class="onhl">H</text>
-  <rect x="274" y="196" width="16" height="28" rx="2" class="hot"/>
-  <rect x="292" y="196" width="16" height="28" rx="2" class="hot"/>
-  <text x="300" y="214" text-anchor="middle" class="onhl">H</text>
-  <rect x="346" y="196" width="16" height="28" rx="2" class="hot"/>
-  <text x="354" y="214" text-anchor="middle" class="onhl">H</text>
-  <rect x="364" y="196" width="16" height="28" rx="2" class="hot"/>
-  <text x="372" y="214" text-anchor="middle" class="onhl">H</text>
-  <rect x="382" y="196" width="16" height="28" rx="2" class="hot"/>
-  <text x="450" y="245" class="num">swapped out, hot pages too</text>
-  </g>
-  <text x="20" y="292" class="a w1">The CPU has set the accessed bit on each hot page's entry; cold entries stay clear.</text>
-  <text x="20" y="292" class="a w3">The cache is full, and the eviction policy zaps this shadow page. Its accessed bits go with it.</text>
-  <text x="20" y="292" class="a w5">Host reclaim asks which pages were used recently. Without entries, KVM reports none as used.</text>
-  <text x="20" y="292" class="a w7">Host reclaim swaps out pages from the region, hot ones included.</text>
-  <text x="20" y="292" class="b a w8 fin">Evicting a shadow page erases its record of use, whichever policy picked it.</text>
 </svg>

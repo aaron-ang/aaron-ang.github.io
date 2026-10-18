@@ -1,113 +1,293 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 340" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Animated leveled vs tiered compaction with size ratio T = 3: three flushes are merged into a single run per level in the leveled tree, forcing L1 and L2 to be rewritten, while the tiered tree stacks up to T runs per level and merges them into one new run in the next level.">
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 720 323"
+  font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+  role="img"
+  aria-label="Animated leveled vs tiered compaction with size ratio T = 3: three flushes are merged into a single run per level in the leveled tree, forcing L1 and L2 to be rewritten, while the tiered tree stacks up to T runs per level and merges them into one new run in the next level."
+  width="720"
+  height="323"
+  data-diagram-width="720"
+>
   <style>
-    :root { --fg: #222; --muted: #777; --full: #cfcfcf; --empty: #ffffff; --edge: #999; --probe: #d9480f; --ok: #2b8a3e; --chip: #f4f4f4; }
+    :root {
+      --fg: #222;
+      --full: #cfcfcf;
+      --empty: #ffffff;
+      --edge: #999;
+      --probe: #d9480f;
+      --ok: #2b8a3e;
+      --muted: #707071;
+      --label-load: #8a2c0a;
+      --label-compute: #237a36;
+      --type-heading: 21.11110929px;
+      --type-subheading: 16.888887px;
+      --type-label: 14.77777651px;
+    }
     @media (prefers-color-scheme: dark) {
-      :root { --fg: #ddd; --muted: #999; --full: #555; --empty: #1e1e1e; --edge: #777; --probe: #ff8a4c; --ok: #69db7c; --chip: #2a2a2a; }
+      :root {
+        --fg: #ddd;
+        --full: #555;
+        --empty: #1e1e1e;
+        --edge: #777;
+        --probe: #ff8a4c;
+        --ok: #69db7c;
+      }
     }
-    text { fill: var(--fg); font-size: 14px; }
-    .muted { fill: var(--muted); font-size: 12px; }
-    .title { font-weight: 600; font-size: 15px; }
-    .foot { font-size: 13px; }
-    .full { fill: var(--full); stroke: var(--edge); }
-    .cap { fill: var(--empty); stroke: var(--edge); stroke-dasharray: 4 3; }
-    .new { fill: var(--ok); stroke: var(--ok); }
-    .ring { fill: none; stroke: var(--probe); stroke-width: 2.5; }
-    .num { fill: var(--probe); font-weight: 600; font-size: 12px; }
-    .oktext { fill: var(--ok); font-weight: 600; font-size: 12px; }
-    .div { stroke: var(--edge); stroke-dasharray: 4 4; }
-    .a { opacity: 0; animation: 33.6s linear infinite; }
+    text {
+      fill: var(--fg);
+      font-variant-numeric: lining-nums tabular-nums;
+      font-size: var(--type-label);
+    }
+    .muted {
+      fill: var(--muted);
+    }
+    .full {
+      fill: var(--full);
+      stroke: var(--edge);
+    }
+    .cap {
+      fill: var(--empty);
+      stroke: var(--edge);
+      stroke-dasharray: 4 3;
+    }
+    .new {
+      fill: var(--ok);
+      stroke: var(--ok);
+    }
+    .ring {
+      fill: none;
+      stroke: var(--probe);
+      stroke-width: 2.5;
+    }
+    .num {
+      font-weight: 600;
+      fill: var(--label-load);
+    }
+    .oktext {
+      font-weight: 600;
+      fill: var(--label-compute);
+    }
+    .div {
+      stroke: var(--edge);
+      stroke-dasharray: 4 4;
+    }
+    .a {
+      opacity: 0;
+      animation: 33.6s linear infinite;
+    }
     /* 33.6s loop, 8 steps starting at 0.9, 3.7, 7.2, 9, 12.1, 13.9, 17.7, 25.3 s; final frame holds 7.4s, then fades. */
-    .f1 { animation-name: f1; }  /* flush 1 in memtable row: step 1-2, 0.9s to 3.7s */
-    .f2 { animation-name: f2; }  /* flush 2 in memtable row: step 3-4, 7.2s to 9s */
-    .f3 { animation-name: f3; }  /* flush 3 in memtable row: step 5-6, 12.1s to 13.9s */
-    .p1 { animation-name: p1; }  /* after flush 1: step 2-4, 3.7s to 9s */
-    .p2 { animation-name: p2; }  /* after flush 2: step 4-6, 9s to 13.9s */
-    .p3 { animation-name: p3; }  /* after flush 3: L1 full / T runs: step 6-7, 13.9s to 17.7s */
-    .t1 { animation-name: t1; }  /* tiered run 1 in L1: step 2-7, 3.7s to 17.7s */
-    .t2 { animation-name: t2; }  /* tiered run 2 in L1: step 4-7, 9s to 17.7s */
-    .t3 { animation-name: t3; }  /* tiered run 3 in L1: step 6-7, 13.9s to 17.7s */
-    .l2old { animation-name: l2old; }  /* leveled L2 before merge: step base-7, 0s to 17.7s */
-    .l2new { animation-name: l2new; }  /* merge into L2: step 7+, 17.7s to end */
-    .rd { animation-name: rd; }  /* read cost: step 8+, 25.3s to end */
-    @keyframes f1 { 0.00%, 2.68% { opacity: 0 } 3.12%, 11.01% { opacity: 1 } 11.46%, 100.00% { opacity: 0 } }
-    @keyframes f2 { 0.00%, 21.43% { opacity: 0 } 21.88%, 26.79% { opacity: 1 } 27.23%, 100.00% { opacity: 0 } }
-    @keyframes f3 { 0.00%, 36.01% { opacity: 0 } 36.46%, 41.37% { opacity: 1 } 41.82%, 100.00% { opacity: 0 } }
-    @keyframes p1 { 0.00%, 11.01% { opacity: 0 } 11.46%, 26.79% { opacity: 1 } 27.23%, 100.00% { opacity: 0 } }
-    @keyframes p2 { 0.00%, 26.79% { opacity: 0 } 27.23%, 41.37% { opacity: 1 } 41.82%, 100.00% { opacity: 0 } }
-    @keyframes p3 { 0.00%, 41.37% { opacity: 0 } 41.82%, 52.68% { opacity: 1 } 53.12%, 100.00% { opacity: 0 } }
-    @keyframes t1 { 0.00%, 11.01% { opacity: 0 } 11.46%, 52.68% { opacity: 1 } 53.12%, 100.00% { opacity: 0 } }
-    @keyframes t2 { 0.00%, 26.79% { opacity: 0 } 27.23%, 52.68% { opacity: 1 } 53.12%, 100.00% { opacity: 0 } }
-    @keyframes t3 { 0.00%, 41.37% { opacity: 0 } 41.82%, 52.68% { opacity: 1 } 53.12%, 100.00% { opacity: 0 } }
-    @keyframes l2old { 0.00%, 52.68% { opacity: 1 } 53.12%, 97.32% { opacity: 0 } 98.81%, 100.00% { opacity: 1 } }
-    @keyframes l2new { 0.00%, 52.68% { opacity: 0 } 53.12%, 97.32% { opacity: 1 } 98.81%, 100.00% { opacity: 0 } }
-    @keyframes rd { 0.00%, 75.30% { opacity: 0 } 75.74%, 97.32% { opacity: 1 } 98.81%, 100.00% { opacity: 0 } }
-    @media (prefers-reduced-motion: reduce) {
-      .a { animation: none; opacity: 0; }
-      .a.fin { opacity: 1; }
+    .f1 {
+      animation-name: f1;
+    } /* flush 1 in memtable row: step 1-2, 0.9s to 3.7s */
+    .f2 {
+      animation-name: f2;
+    } /* flush 2 in memtable row: step 3-4, 7.2s to 9s */
+    .f3 {
+      animation-name: f3;
+    } /* flush 3 in memtable row: step 5-6, 12.1s to 13.9s */
+    .p1 {
+      animation-name: p1;
+    } /* after flush 1: step 2-4, 3.7s to 9s */
+    .p2 {
+      animation-name: p2;
+    } /* after flush 2: step 4-6, 9s to 13.9s */
+    .p3 {
+      animation-name: p3;
+    } /* after flush 3: L1 full / T runs: step 6-7, 13.9s to 17.7s */
+    .t1 {
+      animation-name: t1;
+    } /* tiered run 1 in L1: step 2-7, 3.7s to 17.7s */
+    .t2 {
+      animation-name: t2;
+    } /* tiered run 2 in L1: step 4-7, 9s to 17.7s */
+    .t3 {
+      animation-name: t3;
+    } /* tiered run 3 in L1: step 6-7, 13.9s to 17.7s */
+    .l2old {
+      animation-name: l2old;
+    } /* leveled L2 before merge: step base-7, 0s to 17.7s */
+    .l2new {
+      animation-name: l2new;
+    } /* merge into L2: step 7+, 17.7s to end */
+    .rd {
+      animation-name: rd;
+    } /* read cost: step 8+, 25.3s to end */
+    @keyframes f1 {
+      0.00%, 2.68% { opacity: 0; }
+      3.12%, 11.01% { opacity: 1; }
+      11.46%, 100.00% { opacity: 0; }
     }
-    .mvar { font-family: 'Times New Roman', Times, 'STIX Two Text', serif; font-style: italic; font-size: 1.1em; }
+    @keyframes f2 {
+      0.00%, 21.43% { opacity: 0; }
+      21.88%, 26.79% { opacity: 1; }
+      27.23%, 100.00% { opacity: 0; }
+    }
+    @keyframes f3 {
+      0.00%, 36.01% { opacity: 0; }
+      36.46%, 41.37% { opacity: 1; }
+      41.82%, 100.00% { opacity: 0; }
+    }
+    @keyframes p1 {
+      0.00%, 11.01% { opacity: 0; }
+      11.46%, 26.79% { opacity: 1; }
+      27.23%, 100.00% { opacity: 0; }
+    }
+    @keyframes p2 {
+      0.00%, 26.79% { opacity: 0; }
+      27.23%, 41.37% { opacity: 1; }
+      41.82%, 100.00% { opacity: 0; }
+    }
+    @keyframes p3 {
+      0.00%, 41.37% { opacity: 0; }
+      41.82%, 52.68% { opacity: 1; }
+      53.12%, 100.00% { opacity: 0; }
+    }
+    @keyframes t1 {
+      0.00%, 11.01% { opacity: 0; }
+      11.46%, 52.68% { opacity: 1; }
+      53.12%, 100.00% { opacity: 0; }
+    }
+    @keyframes t2 {
+      0.00%, 26.79% { opacity: 0; }
+      27.23%, 52.68% { opacity: 1; }
+      53.12%, 100.00% { opacity: 0; }
+    }
+    @keyframes t3 {
+      0.00%, 41.37% { opacity: 0; }
+      41.82%, 52.68% { opacity: 1; }
+      53.12%, 100.00% { opacity: 0; }
+    }
+    @keyframes l2old {
+      0.00%, 52.68% { opacity: 1; }
+      53.12%, 97.32% { opacity: 0; }
+      98.81%, 100.00% { opacity: 1; }
+    }
+    @keyframes l2new {
+      0.00%, 52.68% { opacity: 0; }
+      53.12%, 97.32% { opacity: 1; }
+      98.81%, 100.00% { opacity: 0; }
+    }
+    @keyframes rd {
+      0.00%, 75.30% { opacity: 0; }
+      75.74%, 97.32% { opacity: 1; }
+      98.81%, 100.00% { opacity: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .a {
+        animation: none;
+        opacity: 0;
+      }
+      .a.fin {
+        opacity: 1;
+      }
+    }
+    .mvar {
+      font-family: "Times New Roman", Times, "STIX Two Text", serif;
+      font-style: italic;
+    }
+    .title {
+      font-weight: 700;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --muted: #aaa;
+        --label-load: #ff9a64;
+        --label-compute: #82df92;
+      }
+    }
+    /* Typography adapted from ONS chart guidance:
+    https://service-manual.ons.gov.uk/data-visualisation/build-specifications/typography
+    20px headings, 16px subheadings, 14px labels at native display width.
+    Variables compensate for the original graphics coordinate scale. */
+    .type-heading {
+      font-size: var(--type-heading);
+    }
+    .type-subheading {
+      font-size: var(--type-subheading);
+    }
+
   </style>
-  <text x="20" y="26" class="title">Leveled</text>
-  <text x="92" y="26" class="muted">1 sorted run per level, <tspan class="mvar">T</tspan> = 3</text>
-  <text x="20" y="81" class="muted">flush</text>
-  <text x="20" y="121">L1</text>
-  <text x="20" y="161">L2</text>
-  <text x="20" y="201">L3</text>
-  <rect x="60" y="106" width="30" height="20" rx="3" class="cap"/>
-  <rect x="60" y="146" width="90" height="20" rx="3" class="cap"/>
-  <rect x="60" y="186" width="270" height="20" rx="3" class="cap"/>
-  <rect x="60" y="186" width="90" height="20" rx="3" class="full"/>
-  <g class="a f1"><rect x="60" y="66" width="10" height="20" rx="3" class="full"/><text x="78" y="81" class="muted">flush 1 (1 unit) &#8595;</text></g>
-  <g class="a f2"><rect x="60" y="66" width="10" height="20" rx="3" class="full"/><text x="78" y="81" class="muted">flush 2 (1 unit) &#8595;</text></g>
-  <g class="a f3"><rect x="60" y="66" width="10" height="20" rx="3" class="full"/><text x="78" y="81" class="muted">flush 3 (1 unit) &#8595;</text></g>
-  <rect x="60" y="146" width="30" height="20" rx="3" class="full a l2old"/>
-  <rect x="60" y="146" width="60" height="20" rx="3" class="new a l2new fin"/>
-  <rect x="60" y="106" width="10" height="20" rx="3" class="full a p1"/>
-  <rect x="60" y="106" width="20" height="20" rx="3" class="full a p2"/>
-  <rect x="60" y="106" width="30" height="20" rx="3" class="full a p3"/>
-  <rect x="57" y="103" width="36" height="26" rx="5" class="ring a p3"/>
-  <text x="106" y="121" class="muted a p1">merged into empty L1</text>
-  <text x="106" y="121" class="num a p2">flush 2 merged: rewrites L1</text>
-  <text x="106" y="121" class="num a p3">flush 3 merged: L1 full</text>
-  <text x="106" y="121" class="muted a l2new fin">rewritten twice, then merged down</text>
-  <text x="162" y="161" class="num a l2new fin">rewrites L2: 3 + 3 &#8594; 6</text>
-  <text x="20" y="236" class="a rd fin">Here, a lookup checks 2 runs (1 per level)</text>
-  <text x="400" y="26" class="title">Tiered</text>
-  <text x="460" y="26" class="muted">up to <tspan class="mvar">T</tspan> = 3 runs per level</text>
-  <text x="400" y="81" class="muted">flush</text>
-  <text x="400" y="121">L1</text>
-  <text x="400" y="161">L2</text>
-  <text x="400" y="201">L3</text>
-  <rect x="440" y="106" width="10" height="20" rx="3" class="cap"/>
-  <rect x="454" y="106" width="10" height="20" rx="3" class="cap"/>
-  <rect x="468" y="106" width="10" height="20" rx="3" class="cap"/>
-  <rect x="440" y="146" width="30" height="20" rx="3" class="cap"/>
-  <rect x="475" y="146" width="30" height="20" rx="3" class="cap"/>
-  <rect x="510" y="146" width="30" height="20" rx="3" class="cap"/>
-  <rect x="440" y="186" width="90" height="20" rx="3" class="cap"/>
-  <rect x="536" y="186" width="90" height="20" rx="3" class="cap"/>
-  <rect x="632" y="186" width="90" height="20" rx="3" class="cap"/>
-  <rect x="440" y="186" width="90" height="20" rx="3" class="full"/>
-  <g class="a f1"><rect x="440" y="66" width="10" height="20" rx="3" class="full"/><text x="458" y="81" class="muted">flush 1 (1 unit) &#8595;</text></g>
-  <g class="a f2"><rect x="440" y="66" width="10" height="20" rx="3" class="full"/><text x="458" y="81" class="muted">flush 2 (1 unit) &#8595;</text></g>
-  <g class="a f3"><rect x="440" y="66" width="10" height="20" rx="3" class="full"/><text x="458" y="81" class="muted">flush 3 (1 unit) &#8595;</text></g>
-  <rect x="440" y="146" width="30" height="20" rx="3" class="full"/>
-  <rect x="475" y="146" width="30" height="20" rx="3" class="new a l2new fin"/>
-  <rect x="440" y="106" width="10" height="20" rx="3" class="full a t1"/>
-  <rect x="454" y="106" width="10" height="20" rx="3" class="full a t2"/>
-  <rect x="468" y="106" width="10" height="20" rx="3" class="full a t3"/>
-  <rect x="437" y="103" width="44" height="26" rx="5" class="ring a p3"/>
-  <text x="494" y="121" class="muted a p1">new run (1 of 3)</text>
-  <text x="494" y="121" class="muted a p2">new run (2 of 3)</text>
-  <text x="494" y="121" class="num a p3">3 runs = <tspan class="mvar">T</tspan>: merge all</text>
-  <text x="494" y="121" class="muted a l2new fin">3 runs merged into 1, moved down</text>
-  <text x="553" y="161" class="oktext a l2new fin">new run; old run not rewritten</text>
-  <text x="400" y="236" class="a rd fin">Here, a lookup checks 3 runs (every run)</text>
-  <line x1="380" y1="10" x2="380" y2="244" class="div"/>
-  <line x1="20" y1="256" x2="740" y2="256" class="div"/>
-  <text x="20" y="280" class="foot">Leveled: 1 run per level, so no duplicate keys per level.</text>
-  <text x="20" y="300" class="foot">Better reads and less space, but more merging (rewrites).</text>
-  <text x="400" y="280" class="foot">Tiered: up to <tspan class="mvar">T</tspan> runs per level, merged lazily.</text>
-  <text x="400" y="300" class="foot">Better ingestion; more space and read cost.</text>
-  <text x="20" y="326" class="muted">Same three 1-unit flushes into both trees. Dashed outlines show capacity: 3, 9, 27 units.</text>
+  <g transform="scale(0.9473684210526315)">
+    <text x="20" y="26" class="title type-heading">Leveled</text>
+    <text x="140" y="26" class="muted">1 sorted run per level, <tspan class="mvar">T</tspan> = 3</text>
+    <text x="20" y="81" class="muted">flush</text>
+    <text x="20" y="121">L1</text>
+    <text x="20" y="161">L2</text>
+    <text x="20" y="201">L3</text>
+    <rect x="60" y="106" width="30" height="20" rx="3" class="cap" />
+    <rect x="60" y="146" width="90" height="20" rx="3" class="cap" />
+    <rect x="60" y="186" width="270" height="20" rx="3" class="cap" />
+    <rect x="60" y="186" width="90" height="20" rx="3" class="full" />
+    <g class="a f1">
+      <rect x="60" y="66" width="10" height="20" rx="3" class="full" />
+      <text x="78" y="81" class="muted">flush 1 (1 unit) ↓</text>
+    </g>
+    <g class="a f2">
+      <rect x="60" y="66" width="10" height="20" rx="3" class="full" />
+      <text x="78" y="81" class="muted">flush 2 (1 unit) ↓</text>
+    </g>
+    <g class="a f3">
+      <rect x="60" y="66" width="10" height="20" rx="3" class="full" />
+      <text x="78" y="81" class="muted">flush 3 (1 unit) ↓</text>
+    </g>
+    <rect x="60" y="146" width="30" height="20" rx="3" class="full a l2old" />
+    <rect x="60" y="146" width="60" height="20" rx="3" class="new a l2new fin" />
+    <rect x="60" y="106" width="10" height="20" rx="3" class="full a p1" />
+    <rect x="60" y="106" width="20" height="20" rx="3" class="full a p2" />
+    <rect x="60" y="106" width="30" height="20" rx="3" class="full a p3" />
+    <rect x="57" y="103" width="36" height="26" rx="5" class="ring a p3" />
+    <text x="106" y="121" class="muted a p1">merged into empty L1</text>
+    <text x="106" y="121" class="num a p2">flush 2 merged: rewrites L1</text>
+    <text x="106" y="121" class="num a p3">flush 3 merged: L1 full</text>
+    <text x="106" y="121" class="muted a l2new fin">rewritten twice, then merged down</text>
+    <text x="162" y="161" class="num a l2new fin">rewrites L2: 3 + 3 → 6</text>
+    <text x="20" y="236" class="a rd fin">Here, a lookup checks 2 runs (1 per level)</text>
+    <text x="400" y="26" class="title type-heading">Tiered</text>
+    <text x="490" y="26" class="muted">up to <tspan class="mvar">T</tspan> = 3 runs per level</text>
+    <text x="400" y="81" class="muted">flush</text>
+    <text x="400" y="121">L1</text>
+    <text x="400" y="161">L2</text>
+    <text x="400" y="201">L3</text>
+    <rect x="440" y="106" width="10" height="20" rx="3" class="cap" />
+    <rect x="454" y="106" width="10" height="20" rx="3" class="cap" />
+    <rect x="468" y="106" width="10" height="20" rx="3" class="cap" />
+    <rect x="440" y="146" width="30" height="20" rx="3" class="cap" />
+    <rect x="475" y="146" width="30" height="20" rx="3" class="cap" />
+    <rect x="510" y="146" width="30" height="20" rx="3" class="cap" />
+    <rect x="440" y="186" width="90" height="20" rx="3" class="cap" />
+    <rect x="536" y="186" width="90" height="20" rx="3" class="cap" />
+    <rect x="632" y="186" width="90" height="20" rx="3" class="cap" />
+    <rect x="440" y="186" width="90" height="20" rx="3" class="full" />
+    <g class="a f1">
+      <rect x="440" y="66" width="10" height="20" rx="3" class="full" />
+      <text x="458" y="81" class="muted">flush 1 (1 unit) ↓</text>
+    </g>
+    <g class="a f2">
+      <rect x="440" y="66" width="10" height="20" rx="3" class="full" />
+      <text x="458" y="81" class="muted">flush 2 (1 unit) ↓</text>
+    </g>
+    <g class="a f3">
+      <rect x="440" y="66" width="10" height="20" rx="3" class="full" />
+      <text x="458" y="81" class="muted">flush 3 (1 unit) ↓</text>
+    </g>
+    <rect x="440" y="146" width="30" height="20" rx="3" class="full" />
+    <rect x="475" y="146" width="30" height="20" rx="3" class="new a l2new fin" />
+    <rect x="440" y="106" width="10" height="20" rx="3" class="full a t1" />
+    <rect x="454" y="106" width="10" height="20" rx="3" class="full a t2" />
+    <rect x="468" y="106" width="10" height="20" rx="3" class="full a t3" />
+    <rect x="437" y="103" width="44" height="26" rx="5" class="ring a p3" />
+    <text x="494" y="121" class="muted a p1">new run (1 of 3)</text>
+    <text x="494" y="121" class="muted a p2">new run (2 of 3)</text>
+    <text x="494" y="121" class="num a p3">3 runs = <tspan class="mvar">T</tspan>: merge all</text>
+    <text x="494" y="121" class="muted a l2new fin">3 runs merged into 1, moved down</text>
+    <text x="548" y="161" class="oktext a l2new fin">new run; old run not rewritten</text>
+    <text x="400" y="236" class="a rd fin">Here, a lookup checks 3 runs (every run)</text>
+    <line x1="380" y1="10" x2="380" y2="244" class="div" />
+    <line x1="20" y1="256" x2="740" y2="256" class="div" />
+    <text x="20" y="280" class="foot">Leveled: 1 run per level, so no duplicate keys per level.</text>
+    <text x="20" y="300" class="foot">Better reads and less space, but more merging (rewrites).</text>
+    <text x="400" y="280" class="foot">Tiered: up to <tspan class="mvar">T</tspan> runs per level, merged lazily.</text>
+    <text x="400" y="300" class="foot">Better ingestion; more space and read cost.</text>
+    <text x="20" y="326" class="muted">Same three 1-unit flushes into both trees. Dashed outlines show capacity: 3, 9, 27 units.</text>
+  </g>
 </svg>

@@ -1,0 +1,184 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 280 252"
+  width="280"
+  height="252"
+  role="img"
+  aria-labelledby="title desc"
+  font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif"
+>
+  <title id="title">Wider global loads</title>
+  <desc id="desc">A 32-float row uses 32 scalar load instructions or eight float4 load instructions; both transfer 128 bytes.</desc>
+  <style>
+    /* ONS chart typography: 20px title, 16px subheading, 14px labels/annotations.
+    https://service-manual.ons.gov.uk/data-visualisation/build-specifications/typography */
+    :root {
+      --fg: #222;
+      --muted: #707071;
+      --edge: #999;
+      --load: #b83c0b;
+      --ok: #237a36;
+      --type-heading: 20px;
+      --type-subheading: 16px;
+      --type-label: 14px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --fg: #ddd;
+        --muted: #aaa;
+        --edge: #888;
+        --load: #ff9a64;
+        --ok: #82df92;
+      }
+    }
+    text {
+      fill: var(--fg);
+      font-variant-numeric: lining-nums tabular-nums;
+      font-size: var(--type-label);
+    }
+    .title {
+      font-weight: 700;
+    }
+    .sub {
+      font-weight: 600;
+    }
+    .note {
+      fill: var(--muted);
+    }
+    .outline {
+      fill: none;
+      stroke: var(--edge);
+    }
+    .load {
+      fill: var(--load);
+      fill-opacity: 0.15;
+      stroke: var(--load);
+    }
+    .ok {
+      fill: var(--ok);
+      fill-opacity: 0.15;
+      stroke: var(--ok);
+    }
+    /* Typography adapted from ONS chart guidance:
+    https://service-manual.ons.gov.uk/data-visualisation/build-specifications/typography
+    20px headings, 16px subheadings, 14px labels at native display width.
+    Variables compensate for the original graphics coordinate scale. */
+    .type-heading {
+      font-size: var(--type-heading);
+    }
+    .type-subheading {
+      font-size: var(--type-subheading);
+    }
+
+  </style>
+  <text x="12" y="26" class="title type-heading">Wider global loads</text>
+  <text x="12" y="54" class="note">Same 32 floats, or 128 bytes.</text>
+  <text x="12" y="82" class="sub type-subheading">Scalar loads</text>
+  <rect x="12" y="94" width="8" height="22" rx="2" class="outline" />
+  <rect x="20" y="94" width="8" height="22" rx="2" class="outline" />
+  <rect x="28" y="94" width="8" height="22" rx="2" class="outline" />
+  <rect x="36" y="94" width="8" height="22" rx="2" class="outline" />
+  <rect x="44" y="94" width="8" height="22" rx="2" class="outline" />
+  <rect x="52" y="94" width="8" height="22" rx="2" class="outline" />
+  <rect x="60" y="94" width="8" height="22" rx="2" class="outline" />
+  <rect x="68" y="94" width="8" height="22" rx="2" class="outline" />
+  <rect x="76" y="94" width="8" height="22" rx="2" class="outline" />
+  <rect x="84" y="94" width="8" height="22" rx="2" class="outline" />
+  <rect x="92" y="94" width="8" height="22" rx="2" class="outline" />
+  <rect x="100" y="94" width="8" height="22" rx="2" class="outline" />
+  <rect x="108" y="94" width="8" height="22" rx="2" class="outline" />
+  <rect x="116" y="94" width="8" height="22" rx="2" class="outline" />
+  <rect x="124" y="94" width="8" height="22" rx="2" class="outline" />
+  <rect x="132" y="94" width="8" height="22" rx="2" class="outline" />
+  <rect x="140" y="94" width="8" height="22" rx="2" class="outline" />
+  <rect x="148" y="94" width="8" height="22" rx="2" class="outline" />
+  <rect x="156" y="94" width="8" height="22" rx="2" class="outline" />
+  <rect x="164" y="94" width="8" height="22" rx="2" class="outline" />
+  <rect x="172" y="94" width="8" height="22" rx="2" class="outline" />
+  <rect x="180" y="94" width="8" height="22" rx="2" class="outline" />
+  <rect x="188" y="94" width="8" height="22" rx="2" class="outline" />
+  <rect x="196" y="94" width="8" height="22" rx="2" class="outline" />
+  <rect x="204" y="94" width="8" height="22" rx="2" class="outline" />
+  <rect x="212" y="94" width="8" height="22" rx="2" class="outline" />
+  <rect x="220" y="94" width="8" height="22" rx="2" class="outline" />
+  <rect x="228" y="94" width="8" height="22" rx="2" class="outline" />
+  <rect x="236" y="94" width="8" height="22" rx="2" class="outline" />
+  <rect x="244" y="94" width="8" height="22" rx="2" class="outline" />
+  <rect x="252" y="94" width="8" height="22" rx="2" class="outline" />
+  <rect x="260" y="94" width="8" height="22" rx="2" class="outline" />
+  <rect x="12" y="94" width="8" height="22" rx="2" class="load" />
+  <rect x="20" y="94" width="8" height="22" rx="2" class="load" />
+  <rect x="28" y="94" width="8" height="22" rx="2" class="load" />
+  <rect x="36" y="94" width="8" height="22" rx="2" class="load" />
+  <rect x="44" y="94" width="8" height="22" rx="2" class="load" />
+  <rect x="52" y="94" width="8" height="22" rx="2" class="load" />
+  <rect x="60" y="94" width="8" height="22" rx="2" class="load" />
+  <rect x="68" y="94" width="8" height="22" rx="2" class="load" />
+  <rect x="76" y="94" width="8" height="22" rx="2" class="load" />
+  <rect x="84" y="94" width="8" height="22" rx="2" class="load" />
+  <rect x="92" y="94" width="8" height="22" rx="2" class="load" />
+  <rect x="100" y="94" width="8" height="22" rx="2" class="load" />
+  <rect x="108" y="94" width="8" height="22" rx="2" class="load" />
+  <rect x="116" y="94" width="8" height="22" rx="2" class="load" />
+  <rect x="124" y="94" width="8" height="22" rx="2" class="load" />
+  <rect x="132" y="94" width="8" height="22" rx="2" class="load" />
+  <rect x="140" y="94" width="8" height="22" rx="2" class="load" />
+  <rect x="148" y="94" width="8" height="22" rx="2" class="load" />
+  <rect x="156" y="94" width="8" height="22" rx="2" class="load" />
+  <rect x="164" y="94" width="8" height="22" rx="2" class="load" />
+  <rect x="172" y="94" width="8" height="22" rx="2" class="load" />
+  <rect x="180" y="94" width="8" height="22" rx="2" class="load" />
+  <rect x="188" y="94" width="8" height="22" rx="2" class="load" />
+  <rect x="196" y="94" width="8" height="22" rx="2" class="load" />
+  <rect x="204" y="94" width="8" height="22" rx="2" class="load" />
+  <rect x="212" y="94" width="8" height="22" rx="2" class="load" />
+  <rect x="220" y="94" width="8" height="22" rx="2" class="load" />
+  <rect x="228" y="94" width="8" height="22" rx="2" class="load" />
+  <rect x="236" y="94" width="8" height="22" rx="2" class="load" />
+  <rect x="244" y="94" width="8" height="22" rx="2" class="load" />
+  <rect x="252" y="94" width="8" height="22" rx="2" class="load" />
+  <rect x="260" y="94" width="8" height="22" rx="2" class="load" />
+  <text x="12" y="139" class="">32 instructions × 1 float</text>
+  <text x="12" y="170" class="sub type-subheading">float4 loads</text>
+  <rect x="12" y="182" width="8" height="22" rx="2" class="outline" />
+  <rect x="20" y="182" width="8" height="22" rx="2" class="outline" />
+  <rect x="28" y="182" width="8" height="22" rx="2" class="outline" />
+  <rect x="36" y="182" width="8" height="22" rx="2" class="outline" />
+  <rect x="44" y="182" width="8" height="22" rx="2" class="outline" />
+  <rect x="52" y="182" width="8" height="22" rx="2" class="outline" />
+  <rect x="60" y="182" width="8" height="22" rx="2" class="outline" />
+  <rect x="68" y="182" width="8" height="22" rx="2" class="outline" />
+  <rect x="76" y="182" width="8" height="22" rx="2" class="outline" />
+  <rect x="84" y="182" width="8" height="22" rx="2" class="outline" />
+  <rect x="92" y="182" width="8" height="22" rx="2" class="outline" />
+  <rect x="100" y="182" width="8" height="22" rx="2" class="outline" />
+  <rect x="108" y="182" width="8" height="22" rx="2" class="outline" />
+  <rect x="116" y="182" width="8" height="22" rx="2" class="outline" />
+  <rect x="124" y="182" width="8" height="22" rx="2" class="outline" />
+  <rect x="132" y="182" width="8" height="22" rx="2" class="outline" />
+  <rect x="140" y="182" width="8" height="22" rx="2" class="outline" />
+  <rect x="148" y="182" width="8" height="22" rx="2" class="outline" />
+  <rect x="156" y="182" width="8" height="22" rx="2" class="outline" />
+  <rect x="164" y="182" width="8" height="22" rx="2" class="outline" />
+  <rect x="172" y="182" width="8" height="22" rx="2" class="outline" />
+  <rect x="180" y="182" width="8" height="22" rx="2" class="outline" />
+  <rect x="188" y="182" width="8" height="22" rx="2" class="outline" />
+  <rect x="196" y="182" width="8" height="22" rx="2" class="outline" />
+  <rect x="204" y="182" width="8" height="22" rx="2" class="outline" />
+  <rect x="212" y="182" width="8" height="22" rx="2" class="outline" />
+  <rect x="220" y="182" width="8" height="22" rx="2" class="outline" />
+  <rect x="228" y="182" width="8" height="22" rx="2" class="outline" />
+  <rect x="236" y="182" width="8" height="22" rx="2" class="outline" />
+  <rect x="244" y="182" width="8" height="22" rx="2" class="outline" />
+  <rect x="252" y="182" width="8" height="22" rx="2" class="outline" />
+  <rect x="260" y="182" width="8" height="22" rx="2" class="outline" />
+  <rect x="12" y="182" width="32" height="22" rx="2" class="ok" />
+  <rect x="44" y="182" width="32" height="22" rx="2" class="ok" />
+  <rect x="76" y="182" width="32" height="22" rx="2" class="ok" />
+  <rect x="108" y="182" width="32" height="22" rx="2" class="ok" />
+  <rect x="140" y="182" width="32" height="22" rx="2" class="ok" />
+  <rect x="172" y="182" width="32" height="22" rx="2" class="ok" />
+  <rect x="204" y="182" width="32" height="22" rx="2" class="ok" />
+  <rect x="236" y="182" width="32" height="22" rx="2" class="ok" />
+  <text x="12" y="227" class="">8 instructions × 4 floats</text>
+</svg>

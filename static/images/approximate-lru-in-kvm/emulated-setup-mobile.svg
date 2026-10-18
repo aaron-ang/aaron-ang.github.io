@@ -1,0 +1,100 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 280 732"
+  width="280"
+  height="732"
+  role="img"
+  aria-labelledby="title desc"
+  font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif"
+>
+  <title id="title">Emulated x86 setup</title>
+  <desc id="desc">An Arm GB10 uses QEMU TCG to emulate an AMD EPYC x86 CPU with SVM. L1 runs debug-enabled modified KVM with shadow paging. L2 runs selftests and Redis. Only fault and eviction counts are meaningful, not emulated timings.</desc>
+  <style>
+    /* ONS chart typography: 20px title, 16px subheading, 14px labels/annotations.
+    https://service-manual.ons.gov.uk/data-visualisation/build-specifications/typography */
+    :root {
+      --fg: #222;
+      --muted: #707071;
+      --edge: #999;
+      --chip: #f5f5f5;
+      --type-heading: 20px;
+      --type-subheading: 16px;
+      --type-label: 14px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --fg: #ddd;
+        --muted: #aaa;
+        --edge: #888;
+        --chip: #292929;
+      }
+    }
+    text {
+      fill: var(--fg);
+      font-variant-numeric: lining-nums tabular-nums;
+      font-size: var(--type-label);
+    }
+    .title {
+      font-weight: 700;
+    }
+    .sub {
+      font-weight: 600;
+    }
+    .note {
+      fill: var(--muted);
+    }
+    .box {
+      fill: var(--chip);
+      stroke: var(--edge);
+    }
+    .arrow {
+      stroke: var(--fg);
+      fill: none;
+      stroke-width: 1.5;
+    }
+    /* Typography adapted from ONS chart guidance:
+    https://service-manual.ons.gov.uk/data-visualisation/build-specifications/typography
+    20px headings, 16px subheadings, 14px labels at native display width.
+    Variables compensate for the original graphics coordinate scale. */
+    .type-heading {
+      font-size: var(--type-heading);
+    }
+    .type-subheading {
+      font-size: var(--type-subheading);
+    }
+
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M0 0L10 5L0 10z" fill="var(--fg)" />
+    </marker>
+  </defs>
+  <text x="12" y="26" class="title type-heading">Emulated x86 setup</text>
+  <text x="12" y="54" class="note">Shadow paging; counts only.</text>
+  <rect x="12" y="80" width="256" height="98" rx="2" class="box" />
+  <text x="24" y="106" class="sub type-subheading">L2: selftests and Redis</text>
+  <text x="24" y="131" class="">lru_reuse_test</text>
+  <text x="24" y="151" class="">mmu_stress_test; redis-server</text>
+  <line x1="250" y1="178" x2="250" y2="208" class="arrow" marker-end="url(#arrow)" />
+  <text x="12" y="199" class="">Faults fill L1’s shadow cache.</text>
+  <rect x="12" y="219" width="256" height="160" rx="2" class="box" />
+  <text x="24" y="245" class="sub type-subheading">L1: modified KVM</text>
+  <text x="24" y="270" class="">Debug checks enabled:</text>
+  <text x="24" y="290" class="">KASAN, lockdep, lockup checks</text>
+  <text x="24" y="310" class="">tdp_mmu=0; kvm_amd.npt=0</text>
+  <text x="24" y="330" class="">Every guest page table</text>
+  <text x="24" y="350" class="">is shadowed.</text>
+  <line x1="140" y1="379" x2="140" y2="409" class="arrow" marker-end="url(#arrow)" />
+  <rect x="12" y="419" width="256" height="88" rx="2" class="box" />
+  <text x="24" y="445" class="sub type-subheading">QEMU TCG</text>
+  <text x="24" y="470" class="">Emulated AMD EPYC CPU</text>
+  <text x="24" y="490" class="">with SVM support.</text>
+  <line x1="140" y1="507" x2="140" y2="537" class="arrow" marker-end="url(#arrow)" />
+  <rect x="12" y="547" width="256" height="79" rx="2" class="box" />
+  <text x="24" y="573" class="sub type-subheading">L0: NVIDIA GB10</text>
+  <text x="24" y="597" class="">Arm CPU; no hardware</text>
+  <text x="24" y="617" class="">x86 virtualization.</text>
+  <text x="12" y="657" class="note">Fault and eviction counts</text>
+  <text x="12" y="677" class="note">are exact; emulated timings</text>
+  <text x="12" y="697" class="note">are not meaningful.</text>
+</svg>
