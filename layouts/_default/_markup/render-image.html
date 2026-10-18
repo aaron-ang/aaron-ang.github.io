@@ -16,6 +16,7 @@
   {{- if $scrollDiagram }}
   <div class="diagram-scroll{{ if $compactDiagram }} diagram-compact{{ end }}" style="{{ printf "--diagram-width: %dpx;" $diagramWidth | safeCSS }}" tabindex="0" role="region" aria-label="Diagram; scroll horizontally if needed">
   {{- end }}
+  <a href="{{ .Destination | safeURL }}">
   {{- if $compactDiagram }}
   <picture>
     <source media="(max-width: 480px)" srcset="{{ $compactDiagram | safeURL }}">
@@ -24,6 +25,7 @@
   {{- if $compactDiagram }}
   </picture>
   {{- end }}
+  </a>
   {{- if $scrollDiagram }}
   </div>
   {{- end }}
