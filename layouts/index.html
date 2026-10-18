@@ -1,7 +1,8 @@
 {{ define "main" }}
 {{ .Content }}
+<h2>Recent posts</h2>
 <ul class="blog-posts">
-  {{ range (where .Site.RegularPages "Section" "blog") }}
+  {{ range first 5 (where .Site.RegularPages "Section" "blog").ByDate.Reverse }}
   <li>
     <span>
       <i>
@@ -14,11 +15,5 @@
   </li>
   {{ end }}
 </ul>
-<small>
-  <div>
-    {{ range .Site.Taxonomies.tags }}
-    <a href="{{ .Page.Permalink }}">#{{ .Page.Title }}</a>&nbsp;
-    {{ end }}
-  </div>
-</small>
+<p><a href="{{ "blog/" | relURL }}">All posts →</a></p>
 {{ end }}
