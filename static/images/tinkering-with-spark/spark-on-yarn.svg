@@ -404,8 +404,8 @@
     <text x="618" y="113" class="muted" xml:space="preserve">  the Spark Driver</text>
     <text x="618" y="128" class="muted" xml:space="preserve">• containers host</text>
     <text x="618" y="143" class="muted" xml:space="preserve">  Spark Executors</text>
-    <text x="618" y="158" class="muted" xml:space="preserve">• executors run tasks</text>
-    <text x="618" y="173" class="muted" xml:space="preserve">  for the driver</text>
+    <text x="618" y="158" class="muted" xml:space="preserve">• executors run</text>
+    <text x="618" y="173" class="muted" xml:space="preserve">  driver’s tasks</text>
     <rect x="20" y="262" width="230" height="136" rx="8" class="box" />
     <text x="32" y="280" class="title type-subheading">NodeManager</text>
     <rect x="265" y="262" width="230" height="136" rx="8" class="box" />
@@ -489,16 +489,16 @@
     <g class="a ex fin">
       <rect x="273" y="290" width="104" height="64" rx="5" class="acccont" />
       <text x="325" y="306" text-anchor="middle" class="muted">Container</text>
-      <text x="325" y="323" text-anchor="middle" class="acctext">Spark Executor</text>
+      <text x="325" y="323" text-anchor="middle" class="acctext">Executor</text>
       <rect x="383" y="290" width="104" height="64" rx="5" class="acccont" />
       <text x="435" y="306" text-anchor="middle" class="muted">Container</text>
-      <text x="435" y="323" text-anchor="middle" class="acctext">Spark Executor</text>
+      <text x="435" y="323" text-anchor="middle" class="acctext">Executor</text>
       <rect x="518" y="290" width="104" height="64" rx="5" class="acccont" />
       <text x="570" y="306" text-anchor="middle" class="muted">Container</text>
-      <text x="570" y="323" text-anchor="middle" class="acctext">Spark Executor</text>
+      <text x="570" y="323" text-anchor="middle" class="acctext">Executor</text>
       <rect x="628" y="290" width="104" height="64" rx="5" class="acccont" />
       <text x="680" y="306" text-anchor="middle" class="muted">Container</text>
-      <text x="680" y="323" text-anchor="middle" class="acctext">Spark Executor</text>
+      <text x="680" y="323" text-anchor="middle" class="acctext">Executor</text>
     </g>
     <g class="a s6 accline fin">
       <path d="M 102 354 V 370 H 680 M 325 370 V 364 M 435 370 V 364 M 570 370 V 364 M 680 370 V 364 M 102 364 V 370" />

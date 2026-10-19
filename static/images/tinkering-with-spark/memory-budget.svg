@@ -1,11 +1,11 @@
 <svg
   xmlns="http://www.w3.org/2000/svg"
-  viewBox="0 0 720 371"
+  viewBox="0 0 720 395"
   font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
   role="img"
   aria-label="Animated memory budget: the driver starts with the default 5g memory plus 2g memoryOverhead, then --driver-memory 16g grows it to 16g plus 2g, still well under the 48 GiB safety cap of a 102 GiB container. The executor keeps 16g plus 4g while its cores go from 1 to 4."
   width="720"
-  height="371"
+  height="395"
   data-diagram-width="720"
 >
   <style>
@@ -244,7 +244,7 @@
         <rect x="130" y="140" width="96" height="28" class="heap" />
         <rect x="226" y="140" width="12" height="28" class="ovh" />
         <text x="246" y="159" class="val">16g + 2g = 18 GiB</text>
-        <text x="130" y="188" class="muted">memoryOverhead stays 2g (unchanged default)</text>
+        <text x="130" y="188" class="muted">memoryOverhead stays 2g</text>
       </g>
     </g>
     <g transform="translate(0 30)">
@@ -321,13 +321,13 @@
       <text x="150" y="344" class="muted">memory (on-heap)</text>
     </g>
     <g transform="translate(0 30)">
-      <rect x="270" y="332" width="14" height="14" class="ovh" />
+      <rect x="300" y="332" width="14" height="14" class="ovh" />
     </g>
     <g transform="translate(0 30)">
-      <text x="290" y="344" class="muted">memoryOverhead (non-heap)</text>
+      <text x="320" y="344" class="muted">memoryOverhead (non-heap)</text>
     </g>
     <g transform="translate(0 30)">
-      <text x="742" y="344" text-anchor="end" class="val">total = memory + memoryOverhead</text>
+      <text x="130" y="368" class="val">total = memory + memoryOverhead</text>
     </g>
   </g>
 </svg>

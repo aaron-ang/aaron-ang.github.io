@@ -192,7 +192,7 @@
       <text x="96" y="187" class="muted">kselftests: mmu_stress_test, demand_paging_test</text>
     </g>
     <g class="a w3 fin">
-      <rect x="96" y="200" width="360" height="28" rx="4" class="empty" style="stroke:var(--probe)" />
+      <rect x="96" y="200" width="430" height="28" rx="4" class="empty" style="stroke:var(--probe)" />
       <text x="106" y="219" class="mono num">tdp_mmu=0, min_alloc_pages=32, lru_mmu=0/1</text>
       <text x="96" y="248" class="muted" xml:space="preserve">lru_mmu=0: upstream FIFO    lru_mmu=1: CLOCK</text>
     </g>

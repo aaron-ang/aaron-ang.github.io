@@ -193,10 +193,18 @@
   </style>
   <g transform="scale(0.9473684210526315)">
     <text x="20" y="28" class="title type-heading">Zapping a shadow page discards its accessed (A) bits</text>
-    <text x="20" y="48" class="muted">One last-level shadow page maps one 2 MiB region: 512 entries, one per 4 KiB guest page (16 drawn).</text>
-    <text x="20" y="64" class="muted">Small box above an entry: its A bit. H: hot guest page; unmarked pages are cold.</text>
-    <text x="20" y="122" class="b type-subheading">shadow page</text>
-    <text x="20" y="138" class="muted">512 entries</text>
+    <text x="20" y="48" class="muted">A last-level shadow page has 512 entries mapping 4 KiB guest pages across a 2 MiB region.</text>
+    <g aria-label="Diagram key">
+      <rect x="20" y="56" width="10" height="8" rx="1" class="abit" />
+      <text x="38" y="65" class="muted">A bit</text>
+      <rect x="110" y="53" width="16" height="16" rx="2" class="full" />
+      <text x="118" y="65" text-anchor="middle" class="b">H</text>
+      <text x="134" y="65" class="muted">Hot guest page</text>
+      <rect x="270" y="53" width="16" height="16" rx="2" class="empty" />
+      <text x="294" y="65" class="muted">Cold guest page</text>
+    </g>
+    <text x="20" y="116" class="b type-subheading"><tspan x="20" dy="0">shadow</tspan><tspan x="20" dy="18">page</tspan></text>
+    <text x="20" y="152" class="muted">512 entries</text>
     <rect x="130" y="110" width="16" height="28" rx="2" class="full" />
     <rect x="148" y="110" width="16" height="28" rx="2" class="full" />
     <rect x="166" y="110" width="16" height="28" rx="2" class="full" />
@@ -213,8 +221,12 @@
     <rect x="364" y="110" width="16" height="28" rx="2" class="full" />
     <rect x="382" y="110" width="16" height="28" rx="2" class="full" />
     <rect x="400" y="110" width="16" height="28" rx="2" class="full" />
+    <g class="muted" aria-label="Additional entries">
+      <circle cx="427" cy="124" r="1.5" />
+      <circle cx="432" cy="124" r="1.5" />
+      <circle cx="437" cy="124" r="1.5" />
+    </g>
     <g class="a w1">
-      <text x="118" y="105" text-anchor="end" class="muted">A bits</text>
       <rect x="133" y="98" width="10" height="8" rx="1" class="empty" />
       <rect x="151" y="98" width="10" height="8" rx="1" class="abit" />
       <rect x="169" y="98" width="10" height="8" rx="1" class="abit" />
@@ -274,6 +286,11 @@
     <text x="372" y="214" text-anchor="middle" class="hl">H</text>
     <rect x="382" y="196" width="16" height="28" rx="2" class="empty" />
     <rect x="400" y="196" width="16" height="28" rx="2" class="empty" />
+    <g class="muted" aria-label="Additional entries">
+      <circle cx="427" cy="210" r="1.5" />
+      <circle cx="432" cy="210" r="1.5" />
+      <circle cx="437" cy="210" r="1.5" />
+    </g>
     <line x1="20" y1="262" x2="740" y2="262" class="rule" />
     <g class="a w2 fin">
       <rect x="124" y="93" width="298" height="50" rx="6" class="ring" />

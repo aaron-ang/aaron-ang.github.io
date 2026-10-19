@@ -347,7 +347,15 @@
   </style>
   <g transform="scale(0.9473684210526315)">
     <text x="20" y="28" class="title type-heading">Small cache: 32 pages</text>
-    <text x="20" y="48" class="muted">Each small box is a page's lru_ref bit.</text>
+    <g aria-label="Diagram key">
+      <rect x="20" y="46" width="36" height="26" rx="4" class="full" />
+      <text x="66" y="64" class="muted">Shadow page</text>
+      <rect x="210" y="46" width="40" height="26" rx="4" class="full" />
+      <rect x="221" y="50" width="18" height="18" rx="3" class="empty" />
+      <text x="230" y="64" text-anchor="middle" class="b">1</text>
+      <path d="M 239 59 H 268" fill="none" stroke="var(--fg)" />
+      <text x="278" y="64" class="muted">lru_ref bit (0 or 1)</text>
+    </g>
     <text x="60" y="92" class="muted">head (newest)</text>
     <text x="684" y="92" text-anchor="end" class="muted">tail (oldest)</text>
     <text x="372" y="92" text-anchor="middle" class="muted">8 of the 32 pages shown</text>

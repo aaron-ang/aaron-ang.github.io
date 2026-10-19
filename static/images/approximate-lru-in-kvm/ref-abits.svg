@@ -231,8 +231,17 @@
   </style>
   <g transform="scale(0.9473684210526315)">
     <text x="20" y="28" class="title type-heading">What the accessed (A) bits add</text>
-    <text x="20" y="48" class="muted">Each row of boxes is one last-level shadow page: 512 entries, not to scale. Gray: filled; white: not yet touched.</text>
-    <text x="20" y="64" class="muted">Small box above an entry: its A bit, set by the CPU. ▶: clock hand.</text>
+    <text x="20" y="48" class="muted">Each row shows part of a last-level shadow page (512 entries).</text>
+    <g aria-label="Diagram key">
+      <rect x="20" y="57" width="14" height="12" rx="2" class="full" />
+      <text x="40" y="68" class="muted">Filled</text>
+      <rect x="100" y="57" width="14" height="12" rx="2" class="empty" />
+      <text x="120" y="68" class="muted">Untouched</text>
+      <polygon points="225,58 225,70 235,64" fill="var(--fg)" />
+      <text x="242" y="68" class="muted">Clock hand</text>
+      <rect x="345" y="58" width="10" height="7" rx="1" class="abit" />
+      <text x="363" y="68" class="muted">A bit (CPU-set)</text>
+    </g>
     <text x="24" y="116" class="b type-subheading">Hot page <tspan class="mvar">H</tspan></text>
     <text x="24" y="131" class="muted">created first</text>
     <rect x="140" y="104" width="14" height="26" rx="2" class="full" />
@@ -250,7 +259,11 @@
     <rect x="332" y="104" width="14" height="26" rx="2" class="empty" />
     <rect x="348" y="104" width="14" height="26" rx="2" class="empty" />
     <rect x="364" y="104" width="14" height="26" rx="2" class="empty" />
-    <rect x="380" y="104" width="14" height="26" rx="2" class="empty" />
+    <g class="muted" aria-label="Additional entries">
+      <circle cx="382" cy="117" r="1.5" />
+      <circle cx="387" cy="117" r="1.5" />
+      <circle cx="392" cy="117" r="1.5" />
+    </g>
     <text x="466" y="122" text-anchor="end" class="muted mono">lru_ref</text>
     <rect x="476" y="104" width="26" height="26" rx="3" class="empty" />
     <text x="489" y="122" text-anchor="middle" class="b type-subheading">0</text>
@@ -282,7 +295,11 @@
     <rect x="332" y="178" width="14" height="26" rx="2" class="empty" />
     <rect x="348" y="178" width="14" height="26" rx="2" class="empty" />
     <rect x="364" y="178" width="14" height="26" rx="2" class="empty" />
-    <rect x="380" y="178" width="14" height="26" rx="2" class="empty" />
+    <g class="muted" aria-label="Additional entries">
+      <circle cx="382" cy="191" r="1.5" />
+      <circle cx="387" cy="191" r="1.5" />
+      <circle cx="392" cy="191" r="1.5" />
+    </g>
     <text x="466" y="196" text-anchor="end" class="muted mono">lru_ref</text>
     <rect x="476" y="178" width="26" height="26" rx="3" class="empty" />
     <text x="489" y="196" text-anchor="middle" class="b type-subheading">0</text>
