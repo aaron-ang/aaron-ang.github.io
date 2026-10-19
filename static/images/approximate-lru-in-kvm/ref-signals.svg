@@ -295,7 +295,7 @@
   </style>
   <g transform="scale(0.9473684210526315)">
     <text x="20" y="28" class="title type-heading">What sets lru_ref, and when</text>
-    <text x="20" y="48" class="muted">Each row is a last-level shadow page: 512 entries, not to scale.</text>
+    <text x="20" y="48" class="muted">Each row shows part of a last-level shadow page (512 entries).</text>
     <g transform="translate(0 20)">
       <text x="20" y="86" class="sm b">(a) marked on creation only</text>
     </g>
@@ -351,7 +351,11 @@
       <rect x="364" y="100" width="14" height="26" rx="2" class="empty" />
     </g>
     <g transform="translate(0 20)">
-      <rect x="380" y="100" width="14" height="26" rx="2" class="empty" />
+      <g class="muted" aria-label="Additional entries">
+        <circle cx="382" cy="113" r="1.5" />
+        <circle cx="387" cy="113" r="1.5" />
+        <circle cx="392" cy="113" r="1.5" />
+      </g>
     </g>
     <g transform="translate(0 20)">
       <text x="466" y="118" text-anchor="end" class="muted mono">lru_ref</text>
@@ -411,7 +415,11 @@
       <rect x="364" y="148" width="14" height="26" rx="2" class="empty" />
     </g>
     <g transform="translate(0 20)">
-      <rect x="380" y="148" width="14" height="26" rx="2" class="empty" />
+      <g class="muted" aria-label="Additional entries">
+        <circle cx="382" cy="161" r="1.5" />
+        <circle cx="387" cy="161" r="1.5" />
+        <circle cx="392" cy="161" r="1.5" />
+      </g>
     </g>
     <g transform="translate(0 20)">
       <text x="466" y="166" text-anchor="end" class="muted mono">lru_ref</text>
@@ -552,7 +560,11 @@
       <rect x="364" y="230" width="14" height="26" rx="2" class="empty" />
     </g>
     <g transform="translate(0 20)">
-      <rect x="380" y="230" width="14" height="26" rx="2" class="empty" />
+      <g class="muted" aria-label="Additional entries">
+        <circle cx="382" cy="243" r="1.5" />
+        <circle cx="387" cy="243" r="1.5" />
+        <circle cx="392" cy="243" r="1.5" />
+      </g>
     </g>
     <g transform="translate(0 20)">
       <text x="466" y="248" text-anchor="end" class="muted mono">lru_ref</text>
@@ -612,7 +624,11 @@
       <rect x="364" y="278" width="14" height="26" rx="2" class="empty" />
     </g>
     <g transform="translate(0 20)">
-      <rect x="380" y="278" width="14" height="26" rx="2" class="empty" />
+      <g class="muted" aria-label="Additional entries">
+        <circle cx="382" cy="291" r="1.5" />
+        <circle cx="387" cy="291" r="1.5" />
+        <circle cx="392" cy="291" r="1.5" />
+      </g>
     </g>
     <g transform="translate(0 20)">
       <text x="466" y="296" text-anchor="end" class="muted mono">lru_ref</text>
@@ -749,6 +765,13 @@
     <g transform="translate(0 20)">
       <text x="20" y="346" class="b a w20 fin type-subheading">Marking on creation can't tell hot from cold; marking on fill can.</text>
     </g>
-    <text x="20" y="68" class="muted">Gray: filled; white: not yet touched; ▶: clock hand.</text>
+    <g aria-label="Diagram key">
+      <rect x="20" y="57" width="14" height="12" rx="2" class="full" />
+      <text x="40" y="68" class="muted">Filled</text>
+      <rect x="100" y="57" width="14" height="12" rx="2" class="empty" />
+      <text x="120" y="68" class="muted">Untouched</text>
+      <polygon points="225,58 225,70 235,64" fill="var(--fg)" />
+      <text x="242" y="68" class="muted">Clock hand</text>
+    </g>
   </g>
 </svg>

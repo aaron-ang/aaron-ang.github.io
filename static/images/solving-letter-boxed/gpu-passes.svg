@@ -432,7 +432,7 @@
     <text x="46" y="196" class="muted a w5">old chains, ignored</text>
     <text x="46" y="196" class="muted a w6 fin">nothing new written</text>
     <rect x="34" y="96" width="352" height="30" rx="4" class="inb a w2 fin" />
-    <text x="100" y="116" class="tin a w7 fin">read by every pass</text>
+    <text x="100" y="116" class="tin a w7 fin">read each pass</text>
     <rect x="34" y="154" width="168" height="54" rx="4" class="inb a w8" />
     <text x="230" y="196" class="muted a w9 fin">5,140 two-word chains</text>
     <rect x="34" y="154" width="168" height="54" rx="4" class="inb a w10" />

@@ -753,8 +753,13 @@
     <polygon points="242,294 235,305 249,305" class="arrowhead a w12" />
     <polygon points="314,294 307,305 321,305" class="arrowhead a w13" />
     <polygon points="386,294 379,305 393,305" class="arrowhead a w42 fin" />
-    <text x="140" y="324" class="muted">▲ clock_hand</text>
-    <text x="240" y="324" class="muted">small box: referenced bit (a new page starts at 1)</text>
+    <g aria-label="Diagram key">
+      <polygon points="147,312 140,323 154,323" class="arrowhead" />
+      <text x="162" y="324" class="muted">clock_hand</text>
+      <rect x="270" y="308" width="18" height="20" rx="1" class="empty" />
+      <text x="279" y="324" text-anchor="middle" class="b">1</text>
+      <text x="298" y="324" class="muted">Referenced bit (1 on creation)</text>
+    </g>
     <text x="440" y="258" class="oktext a w53">hit: set <tspan class="mvar">A</tspan>'s referenced bit</text>
     <text x="440" y="258" class="oktext a w10">hit: set <tspan class="mvar">B</tspan>'s referenced bit</text>
     <text x="440" y="258" class="num a w11">A's bit is 1: clear it, skip</text>
