@@ -6,9 +6,38 @@
   .diagram-scroll { max-width: 100%; overflow-x: auto; text-align: left; }
   .diagram-scroll img { display: block; width: var(--diagram-width); max-width: none; height: auto; }
   .diagram-scroll:focus-visible { outline: 2px solid var(--link-color); outline-offset: 4px; }
+  .diagram-scroll object { display: block; width: var(--diagram-width); max-width: none; height: auto; }
   @media (max-width: 480px) {
-    .diagram-compact img { width: min(100%, 320px); }
+    .diagram-compact img, .diagram-compact object { width: min(100%, 320px); }
   }
+  /* Step controls added to animated diagrams by js/diagram-stepper.js. */
+  .diagram-stepper-loading { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+  /* The timeline is the bar's one strong element; the controls around it stay plain text. */
+  .diagram-stepper {
+    --track: #ddd;
+    display: flex; flex-wrap: wrap; justify-content: center; align-items: center;
+    column-gap: 0.9rem; row-gap: 0.3rem;
+    max-width: 36rem; margin: 0.6rem auto 0;
+    font-size: 0.8em; font-variant-numeric: tabular-nums;
+  }
+  @media (prefers-color-scheme: dark) { .diagram-stepper { --track: rgba(221, 221, 221, 0.22); } }
+  .diagram-stepper button {
+    font: inherit; color: inherit; background: none; border: 0; padding: 0.2rem 0.1rem; cursor: pointer;
+  }
+  .diagram-stepper button:hover { color: var(--link-color); }
+  .diagram-stepper button:focus-visible { outline: 2px solid var(--link-color); outline-offset: 2px; }
+  .diagram-stepper-timeline { display: flex; gap: 2px; flex: 1 1 8rem; min-width: 6rem; }
+  .diagram-stepper .diagram-stepper-segment {
+    --fill: 0%;
+    box-sizing: border-box; flex-basis: 3px; min-width: 3px; height: 1.25rem; padding: 0.5rem 0;
+    background: linear-gradient(to right, var(--link-color) var(--fill), var(--track) var(--fill)) content-box;
+  }
+  .diagram-stepper .diagram-stepper-segment.is-past {
+    background: linear-gradient(var(--text-color), var(--text-color)) content-box; opacity: 0.45;
+  }
+  .diagram-stepper .diagram-stepper-segment:hover { opacity: 1; filter: brightness(0.85); }
+  .diagram-stepper-count { min-width: 3.2em; }
+  .diagram-stepper-play { min-width: 3.4em; text-align: left; }
   figcaption { font-size: 0.85em; color: #666; margin-top: 0.4rem; }
   @media (prefers-color-scheme: dark) { figcaption { color: #9fb3ba; } }
   /* Wide tables and display math scroll inside their own box on narrow screens. */

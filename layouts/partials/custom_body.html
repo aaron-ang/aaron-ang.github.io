@@ -5,3 +5,6 @@
   mermaid.initialize({ startOnLoad: true, theme: dark ? "dark" : "neutral" });
 </script>
 {{- end }}
+{{- if .Store.Get "hasStepper" }}
+<script type="module" src="{{ "js/diagram-stepper.js" | relURL }}"></script>
+{{- end }}
