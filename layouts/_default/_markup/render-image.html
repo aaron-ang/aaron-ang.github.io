@@ -1,8 +1,11 @@
 {{- $diagramWidth := 0 -}}
 {{- $compactDiagram := "" -}}
+{{- $animatedDiagram := false -}}
 {{- $localPath := printf "static/%s" (strings.TrimPrefix "/" .Destination) -}}
 {{- if and (strings.HasSuffix (lower .Destination) ".svg") (fileExists $localPath) -}}
-  {{- $spec := findRESubmatch `data-diagram-width="([0-9]+)"` (readFile $localPath) 1 -}}
+  {{- $svgSource := readFile $localPath -}}
+  {{- $animatedDiagram = strings.Contains $svgSource "@keyframes" -}}
+  {{- $spec := findRESubmatch `data-diagram-width="([0-9]+)"` $svgSource 1 -}}
   {{- with $spec -}}
     {{- $diagramWidth = int (index (index . 0) 1) -}}
     {{- $mobilePath := strings.TrimSuffix ".svg" $.Destination | printf "%s-mobile.svg" -}}
@@ -12,7 +15,9 @@
   {{- end -}}
 {{- end -}}
 {{- $scrollDiagram := gt $diagramWidth 0 -}}
-<figure>
+{{- if $animatedDiagram }}{{ .Page.Store.Set "hasStepper" true }}{{ end -}}
+{{- /* Animated diagrams get step controls from js/diagram-stepper.js. */}}
+<figure{{ if $animatedDiagram }} data-stepper{{ end }}>
   {{- if $scrollDiagram }}
   <div class="diagram-scroll{{ if $compactDiagram }} diagram-compact{{ end }}" style="{{ printf "--diagram-width: %dpx;" $diagramWidth | safeCSS }}" tabindex="0" role="region" aria-label="Diagram; scroll horizontally if needed">
   {{- end }}
