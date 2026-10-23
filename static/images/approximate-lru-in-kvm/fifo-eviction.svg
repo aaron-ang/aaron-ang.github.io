@@ -58,6 +58,11 @@
     .new {
       fill: var(--ok);
     }
+    .okring {
+      fill: none;
+      stroke: var(--ok);
+      stroke-width: 3;
+    }
     .zapped {
       fill: var(--empty);
       stroke: var(--edge);
@@ -259,7 +264,7 @@
     <text x="30" y="92" class="muted">head (newest)</text>
     <text x="726" y="92" text-anchor="end" class="muted">tail (oldest)</text>
     <text x="380" y="88" text-anchor="middle" class="num a w1">cache nearly full: zap 2 pages</text>
-    <rect x="30" y="104" width="60" height="48" rx="4" class="slot a w2 fin" />
+    <rect x="30" y="104" width="60" height="48" rx="4" class="slot a w16" />
     <rect x="130" y="104" width="64" height="48" rx="4" class="full" />
     <text x="162" y="133" text-anchor="middle" class="b type-subheading"><tspan class="mvar">A</tspan></text>
     <rect x="206" y="104" width="64" height="48" rx="4" class="full" />
@@ -287,10 +292,11 @@
     <text x="618" y="172" text-anchor="middle" class="num a w6 fin">zapped</text>
     <text x="618" y="188" text-anchor="middle" class="num a w6 fin">while in use</text>
     <rect x="30" y="104" width="60" height="48" rx="4" class="new a w8 fin" />
-    <rect x="28" y="102" width="64" height="52" rx="6" class="ring a w2 fin" />
-    <text x="60" y="172" text-anchor="middle" class="num a w2 fin">page fault</text>
+    <rect x="28" y="102" width="64" height="52" rx="6" class="ring a w16" />
+    <rect x="28" y="102" width="64" height="52" rx="6" class="okring a w8 fin" />
+    <text x="60" y="172" text-anchor="middle" class="num a w16">page fault</text>
     <text x="60" y="133" text-anchor="middle" class="onhot a w8 fin"><tspan class="mvar">P</tspan></text>
-    <text x="60" y="188" text-anchor="middle" class="oktext a w8 fin">rebuilt</text>
+    <text x="60" y="172" text-anchor="middle" class="oktext a w8 fin">rebuilt</text>
     <text x="20" y="228" class="a w9">Upstream KVM decides by age alone.</text>
     <text x="20" y="228" class="a w10">Old, but still hot.</text>
     <text x="20" y="228" class="a w11">Too few free slots are left, so KVM must make room.</text>

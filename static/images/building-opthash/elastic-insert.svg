@@ -443,7 +443,7 @@
     </g>
     <text x="180" y="37" class="yes w w12">yes</text>
     <rect x="252" y="16" width="285" height="32" rx="6" class="bg dim w w13" />
-    <text x="450" y="37" class="no w w14">not checked</text>
+    <text x="450" y="37" class="no w w14">skipped</text>
     <text x="548" y="37" class="case w w15">→ Case 2: go to A<tspan baseline-shift="sub">i+1</tspan></text>
     <rect x="199" y="212" width="50" height="50" rx="6" class="ring w w16" />
     <text x="224.0" y="276" text-anchor="middle" class="num w w17">1 full</text>

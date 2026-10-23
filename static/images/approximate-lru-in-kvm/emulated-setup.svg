@@ -158,6 +158,22 @@
       60.86%, 75.51% { opacity: 1; }
       75.87%, 100.00% { opacity: 0; }
     }
+    .w12 {
+      animation-name: w12;
+    } /* 0.50s to 5.30s */
+    @keyframes w12 {
+      0.00%, 12.63% { opacity: 1; }
+      12.98%, 98.21% { opacity: 0; }
+      98.57%, 100.00% { opacity: 1; }
+    }
+    .w13 {
+      animation-name: w13;
+    } /* 31.70s to 34.10s */
+    @keyframes w13 {
+      0.00%, 75.51% { opacity: 0; }
+      75.87%, 81.23% { opacity: 1; }
+      81.59%, 100.00% { opacity: 0; }
+    }
     @media (prefers-reduced-motion: reduce) {
       .a {
         animation: none;
@@ -238,10 +254,12 @@
       <text x="582" y="318" class="muted">fault counts are exact,</text>
       <text x="582" y="334" class="muted">timings are meaningless</text>
     </g>
+    <text x="20" y="460" class="a w12">An Arm host cannot run x86 KVM directly.</text>
     <text x="20" y="460" class="a w8">SVM lets the emulated CPU run KVM.</text>
     <text x="20" y="460" class="a w9">Debug checks catch memory and locking bugs in our change.</text>
     <text x="20" y="460" class="a w10">This forces the shadow MMU, the code we changed.</text>
     <text x="20" y="460" class="a w11">Selftests check correctness; Redis adds a realistic load.</text>
+    <text x="20" y="460" class="a w13">Every L2 fault exercises our change.</text>
     <text x="20" y="460" class="b a w7 fin type-subheading">Every result from this setup is a fault or eviction count.</text>
   </g>
 </svg>

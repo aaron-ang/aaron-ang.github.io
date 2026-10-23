@@ -249,7 +249,7 @@
       <rect x="110" y="292" width="18" height="18" class="empty" />
       <rect x="110" y="310" width="18" height="18" class="empty" />
       <text x="119.0" y="346" text-anchor="middle" class="muted"><tspan class="mvar">A</tspan><tspan baseline-shift="sub">s</tspan>, column <tspan class="mvar">k</tspan></text>
-      <text x="119.0" y="377" text-anchor="middle" class="muted">(shared memory)</text>
+      <text x="119.0" y="363" text-anchor="middle" class="muted">(shared memory)</text>
       <rect x="230" y="154" width="18" height="18" class="empty" />
       <rect x="248" y="154" width="18" height="18" class="empty" />
       <rect x="266" y="154" width="18" height="18" class="empty" />

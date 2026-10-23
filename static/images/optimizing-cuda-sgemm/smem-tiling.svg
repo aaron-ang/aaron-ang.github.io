@@ -319,10 +319,10 @@
     <g transform="translate(0,-24)">
       <rect x="20" y="42" width="380" height="350" class="dash" rx="8" />
       <text x="34" y="64" class="title type-heading">global memory (off-chip, slow)</text>
-      <rect x="428" y="42" width="312" height="158" class="dash" rx="8" />
-      <text x="442" y="64" class="title type-heading">shared memory (on-chip, fast)</text>
-      <rect x="428" y="240" width="312" height="152" class="dash" rx="8" />
-      <text x="442" y="262" class="title type-heading">threads in the block</text>
+      <rect x="416" y="42" width="328" height="154" class="dash" rx="8" />
+      <text x="428" y="64" class="title type-heading">shared memory (on-chip, fast)</text>
+      <rect x="416" y="240" width="328" height="152" class="dash" rx="8" />
+      <text x="428" y="262" class="title type-heading">threads in the block</text>
       <rect x="230" y="84" width="140" height="140" class="empty" />
       <text x="220" y="159" text-anchor="end" class="title type-heading"><tspan class="mvar">B</tspan></text>
       <rect x="60" y="240" width="140" height="140" class="empty" />
@@ -338,7 +338,7 @@
       <text x="497" y="83.0" class="label">Bₛ</text>
       <text x="497" y="159.0" class="label">Aₛ</text>
       <path d="M 440 220 H 728" class="dash a w3 fin" style="stroke:var(--probe)" />
-      <text x="545" y="211" class="num a w3 fin">__syncthreads() barrier</text>
+      <text x="545" y="212" class="num a w3 fin">__syncthreads() barrier</text>
       <path d="M 440 220 H 728" class="a w22" style="fill:none;stroke:var(--probe);stroke-width:8;stroke-opacity:0.25" />
       <path d="M 440 220 H 728" class="a w22" style="fill:none;stroke:var(--probe);stroke-width:3.5" />
       <text x="545" y="236" class="num a w22">all threads wait here</text>
@@ -377,7 +377,7 @@
       <path d="M 333 101.5 H 408 V 89.5 H 442" class="arrow a w5" />
       <polygon points="441,83.5 451,89.5 441,95.5" class="arrowhead a w5" />
       <text x="385" y="96.5" text-anchor="middle" class="num a w5">copy</text>
-      <path d="M 77.5 277 V 232 H 418 V 165.5 H 442" class="arrow a w5" />
+      <path d="M 77.5 277 V 232 H 411 V 165.5 H 442" class="arrow a w5" />
       <polygon points="441,159.5 451,165.5 441,171.5" class="arrowhead a w5" />
       <text x="215" y="252" text-anchor="middle" class="num a w5">copy</text>
       <rect x="63" y="278" width="29" height="29" class="full a w4 fin" />
@@ -392,7 +392,7 @@
       <path d="M 333 136.5 H 408 V 89.5 H 442" class="arrow a w7" />
       <polygon points="441,83.5 451,89.5 441,95.5" class="arrowhead a w7" />
       <text x="385" y="131.5" text-anchor="middle" class="num a w7">copy</text>
-      <path d="M 112.5 277 V 232 H 418 V 165.5 H 442" class="arrow a w7" />
+      <path d="M 112.5 277 V 232 H 411 V 165.5 H 442" class="arrow a w7" />
       <polygon points="441,159.5 451,165.5 441,171.5" class="arrowhead a w7" />
       <text x="215" y="252" text-anchor="middle" class="num a w7">copy</text>
       <rect x="98" y="278" width="29" height="29" class="full a w9 fin" />
@@ -407,7 +407,7 @@
       <path d="M 333 171.5 H 408 V 89.5 H 442" class="arrow a w10" />
       <polygon points="441,83.5 451,89.5 441,95.5" class="arrowhead a w10" />
       <text x="385" y="166.5" text-anchor="middle" class="num a w10">copy</text>
-      <path d="M 147.5 277 V 232 H 418 V 165.5 H 442" class="arrow a w10" />
+      <path d="M 147.5 277 V 232 H 411 V 165.5 H 442" class="arrow a w10" />
       <polygon points="441,159.5 451,165.5 441,171.5" class="arrowhead a w10" />
       <text x="215" y="252" text-anchor="middle" class="num a w10">copy</text>
       <rect x="133" y="278" width="29" height="29" class="full a w12 fin" />
@@ -422,7 +422,7 @@
       <path d="M 333 206.5 H 408 V 89.5 H 442" class="arrow a w13" />
       <polygon points="441,83.5 451,89.5 441,95.5" class="arrowhead a w13" />
       <text x="385" y="201.5" text-anchor="middle" class="num a w13">copy</text>
-      <path d="M 182.5 277 V 232 H 418 V 165.5 H 442" class="arrow a w13" />
+      <path d="M 182.5 277 V 232 H 411 V 165.5 H 442" class="arrow a w13" />
       <polygon points="441,159.5 451,165.5 441,171.5" class="arrowhead a w13" />
       <text x="215" y="252" text-anchor="middle" class="num a w13">copy</text>
       <rect x="168" y="278" width="29" height="29" class="full a w15 fin" />

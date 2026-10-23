@@ -564,7 +564,7 @@
     <text x="345" y="340" class="num w w25 fin">older a=2 and b=1 dropped (newest wins)</text>
     <text x="345" y="358" class="muted w w26 fin">Input SSTables deleted after merging</text>
     <rect x="645" y="211" width="96" height="126" rx="5" class="okbox w w27 fin" />
-    <text x="693" y="354" text-anchor="middle" class="muted w w27 fin">compacted SSTable</text>
+    <text x="741" y="354" text-anchor="end" class="muted w w27 fin">compacted SSTable</text>
     <rect x="340" y="206" width="272" height="76" class="veil w w26 fin" />
     <g class="w w27 fin">
       <rect x="650" y="216" width="86" height="26" rx="3" class="chip" />

@@ -135,7 +135,7 @@ We counted flops per byte and measured flops per second. Williams, Waterman, and
 
 The shared-memory kernel with 32×32 tiles and the final 128×128 kernel sit on the roofline as shown below:
 
-![Schematic roofline: a sloped memory roof meets a flat compute roof at the ridge. The 32×32 shared-memory kernel sits left of the ridge, below the memory roof; bigger tiles move it past the ridge, at about 24 flops per byte.](/images/optimizing-cuda-sgemm/roofline.svg "Both axes are log scale, and the positions are schematic, not measured.")
+![Schematic roofline: a sloped memory roof meets a flat compute roof at the ridge. The 32×32 shared-memory kernel sits left of the ridge, below the memory roof; the 128×128 tile moves it past the ridge at about 24 flops per byte, to 32.](/images/optimizing-cuda-sgemm/roofline.svg "Both axes are log scale, and the positions are schematic, not measured.")
 
 The 128×128 block tile performs 64 multiply-adds per value loaded from global memory: 128 flops for each 4-byte float, or 32 flops per byte.[^units] That places the kernel to the right of the ridge even though it reaches only 62% of peak compute. The roofline suggests that further global-memory reuse would offer less than reducing work within the SM, where shared-memory loads, indexing, and barriers could account for the remaining gap.
 
@@ -191,7 +191,13 @@ This phenomenon is known as [_wave quantization_](https://docs.nvidia.com/deeple
 
 We ended the course project at 4,780 GFLOP/s, with thread 0's global loads down from 2 per multiply-add to 1 per 64, and shared-memory loads down to 1 per 4. The kernel still computes the same dot products we started with.
 
-The roofline, register usage, and partly filled waves suggested three optimizations to test next: bring register usage down to at most 128 per thread so a second block could fit on each SM, use smaller tiles when the larger tiles produce too few blocks to keep the SMs busy, and test whether changing the shared-memory access pattern would resolve the suspected bank conflicts. We ran out of time to measure these changes on the T4.
+The roofline, register usage, and partly filled waves suggested three optimizations to test next:
+
+- Bring register usage down to at most 128 per thread so a second block could fit on each SM.
+- Use smaller tiles when larger tiles produce too few blocks to keep the SMs busy.
+- Test whether changing the shared-memory access pattern would resolve the suspected bank conflicts.
+
+We ran out of time to measure these changes on the T4.
 
 In [Part 2](/optimizing-cuda-sgemm-gb10/), I returned to these questions on an NVIDIA GB10 and compared the resulting kernels against cuBLAS.
 

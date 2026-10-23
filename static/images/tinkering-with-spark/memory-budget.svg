@@ -224,7 +224,8 @@
       <text x="742" y="112" text-anchor="end" class="muted">container memory 102 GiB = memory + ~10% overhead</text>
     </g>
     <g transform="translate(0 30)">
-      <line x1="418" y1="58" x2="418" y2="200" class="cap" />
+      <line x1="418" y1="58" x2="418" y2="98" class="cap" />
+      <line x1="418" y1="118" x2="418" y2="200" class="cap" />
     </g>
     <g transform="translate(0 30)">
       <text x="426" y="84" class="captext">safety cap ~48 GiB</text>
@@ -249,7 +250,7 @@
     </g>
     <g transform="translate(0 30)">
       <g class="a3">
-        <rect x="440" y="140" width="170" height="28" rx="4" class="chip" />
+        <rect x="430" y="140" width="190" height="28" rx="4" class="chip" />
         <text x="525" y="159" text-anchor="middle" class="cmd">--driver-memory 16g</text>
       </g>
     </g>
@@ -279,7 +280,7 @@
     </g>
     <g transform="translate(0 30)">
       <g class="a3">
-        <rect x="440" y="226" width="170" height="28" rx="4" class="chip" />
+        <rect x="430" y="226" width="190" height="28" rx="4" class="chip" />
         <text x="525" y="245" text-anchor="middle" class="cmd">--executor-cores 4</text>
       </g>
     </g>
@@ -312,7 +313,7 @@
       <text x="610" y="311" text-anchor="middle" class="muted">80</text>
     </g>
     <g transform="translate(0 30)">
-      <text x="730" y="311" text-anchor="middle" class="muted">100 GiB</text>
+      <text x="730" y="311" text-anchor="middle" class="muted">100</text>
     </g>
     <g transform="translate(0 30)">
       <rect x="130" y="332" width="14" height="14" class="heap" />

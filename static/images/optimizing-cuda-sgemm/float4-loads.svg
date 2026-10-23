@@ -1,11 +1,11 @@
 <svg
   xmlns="http://www.w3.org/2000/svg"
-  viewBox="0 0 640 270"
+  viewBox="0 0 640 284"
   role="img"
   aria-labelledby="title desc"
   font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif"
   width="640"
-  height="270"
+  height="284"
   data-diagram-width="640"
 >
   <title id="title">Wider loads move the same row with fewer instructions</title>
@@ -140,6 +140,7 @@
   <rect x="543" y="102" width="14" height="23" rx="0" class="loadbox" />
   <rect x="559" y="102" width="14" height="23" rx="0" class="loadbox" />
   <text x="318" y="151" text-anchor="middle">32 instructions × 1 float</text>
+  <g transform="translate(0 14)">
   <text x="20" y="168" class="bold type-subheading">float4</text>
   <rect x="62" y="181" width="16" height="25" rx="0" class="outline" />
   <rect x="78" y="181" width="16" height="25" rx="0" class="outline" />
@@ -182,4 +183,5 @@
   <rect x="447" y="182" width="62" height="23" rx="0" class="computebox" />
   <rect x="511" y="182" width="62" height="23" rx="0" class="computebox" />
   <text x="318" y="231" text-anchor="middle">8 instructions × 4 floats</text>
+  </g>
 </svg>

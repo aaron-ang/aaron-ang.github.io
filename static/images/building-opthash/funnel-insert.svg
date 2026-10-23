@@ -386,8 +386,8 @@
     <text x="20" y="198">Level 3</text>
     <text x="20" y="268">Special B</text>
     <text x="20" y="323">Special C</text>
-    <line x1="20" y1="222" x2="740" y2="222" stroke="var(--edge)" stroke-dasharray="4 4" />
-    <text x="740" y="216" text-anchor="end" class="muted">main levels above, special area below</text>
+    <line x1="20" y1="232" x2="740" y2="232" stroke="var(--edge)" stroke-dasharray="4 4" />
+    <text x="740" y="226" text-anchor="end" class="muted">main levels above, special area below</text>
     <g class="w w1">
       <rect x="150" y="70" width="26" height="26" rx="3" class="full" />
       <rect x="180" y="70" width="26" height="26" rx="3" class="full" />

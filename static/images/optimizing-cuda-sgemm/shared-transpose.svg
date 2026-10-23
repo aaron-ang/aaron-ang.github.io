@@ -1,11 +1,11 @@
 <svg
   xmlns="http://www.w3.org/2000/svg"
-  viewBox="0 0 640 308"
+  viewBox="0 0 640 318"
   role="img"
   aria-labelledby="title desc"
   font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif"
   width="640"
-  height="308"
+  height="318"
   data-diagram-width="640"
 >
   <title id="title">Transposing A puts a thread’s inputs together</title>
@@ -107,32 +107,34 @@
   <text x="541" y="126" text-anchor="middle">r7</text>
   <text x="541" y="158" class="small" text-anchor="middle">224</text>
   <text x="20" y="181" class="small">Float offsets shown for k = 0.</text>
+  <g transform="translate(0 10)">
   <text x="20" y="205" class="bold type-subheading">Transposed: eight adjacent values</text>
   <rect x="62" y="220" width="65" height="31" rx="0" class="computebox" />
   <text x="94.5" y="242" text-anchor="middle">r0</text>
-  <text x="86" y="274" class="small" text-anchor="middle">0</text>
+  <text x="94.5" y="274" class="small" text-anchor="middle">0</text>
   <rect x="127" y="220" width="65" height="31" rx="0" class="computebox" />
   <text x="159.5" y="242" text-anchor="middle">r1</text>
-  <text x="151" y="274" class="small" text-anchor="middle">1</text>
+  <text x="159.5" y="274" class="small" text-anchor="middle">1</text>
   <rect x="192" y="220" width="65" height="31" rx="0" class="computebox" />
   <text x="224.5" y="242" text-anchor="middle">r2</text>
-  <text x="216" y="274" class="small" text-anchor="middle">2</text>
+  <text x="224.5" y="274" class="small" text-anchor="middle">2</text>
   <rect x="257" y="220" width="65" height="31" rx="0" class="computebox" />
   <text x="289.5" y="242" text-anchor="middle">r3</text>
-  <text x="281" y="274" class="small" text-anchor="middle">3</text>
+  <text x="289.5" y="274" class="small" text-anchor="middle">3</text>
   <rect x="322" y="220" width="65" height="31" rx="0" class="computebox" />
   <text x="354.5" y="242" text-anchor="middle">r4</text>
-  <text x="346" y="274" class="small" text-anchor="middle">4</text>
+  <text x="354.5" y="274" class="small" text-anchor="middle">4</text>
   <rect x="387" y="220" width="65" height="31" rx="0" class="computebox" />
   <text x="419.5" y="242" text-anchor="middle">r5</text>
-  <text x="411" y="274" class="small" text-anchor="middle">5</text>
+  <text x="419.5" y="274" class="small" text-anchor="middle">5</text>
   <rect x="452" y="220" width="65" height="31" rx="0" class="computebox" />
   <text x="484.5" y="242" text-anchor="middle">r6</text>
-  <text x="476" y="274" class="small" text-anchor="middle">6</text>
+  <text x="484.5" y="274" class="small" text-anchor="middle">6</text>
   <rect x="517" y="220" width="65" height="31" rx="0" class="computebox" />
   <text x="549.5" y="242" text-anchor="middle">r7</text>
-  <text x="541" y="274" class="small" text-anchor="middle">7</text>
+  <text x="549.5" y="274" class="small" text-anchor="middle">7</text>
   <rect x="62" y="217" width="260" height="37" rx="4" class="outline" />
   <rect x="322" y="217" width="260" height="37" rx="4" class="outline" />
   <text x="20" y="297" class="small">Two groups of four can be read with wide instructions.</text>
+  </g>
 </svg>

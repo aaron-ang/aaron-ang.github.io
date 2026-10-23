@@ -246,6 +246,14 @@
       80.76%, 87.16% { opacity: 1; }
       87.46%, 100.00% { opacity: 0; }
     }
+    .w21 {
+      animation-name: w21;
+    } /* 0.50s to 5.70s */
+    @keyframes w21 {
+      0.00%, 11.58% { opacity: 1; }
+      11.89%, 98.48% { opacity: 0; }
+      98.78%, 100.00% { opacity: 1; }
+    }
     @media (prefers-reduced-motion: reduce) {
       .a {
         animation: none;
@@ -303,7 +311,7 @@
     </g>
     <g class="a w2 fin">
       <text x="590" y="66" text-anchor="middle" class="b type-subheading">KVM memslots</text>
-      <text x="590" y="82" text-anchor="middle" class="muted">kept by the host, resolved by host page tables</text>
+      <text x="590" y="82" text-anchor="middle" class="muted">kept by the host</text>
       <rect x="480" y="90" width="220" height="24" class="full" />
       <text x="535" y="107" text-anchor="middle" class="sm b">guest physical</text>
       <text x="645" y="107" text-anchor="middle" class="sm b">host physical</text>
@@ -358,6 +366,7 @@
       <path d="M 704 127 C 744 127, 744 299, 515 299" class="arrow" />
       <polygon points="509,299 519,293.5 519,304.5" class="probehead" />
     </g>
+    <text x="20" y="404" class="a w21">The guest OS maps its virtual pages to guest physical pages.</text>
     <text x="20" y="404" class="a w13">The guest never sees real memory addresses.</text>
     <text x="20" y="404" class="a w14">The CPU walks only one table, so KVM combines the two.</text>
     <text x="20" y="404" class="a w6">The guest touches 0x5000.</text>
