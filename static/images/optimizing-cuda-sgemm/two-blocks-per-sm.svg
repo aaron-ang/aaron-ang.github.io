@@ -231,7 +231,7 @@
   </style>
   <g transform="scale(0.8421052631578947)">
     <text x="20" y="28" class="title type-heading">One SM's register file, drawn to scale</text>
-    <text x="20" y="48" class="muted">A block of 256 threads can only start if all of its registers fit.</text>
+    <text x="20" y="52" class="muted">A block of 256 threads can only start if all of its registers fit.</text>
     <text x="20" y="114" class="b type-subheading">no cap</text>
     <text x="20" y="140" class="muted a st2 fin">168/thread</text>
     <rect x="150" y="96" width="440" height="44" class="empty" />

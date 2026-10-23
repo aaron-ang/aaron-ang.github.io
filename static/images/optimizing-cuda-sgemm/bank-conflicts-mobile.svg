@@ -88,7 +88,7 @@
   <text x="219.5" y="162.0" class="" text-anchor="middle">0–3</text>
   <line x1="120" y1="136" x2="171" y2="151" class="arrow" marker-end="url(#arrow)" />
   <line x1="120" y1="178" x2="171" y2="164" class="arrow" marker-end="url(#arrow)" />
-  <text x="171" y="197" class="">Two passes</text>
+  <text x="171" y="197" class="sub" style="fill: var(--load)">Two passes</text>
   <text x="12" y="231" class="sub type-subheading">After: different banks</text>
   <rect x="12" y="244" width="108" height="28" rx="2" class="ok" />
   <text x="66.0" y="263.0" class="" text-anchor="middle">t0: 0–3</text>

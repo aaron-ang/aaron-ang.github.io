@@ -135,7 +135,7 @@ We counted flops per byte and measured flops per second. Williams, Waterman, and
 
 The shared-memory kernel with 32×32 tiles and the final 128×128 kernel sit on the roofline as shown below:
 
-![Schematic roofline: a sloped memory roof meets a flat compute roof at the ridge. The 32×32 shared-memory kernel sits left of the ridge, below the memory roof; bigger tiles move it past the ridge, at about 24 flops per byte.](/images/optimizing-cuda-sgemm/roofline.svg "Both axes are log scale, and the positions are schematic, not measured.")
+![Schematic roofline: a sloped memory roof meets a flat compute roof at the ridge. The 32×32 shared-memory kernel sits left of the ridge, below the memory roof; the 128×128 tile moves it past the ridge at about 24 flops per byte, to 32.](/images/optimizing-cuda-sgemm/roofline.svg "Both axes are log scale, and the positions are schematic, not measured.")
 
 The 128×128 block tile performs 64 multiply-adds per value loaded from global memory: 128 flops for each 4-byte float, or 32 flops per byte.[^units] That places the kernel to the right of the ridge even though it reaches only 62% of peak compute. The roofline suggests that further global-memory reuse would offer less than reducing work within the SM, where shared-memory loads, indexing, and barriers could account for the remaining gap.
 

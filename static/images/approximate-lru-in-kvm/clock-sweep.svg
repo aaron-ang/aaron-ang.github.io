@@ -321,7 +321,7 @@
     </g>
     <text x="186" y="214" text-anchor="end" class="muted">clock_hand</text>
     <text x="420" y="92" class="title type-heading">Need 2 free pages</text>
-    <text x="408" y="114" class="muted">referenced = 1: clear it to 0 and skip (second chance)</text>
+    <text x="420" y="114" class="muted">referenced = 1: clear to 0, skip (second chance)</text>
     <text x="420" y="132" class="muted">referenced = 0: zap the page</text>
     <text x="420" y="176" class="a w2 fin"><tspan class="mvar">A</tspan>: referenced 1 → 0, skip</text>
     <text x="420" y="202" class="a w4 fin"><tspan class="mvar">B</tspan>: referenced 1 → 0, skip</text>

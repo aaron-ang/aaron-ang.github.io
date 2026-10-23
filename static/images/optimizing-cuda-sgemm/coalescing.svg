@@ -240,7 +240,7 @@
     <rect x="460" y="160" width="80" height="22" class="empty" fill-opacity="0" />
     <rect x="540" y="160" width="80" height="22" class="empty" fill-opacity="0" />
     <rect x="620" y="160" width="80" height="22" class="empty" fill-opacity="0" />
-    <text x="60" y="200" class="muted">global memory, in segments. Each segment touched costs one transaction.</text>
+    <text x="60" y="204" class="muted">global memory, in segments. Each segment touched costs one transaction.</text>
     <path d="M 100.0 98.0 L 69.8 149.7" class="arrow a w1 fin" />
     <polygon points="64.7,146.7 65.0,158.0 75.0,152.7" class="arrowhead a w1 fin" />
     <rect x="60" y="160" width="10" height="22" class="hot a w1 fin" />
@@ -302,7 +302,7 @@
     <rect x="460" y="370" width="80" height="22" class="empty" fill-opacity="0" />
     <rect x="540" y="370" width="80" height="22" class="empty" fill-opacity="0" />
     <rect x="620" y="370" width="80" height="22" class="empty" fill-opacity="0" />
-    <text x="60" y="410" class="muted">global memory</text>
+    <text x="60" y="414" class="muted">global memory</text>
     <path d="M 100.0 308.0 L 67.6 363.5" class="okarrow a w5 fin" />
     <polygon points="65.0,362.0 65.0,368.0 70.2,365.0" class="okhead a w5 fin" />
     <path d="M 180.0 308.0 L 79.5 365.4" class="okarrow a w5 fin" />

@@ -243,8 +243,8 @@
     <polygon points="505.3,123.2 516.6,124.5 510.5,134.1" class="okhead a w6 fin" />
     <text x="503.0" y="190.0" class="oktext a w6 fin">bigger tiles: more flops per byte</text>
     <circle cx="528.6" cy="117.5" r="7" class="okhead a w7 fin" />
-    <text x="740" y="137.5" class="oktext a w7 fin" text-anchor="end">128×128 block tile, 8×8 per thread</text>
-    <text x="540.6" y="153.5" class="muted a w7 fin">32 flops/byte</text>
+    <text x="740" y="150" class="oktext a w7 fin" text-anchor="end">128×128 block tile, 8×8 per thread</text>
+    <text x="540.6" y="166" class="muted a w7 fin">32 flops/byte</text>
     <text x="20" y="404" class="a w8">With little reuse, memory bandwidth sets the ceiling: more flops per byte, higher ceiling.</text>
     <text x="20" y="404" class="a w9">No amount of reuse lifts throughput past the arithmetic units' peak.</text>
     <text x="20" y="404" class="a w10">The ridge is the intensity a kernel needs before memory stops being the limit.</text>

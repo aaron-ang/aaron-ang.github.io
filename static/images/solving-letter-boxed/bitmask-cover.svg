@@ -169,6 +169,14 @@
       58.07%, 79.69% { opacity: 1; }
       80.13%, 100.00% { opacity: 0; }
     }
+    .w10 {
+      animation-name: w10;
+    } /* 11.50s to 15.20s */
+    @keyframes w10 {
+      0.00%, 33.95% { opacity: 0; }
+      34.40%, 44.88% { opacity: 1; }
+      45.32%, 100.00% { opacity: 0; }
+    }
     @media (prefers-reduced-motion: reduce) {
       .a {
         animation: none;
@@ -363,8 +371,9 @@
     <text x="344" y="288" class="okb a w5 fin">→ true ✓</text>
     <text x="20" y="334" class="a w6">Each of the puzzle's 12 letters gets one bit. Every bit starts at 0.</text>
     <text x="20" y="334" class="a w7">A word sets one bit per distinct letter, in any order.</text>
+    <text x="20" y="334" class="a w10">DASHING sets the bits of its seven letters.</text>
     <text x="20" y="334" class="a w8">Both words use D, so both set the D bit.</text>
     <text x="20" y="334" class="a w9">OR keeps a bit if either word sets it.</text>
-    <text x="20" y="334" class="title a w5 fin type-heading">One OR and one compare replace searching every word for every letter.</text>
+    <text x="20" y="334" class="title a w5 fin type-heading">One OR and one compare check all 12 letters at once.</text>
   </g>
 </svg>

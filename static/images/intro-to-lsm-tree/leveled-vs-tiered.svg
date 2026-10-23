@@ -280,7 +280,7 @@
     <text x="494" y="121" class="muted a p2">new run (2 of 3)</text>
     <text x="494" y="121" class="num a p3">3 runs = <tspan class="mvar">T</tspan>: merge all</text>
     <text x="494" y="121" class="muted a l2new fin">3 runs merged into 1, moved down</text>
-    <text x="548" y="161" class="oktext a l2new fin">new run; old run not rewritten</text>
+    <text x="548" y="161" class="oktext a l2new fin">new run; old run kept</text>
     <text x="400" y="236" class="a rd fin">Here, a lookup checks 3 runs (every run)</text>
     <line x1="380" y1="10" x2="380" y2="244" class="div" />
     <line x1="20" y1="256" x2="740" y2="256" class="div" />

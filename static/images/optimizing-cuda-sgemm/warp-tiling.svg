@@ -221,9 +221,9 @@
     <text x="410" y="414" class="a st5 fin">Per k: 32 A + 64 B = 96</text>
     <text x="20" y="446" class="muted a st5 fin">Repeated requests for the same value share a pass.</text>
     <text x="20" y="478" class="a st1-2"><tspan x="20" dy="0">A block's 128×128 tile of C is shared by 8 warps of 32 threads.</tspan></text>
-    <text x="20" y="478" class="a st2-3"><tspan x="20" dy="0">The bank fix put each warp's rows 64 apart and spread its columns across the</tspan><tspan x="20" dy="26"> whole tile.</tspan></text>
+    <text x="20" y="478" class="a st2-3"><tspan x="20" dy="0">The bank fix put each warp's rows 64 apart and spread its columns across the</tspan><tspan x="20" dy="26">whole tile.</tspan></text>
     <text x="20" y="478" class="a st3-4"><tspan x="20" dy="0">A warp must read every value of A and B that touches one of its outputs.</tspan></text>
-    <text x="20" y="478" class="a st4-5"><tspan x="20" dy="0">A squarer region touches fewer rows plus columns for the same number of</tspan><tspan x="20" dy="26"> outputs.</tspan></text>
-    <text x="20" y="478" class="b a st5 fin type-subheading"><tspan x="20" dy="0">A third less data, but the same shared-memory passes, so no speedup on</tspan><tspan x="20" dy="26"> its own.</tspan></text>
+    <text x="20" y="478" class="a st4-5"><tspan x="20" dy="0">A squarer region touches fewer rows plus columns for the same number of</tspan><tspan x="20" dy="26">outputs.</tspan></text>
+    <text x="20" y="478" class="b a st5 fin type-subheading"><tspan x="20" dy="0">A third less data, but the same shared-memory passes, so no speedup on</tspan><tspan x="20" dy="26">its own.</tspan></text>
   </g>
 </svg>

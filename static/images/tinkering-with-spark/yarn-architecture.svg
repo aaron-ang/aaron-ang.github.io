@@ -351,12 +351,13 @@
     <text x="504" y="115" text-anchor="middle" class="inner">Scheduler</text>
     <rect x="608" y="48" width="144" height="136" rx="6" class="note" />
     <text x="618" y="68" class="notehead" xml:space="preserve">YARN separates</text>
-    <text x="600" y="83" class="muted" xml:space="preserve">resource management</text>
-    <text x="618" y="98" class="muted" xml:space="preserve">(ResourceManager)</text>
-    <text x="618" y="113" class="muted" xml:space="preserve">from per-app job</text>
-    <text x="618" y="128" class="muted" xml:space="preserve">scheduling and</text>
-    <text x="618" y="143" class="muted" xml:space="preserve">monitoring</text>
-    <text x="618" y="158" class="muted" xml:space="preserve">(ApplicationMaster)</text>
+    <text x="618" y="83" class="muted" xml:space="preserve">resource</text>
+    <text x="618" y="98" class="muted" xml:space="preserve">management</text>
+    <text x="618" y="113" class="muted" xml:space="preserve">(ResourceManager)</text>
+    <text x="618" y="128" class="muted" xml:space="preserve">from per-app job</text>
+    <text x="618" y="143" class="muted" xml:space="preserve">scheduling and</text>
+    <text x="618" y="158" class="muted" xml:space="preserve">monitoring</text>
+    <text x="618" y="173" class="muted" xml:space="preserve">(ApplicationMaster)</text>
     <rect x="20" y="262" width="230" height="136" rx="8" class="box" />
     <text x="32" y="280" class="title type-subheading">NodeManager</text>
     <rect x="265" y="262" width="230" height="136" rx="8" class="box" />
@@ -379,35 +380,35 @@
     </g>
     <text x="195" y="103" text-anchor="middle" class="a l1 lbl fin"><tspan class="k">1</tspan> submit job</text>
     <g class="a s2c cur">
-      <path d="M 290 140 V 200 H 135 V 280" />
-      <polygon points="130,280 135,290 140,280" />
+      <path d="M 290 140 V 200 H 150 V 280" />
+      <polygon points="145,280 150,290 155,280" />
     </g>
     <g class="a s2d done fin">
-      <path d="M 290 140 V 200 H 135 V 280" />
-      <polygon points="130,280 135,290 140,280" />
+      <path d="M 290 140 V 200 H 150 V 280" />
+      <polygon points="145,280 150,290 155,280" />
     </g>
     <text x="282" y="194" text-anchor="end" class="a l2 lbl fin"><tspan class="k">2</tspan> launch AM</text>
     <g class="a am fin">
-      <rect x="32" y="290" width="140" height="64" rx="5" class="cont" />
-      <text x="102" y="306" text-anchor="middle" class="muted">Container</text>
-      <text x="102" y="324" text-anchor="middle" class="inner b">ApplicationMaster</text>
+      <rect x="32" y="290" width="160" height="64" rx="5" class="cont" />
+      <text x="112" y="306" text-anchor="middle" class="muted">Container</text>
+      <text x="112" y="324" text-anchor="middle" class="inner b">ApplicationMaster</text>
     </g>
     <g class="a s3c cur">
-      <path d="M 150 290 V 222 H 440 V 152" />
+      <path d="M 165 290 V 222 H 440 V 152" />
       <polygon points="435,152 440,142 445,152" />
     </g>
     <g class="a s3d done fin">
-      <path d="M 150 290 V 222 H 440 V 152" />
+      <path d="M 165 290 V 222 H 440 V 152" />
       <polygon points="435,152 440,142 445,152" />
     </g>
-    <text x="300" y="215" class="a l3 lbl fin"><tspan class="k">3</tspan> request containers</text>
+    <text x="290" y="215" class="a l3 lbl fin"><tspan class="k">3</tspan> request containers</text>
     <g class="a s4c cur">
-      <path d="M 456 142 V 236 H 165 V 280" />
-      <polygon points="160,280 165,290 170,280" />
+      <path d="M 456 142 V 236 H 180 V 280" />
+      <polygon points="175,280 180,290 185,280" />
     </g>
     <g class="a s4d done fin">
-      <path d="M 456 142 V 236 H 165 V 280" />
-      <polygon points="160,280 165,290 170,280" />
+      <path d="M 456 142 V 236 H 180 V 280" />
+      <polygon points="175,280 180,290 185,280" />
     </g>
     <text x="300" y="252" class="a l4 lbl fin"><tspan class="k">4</tspan> grant containers</text>
     <g class="a ct fin">
@@ -421,14 +422,14 @@
       <text x="680" y="306" text-anchor="middle" class="muted">Container</text>
     </g>
     <g class="a s5c cur">
-      <path d="M 102 354 V 370 H 680 M 325 370 V 364 M 435 370 V 364 M 570 370 V 364 M 680 370 V 364" />
+      <path d="M 112 354 V 370 H 680 M 325 370 V 364 M 435 370 V 364 M 570 370 V 364 M 680 370 V 364" />
       <polygon points="320,364 325,354 330,364" />
       <polygon points="430,364 435,354 440,364" />
       <polygon points="565,364 570,354 575,364" />
       <polygon points="675,364 680,354 685,364" />
     </g>
     <g class="a s5d done fin">
-      <path d="M 102 354 V 370 H 680 M 325 370 V 364 M 435 370 V 364 M 570 370 V 364 M 680 370 V 364" />
+      <path d="M 112 354 V 370 H 680 M 325 370 V 364 M 435 370 V 364 M 570 370 V 364 M 680 370 V 364" />
       <polygon points="320,364 325,354 330,364" />
       <polygon points="430,364 435,354 440,364" />
       <polygon points="565,364 570,354 575,364" />
