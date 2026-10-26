@@ -23,9 +23,9 @@ In a VM there are two of these lookups. The guest OS keeps its own page tables, 
 
 Modern CPUs support both translations in hardware through Intel’s [EPT](https://en.wikipedia.org/wiki/Second_Level_Address_Translation#Extended_Page_Tables) (Extended Page Tables) or AMD’s NPT (Nested Page Tables). Without that support, KVM uses _shadow paging_: it builds tables that combine the guest and host mappings, translating guest virtual addresses directly to host physical addresses. The CPU walks these _shadow page tables_, while KVM tracks changes to the guest’s page tables and updates the corresponding shadow mappings.
 
-A [_shadow page_](https://docs.kernel.org/virt/kvm/x86/mmu.html#shadow-pages) is one memory page holding entries from these shadow page tables. KVM fills an entry on the guest’s first access to the page it maps. Once filled, that entry supplies the result of both lookups in one translation:
+A [_shadow page_](https://docs.kernel.org/virt/kvm/x86/mmu.html#shadow-pages) is one memory page holding entries from these shadow page tables. In this setup, a 4 KiB shadow page holds 512 entries; each last-level entry can map a separate 4 KiB page of guest memory. An entry is _present_ when its present bit is set, allowing the CPU to use its mapping. If a guest access finds no present entry, it faults into KVM, which installs the missing mapping. The resulting entry combines both lookups in one translation:
 
-![Three tables: the guest page table, KVM's memslots, and the shadow page table the CPU walks. The filled entry 0x5000 takes one lookup. Touching unfilled 0x4000 faults, and KVM resolves it through both tables to 0x79000 and stores it.](/images/approximate-lru-in-kvm/two-level-translation.svg "Each page table tree is drawn as a flat list of mappings.")
+![Three tables: the guest page table, KVM's memslots, and the shadow page table the CPU walks. The present entry for 0x5000 supplies the translation. Accessing 0x4000, whose shadow entry is not present, faults, and KVM resolves it through both tables to 0x79000 and stores it.](/images/approximate-lru-in-kvm/two-level-translation.svg "Each page table tree is drawn as a flat list of mappings.")
 
 ### Which KVM Path the Patch Changes
 
@@ -35,7 +35,7 @@ Selecting the legacy MMU is a separate choice from disabling hardware translatio
 
 ### Cache Limits and Zapping
 
-For each shadow page, KVM allocates a small `struct kvm_mmu_page` and puts it on a linked list called `active_mmu_pages`, with new pages going at the head.
+For each shadow page, KVM allocates a small `struct kvm_mmu_page` to hold its metadata and puts that structure on a linked list called `active_mmu_pages`, with new pages going at the head. In the code, `sp` (“shadow page”) is a pointer to this metadata.
 
 Before handling a fault, KVM checks how much space remains in the shadow-page cache. If fewer than 5 slots are free, it evicts pages until 25 slots are available. Choosing and removing those pages happens while `mmu_lock`, a [reader-writer lock](https://en.wikipedia.org/wiki/Readers%E2%80%93writer_lock), is held for writing. Time spent choosing victims therefore also delays work that needs conflicting access to the page tables.
 
@@ -79,7 +79,7 @@ The implementation adds a bool (`lru_ref`) to `struct kvm_mmu_page` to serve as 
 
 In the first version there were two callers. One, in `__kvm_mmu_get_shadow_page`, runs when KVM looks up or creates a shadow page while handling a fault. The other, in `fast_page_fault`, runs when the _fast path_ for page faults succeeds. That path is for faults where the shadow entry exists but has the wrong permission, e.g. a write to a page KVM made read-only deliberately, to detect changes. It patches the entry with a single atomic update and never takes `mmu_lock` (hence "lock-free").
 
-The eviction loop below sweeps the clock hand instead of walking from the tail as FIFO does:
+The eviction loop below sweeps the clock hand instead of walking from the tail as FIFO does. It is shown without the accessed-bit checks that Part 2 adds:
 
 ```c
 unsigned long budget = 2 * kvm->arch.n_used_mmu_pages;
@@ -106,7 +106,7 @@ while (budget-- && (sp = kvm->arch.clock_hand)) {
 }
 ```
 
-`kvm_mmu_clock_next` returns the page before `sp`, wrapping from the head back to the tail; that wrap is what makes the list a circle. `budget` limits the sweep to two laps (the next section explains why).
+`kvm_mmu_clock_next` returns the page before `sp`, wrapping from the head back to the tail; that wrap is what makes the list a circle. `budget` limits this sweep to two laps, as the next section explains. Part 2 extends the limit to three laps when the sweep also reads hardware accessed bits.
 
 CLOCK also fits an existing constraint: other KVM code relies on `active_mmu_pages` remaining in creation order. Setting `lru_ref` leaves that order intact, while `list_move()` on each observed use would change it. The fault path can therefore mark a page with a single store, and the fast fault path needs no additional lock for list manipulation.
 
@@ -140,7 +140,7 @@ FIFO can stop at the head of the list, whereas CLOCK’s hand wraps around and c
 
 ### Invariant 3: Free an Eligible Page When One Exists
 
-The two-lap argument assumes that nothing re-marks pages behind the hand, an assumption the lock-free fast fault path can violate by setting those bits at any time. In the worst case, every page is re-marked before the hand returns, the sweep frees nothing, and KVM fails the guest's page fault with `ENOSPC` (out of space), which stops the VM. When the sweep zaps nothing, the code now falls back to FIFO order, and a new counter, `lru_fifo_fallbacks`, records each fallback:
+The two-lap argument assumes that nothing re-marks pages behind the hand, an assumption the lock-free fast fault path can violate by setting those bits at any time. In the worst case, every page is re-marked before the hand returns, the sweep frees nothing, and KVM fails the guest's page fault with `ENOSPC` (out of space), which stops the VM. When the sweep zaps nothing, the code falls back to FIFO order, and a new counter, `lru_fifo_fallbacks`, records each fallback:
 
 ```c
 total_zapped = kvm_mmu_clock_zap_pages(kvm, nr_to_zap,
@@ -169,21 +169,33 @@ That setup was [nested](https://docs.kernel.org/virt/kvm/x86/running-nested-gues
 
 ### Follow-Up on an Emulated x86 Machine
 
-For the follow-up, I used an x86 machine emulated by QEMU on an Arm workstation.
+For the follow-up, I used an x86 machine emulated by QEMU 8.2.2 on an Arm workstation.
 
 QEMU’s [Tiny Code Generator](https://www.qemu.org/docs/master/devel/tcg.html) (TCG) translates x86 instructions into Arm instructions as the guest runs. It emulates an AMD x86 CPU and [Secure Virtual Machine](<https://en.wikipedia.org/wiki/X86_virtualization#AMD_virtualization_(AMD-V)>) (SVM), AMD’s hardware virtualization support. Inside that machine, the modified KVM runs nested guests:
 
 ![L0 is an Arm-based NVIDIA GB10 workstation, where QEMU emulates an x86 AMD EPYC CPU in software. L1 runs our modified KVM with nested paging off. L2 holds the selftest VMs and a Redis guest, whose faults fill L1's shadow MMU cache.](/images/approximate-lru-in-kvm/emulated-setup.svg "Layers L0 to L2 are numbered as in the c5n.metal setup above; compare the two stacks row by row.")
 
-This setup used true shadow paging, with AMD’s nested page tables disabled (`kvm_amd.npt=0`). Its own [test programs](https://docs.kernel.org/dev-tools/kselftest.html) passed under CLOCK, under FIFO, and while switching policies with VMs running. We enabled [KASAN](https://docs.kernel.org/dev-tools/kasan.html) (Kernel Address Sanitizer) for memory errors, [lockdep](https://docs.kernel.org/locking/lockdep-design.html) for locking mistakes, and the [lockup detectors](https://docs.kernel.org/admin-guide/lockup-watchdogs.html) for hangs.
+This setup used true shadow paging, with AMD’s nested page tables disabled (`kvm_amd.npt=0`). The kernel used for the correctness checks below enabled [KASAN](https://docs.kernel.org/dev-tools/kasan.html) (Kernel Address Sanitizer) for memory errors, [lockdep](https://docs.kernel.org/locking/lockdep-design.html) for locking mistakes, and the [lockup detectors](https://docs.kernel.org/admin-guide/lockup-watchdogs.html) for hangs. For comparison, some runs used a _baseline kernel_: upstream Linux 6.14-rc7 without the eviction changes, plus a one-line fix for an upstream KVM bug that QEMU's emulated CPU exposes.
+
+QEMU can emulate a machine's virtual CPUs one at a time on a single host thread, or in parallel on several threads. In single-threaded mode, KVM's own [test programs](https://docs.kernel.org/dev-tools/kselftest.html) passed in four configurations: the modified kernel under FIFO, CLOCK with each of the two [accessed-bit modes from Part 2](/approximate-lru-in-kvm-evaluation/#reading-hardware-accessed-bits), and the baseline kernel. Each configuration was booted and tested once. In parallel mode, however, all 14 boots that ran the same programs failed, including all four on the baseline kernel. Four of the 14 used QEMU 11.1.2 instead of 8.2.2, and two were control boots that used the TDP MMU. Failures on the baseline kernel complicate diagnosis, while passing under single-threaded emulation cannot rule out races that require parallel execution.
+
+The test programs use small, purpose-built guests whose timer-interrupt handling differs from that of a full Linux kernel. The nested Linux guest used for Redis exposed another problem: under single-threaded emulation, it hung during boot in all 8 runs, including four on kernels without the eviction changes. Traces were recorded in 6 of the runs. In 5 of them, the nested guest froze inside a timer-interrupt handler after the same interrupt arrived again while interrupts were disabled. The guest then deadlocked waiting for a lock or sequence counter held by the interrupted handler. In three of these freezes, the trace shows that L1’s KVM had requested only one injection. The other two involved an interrupt vector that L1’s own timer also uses, so the traces cannot show where the second delivery came from.
+
+The repeated delivery was traced to QEMU’s emulation of SVM. When L1’s KVM requests an interrupt injection, QEMU delivers the interrupt as it enters the nested guest but leaves it recorded as pending. If QEMU pauses the emulated CPU before that record is cleared, it delivers the interrupt again when the CPU resumes, without checking whether the nested guest has disabled interrupts. Clearing the pending record after delivery required a one-line change.
+
+With that change, all 4 single-threaded test runs finished the Redis benchmark, whereas both runs without it hung. Two of the runs with the change logged unexplained soft-lockup warnings.[^qemu-interrupt-fix] The change was not tested under parallel emulation, and as of writing, QEMU’s development branch does not include it.
 
 ### Stressing Eviction During Memory Changes
 
-I also added `lru_stress_test` to check eviction while the VM’s memory configuration was changing. Four virtual CPUs read and write guest pages as host threads change the memory layout, toggle dirty-page logging, and resize the cache between 64 and 1,024 pages. Each guest page holds a value derived from its address, which the guest checks on every read. If a stale translation directs a read to the wrong page, that value no longer matches and the test fails.
+I also added `lru_stress_test` to check eviction while the VM’s memory configuration was changing. It ran in separate boots from the KVM test programs above. Four virtual CPUs read and write guest pages as host threads change the memory layout, toggle dirty-page logging, and resize the cache between 64 and 1,024 pages. Each guest page holds a value derived from its address, which the guest checks on every read. If a stale translation directs a read to the wrong page, that value no longer matches and the test fails.
 
-This test caught the `ENOSPC` failure from invariant 3. Before the FIFO fallback existed, one version of CLOCK stopped the VM 71 seconds into a run. With the fallback in place, every run passed under every policy.
+Under single-threaded emulation, the stress tests covered both fixed policy settings and switching policies while the guest ran.[^test-build] All runs that reached guest execution passed; one crashed during L1’s boot, before any VM existed, and passed when rerun.[^stress-single] These runs lasted 12 minutes, against two minutes for the parallel runs below, but completed a similar number of test iterations or fewer. The comparison shows that elapsed time alone does not measure how thoroughly a run exercised eviction.
 
-The follow-up also records whether the reference marks affect eviction directly. The `lru_ref_skips` counter records each page spared because its referenced bit was set. If it stays at zero, none of the marks has caused the sweep to spare a page; we need to understand that before attributing a benchmark difference to CLOCK's reference tracking.
+Under parallel emulation, 27 of 29 completed stress-test runs passed; another four runs were stopped before completion. CLOCK without accessed bits was stress-tested only under parallel emulation, where all 6 of its runs passed. Of the two failures, one occurred while switching policies, when KVM’s page-fault handler read a corrupted shadow entry. The other occurred with FIFO held fixed and crashed in the kernel’s scheduler.
+
+The baseline kernel also failed under parallel emulation, but its failures were hangs and locking errors rather than memory corruption. Two runs crashed inside KVM code: the stress-test run with the corrupted shadow entry, and a run of KVM’s own test programs. Both used an accessed-bit mode: the stress-test run switched between the two modes, and the test-program run held leaf mode fixed. Neither crash has been traced to its cause, so a bug in the eviction code remains possible.
+
+The FIFO fallback from invariant 3 was not needed in any stress-test run that reported its counter. Nine parallel runs disabled it entirely through a test-build switch; every sweep still freed a page, and no page fault failed with `ENOSPC`.
 
 ## Looking Back
 
@@ -197,4 +209,12 @@ We also tried extending CLOCK to the TDP MMU but did not complete that work. In 
 
 The implementation gave us a way to give shadow pages second chances without changing the list’s creation order, while bounding each sweep and guaranteeing progress when an eligible page exists. Its usefulness still depended on whether KVM could observe enough accesses to distinguish hot pages from cold ones.
 
-In [Part 2: Tracking Page Use](/approximate-lru-in-kvm-evaluation/), I investigate that problem on the emulated x86 machine. Marking pages while their entries were filled reduced faults by 61–81% compared with FIFO in the reuse test’s 64- and 128-page caches. Hardware accessed bits and the Redis workload gave more mixed results. Those measurements establish changes in counts, with timings on real hardware still left to do.
+In [Part 2: Tracking Page Use](/approximate-lru-in-kvm-evaluation/), I investigate that problem on the emulated x86 machine. Marking shadow pages whenever KVM installed mappings in their entries reduced faults by 61–81% compared with FIFO in the reuse test’s 64- and 128-page caches. With Redis, every version of CLOCK evicted 20–25% fewer shadow pages than FIFO in the two smallest caches, but faults fell by only 2–7%. Hardware accessed bits gave mixed results. These measurements show changes in fault and eviction counts; whether those changes improve performance still needs to be measured on real hardware.
+
+[^qemu-interrupt-fix]: The test built QEMU 8.2.2 from the official source, with and without the change. The other runs on QEMU 8.2.2 used Ubuntu's packaged build of that release, which differs in its default machine type, build options, and distribution patches. The soft-lockup warnings each lasted about 20 seconds. QEMU 11.1.2 could not boot the nested guest in this test, with or without the change, because of a separate bug in its SVM emulation.
+
+[^test-build]: The stress tests ran on a test build of the published code. One of its extra module parameters disables the FIFO fallback. The test build also read `lru_age` at each visit of the clock hand, whereas the published code reads it once per sweep. The two behave the same unless the setting changes during a sweep, which happened only in runs that switched policies.
+
+[^stress-single]: The tests were scheduled for 12 minutes each, in three groups of 12 runs. One group switched between FIFO and CLOCK, and between the two accessed-bit modes, while the guest ran. The other two groups kept their settings fixed: one used CLOCK with a fixed accessed-bit mode, and the other used FIFO. In those groups, the host processes still wrote to the policy settings, but rewrote the existing values.
+
+    All runs with fixed settings passed, as did 11 of the 12 runs that switched policies. The remaining run crashed during L1’s boot because of an upstream race during interrupt-controller setup. A rerun with the same seed passed. Every virtual CPU in the 35 passing runs of the three groups completed 30,000–64,000 iterations of the test loop. That is comparable to or less than the work in the two-minute parallel runs. The rerun shared the host with fewer runs, and each of its virtual CPUs completed about 100,000 iterations.
