@@ -1,0 +1,206 @@
+[10-08 01:17:26] queued 2 runs on 2 instances
+[10-08 02:03:05] inst0 boot1 tsc: Command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Detected 999.983 MHz processor | tsc: Detected 1000.000 MHz TSC | Kernel command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Refined TSC clocksource calibration: 999.993 MHz
+[10-08 02:03:09] inst1 boot1 tsc: Command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Detected 999.999 MHz processor | tsc: Detected 1000.000 MHz TSC | Kernel command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Refined TSC clocksource calibration: 999.994 MHz
+[10-08 02:03:40] inst0 boot1 up in 2774s: ['6.14.0-rc7', '-rw-r--r--', '1', 'root', 'root', '3221225472', 'Oct', '8', '04:23', '/root/pg/data.img', '-rw-r--r--', '1', 'root', 'root', '34511548', 'Oct', '8', '04:38', '/root/pg/initramfs.cpio.gz', '/bin/busybox:', 'ELF', '64-bit', 'LSB', 'executable,', 'x86-64,', 'version', '1', '(', 'Y', 'N', 'N']
+[10-08 02:03:40] inst0 start pilot2-C100-big (order 1)
+[10-08 02:03:45] inst1 boot1 up in 2759s: ['6.14.0-rc7', '-rw-r--r--', '1', 'root', 'root', '3221225472', 'Oct', '8', '04:23', '/root/pg/data.img', '-rw-r--r--', '1', 'root', 'root', '34511548', 'Oct', '8', '04:38', '/root/pg/initramfs.cpio.gz', '/bin/busybox:', 'ELF', '64-bit', 'LSB', 'executable,', 'x86-64,', 'version', '1', '(', 'Y', 'N', 'N']
+[10-08 02:03:45] inst1 start pilot2-C100-def (order 2)
+[10-08 02:18:21] inst1 L2STALL_MARKER #1 (pilot2-C100-def): capturing host stacks pid=2105340
+[10-08 02:18:33] inst1 host capture done -> /tmp/kvmval/open/pg/logs/pilot2-C100-def.hoststacks
+[10-08 02:20:16] inst0 L2STALL_MARKER #1 (pilot2-C100-big): capturing host stacks pid=2105138
+[10-08 02:20:28] inst0 host capture done -> /tmp/kvmval/open/pg/logs/pilot2-C100-big.hoststacks
+[10-08 03:29:27] queued 3 runs on 3 instances
+[10-08 03:37:02] inst0 boot1 tsc: Command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Detected 1000.006 MHz processor | tsc: Detected 1000.000 MHz TSC | Kernel command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Refined TSC clocksource calibration: 1000.000 MHz
+[10-08 03:37:18] inst0 boot1 up in 471s: ['6.14.0-rc7', '-rw-r--r--', '1', 'root', 'root', '3221225472', 'Oct', '8', '04:23', '/root/pg/data.img', '-rw-r--r--', '1', 'root', 'root', '34511548', 'Oct', '8', '04:38', '/root/pg/initramfs.cpio.gz', '/bin/busybox:', 'ELF', '64-bit', 'LSB', 'executable,', 'x86-64,', 'version', '1', '(', 'Y', 'N', 'N']
+[10-08 03:37:18] inst0 start pilot3-C100-big (order 1)
+[10-08 03:38:21] inst1 boot1 tsc: Command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Detected 1000.015 MHz processor | tsc: Detected 1000.000 MHz TSC | Kernel command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Refined TSC clocksource calibration: 999.993 MHz
+[10-08 03:38:37] inst1 boot1 up in 530s: ['6.14.0-rc7', '-rw-r--r--', '1', 'root', 'root', '3221225472', 'Oct', '8', '04:23', '/root/pg/data.img', '-rw-r--r--', '1', 'root', 'root', '34511548', 'Oct', '8', '04:38', '/root/pg/initramfs.cpio.gz', '/bin/busybox:', 'ELF', '64-bit', 'LSB', 'executable,', 'x86-64,', 'version', '1', '(', 'Y', 'N', 'N']
+[10-08 03:38:37] inst1 start pilot3-C100-def (order 2)
+[10-08 03:38:41] inst2 boot1 tsc: Command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Detected 999.995 MHz processor | tsc: Detected 1000.000 MHz TSC | Kernel command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Refined TSC clocksource calibration: 999.993 MHz
+[10-08 03:38:57] inst2 boot1 up in 530s: ['6.14.0-rc7', '-rw-r--r--', '1', 'root', 'root', '3221225472', 'Oct', '8', '04:23', '/root/pg/data.img', '-rw-r--r--', '1', 'root', 'root', '34511548', 'Oct', '8', '04:38', '/root/pg/initramfs.cpio.gz', '/bin/busybox:', 'ELF', '64-bit', 'LSB', 'executable,', 'x86-64,', 'version', '1', '(', 'Y', 'N', 'N']
+[10-08 03:38:57] inst2 start pilot3-C16-big (order 3)
+[10-08 03:53:34] inst2 done pilot3-C16-big result=END el=796 recycled=0 pf=167946 sleep=42 other=0 ev=
+[10-08 03:55:48] inst2 finished
+[10-08 05:03:54] inst0 done pilot3-C100-big result=END el=5100 recycled=0 pf=692991 sleep=30 other=1 ev=
+[10-08 05:06:09] inst0 finished
+[10-08 05:08:59] inst1 done pilot3-C100-def result=END el=5321 recycled=0 pf=701421 sleep=32 other=0 ev=
+[10-08 05:11:13] inst1 finished
+[10-08 05:11:13] ALL RUNS DONE
+[10-08 05:13:33] queued 3 runs on 3 instances
+[10-08 05:24:01] inst1 boot1 tsc: Command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Detected 1000.016 MHz processor | tsc: Detected 1000.000 MHz TSC | Kernel command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Refined TSC clocksource calibration: 999.995 MHz
+[10-08 05:24:24] inst1 boot1 up in 631s: ['6.14.0-rc7', '-rw-r--r--', '1', 'root', 'root', '3221225472', 'Oct', '8', '04:23', '/root/pg/data.img', '-rw-r--r--', '1', 'root', 'root', '34511548', 'Oct', '8', '04:38', '/root/pg/initramfs.cpio.gz', '/bin/busybox:', 'ELF', '64-bit', 'LSB', 'executable,', 'x86-64,', 'version', '1', '(', 'Y', 'N', 'N']
+[10-08 05:24:24] inst1 start pilot4-C200-big (order 1)
+[10-08 05:24:39] inst2 boot1 tsc: Command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Detected 1000.014 MHz processor | tsc: Detected 1000.000 MHz TSC | Kernel command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Refined TSC clocksource calibration: 999.994 MHz
+[10-08 05:25:02] inst2 boot1 up in 649s: ['6.14.0-rc7', '-rw-r--r--', '1', 'root', 'root', '3221225472', 'Oct', '8', '04:23', '/root/pg/data.img', '-rw-r--r--', '1', 'root', 'root', '34511548', 'Oct', '8', '04:38', '/root/pg/initramfs.cpio.gz', '/bin/busybox:', 'ELF', '64-bit', 'LSB', 'executable,', 'x86-64,', 'version', '1', '(', 'Y', 'N', 'N']
+[10-08 05:25:02] inst2 start pilot4-C200-def (order 2)
+[10-08 05:25:53] inst0 boot1 tsc: Command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Detected 999.987 MHz processor | tsc: Detected 1000.000 MHz TSC | Kernel command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Refined TSC clocksource calibration: 999.993 MHz
+[10-08 05:26:16] inst0 boot1 up in 763s: ['6.14.0-rc7', '-rw-r--r--', '1', 'root', 'root', '3221225472', 'Oct', '8', '04:23', '/root/pg/data.img', '-rw-r--r--', '1', 'root', 'root', '34511548', 'Oct', '8', '04:38', '/root/pg/initramfs.cpio.gz', '/bin/busybox:', 'ELF', '64-bit', 'LSB', 'executable,', 'x86-64,', 'version', '1', '(', 'Y', 'N', 'N']
+[10-08 05:26:16] inst0 start pilot4-C16-big (order 3)
+[10-08 05:30:16] inst1 done pilot4-C200-big result=KVM_INTERNAL_ERROR el=242 recycled=None pf=None sleep=24 other=0 ev=
+[10-08 05:32:02] inst0 done pilot4-C16-big result=KVM_INTERNAL_ERROR el=242 recycled=None pf=None sleep=22 other=16 ev=
+[10-08 05:32:37] inst1 finished
+[10-08 05:34:23] inst0 finished
+[10-08 06:09:05] inst2 done pilot4-C200-def result=L2_EXITED el=2498 recycled=None pf=None sleep=60 other=3 ev=
+[10-08 06:11:22] inst2 finished
+[10-08 06:11:22] ALL RUNS DONE
+[10-08 06:13:03] queued 3 runs on 3 instances
+[10-08 06:23:05] inst0 boot1 tsc: Command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Detected 999.994 MHz processor | tsc: Detected 1000.000 MHz TSC | Kernel command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Refined TSC clocksource calibration: 999.994 MHz
+[10-08 06:23:20] inst1 boot1 tsc: Command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Detected 1000.013 MHz processor | tsc: Detected 1000.000 MHz TSC | Kernel command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Refined TSC clocksource calibration: 1000.000 MHz
+[10-08 06:23:26] inst0 boot1 up in 623s: ['6.14.0-rc7', '-rw-r--r--', '1', 'root', 'root', '3221225472', 'Oct', '8', '04:23', '/root/pg/data.img', '-rw-r--r--', '1', 'root', 'root', '34511548', 'Oct', '8', '04:38', '/root/pg/initramfs.cpio.gz', '/bin/busybox:', 'ELF', '64-bit', 'LSB', 'executable,', 'x86-64,', 'version', '1', '(', 'Y', 'N', 'N']
+[10-08 06:23:26] inst0 start pilot4-C200-big (order 1)
+[10-08 06:23:41] inst1 boot1 up in 618s: ['6.14.0-rc7', '-rw-r--r--', '1', 'root', 'root', '3221225472', 'Oct', '8', '04:23', '/root/pg/data.img', '-rw-r--r--', '1', 'root', 'root', '34511548', 'Oct', '8', '04:38', '/root/pg/initramfs.cpio.gz', '/bin/busybox:', 'ELF', '64-bit', 'LSB', 'executable,', 'x86-64,', 'version', '1', '(', 'Y', 'N', 'N']
+[10-08 06:23:41] inst1 start pilot4-C200-def (order 2)
+[10-08 06:24:00] inst2 boot1 tsc: Command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Detected 1000.020 MHz processor | tsc: Detected 1000.000 MHz TSC | Kernel command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Refined TSC clocksource calibration: 1000.000 MHz
+[10-08 06:24:20] inst2 boot1 up in 638s: ['6.14.0-rc7', '-rw-r--r--', '1', 'root', 'root', '3221225472', 'Oct', '8', '04:23', '/root/pg/data.img', '-rw-r--r--', '1', 'root', 'root', '34511548', 'Oct', '8', '04:38', '/root/pg/initramfs.cpio.gz', '/bin/busybox:', 'ELF', '64-bit', 'LSB', 'executable,', 'x86-64,', 'version', '1', '(', 'Y', 'N', 'N']
+[10-08 06:24:20] inst2 start pilot4-C16-big (order 3)
+[10-08 06:28:50] inst0 done pilot4-C200-big result=KVM_INTERNAL_ERROR el=220 recycled=None pf=None sleep=15 other=0 ev=
+[10-08 06:28:53] inst1 done pilot4-C200-def result=KVM_INTERNAL_ERROR el=208 recycled=None pf=None sleep=16 other=0 ev=
+[10-08 06:30:48] inst2 done pilot4-C16-big result=KVM_INTERNAL_ERROR el=283 recycled=None pf=None sleep=9 other=0 ev=
+[10-08 06:31:13] inst0 finished
+[10-08 06:31:14] inst1 finished
+[10-08 06:33:08] inst2 finished
+[10-08 06:33:08] ALL RUNS DONE
+[10-08 06:34:37] queued 3 runs on 3 instances
+[10-08 06:45:03] inst0 boot1 tsc: Command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Detected 999.999 MHz processor | tsc: Detected 1000.000 MHz TSC | Kernel command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Refined TSC clocksource calibration: 999.993 MHz
+[10-08 06:45:27] inst0 boot1 up in 649s: ['6.14.0-rc7', '-rw-r--r--', '1', 'root', 'root', '3221225472', 'Oct', '8', '04:23', '/root/pg/data.img', '-rw-r--r--', '1', 'root', 'root', '34511548', 'Oct', '8', '04:38', '/root/pg/initramfs.cpio.gz', '/bin/busybox:', 'ELF', '64-bit', 'LSB', 'executable,', 'x86-64,', 'version', '1', '(', 'Y', 'N', 'N']
+[10-08 06:45:27] inst0 start pilot5-pw1 (order 1)
+[10-08 06:45:29] inst1 boot1 tsc: Command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Detected 999.994 MHz processor | tsc: Detected 1000.000 MHz TSC | Kernel command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Refined TSC clocksource calibration: 999.994 MHz
+[10-08 06:45:36] inst2 boot1 tsc: Command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Detected 999.992 MHz processor | tsc: Detected 1000.000 MHz TSC | Kernel command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Refined TSC clocksource calibration: 999.994 MHz
+[10-08 06:45:50] inst1 boot1 up in 652s: ['6.14.0-rc7', '-rw-r--r--', '1', 'root', 'root', '3221225472', 'Oct', '8', '04:23', '/root/pg/data.img', '-rw-r--r--', '1', 'root', 'root', '34511548', 'Oct', '8', '04:38', '/root/pg/initramfs.cpio.gz', '/bin/busybox:', 'ELF', '64-bit', 'LSB', 'executable,', 'x86-64,', 'version', '1', '(', 'Y', 'N', 'N']
+[10-08 06:45:50] inst1 start pilot5-pw2 (order 2)
+[10-08 06:45:56] inst2 boot1 up in 638s: ['6.14.0-rc7', '-rw-r--r--', '1', 'root', 'root', '3221225472', 'Oct', '8', '04:23', '/root/pg/data.img', '-rw-r--r--', '1', 'root', 'root', '34511548', 'Oct', '8', '04:38', '/root/pg/initramfs.cpio.gz', '/bin/busybox:', 'ELF', '64-bit', 'LSB', 'executable,', 'x86-64,', 'version', '1', '(', 'Y', 'N', 'N']
+[10-08 06:45:56] inst2 start pilot5-pw3 (order 3)
+[10-08 06:50:46] inst0 done pilot5-pw1 result=KVM_INTERNAL_ERROR el=220 recycled=None pf=None sleep=8 other=2 ev=
+[10-08 06:53:07] inst0 finished
+[10-08 06:53:52] inst2 done pilot5-pw3 result=END el=376 recycled=0 pf=119906 sleep=58 other=0 ev=
+[10-08 06:55:00] inst1 done pilot5-pw2 result=END el=448 recycled=0 pf=125215 sleep=62 other=0 ev=
+[10-08 06:56:11] inst2 finished
+[10-08 06:57:20] inst1 finished
+[10-08 06:57:20] ALL RUNS DONE
+[10-08 06:58:30] queued 3 runs on 3 instances
+[10-08 07:08:45] inst0 boot1 tsc: Command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Detected 999.984 MHz processor | tsc: Detected 1000.000 MHz TSC | Kernel command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Refined TSC clocksource calibration: 999.995 MHz
+[10-08 07:09:05] inst0 boot1 up in 635s: ['6.14.0-rc7', '-rw-r--r--', '1', 'root', 'root', '3221225472', 'Oct', '8', '04:23', '/root/pg/data.img', '-rw-r--r--', '1', 'root', 'root', '34511548', 'Oct', '8', '04:38', '/root/pg/initramfs.cpio.gz', '/bin/busybox:', 'ELF', '64-bit', 'LSB', 'executable,', 'x86-64,', 'version', '1', '(', 'Y', 'N', 'N']
+[10-08 07:09:05] inst0 start pilot5-pw1 (order 1)
+[10-08 07:09:14] inst1 boot1 tsc: Command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Detected 1000.008 MHz processor | tsc: Detected 1000.000 MHz TSC | Kernel command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Refined TSC clocksource calibration: 999.994 MHz
+[10-08 07:09:33] inst2 boot1 tsc: Command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Detected 1000.013 MHz processor | tsc: Detected 1000.000 MHz TSC | Kernel command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Refined TSC clocksource calibration: 999.994 MHz
+[10-08 07:09:35] inst1 boot1 up in 645s: ['6.14.0-rc7', '-rw-r--r--', '1', 'root', 'root', '3221225472', 'Oct', '8', '04:23', '/root/pg/data.img', '-rw-r--r--', '1', 'root', 'root', '34511548', 'Oct', '8', '04:38', '/root/pg/initramfs.cpio.gz', '/bin/busybox:', 'ELF', '64-bit', 'LSB', 'executable,', 'x86-64,', 'version', '1', '(', 'Y', 'N', 'N']
+[10-08 07:09:35] inst1 start pilot5-pw2 (order 2)
+[10-08 07:09:55] inst2 boot1 up in 645s: ['6.14.0-rc7', '-rw-r--r--', '1', 'root', 'root', '3221225472', 'Oct', '8', '04:23', '/root/pg/data.img', '-rw-r--r--', '1', 'root', 'root', '34511548', 'Oct', '8', '04:38', '/root/pg/initramfs.cpio.gz', '/bin/busybox:', 'ELF', '64-bit', 'LSB', 'executable,', 'x86-64,', 'version', '1', '(', 'Y', 'N', 'N']
+[10-08 07:09:55] inst2 start pilot5-pw3 (order 3)
+[10-08 07:14:38] inst0 done pilot5-pw1 result=KVM_INTERNAL_ERROR el=224 recycled=None pf=None sleep=8 other=0 ev=
+[10-08 07:16:59] inst0 finished
+[10-08 07:19:48] inst1 done pilot5-pw2 result=KVM_INTERNAL_ERROR el=504 recycled=None pf=None sleep=110 other=0 ev=
+[10-08 07:22:07] inst1 finished
+[10-08 07:28:05] inst2 done pilot5-pw3 result=END el=958 recycled=0 pf=408289 sleep=350 other=0 ev=
+[10-08 07:30:23] inst2 finished
+[10-08 07:30:23] ALL RUNS DONE
+[10-08 08:23:58] queued 3 runs on 3 instances
+[10-08 08:32:15] inst1 boot1 tsc: Command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Detected 1000.008 MHz processor | tsc: Detected 1000.000 MHz TSC | Kernel command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Refined TSC clocksource calibration: 999.993 MHz
+[10-08 08:32:30] inst1 boot1 up in 492s: ['6.14.0-rc7', '-rw-r--r--', '1', 'root', 'root', '3221225472', 'Oct', '8', '04:23', '/root/pg/data.img', '-rw-r--r--', '1', 'root', 'root', '34511548', 'Oct', '8', '04:38', '/root/pg/initramfs.cpio.gz', '/bin/busybox:', 'ELF', '64-bit', 'LSB', 'executable,', 'x86-64,', 'version', '1', '(', 'Y', 'N', 'N']
+[10-08 08:32:30] inst1 start pilot5-pw1 (order 1)
+[10-08 08:32:37] inst0 boot1 tsc: Command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Detected 1000.001 MHz processor | tsc: Detected 1000.000 MHz TSC | Kernel command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Refined TSC clocksource calibration: 999.993 MHz
+[10-08 08:32:44] inst2 boot1 tsc: Command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Detected 1000.000 MHz processor | Kernel command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Refined TSC clocksource calibration: 999.993 MHz
+[10-08 08:32:53] inst0 boot1 up in 535s: ['6.14.0-rc7', '-rw-r--r--', '1', 'root', 'root', '3221225472', 'Oct', '8', '04:23', '/root/pg/data.img', '-rw-r--r--', '1', 'root', 'root', '34511548', 'Oct', '8', '04:38', '/root/pg/initramfs.cpio.gz', '/bin/busybox:', 'ELF', '64-bit', 'LSB', 'executable,', 'x86-64,', 'version', '1', '(', 'Y', 'N', 'N']
+[10-08 08:32:53] inst0 start pilot5-pw2 (order 2)
+[10-08 08:32:59] inst2 boot1 up in 501s: ['6.14.0-rc7', '-rw-r--r--', '1', 'root', 'root', '3221225472', 'Oct', '8', '04:23', '/root/pg/data.img', '-rw-r--r--', '1', 'root', 'root', '34511548', 'Oct', '8', '04:38', '/root/pg/initramfs.cpio.gz', '/bin/busybox:', 'ELF', '64-bit', 'LSB', 'executable,', 'x86-64,', 'version', '1', '(', 'Y', 'N', 'N']
+[10-08 08:32:59] inst2 start pilot5-pw3 (order 3)
+[10-08 08:36:37] inst1 done pilot5-pw1 result=KVM_INTERNAL_ERROR el=171 recycled=None pf=None sleep=14 other=0 ev=
+[10-08 08:38:52] inst1 finished
+[10-08 08:46:33] inst0 done pilot5-pw2 result=END el=704 recycled=0 pf=406414 sleep=336 other=0 ev=
+[10-08 08:48:47] inst0 finished
+[10-08 08:48:57] inst2 done pilot5-pw3 result=END el=848 recycled=0 pf=410538 sleep=328 other=0 ev=
+[10-08 08:51:12] inst2 finished
+[10-08 08:51:12] ALL RUNS DONE
+[10-08 23:20:43] queued 3 runs on 3 instances
+[10-08 23:29:03] inst1 boot1 tsc: Command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Detected 999.980 MHz processor | tsc: Detected 1000.000 MHz TSC | Kernel command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Refined TSC clocksource calibration: 1000.000 MHz
+[10-08 23:29:17] inst1 boot1 up in 494s: ['6.14.0-rc7', '-rw-r--r--', '1', 'root', 'root', '3221225472', 'Oct', '8', '04:23', '/root/pg/data.img', '-rw-r--r--', '1', 'root', 'root', '34511548', 'Oct', '8', '04:38', '/root/pg/initramfs.cpio.gz', '/bin/busybox:', 'ELF', '64-bit', 'LSB', 'executable,', 'x86-64,', 'version', '1', '(', 'Y', 'N', 'N']
+[10-08 23:29:17] inst1 start pilot4-C200-big (order 1)
+[10-08 23:29:23] inst2 boot1 tsc: Command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Detected 1000.004 MHz processor | tsc: Detected 1000.000 MHz TSC | Kernel command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Refined TSC clocksource calibration: 999.992 MHz
+[10-08 23:29:37] inst0 boot1 tsc: Command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Detected 1000.005 MHz processor | tsc: Detected 1000.000 MHz TSC | Kernel command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Refined TSC clocksource calibration: 999.993 MHz
+[10-08 23:29:38] inst2 boot1 up in 495s: ['6.14.0-rc7', '-rw-r--r--', '1', 'root', 'root', '3221225472', 'Oct', '8', '04:23', '/root/pg/data.img', '-rw-r--r--', '1', 'root', 'root', '34511548', 'Oct', '8', '04:38', '/root/pg/initramfs.cpio.gz', '/bin/busybox:', 'ELF', '64-bit', 'LSB', 'executable,', 'x86-64,', 'version', '1', '(', 'Y', 'N', 'N']
+[10-08 23:29:38] inst2 start pilot4-C200-def (order 2)
+[10-08 23:29:53] inst0 boot1 up in 550s: ['6.14.0-rc7', '-rw-r--r--', '1', 'root', 'root', '3221225472', 'Oct', '8', '04:23', '/root/pg/data.img', '-rw-r--r--', '1', 'root', 'root', '34511548', 'Oct', '8', '04:38', '/root/pg/initramfs.cpio.gz', '/bin/busybox:', 'ELF', '64-bit', 'LSB', 'executable,', 'x86-64,', 'version', '1', '(', 'Y', 'N', 'N']
+[10-08 23:29:53] inst0 start pilot4-C16-big (order 3)
+[10-08 23:32:22] queued 6 runs on 2 instances
+[10-08 23:42:18] inst3 boot1 tsc: Command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Detected 1000.006 MHz processor | tsc: Detected 1000.000 MHz TSC | Kernel command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Refined TSC clocksource calibration: 999.994 MHz
+[10-08 23:42:34] inst3 boot1 up in 612s: ['6.14.0-rc7', '-rw-r--r--', '1', 'root', 'root', '3221225472', 'Oct', '8', '04:23', '/root/pg/data.img', '-rw-r--r--', '1', 'root', 'root', '34511548', 'Oct', '8', '04:38', '/root/pg/initramfs.cpio.gz', '/bin/busybox:', 'ELF', '64-bit', 'LSB', 'executable,', 'x86-64,', 'version', '1', '(', 'N', 'N']
+[10-08 23:42:34] inst3 start ab-up1 (order 1)
+[10-08 23:42:51] inst4 boot1 tsc: Command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Detected 1000.011 MHz processor | tsc: Detected 1000.000 MHz TSC | Kernel command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Refined TSC clocksource calibration: 999.999 MHz
+[10-08 23:43:07] inst4 boot1 up in 625s: ['6.14.0-rc7', '-rw-r--r--', '1', 'root', 'root', '3221225472', 'Oct', '8', '04:23', '/root/pg/data.img', '-rw-r--r--', '1', 'root', 'root', '34511548', 'Oct', '8', '04:38', '/root/pg/initramfs.cpio.gz', '/bin/busybox:', 'ELF', '64-bit', 'LSB', 'executable,', 'x86-64,', 'version', '1', '(', 'N', 'N']
+[10-08 23:43:07] inst4 start ab-up2 (order 2)
+[10-08 23:46:44] inst0 done pilot4-C16-big result=END el=889 recycled=0 pf=438835 sleep=338 other=0 ev=
+[10-08 23:49:02] inst0 finished
+[10-08 23:58:21] inst3 done ab-up1 result=END el=828 recycled=0 pf=409839 sleep=336 other=0 ev=
+[10-08 23:58:21] inst3 start ab-up3 (order 3)
+[10-08 23:59:18] inst4 done ab-up2 result=END el=850 recycled=0 pf=410722 sleep=338 other=1 ev=
+[10-08 23:59:18] inst4 start ab-up4 (order 4)
+[10-09 00:01:21] inst1 done pilot4-C200-big result=L2_EXITED el=1792 recycled=None pf=None sleep=324 other=1 ev=
+[10-09 00:03:37] inst1 finished
+[10-09 00:07:02] inst3 done ab-up3 result=KVM_INTERNAL_ERROR el=425 recycled=None pf=None sleep=157 other=0 ev=
+[10-09 00:07:02] inst3 start ab-up5 (order 5)
+[10-09 00:07:33] inst2 L2STALL_MARKER #1 (pilot4-C200-def): capturing host stacks pid=2805813
+[10-09 00:07:45] inst2 host capture done -> /tmp/kvmval/open/pg/logs/pilot4-C200-def.hoststacks
+[10-09 00:13:41] inst4 done ab-up4 result=END el=747 recycled=0 pf=409398 sleep=325 other=0 ev=
+[10-09 00:13:41] inst4 start ab-up6 (order 6)
+[10-09 00:14:09] inst2 done pilot4-C200-def result=STALL el=2541 recycled=None pf=None sleep=321 other=4 ev=
+[10-09 00:16:24] inst2 finished
+[10-09 00:16:24] ALL RUNS DONE
+[10-09 00:17:43] queued 3 runs on 3 instances
+[10-09 00:20:39] inst3 done ab-up5 result=END el=702 recycled=0 pf=409322 sleep=324 other=0 ev=
+[10-09 00:22:59] inst3 finished
+[10-09 00:25:39] inst4 done ab-up6 result=BADPARAM el= recycled=None pf=None sleep= other= ev=ssh_rc=255 L1_UNRESPONSIVE
+[10-09 00:26:29] inst2 boot1 tsc: Command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Detected 999.992 MHz processor | tsc: Detected 1000.000 MHz TSC | Kernel command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Refined TSC clocksource calibration: 1000.000 MHz
+[10-09 00:26:34] inst0 boot1 tsc: Command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Detected 1000.006 MHz processor | tsc: Detected 1000.000 MHz TSC | Kernel command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Refined TSC clocksource calibration: 999.993 MHz
+[10-09 00:26:44] inst1 boot1 tsc: Command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Detected 999.992 MHz processor | tsc: Detected 1000.000 MHz TSC | Kernel command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Refined TSC clocksource calibration: 999.993 MHz
+[10-09 00:26:44] inst2 boot1 up in 501s: ['6.14.0-rc7', '-rw-r--r--', '1', 'root', 'root', '3221225472', 'Oct', '8', '04:23', '/root/pg/data.img', '-rw-r--r--', '1', 'root', 'root', '34511548', 'Oct', '8', '04:38', '/root/pg/initramfs.cpio.gz', '/bin/busybox:', 'ELF', '64-bit', 'LSB', 'executable,', 'x86-64,', 'version', '1', '(', 'Y', 'N', 'N']
+[10-09 00:26:44] inst2 start pilot6-C100-big (order 1)
+[10-09 00:26:50] inst0 boot1 up in 547s: ['6.14.0-rc7', '-rw-r--r--', '1', 'root', 'root', '3221225472', 'Oct', '8', '04:23', '/root/pg/data.img', '-rw-r--r--', '1', 'root', 'root', '34511548', 'Oct', '8', '04:38', '/root/pg/initramfs.cpio.gz', '/bin/busybox:', 'ELF', '64-bit', 'LSB', 'executable,', 'x86-64,', 'version', '1', '(', 'Y', 'N', 'N']
+[10-09 00:26:50] inst0 start pilot6-C100-def (order 2)
+[10-09 00:27:00] inst1 boot1 up in 537s: ['6.14.0-rc7', '-rw-r--r--', '1', 'root', 'root', '3221225472', 'Oct', '8', '04:23', '/root/pg/data.img', '-rw-r--r--', '1', 'root', 'root', '34511548', 'Oct', '8', '04:38', '/root/pg/initramfs.cpio.gz', '/bin/busybox:', 'ELF', '64-bit', 'LSB', 'executable,', 'x86-64,', 'version', '1', '(', 'Y', 'N', 'N']
+[10-09 00:27:00] inst1 start pilot6-C16-big (order 3)
+[10-09 00:36:30] inst4 boot2 tsc: Command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Detected 999.988 MHz processor | tsc: Detected 1000.000 MHz TSC | Kernel command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Refined TSC clocksource calibration: 999.993 MHz
+[10-09 00:36:47] inst4 boot2 up in 518s: ['6.14.0-rc7', '-rw-r--r--', '1', 'root', 'root', '3221225472', 'Oct', '8', '04:23', '/root/pg/data.img', '-rw-r--r--', '1', 'root', 'root', '34511548', 'Oct', '8', '04:38', '/root/pg/initramfs.cpio.gz', '/bin/busybox:', 'ELF', '64-bit', 'LSB', 'executable,', 'x86-64,', 'version', '1', '(', 'N', 'N']
+[10-09 00:39:04] inst4 finished
+[10-09 00:39:04] ALL RUNS DONE
+[10-09 00:43:48] queued 9 runs on 3 instances
+[10-09 00:45:59] inst1 done pilot6-C16-big result=END el=1033 recycled=0 pf=302449 sleep=313 other=0 ev=
+[10-09 00:48:18] inst1 finished
+[10-09 00:50:28] inst0 L2STALL_MARKER #1 (pilot6-C100-def): capturing host stacks pid=2840226
+[10-09 00:50:40] inst0 host capture done -> /tmp/kvmval/open/pg/logs/pilot6-C100-def.hoststacks
+[10-09 00:53:39] inst3 boot1 tsc: Command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Detected 999.985 MHz processor | tsc: Detected 1000.000 MHz TSC | Kernel command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Refined TSC clocksource calibration: 999.994 MHz
+[10-09 00:53:51] inst4 boot1 tsc: Command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Detected 1000.005 MHz processor | tsc: Detected 1000.000 MHz TSC | Kernel command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Refined TSC clocksource calibration: 999.994 MHz
+[10-09 00:53:57] inst3 boot1 up in 609s: ['6.14.0-rc7', '-rw-r--r--', '1', 'root', 'root', '3221225472', 'Oct', '8', '04:23', '/root/pg/data.img', '-rw-r--r--', '1', 'root', 'root', '34511548', 'Oct', '8', '04:38', '/root/pg/initramfs.cpio.gz', '/bin/busybox:', 'ELF', '64-bit', 'LSB', 'executable,', 'x86-64,', 'version', '1', '(', 'Y', 'N', 'N']
+[10-09 00:53:57] inst3 start svmfix-1 (order 1)
+[10-09 00:54:10] inst4 boot1 up in 602s: ['6.14.0-rc7', '-rw-r--r--', '1', 'root', 'root', '3221225472', 'Oct', '8', '04:23', '/root/pg/data.img', '-rw-r--r--', '1', 'root', 'root', '34511548', 'Oct', '8', '04:38', '/root/pg/initramfs.cpio.gz', '/bin/busybox:', 'ELF', '64-bit', 'LSB', 'executable,', 'x86-64,', 'version', '1', '(', 'Y', 'N', 'N']
+[10-09 00:54:10] inst4 start svmfix-2 (order 2)
+[10-09 00:55:29] inst5 boot1 tsc: Command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Detected 1000.009 MHz processor | tsc: Detected 1000.000 MHz TSC | Kernel command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Refined TSC clocksource calibration: 999.993 MHz
+[10-09 00:55:47] inst5 boot1 up in 678s: ['6.14.0-rc7', '-rw-r--r--', '1', 'root', 'root', '3221225472', 'Oct', '8', '04:23', '/root/pg/data.img', '-rw-r--r--', '1', 'root', 'root', '34511548', 'Oct', '8', '04:38', '/root/pg/initramfs.cpio.gz', '/bin/busybox:', 'ELF', '64-bit', 'LSB', 'executable,', 'x86-64,', 'version', '1', '(', 'Y', 'N', 'N']
+[10-09 00:55:47] inst5 start svmfix-3 (order 3)
+[10-09 00:56:49] inst0 done pilot6-C100-def result=STALL el=1691 recycled=None pf=None sleep=300 other=1 ev=
+[10-09 00:59:09] inst0 finished
+[10-09 01:00:18] inst2 L2STALL_MARKER #1 (pilot6-C100-big): capturing host stacks pid=2840479
+[10-09 01:00:30] inst2 host capture done -> /tmp/kvmval/open/pg/logs/pilot6-C100-big.hoststacks
+[10-09 01:07:20] inst2 done pilot6-C100-big result=STALL el=2320 recycled=None pf=None sleep=301 other=0 ev=
+[10-09 01:09:37] inst2 finished
+[10-09 01:09:37] ALL RUNS DONE
+[10-09 01:11:44] inst4 done svmfix-2 result=END el=892 recycled=0 pf=405566 sleep=345 other=0 ev=
+[10-09 01:11:44] inst4 start svmfix-4 (order 4)
+[10-09 01:12:05] inst3 done svmfix-1 result=END el=939 recycled=0 pf=407756 sleep=341 other=0 ev=
+[10-09 01:12:05] inst3 start svmfix-5 (order 5)
+[10-09 01:13:39] inst5 done svmfix-3 result=END el=917 recycled=0 pf=406722 sleep=354 other=1 ev=
+[10-09 01:13:39] inst5 start svmfix-6 (order 6)
+[10-09 01:18:30] inst5 done svmfix-6 result=L2_EXITED el=196 recycled=None pf=None sleep=3 other=2 ev=
+[10-09 01:18:30] inst5 start svmfix-7 (order 7)
+[10-09 01:24:38] inst3 done svmfix-5 result=BADPARAM el= recycled=None pf=None sleep= other= ev=ssh_rc=255 L1_UNRESPONSIVE
+[10-09 01:28:36] inst4 done svmfix-4 result=END el=889 recycled=0 pf=401683 sleep=343 other=0 ev=
+[10-09 01:28:36] inst4 start svmfix-8 (order 8)
+[10-09 01:32:35] inst3 boot2 tsc: Command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Detected 1000.015 MHz processor | tsc: Detected 1000.000 MHz TSC | Kernel command line: root=/dev/vda1 rw console=ttyS0 kvm.tdp_mmu=0 kvm_amd.npt=0 net.ifnames=0 log_buf_len=16M sysrq_always_enabled=1 tsc_early_khz=1000000 systemd.default_device_timeout_sec=1800 | tsc: Refined TSC clocksource calibration: 999.993 MHz
+[10-09 01:32:51] inst3 boot2 up in 493s: ['6.14.0-rc7', '-rw-r--r--', '1', 'root', 'root', '3221225472', 'Oct', '8', '04:23', '/root/pg/data.img', '-rw-r--r--', '1', 'root', 'root', '34511548', 'Oct', '8', '04:38', '/root/pg/initramfs.cpio.gz', '/bin/busybox:', 'ELF', '64-bit', 'LSB', 'executable,', 'x86-64,', 'version', '1', '(', 'Y', 'N', 'N']
+[10-09 01:32:51] inst3 start svmfix-9 (order 9)
+[10-09 01:34:01] inst5 done svmfix-7 result=END el=813 recycled=0 pf=404717 sleep=337 other=0 ev=
+[10-09 01:36:17] inst5 finished
+[10-09 01:45:51] inst4 done svmfix-8 result=END el=922 recycled=0 pf=405418 sleep=329 other=0 ev=
+[10-09 01:46:23] inst3 done svmfix-9 result=END el=696 recycled=0 pf=402021 sleep=329 other=0 ev=
+[10-09 01:48:06] inst4 finished
+[10-09 01:48:38] inst3 finished
+[10-09 01:48:38] ALL RUNS DONE

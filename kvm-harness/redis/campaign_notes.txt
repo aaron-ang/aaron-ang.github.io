@@ -1,0 +1,28 @@
+inst2 L1 killed manually 14:00:30: 3 consecutive L2 HLT stalls (r1-p80-parent-r6, r1-p128-clock-r4, r1-p80-fifo-r7); in-flight run r1-p128-clock-r1 to be requeued
+2026-09-28 15:14:37 ROOT CAUSE of all 6 r1 STALLs (inst1/2/3, policies fifo/clock/leaf/parent, mmu_recycled=0 in all):
+  L1 early TSC calibration under host overload (e.g. 999.237 MHz) != refined (999.992). kvm is built in, so
+  max_tsc_khz/default_tsc_khz = early value (x86.c:9567, 12730). L2 QEMU (-cpu host) sets KVM_SET_TSC_KHZ(early) <
+  refined by >250 ppm; TCG SVM has no TSC scaling -> "kvm: user requested TSC rate below hardware speed" -> L2 sits in
+  HLT with a tsc-deadline timer that never fires. 6/6 STALL runs have the message, 0/14 END runs do.
+  Fix (harness only): L1 cmdline tsc_early_khz=1000000; runs whose log has the message get ev=TSC_MISMATCH + L1 reboot.
+  Stopped all campaign processes, powered off L1s cleanly, unclaimed 4 in-flight runs, replacements in runs/r1replace.json.
+2026-09-28 16:35:33 inst1/inst3 L1 stuck in emergency mode (udev device timeout under load, /dev/disk/by-label/BOOT); system_powerdown -> retry. redis_camp.py now adds systemd.default_device_timeout_sec=1800 for future processes.
+
+== r2-p128-parent-r1 "STALL" root cause (found 2026-09-28 ~20:50) ==
+Not a livelock. L2 qemu (in L1) got KVM_EXIT_INTERNAL_ERROR and paused the VM (log line 15):
+  KVM internal error. Suberror: 3   (KVM_INTERNAL_ERROR_DELIVERY_EV)
+  extra data: info2=0xffff8d58826b5d38 reason=0x4e (#PF intercept) info1=0x3 (present+write) gpa=cr2 last_vmentry_cpu=2
+  L2 Code=... <48> 89 37 = mov %rsi,(%rdi) (set_pte), RDI=ptep, RSI=0x2775067
+Chain:
+ 1. QEMU TCG (8.2.2 and master) handle_even_inj() writes vmcb.event_inj = vector|type|VALID for every event delivered in guest
+    mode; do_interrupt_all() then clears ONLY the VALID bit -> residue 0x00000b0e (vec 14, type 3 exception, EV).
+ 2. do_vmexit() copies event_inj -> exit_int_info, so the next #VMEXIT reports exit_int_info=0x00000b0e with V=0.
+    Measured in a live L1 (r2 inst0, 5 s filtered kvm_exit trace): 124 #PF exits with intr_info=0x00000b0e, most at the L2 set_pte
+    RIP with info1=3.
+ 3. KVM 6.14 svm_check_emulate_instruction() tests (exit_int_info & SVM_EXITINTINFO_TYPE_MASK) without SVM_EXITINTINFO_VALID
+    (VMX tests VECTORING_INFO_VALID_MASK) -> X86EMUL_UNHANDLEABLE_VECTORING for every EMULTYPE_PF emulation after such an exit.
+ 4. x86_emulate_instruction: kvm_unprotect_and_retry_on_failure() normally unprotects the gfn (zaps its shadow pages) and retries;
+    it declines for EMULTYPE_WRITE_PF_TO_SP (or no ALLOW_RETRY_PF) -> kvm_prepare_event_vectoring_exit -> internal error -> L2 paused.
+ Upstream code in both QEMU and KVM; not touched by the LRU change. Side effect in ALL runs: spurious gfn unprotects instead of
+ emulating PTE writes (adds shadow zaps, same mechanism for every policy).
+ L1 sysrq-l at the stall: no L1 CPU in KVM guest entry (consistent with a paused L2).

@@ -1,0 +1,7 @@
+tag,batch,instance,boot,start_order,policy,pool,procs,seed,rep,result,elapsed,pf_taken,pf_fixed,mmu_shadow_zapped,mmu_recycled,mmu_cache_miss,lru_hand_steps,lru_ref_skips,lru_age_sptes,lru_age_skips,lru_age_flushes,exits,sleep_splats,other_splats,l1_event,started,kernel
+ab-up1,ab_up,3,1,1,fifo,0,16,1,1,END,828,409839,233212,2681,0,3230,,,,,,1890989,336,0,,2026-10-08T23:42:34,/tmp/kvmval/camp/bzImage-upstream
+ab-up2,ab_up,4,1,2,fifo,0,16,1,1,END,850,410722,233062,2537,0,3291,,,,,,1927655,338,1,,2026-10-08T23:43:07,/tmp/kvmval/camp/bzImage-upstream
+ab-up3,ab_up,3,1,3,fifo,0,16,1,1,KVM_INTERNAL_ERROR,425,,,,,,,,,,,,157,0,,2026-10-08T23:58:21,/tmp/kvmval/camp/bzImage-upstream
+ab-up4,ab_up,4,1,4,fifo,0,16,1,1,END,747,409398,233764,2555,0,3219,,,,,,1729440,325,0,,2026-10-08T23:59:18,/tmp/kvmval/camp/bzImage-upstream
+ab-up5,ab_up,3,1,5,fifo,0,16,1,1,END,702,409322,231556,2697,0,3511,,,,,,1565605,324,0,,2026-10-09T00:07:02,/tmp/kvmval/camp/bzImage-upstream
+ab-up6,ab_up,4,1,6,fifo,0,16,1,1,BADPARAM,,,,,,,,,,,,,,,ssh_rc=255 L1_UNRESPONSIVE,2026-10-09T00:13:41,/tmp/kvmval/camp/bzImage-upstream

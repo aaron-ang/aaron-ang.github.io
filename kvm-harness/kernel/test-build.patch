@@ -1,0 +1,493 @@
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1329,6 +1329,8 @@
+ 	bool pre_fault_allowed;
+ 	struct hlist_head mmu_page_hash[KVM_NUM_MMU_PAGES];
+ 	struct list_head active_mmu_pages;
++	struct kvm_mmu_page *clock_hand;
++
+ 	/*
+ 	 * A list of kvm_mmu_page structs that, if zapped, could possibly be
+ 	 * replaced by an NX huge page.  A shadow page is on this list if its
+@@ -1572,6 +1574,14 @@
+ 	u64 mmu_recycled;
+ 	u64 mmu_cache_miss;
+ 	u64 mmu_unsync;
++	/* CLOCK eviction work (lru_mmu): pages visited, second chances, aging. */
++	u64 lru_hand_steps;
++	u64 lru_ref_skips;
++	u64 lru_age_sptes;
++	u64 lru_age_skips;
++	u64 lru_age_flushes;
++	u64 lru_fifo_fallbacks;
++	u64 lru_zap_marks;
+ 	union {
+ 		struct {
+ 			atomic64_t pages_4k;
+--- a/arch/x86/kvm/mmu.h
++++ b/arch/x86/kvm/mmu.h
+@@ -247,6 +247,8 @@
+ 	return smp_load_acquire(&kvm->arch.shadow_root_allocated);
+ }
+ 
++extern ulong __read_mostly shadow_min_alloc_pages;
++
+ #ifdef CONFIG_X86_64
+ extern bool tdp_mmu_enabled;
+ #else
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -96,6 +96,46 @@
+ static bool __read_mostly force_flush_and_sync_on_reuse;
+ module_param_named(flush_on_reuse, force_flush_and_sync_on_reuse, bool, 0644);
+ 
++static bool __read_mostly lru_mmu;
++module_param_named(lru_mmu, lru_mmu, bool, 0644);
++
++/*
++ * With lru_mmu, also treat a page as referenced if hardware set an Accessed
++ * bit: 0 = off, 1 = in any of the page's own SPTEs, 2 = in any parent SPTE
++ * that points to the page.
++ */
++enum { LRU_AGE_OFF, LRU_AGE_LEAF, LRU_AGE_PARENT, LRU_AGE_CLEAR_ONLY };
++static uint __read_mostly lru_age;
++module_param_named(lru_age, lru_age, uint, 0644);
++
++/* Validation-only knob (not in the real patch): 0 = don't mark on fill ("marked on creation"). */
++static bool __read_mostly lru_mark_fill = true;
++module_param_named(lru_mark_fill, lru_mark_fill, bool, 0644);
++
++/*
++ * Validation-only knobs (not in the real patch).
++ *
++ * lru_age=3 (LRU_AGE_CLEAR_ONLY): CLOCK as with lru_age=0, but the sweep also
++ * clears the leaf Accessed bits of each page it spares for lru_ref, so host
++ * reclaim loses those bits while eviction decisions stay the same.
++ *
++ * lru_zap_accessed: when a shadow page is zapped, hand each leaf SPTE's
++ * Accessed bit to the host page so the zap does not drop it.  1 = mark the
++ * page accessed (what KVM did before 6.13), 2 = set the folio's young flag,
++ * which the next folio_referenced() counts like a young PTE.
++ */
++enum { LRU_ZAP_ACC_OFF, LRU_ZAP_ACC_MARK, LRU_ZAP_ACC_YOUNG };
++static uint __read_mostly lru_zap_accessed;
++module_param_named(lru_zap_accessed, lru_zap_accessed, uint, 0644);
++
++/* Validation-only knob (not in the real patch): 0 = no FIFO fallback after an empty sweep. */
++static bool __read_mostly lru_fifo_fallback = true;
++module_param_named(lru_fifo_fallback, lru_fifo_fallback, bool, 0644);
++
++/* 0: size the shadow page pool from guest memory, as upstream; else pin it. */
++ulong __read_mostly shadow_min_alloc_pages;
++module_param_named(min_alloc_pages, shadow_min_alloc_pages, ulong, 0644);
++
+ /*
+  * When setting this variable to true it enables Two-Dimensional-Paging
+  * where the hardware walks 2 page tables:
+@@ -2159,7 +2199,8 @@
+ 	/*
+ 	 * active_mmu_pages must be a FIFO list, as kvm_zap_obsolete_pages()
+ 	 * depends on valid pages being added to the head of the list.  See
+-	 * comments in kvm_zap_obsolete_pages().
++	 * comments in kvm_zap_obsolete_pages().  CLOCK eviction (lru_mmu)
++	 * only moves a hand over the list and never reorders it.
+ 	 */
+ 	sp->mmu_valid_gen = kvm->arch.mmu_valid_gen;
+ 	list_add(&sp->link, &kvm->arch.active_mmu_pages);
+@@ -2192,6 +2233,7 @@
+ 		created = true;
+ 		sp = kvm_mmu_alloc_shadow_page(kvm, caches, gfn, sp_list, role);
+ 	}
++	mark_kvm_page_accessed(sp);
+ 
+ 	trace_kvm_mmu_get_page(sp, created);
+ 	return sp;
+@@ -2426,6 +2468,33 @@
+ 	return 0;
+ }
+ 
++/* Drop a leaf SPTE of a zapped page, passing its Accessed bit to the host page. */
++static void lru_drop_spte_keep_accessed(struct kvm *kvm, u64 *sptep)
++{
++	u64 old_spte = mmu_spte_clear_track_bits(kvm, sptep);
++	struct page *page;
++	kvm_pfn_t pfn;
++
++	if (!is_shadow_present_pte(old_spte))
++		return;
++	rmap_remove(kvm, sptep);
++
++	if (!is_accessed_spte(old_spte))
++		return;
++	pfn = spte_to_pfn(old_spte);
++	if (!pfn_valid(pfn))
++		return;
++	page = pfn_to_page(pfn);
++	if (PageReserved(page))
++		return;
++
++	if (lru_zap_accessed == LRU_ZAP_ACC_YOUNG)
++		folio_set_young(page_folio(page));
++	else
++		mark_page_accessed(page);
++	kvm->stat.lru_zap_marks++;
++}
++
+ static int kvm_mmu_page_unlink_children(struct kvm *kvm,
+ 					struct kvm_mmu_page *sp,
+ 					struct list_head *invalid_list)
+@@ -2433,8 +2502,16 @@
+ 	int zapped = 0;
+ 	unsigned i;
+ 
+-	for (i = 0; i < SPTE_ENT_PER_PAGE; ++i)
+-		zapped += mmu_page_zap_pte(kvm, sp, sp->spt + i, invalid_list);
++	for (i = 0; i < SPTE_ENT_PER_PAGE; ++i) {
++		u64 *sptep = sp->spt + i;
++
++		if (lru_zap_accessed && is_shadow_present_pte(*sptep) &&
++		    is_last_spte(*sptep, sp->role.level)) {
++			lru_drop_spte_keep_accessed(kvm, sptep);
++			continue;
++		}
++		zapped += mmu_page_zap_pte(kvm, sp, sptep, invalid_list);
++	}
+ 
+ 	return zapped;
+ }
+@@ -2472,6 +2549,41 @@
+ 	return zapped;
+ }
+ 
++/*
++ * Return the entry the CLOCK hand visits after @sp.  The hand sweeps
++ * active_mmu_pages from the tail (oldest) towards the head (newest) and
++ * wraps back to the tail, i.e. the list is treated as a ring.
++ */
++static struct kvm_mmu_page *kvm_mmu_clock_next(struct kvm *kvm,
++					       struct kvm_mmu_page *sp)
++{
++	struct kvm_mmu_page *next = list_prev_entry(sp, link);
++
++	if (list_entry_is_head(next, &kvm->arch.active_mmu_pages, link))
++		next = list_last_entry(&kvm->arch.active_mmu_pages,
++				       struct kvm_mmu_page, link);
++	return next;
++}
++
++/*
++ * Must be called before @sp is removed from active_mmu_pages.  Keeps the
++ * CLOCK hand pointing at a page on active_mmu_pages (or NULL), no matter
++ * which path zaps the page the hand currently references.
++ */
++static void kvm_mmu_clock_hand_unlink(struct kvm *kvm,
++				      struct kvm_mmu_page *sp)
++{
++	struct kvm_mmu_page *next;
++
++	lockdep_assert_held_write(&kvm->mmu_lock);
++
++	if (kvm->arch.clock_hand != sp)
++		return;
++
++	next = kvm_mmu_clock_next(kvm, sp);
++	kvm->arch.clock_hand = next == sp ? NULL : next;
++}
++
+ static bool __kvm_mmu_prepare_zap_page(struct kvm *kvm,
+ 				       struct kvm_mmu_page *sp,
+ 				       struct list_head *invalid_list,
+@@ -2494,6 +2606,11 @@
+ 
+ 	if (sp->unsync)
+ 		kvm_unlink_unsync_page(kvm, sp);
++
++	/* Invalid pages are already off active_mmu_pages. */
++	if (!sp->role.invalid)
++		kvm_mmu_clock_hand_unlink(kvm, sp);
++
+ 	if (!sp->root_count) {
+ 		/* Count self */
+ 		(*nr_zapped)++;
+@@ -2571,18 +2688,171 @@
+ 	}
+ }
+ 
++static bool spte_test_and_clear_young(u64 *sptep)
++{
++	u64 spte = *sptep;
++
++	if (!is_shadow_present_pte(spte) || !spte_ad_enabled(spte) ||
++	    !is_accessed_spte(spte))
++		return false;
++
++	clear_bit((ffs(shadow_accessed_mask) - 1), (unsigned long *)sptep);
++	return true;
++}
++
++/*
++ * Test and clear the hardware Accessed bits that say whether @sp was used
++ * since the last sweep.  SPTEs without A/D bits are skipped.
++ *
++ * LRU_AGE_LEAF checks every present SPTE in @sp, the same bits that
++ * kvm_rmap_age_gfn_range() ages for host reclaim, so the two steal each
++ * other's signal, and it reads up to 512 entries per page.
++ *
++ * LRU_AGE_PARENT checks the parent SPTEs that point to @sp instead.  The CPU
++ * sets the Accessed bit in every paging-structure entry it walks through, so
++ * a set parent bit means a translation through @sp was loaded since the bit
++ * was cleared.  Host reclaim only ages leaf SPTEs, and a page usually has a
++ * single parent.
++ *
++ * A translation still cached in the TLB (or a paging-structure cache) won't
++ * set a bit again; the caller flushes after every sweep that cleared bits.
++ */
++static bool kvm_mmu_sp_test_and_clear_young(struct kvm *kvm,
++					    struct kvm_mmu_page *sp)
++{
++	struct rmap_iterator iter;
++	bool young = false;
++	u64 *sptep;
++	int i;
++
++	if (!shadow_accessed_mask)
++		return false;
++
++	if (lru_age == LRU_AGE_PARENT) {
++		for_each_rmap_spte(&sp->parent_ptes, &iter, sptep) {
++			young |= spte_test_and_clear_young(sptep);
++			kvm->stat.lru_age_sptes++;
++		}
++		return young;
++	}
++
++	for (i = 0; i < SPTE_ENT_PER_PAGE; i++)
++		young |= spte_test_and_clear_young(&sp->spt[i]);
++	kvm->stat.lru_age_sptes += SPTE_ENT_PER_PAGE;
++	return young;
++}
++
++/*
++ * CLOCK (second chance) eviction.  Pages with lru_ref set get the bit
++ * cleared and are skipped; the first unreferenced, non-root page is zapped.
++ * With lru_age, a page with a set hardware Accessed bit is also skipped (and
++ * the bit cleared), see kvm_mmu_sp_test_and_clear_young().
++ *
++ * The hand is re-read on every iteration and kvm_mmu_clock_hand_unlink()
++ * keeps it valid even when zapping a page also zaps its children (the
++ * list is "unstable"), so each iteration effectively restarts from the
++ * current hand, mirroring the "goto restart" of the FIFO path.
++ *
++ * Each visit clears at most one signal, lru_ref before the Accessed bits,
++ * so a page with both set is skipped twice.  The sweep is bounded to one
++ * full pass per signal plus one to zap: two passes over the list without
++ * lru_age, three with it.  Anything still unzapped after the last pass is
++ * an active root or was referenced again during the sweep (the caller
++ * copes with getting fewer pages than it asked for).  Neither lru_ref nor
++ * the Accessed bits are protected by mmu_lock, so running vCPUs can
++ * re-reference every page during the sweep; the caller falls back to FIFO
++ * when nothing was zapped.  LRU_AGE_CLEAR_ONLY never skips for Accessed
++ * bits, so it keeps two passes.
++ * n_used_mmu_pages is an upper bound on the number of
++ * entries in active_mmu_pages, and zapping only shrinks the list.
++ */
++static unsigned long kvm_mmu_clock_zap_pages(struct kvm *kvm,
++					     unsigned long nr_to_zap,
++					     struct list_head *invalid_list,
++					     bool *aged)
++{
++	unsigned long laps = lru_age && lru_age != LRU_AGE_CLEAR_ONLY ? 3 : 2;
++	unsigned long budget = laps * kvm->arch.n_used_mmu_pages;
++	unsigned long total_zapped = 0;
++	struct kvm_mmu_page *sp;
++	int nr_zapped;
++
++	lockdep_assert_held_write(&kvm->mmu_lock);
++
++	if (!kvm->arch.clock_hand)
++		kvm->arch.clock_hand = list_last_entry(&kvm->arch.active_mmu_pages,
++						       struct kvm_mmu_page, link);
++
++	while (budget-- && (sp = kvm->arch.clock_hand)) {
++		/*
++		 * Advance before zapping so that @sp is never the hand when it
++		 * leaves the list; the new hand is fixed up if it is zapped as
++		 * a child of @sp.
++		 */
++		kvm->arch.clock_hand = kvm_mmu_clock_next(kvm, sp);
++		kvm->stat.lru_hand_steps++;
++
++		/*
++		 * Don't zap active root pages, the page itself can't be freed
++		 * and zapping it will just force vCPUs to realloc and reload.
++		 */
++		if (sp->root_count)
++			continue;
++
++		if (sp->lru_ref) {
++			sp->lru_ref = false;
++			kvm->stat.lru_ref_skips++;
++			if (lru_age == LRU_AGE_CLEAR_ONLY &&
++			    kvm_mmu_sp_test_and_clear_young(kvm, sp))
++				*aged = true;
++			continue;
++		}
++
++		if (lru_age && lru_age != LRU_AGE_CLEAR_ONLY &&
++		    kvm_mmu_sp_test_and_clear_young(kvm, sp)) {
++			kvm->stat.lru_age_skips++;
++			*aged = true;
++			continue;
++		}
++
++		__kvm_mmu_prepare_zap_page(kvm, sp, invalid_list, &nr_zapped);
++		total_zapped += nr_zapped;
++		if (total_zapped >= nr_to_zap)
++			break;
++	}
++
++	return total_zapped;
++}
++
+ static unsigned long kvm_mmu_zap_oldest_mmu_pages(struct kvm *kvm,
+ 						  unsigned long nr_to_zap)
+ {
+ 	unsigned long total_zapped = 0;
+ 	struct kvm_mmu_page *sp, *tmp;
+ 	LIST_HEAD(invalid_list);
++	bool aged = false;
+ 	bool unstable;
+ 	int nr_zapped;
+ 
+ 	if (list_empty(&kvm->arch.active_mmu_pages))
+ 		return 0;
+ 
++	if (lru_mmu) {
++		total_zapped = kvm_mmu_clock_zap_pages(kvm, nr_to_zap,
++						       &invalid_list, &aged);
++		if (total_zapped)
++			goto commit;
++
++		/*
++		 * Every non-root page was referenced again during the sweep.
++		 * Zap in FIFO order rather than fail the allocation with
++		 * -ENOSPC, which kills the vCPU.
++		 */
++		kvm->stat.lru_fifo_fallbacks++;
++		if (!lru_fifo_fallback)
++			goto commit;
++	}
++
+ restart:
+ 	list_for_each_entry_safe_reverse(sp, tmp, &kvm->arch.active_mmu_pages, link) {
+ 		/*
+@@ -2602,6 +2872,16 @@
+ 			goto restart;
+ 	}
+ 
++commit:
++	/*
++	 * Cleared Accessed bits are only set again once the CPU walks the page
++	 * tables, so flush cached translations.  Committing a zap already
++	 * flushes.
++	 */
++	if (aged && list_empty(&invalid_list)) {
++		kvm_flush_remote_tlbs(kvm);
++		kvm->stat.lru_age_flushes++;
++	}
+ 	kvm_mmu_commit_zap_page(kvm, &invalid_list);
+ 
+ 	kvm->stat.mmu_recycled += total_zapped;
+@@ -2845,6 +3125,14 @@
+ 		return RET_PF_EMULATE;
+ 	}
+ 
++	/*
++	 * A fault that fills an entry uses @sp.  Hits never exit to KVM, so this
++	 * and the paths in mark_kvm_page_accessed()'s other callers are the only
++	 * software signal CLOCK gets.
++	 */
++	if (!prefetch && lru_mark_fill)
++		mark_kvm_page_accessed(sp);
++
+ 	if (is_shadow_present_pte(*sptep)) {
+ 		if (prefetch)
+ 			return RET_PF_SPURIOUS;
+@@ -3511,6 +3799,9 @@
+ 
+ 	} while (true);
+ 
++	if (ret == RET_PF_FIXED || ret == RET_PF_SPURIOUS)
++		mark_kvm_page_accessed(sp);
++
+ 	trace_fast_page_fault(vcpu, fault, sptep, spte, ret);
+ 	walk_shadow_page_lockless_end(vcpu);
+ 
+@@ -6517,6 +6808,8 @@
+ 
+ 	kvm->arch.split_desc_cache.kmem_cache = pte_list_desc_cache;
+ 	kvm->arch.split_desc_cache.gfp_zero = __GFP_ZERO;
++
++	kvm->arch.clock_hand = NULL;
+ }
+ 
+ static void mmu_free_vm_memory_caches(struct kvm *kvm)
+--- a/arch/x86/kvm/mmu/mmu_internal.h
++++ b/arch/x86/kvm/mmu/mmu_internal.h
+@@ -98,6 +98,8 @@
+ 	 */
+ 	u64 *shadowed_translation;
+ 
++	bool lru_ref;
++
+ 	/* Currently serving as active root */
+ 	union {
+ 		int root_count;
+@@ -221,6 +223,12 @@
+ 				    KVM_PAGES_PER_HPAGE(level));
+ }
+ 
++static inline void mark_kvm_page_accessed(struct kvm_mmu_page *sp)
++{
++	if (sp)
++		sp->lru_ref = true;
++}
++
+ unsigned int pte_list_count(struct kvm_rmap_head *rmap_head);
+ 
+ extern int nx_huge_pages;
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -235,6 +235,13 @@
+ 	STATS_DESC_COUNTER(VM, mmu_flooded),
+ 	STATS_DESC_COUNTER(VM, mmu_recycled),
+ 	STATS_DESC_COUNTER(VM, mmu_cache_miss),
++	STATS_DESC_COUNTER(VM, lru_hand_steps),
++	STATS_DESC_COUNTER(VM, lru_ref_skips),
++	STATS_DESC_COUNTER(VM, lru_age_sptes),
++	STATS_DESC_COUNTER(VM, lru_age_skips),
++	STATS_DESC_COUNTER(VM, lru_age_flushes),
++	STATS_DESC_COUNTER(VM, lru_fifo_fallbacks),
++	STATS_DESC_COUNTER(VM, lru_zap_marks),
+ 	STATS_DESC_ICOUNTER(VM, mmu_unsync),
+ 	STATS_DESC_ICOUNTER(VM, pages_4k),
+ 	STATS_DESC_ICOUNTER(VM, pages_2m),
+@@ -6307,7 +6314,7 @@
+ static int kvm_vm_ioctl_set_nr_mmu_pages(struct kvm *kvm,
+ 					 unsigned long kvm_nr_mmu_pages)
+ {
+-	if (kvm_nr_mmu_pages < KVM_MIN_ALLOC_MMU_PAGES)
++	if (kvm_nr_mmu_pages < (shadow_min_alloc_pages ?: KVM_MIN_ALLOC_MMU_PAGES))
+ 		return -EINVAL;
+ 
+ 	mutex_lock(&kvm->slots_lock);
+@@ -13197,6 +13204,9 @@
+ 
+ 		nr_mmu_pages = kvm->nr_memslot_pages / KVM_MEMSLOT_PAGES_TO_MMU_PAGES_RATIO;
+ 		nr_mmu_pages = max(nr_mmu_pages, KVM_MIN_ALLOC_MMU_PAGES);
++		/* A nonzero min_alloc_pages pins the pool, to force eviction in experiments. */
++		if (shadow_min_alloc_pages)
++			nr_mmu_pages = shadow_min_alloc_pages;
+ 		kvm_mmu_change_mmu_pages(kvm, nr_mmu_pages);
+ 	}
+ 
