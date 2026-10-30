@@ -234,9 +234,9 @@
     <text x="20" y="48" class="muted">Each row shows part of a last-level shadow page (512 entries).</text>
     <g aria-label="Diagram key">
       <rect x="20" y="57" width="14" height="12" rx="2" class="full" />
-      <text x="40" y="68" class="muted">Filled</text>
+      <text x="40" y="68" class="muted">Present</text>
       <rect x="100" y="57" width="14" height="12" rx="2" class="empty" />
-      <text x="120" y="68" class="muted">Untouched</text>
+      <text x="120" y="68" class="muted">Not present</text>
       <polygon points="225,58 225,70 235,64" fill="var(--fg)" />
       <text x="242" y="68" class="muted">Clock hand</text>
       <rect x="345" y="58" width="10" height="7" rx="1" class="abit" />
