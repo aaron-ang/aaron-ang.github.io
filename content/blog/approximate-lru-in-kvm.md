@@ -79,7 +79,7 @@ The implementation adds a bool (`lru_ref`) to `struct kvm_mmu_page` to serve as 
 
 In the first version there were two callers. One, in `__kvm_mmu_get_shadow_page`, runs when KVM looks up or creates a shadow page while handling a fault. The other, in `fast_page_fault`, runs when the _fast path_ for page faults succeeds. That path is for faults where the shadow entry exists but has the wrong permission, e.g. a write to a page KVM made read-only deliberately, to detect changes. It patches the entry with a single atomic update and never takes `mmu_lock` (hence "lock-free").
 
-The eviction loop below sweeps the clock hand instead of walking from the tail as FIFO does. It is shown without the accessed-bit checks that Part 2 adds:
+The eviction loop below sweeps the clock hand instead of walking from the tail as FIFO does. It is shown without the accessed-bit checks that Part 2 adds; with them, the sweep runs up to three laps instead of two:
 
 ```c
 unsigned long budget = 2 * kvm->arch.n_used_mmu_pages;
@@ -106,7 +106,7 @@ while (budget-- && (sp = kvm->arch.clock_hand)) {
 }
 ```
 
-`kvm_mmu_clock_next` returns the page before `sp`, wrapping from the head back to the tail; that wrap is what makes the list a circle. `budget` limits this sweep to two laps, as the next section explains. Part 2 extends the limit to three laps when the sweep also reads hardware accessed bits.
+`kvm_mmu_clock_next` returns the page before `sp`, wrapping from the head back to the tail; that wrap is what makes the list a circle. `budget` limits this sweep to two laps, as the next section explains.
 
 CLOCK also fits an existing constraint: other KVM code relies on `active_mmu_pages` remaining in creation order. Setting `lru_ref` leaves that order intact, while `list_move()` on each observed use would change it. The fault path can therefore mark a page with a single store, and the fast fault path needs no additional lock for list manipulation.
 
@@ -167,6 +167,8 @@ That setup was [nested](https://docs.kernel.org/virt/kvm/x86/running-nested-gues
 
 ![Three layers, bottom up. L0 is the AWS c5n.metal host, L1 is a QEMU guest running our modified KVM, and L2 is a nested guest running redis-server under redis-benchmark. L2's page faults are handled by L1's KVM MMU.](/images/approximate-lru-in-kvm/nested-setup.svg "L0, L1 and L2 are the usual names for the physical host, the guest hypervisor, and the nested guest.")
 
+We chose nesting because we did not know then that a metal host could boot a custom kernel directly, and we worried that a bug in the modified kernel would take the instance down.
+
 ### Correctness Checks on Real Hardware
 
 For the follow-up, I ran the modified KVM directly on a c5n.metal instance, without QEMU or nesting. KVM's test programs and their guests ran under it on the host's Intel CPU, with Intel's extended page tables disabled (`kvm_intel.ept=0`, `kvm.tdp_mmu=0`) so that every guest used true shadow paging. The kernel enabled [KASAN](https://docs.kernel.org/dev-tools/kasan.html) (Kernel Address Sanitizer) for memory errors, [lockdep](https://docs.kernel.org/locking/lockdep-design.html) for locking mistakes, the [lockup detectors](https://docs.kernel.org/admin-guide/lockup-watchdogs.html) for hangs, and KVM's consistency checks for the shadow MMU (`CONFIG_KVM_PROVE_MMU`).
@@ -189,7 +191,7 @@ Emulation was slow: each virtual CPU completed at most about 100,000 iterations 
 
 This was my first time changing a real operating system kernel. The CLOCK loop itself was small; much of the class project went into finding hardware that could boot our modified kernel and building the nested setup. Continuing the work afterward gave me a way to investigate the policy more closely, especially whether our reference marks were giving frequently used pages second chances.
 
-The kernel integration also changed how I approached the implementation. Reasoning about the eviction loop alone was not enough, because other paths could remove the page saved in the hand. Writing down the invariants and identifying the shared removal path made it possible to cover those cases without adding a separate lock.
+The kernel integration also changed how we approached the implementation. Reasoning about the eviction loop alone was not enough, because other paths could remove the page saved in the hand. Writing down the invariants and identifying the shared removal path made it possible to cover those cases without adding a separate lock.
 
 We also tried extending CLOCK to the TDP MMU but did not complete that work. In the kernel version we used, it does not use the legacy MMU’s bounded cache and FIFO recycling loop, making this more than a replacement-policy change. Whether adding a similar memory limit and eviction policy would benefit the TDP MMU is a separate question we did not evaluate.
 
