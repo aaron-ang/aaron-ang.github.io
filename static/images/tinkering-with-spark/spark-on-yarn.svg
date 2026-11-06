@@ -3,7 +3,7 @@
   viewBox="0 0 720 389"
   font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
   role="img"
-  aria-label="Animated Spark on YARN in cluster mode: spark-submit submits the application, the ApplicationsManager launches the ApplicationMaster which also runs the Spark Driver, the Scheduler grants containers, NodeManagers start Spark Executors in them, and the driver sends tasks to the executors."
+  aria-label="Animated Spark on YARN in cluster mode: spark-submit submits the application, the ApplicationsManager launches the ApplicationMaster which also runs the Spark Driver, the Scheduler grants containers, the ApplicationMaster has NodeManagers start Spark Executors in them, and the driver sends tasks to the executors, while NodeManagers report node status to the ResourceManager."
   width="720"
   height="389"
   data-diagram-width="720"
@@ -107,250 +107,250 @@
       fill: var(--accent);
     }
 
-    /* 33.82s loop; steps at 0.72, 4.12, 9.42, 13.02, 16.62, 21.32, 27.12 s (variable holds); all fade out 32.62s to 33.12s. */
+    /* 34.42s loop; steps at 0.72, 4.12, 9.42, 13.02, 16.62, 21.92, 27.72 s (variable holds); all fade out 33.22s to 33.72s. */
     .a {
       opacity: 0;
-      animation: 33.82s linear infinite;
+      animation: 34.42s linear infinite;
     }
     .n1 {
       animation-name: n1;
     } /* narration 1: 0.72s to 4.12s */
     @keyframes n1 {
-      0.00%, 2.13% { opacity: 0; }
-      2.57%, 12.18% { opacity: 1; }
-      12.63%, 100.00% { opacity: 0; }
+      0.00%, 2.09% { opacity: 0; }
+      2.53%, 11.97% { opacity: 1; }
+      12.41%, 100.00% { opacity: 0; }
     }
     .n2 {
       animation-name: n2;
     } /* narration 2: 4.12s to 9.42s */
     @keyframes n2 {
-      0.00%, 12.18% { opacity: 0; }
-      12.63%, 27.85% { opacity: 1; }
-      28.30%, 100.00% { opacity: 0; }
+      0.00%, 11.97% { opacity: 0; }
+      12.41%, 27.36% { opacity: 1; }
+      27.81%, 100.00% { opacity: 0; }
     }
     .n3 {
       animation-name: n3;
     } /* narration 3: 9.42s to 13.02s */
     @keyframes n3 {
-      0.00%, 27.85% { opacity: 0; }
-      28.30%, 38.50% { opacity: 1; }
-      38.94%, 100.00% { opacity: 0; }
+      0.00%, 27.36% { opacity: 0; }
+      27.81%, 37.83% { opacity: 1; }
+      38.26%, 100.00% { opacity: 0; }
     }
     .n4 {
       animation-name: n4;
     } /* narration 4: 13.02s to 16.62s */
     @keyframes n4 {
-      0.00%, 38.50% { opacity: 0; }
-      38.94%, 49.14% { opacity: 1; }
-      49.59%, 100.00% { opacity: 0; }
+      0.00%, 37.83% { opacity: 0; }
+      38.26%, 48.28% { opacity: 1; }
+      48.73%, 100.00% { opacity: 0; }
     }
     .n5 {
       animation-name: n5;
-    } /* narration 5: 16.62s to 21.32s */
+    } /* narration 5: 16.62s to 21.92s */
     @keyframes n5 {
-      0.00%, 49.14% { opacity: 0; }
-      49.59%, 63.04% { opacity: 1; }
-      63.48%, 100.00% { opacity: 0; }
+      0.00%, 48.28% { opacity: 0; }
+      48.73%, 63.68% { opacity: 1; }
+      64.12%, 100.00% { opacity: 0; }
     }
     .n6 {
       animation-name: n6;
-    } /* narration 6: 21.32s to 27.12s */
+    } /* narration 6: 21.92s to 27.72s */
     @keyframes n6 {
-      0.00%, 63.04% { opacity: 0; }
-      63.48%, 80.19% { opacity: 1; }
-      80.63%, 100.00% { opacity: 0; }
+      0.00%, 63.68% { opacity: 0; }
+      64.12%, 80.54% { opacity: 1; }
+      80.97%, 100.00% { opacity: 0; }
     }
     .n7 {
       animation-name: n7;
-    } /* narration 7: 27.12s onward */
+    } /* narration 7: 27.72s onward */
     @keyframes n7 {
-      0.00%, 80.19% { opacity: 0; }
-      80.63%, 96.45% { opacity: 1; }
-      97.93%, 100.00% { opacity: 0; }
+      0.00%, 80.54% { opacity: 0; }
+      80.97%, 96.51% { opacity: 1; }
+      97.97%, 100.00% { opacity: 0; }
     }
     .s1c {
       animation-name: s1c;
     } /* s1: 0.72s to 4.12s */
     @keyframes s1c {
-      0.00%, 2.13% { opacity: 0; }
-      2.57%, 12.18% { opacity: 1; }
-      12.63%, 100.00% { opacity: 0; }
+      0.00%, 2.09% { opacity: 0; }
+      2.53%, 11.97% { opacity: 1; }
+      12.41%, 100.00% { opacity: 0; }
     }
     .s1d {
       animation-name: s1d;
     } /* s1: 4.12s onward */
     @keyframes s1d {
-      0.00%, 12.18% { opacity: 0; }
-      12.63%, 96.45% { opacity: 1; }
-      97.93%, 100.00% { opacity: 0; }
+      0.00%, 11.97% { opacity: 0; }
+      12.41%, 96.51% { opacity: 1; }
+      97.97%, 100.00% { opacity: 0; }
     }
     .l1 {
       animation-name: l1;
     } /* label 1: 0.72s onward */
     @keyframes l1 {
-      0.00%, 2.13% { opacity: 0; }
-      2.57%, 96.45% { opacity: 1; }
-      97.93%, 100.00% { opacity: 0; }
+      0.00%, 2.09% { opacity: 0; }
+      2.53%, 96.51% { opacity: 1; }
+      97.97%, 100.00% { opacity: 0; }
     }
     .s2c {
       animation-name: s2c;
     } /* s2: 4.12s to 9.42s */
     @keyframes s2c {
-      0.00%, 12.18% { opacity: 0; }
-      12.63%, 27.85% { opacity: 1; }
-      28.30%, 100.00% { opacity: 0; }
+      0.00%, 11.97% { opacity: 0; }
+      12.41%, 27.36% { opacity: 1; }
+      27.81%, 100.00% { opacity: 0; }
     }
     .s2d {
       animation-name: s2d;
     } /* s2: 9.42s onward */
     @keyframes s2d {
-      0.00%, 27.85% { opacity: 0; }
-      28.30%, 96.45% { opacity: 1; }
-      97.93%, 100.00% { opacity: 0; }
+      0.00%, 27.36% { opacity: 0; }
+      27.81%, 96.51% { opacity: 1; }
+      97.97%, 100.00% { opacity: 0; }
     }
     .l2 {
       animation-name: l2;
     } /* label 2: 4.12s onward */
     @keyframes l2 {
-      0.00%, 12.18% { opacity: 0; }
-      12.63%, 96.45% { opacity: 1; }
-      97.93%, 100.00% { opacity: 0; }
+      0.00%, 11.97% { opacity: 0; }
+      12.41%, 96.51% { opacity: 1; }
+      97.97%, 100.00% { opacity: 0; }
     }
     .am {
       animation-name: am;
     } /* AM container: 4.12s onward */
     @keyframes am {
-      0.00%, 12.18% { opacity: 0; }
-      12.63%, 96.45% { opacity: 1; }
-      97.93%, 100.00% { opacity: 0; }
+      0.00%, 11.97% { opacity: 0; }
+      12.41%, 96.51% { opacity: 1; }
+      97.97%, 100.00% { opacity: 0; }
     }
     .s3c {
       animation-name: s3c;
     } /* s3: 9.42s to 13.02s */
     @keyframes s3c {
-      0.00%, 27.85% { opacity: 0; }
-      28.30%, 38.50% { opacity: 1; }
-      38.94%, 100.00% { opacity: 0; }
+      0.00%, 27.36% { opacity: 0; }
+      27.81%, 37.83% { opacity: 1; }
+      38.26%, 100.00% { opacity: 0; }
     }
     .s3d {
       animation-name: s3d;
     } /* s3: 13.02s onward */
     @keyframes s3d {
-      0.00%, 38.50% { opacity: 0; }
-      38.94%, 96.45% { opacity: 1; }
-      97.93%, 100.00% { opacity: 0; }
+      0.00%, 37.83% { opacity: 0; }
+      38.26%, 96.51% { opacity: 1; }
+      97.97%, 100.00% { opacity: 0; }
     }
     .l3 {
       animation-name: l3;
     } /* label 3: 9.42s onward */
     @keyframes l3 {
-      0.00%, 27.85% { opacity: 0; }
-      28.30%, 96.45% { opacity: 1; }
-      97.93%, 100.00% { opacity: 0; }
+      0.00%, 27.36% { opacity: 0; }
+      27.81%, 96.51% { opacity: 1; }
+      97.97%, 100.00% { opacity: 0; }
     }
     .s4c {
       animation-name: s4c;
     } /* s4: 13.02s to 16.62s */
     @keyframes s4c {
-      0.00%, 38.50% { opacity: 0; }
-      38.94%, 49.14% { opacity: 1; }
-      49.59%, 100.00% { opacity: 0; }
+      0.00%, 37.83% { opacity: 0; }
+      38.26%, 48.28% { opacity: 1; }
+      48.73%, 100.00% { opacity: 0; }
     }
     .s4d {
       animation-name: s4d;
     } /* s4: 16.62s onward */
     @keyframes s4d {
-      0.00%, 49.14% { opacity: 0; }
-      49.59%, 96.45% { opacity: 1; }
-      97.93%, 100.00% { opacity: 0; }
+      0.00%, 48.28% { opacity: 0; }
+      48.73%, 96.51% { opacity: 1; }
+      97.97%, 100.00% { opacity: 0; }
     }
     .l4 {
       animation-name: l4;
     } /* label 4: 13.02s onward */
     @keyframes l4 {
-      0.00%, 38.50% { opacity: 0; }
-      38.94%, 96.45% { opacity: 1; }
-      97.93%, 100.00% { opacity: 0; }
+      0.00%, 37.83% { opacity: 0; }
+      38.26%, 96.51% { opacity: 1; }
+      97.97%, 100.00% { opacity: 0; }
     }
     .ct {
       animation-name: ct;
     } /* granted containers: 13.02s onward */
     @keyframes ct {
-      0.00%, 38.50% { opacity: 0; }
-      38.94%, 96.45% { opacity: 1; }
-      97.93%, 100.00% { opacity: 0; }
+      0.00%, 37.83% { opacity: 0; }
+      38.26%, 96.51% { opacity: 1; }
+      97.97%, 100.00% { opacity: 0; }
     }
     .s5c {
       animation-name: s5c;
-    } /* s5: 16.62s to 21.32s */
+    } /* s5: 16.62s to 21.92s */
     @keyframes s5c {
-      0.00%, 49.14% { opacity: 0; }
-      49.59%, 63.04% { opacity: 1; }
-      63.48%, 100.00% { opacity: 0; }
+      0.00%, 48.28% { opacity: 0; }
+      48.73%, 63.68% { opacity: 1; }
+      64.12%, 100.00% { opacity: 0; }
     }
     .s5d {
       animation-name: s5d;
-    } /* s5: 21.32s onward */
+    } /* s5: 21.92s onward */
     @keyframes s5d {
-      0.00%, 63.04% { opacity: 0; }
-      63.48%, 96.45% { opacity: 1; }
-      97.93%, 100.00% { opacity: 0; }
+      0.00%, 63.68% { opacity: 0; }
+      64.12%, 96.51% { opacity: 1; }
+      97.97%, 100.00% { opacity: 0; }
     }
     .ex {
       animation-name: ex;
     } /* executors: 16.62s onward */
     @keyframes ex {
-      0.00%, 49.14% { opacity: 0; }
-      49.59%, 96.45% { opacity: 1; }
-      97.93%, 100.00% { opacity: 0; }
+      0.00%, 48.28% { opacity: 0; }
+      48.73%, 96.51% { opacity: 1; }
+      97.97%, 100.00% { opacity: 0; }
     }
     .l5 {
       animation-name: l5;
     } /* label 5: 16.62s onward */
     @keyframes l5 {
-      0.00%, 49.14% { opacity: 0; }
-      49.59%, 96.45% { opacity: 1; }
-      97.93%, 100.00% { opacity: 0; }
+      0.00%, 48.28% { opacity: 0; }
+      48.73%, 96.51% { opacity: 1; }
+      97.97%, 100.00% { opacity: 0; }
     }
     .s6 {
       animation-name: s6;
-    } /* driver-executor bus: 21.32s onward */
+    } /* driver-executor bus: 21.92s onward */
     @keyframes s6 {
-      0.00%, 63.04% { opacity: 0; }
-      63.48%, 96.45% { opacity: 1; }
-      97.93%, 100.00% { opacity: 0; }
+      0.00%, 63.68% { opacity: 0; }
+      64.12%, 96.51% { opacity: 1; }
+      97.97%, 100.00% { opacity: 0; }
     }
     .l6 {
       animation-name: l6;
-    } /* label 6: 21.32s onward */
+    } /* label 6: 21.92s onward */
     @keyframes l6 {
-      0.00%, 63.04% { opacity: 0; }
-      63.48%, 96.45% { opacity: 1; }
-      97.93%, 100.00% { opacity: 0; }
+      0.00%, 63.68% { opacity: 0; }
+      64.12%, 96.51% { opacity: 1; }
+      97.97%, 100.00% { opacity: 0; }
     }
     .tk {
       animation-name: tk;
-    } /* several tasks per executor: 21.32s onward */
+    } /* one task per executor: 21.92s onward */
     @keyframes tk {
-      0.00%, 63.04% { opacity: 0; }
-      63.48%, 96.45% { opacity: 1; }
-      97.93%, 100.00% { opacity: 0; }
+      0.00%, 63.68% { opacity: 0; }
+      64.12%, 96.51% { opacity: 1; }
+      97.97%, 100.00% { opacity: 0; }
     }
     .nsc {
       animation-name: nsc;
-    } /* ns: 27.12s onward */
+    } /* ns: 27.72s onward */
     @keyframes nsc {
-      0.00%, 80.19% { opacity: 0; }
-      80.63%, 96.45% { opacity: 1; }
-      97.93%, 100.00% { opacity: 0; }
+      0.00%, 80.54% { opacity: 0; }
+      80.97%, 96.51% { opacity: 1; }
+      97.97%, 100.00% { opacity: 0; }
     }
     .lns {
       animation-name: lns;
-    } /* node status labels: 27.12s onward */
+    } /* node status labels: 27.72s onward */
     @keyframes lns {
-      0.00%, 80.19% { opacity: 0; }
-      80.63%, 96.45% { opacity: 1; }
-      97.93%, 100.00% { opacity: 0; }
+      0.00%, 80.54% { opacity: 0; }
+      80.97%, 96.51% { opacity: 1; }
+      97.97%, 100.00% { opacity: 0; }
     }
     @media (prefers-reduced-motion: reduce) {
       .a {
@@ -416,7 +416,7 @@
     <text x="20" y="28" class="a n2 narr">2. The ApplicationsManager launches the ApplicationMaster, which also runs the Spark Driver.</text>
     <text x="20" y="28" class="a n3 narr">3. The ApplicationMaster asks the Scheduler for executor containers.</text>
     <text x="20" y="28" class="a n4 narr">4. The Scheduler grants containers on NodeManagers.</text>
-    <text x="20" y="28" class="a n5 narr">5. The NodeManagers start a Spark Executor in each container.</text>
+    <text x="20" y="28" class="a n5 narr">5. The ApplicationMaster has each NodeManager start a Spark Executor in its container.</text>
     <text x="20" y="28" class="a n6 narr">6. The driver sends tasks to the executors, and they report back.</text>
     <text x="20" y="28" class="a n7 narr fin">NodeManagers report node status to the ResourceManager throughout.</text>
     <g class="a s1c cur">
@@ -472,18 +472,18 @@
       <text x="680" y="306" text-anchor="middle" class="muted">Container</text>
     </g>
     <g class="a s5c cur">
-      <path d="M 112 354 V 370 H 680 M 325 370 V 364 M 435 370 V 364 M 570 370 V 364 M 680 370 V 364" />
-      <polygon points="320,364 325,354 330,364" />
-      <polygon points="430,364 435,354 440,364" />
-      <polygon points="565,364 570,354 575,364" />
-      <polygon points="675,364 680,354 685,364" />
+      <path d="M 112 354 V 373 H 680 M 325 373 V 362 M 435 373 V 362 M 570 373 V 362 M 680 373 V 362" />
+      <polygon points="320,362 325,354 330,362" />
+      <polygon points="430,362 435,354 440,362" />
+      <polygon points="565,362 570,354 575,362" />
+      <polygon points="675,362 680,354 685,362" />
     </g>
     <g class="a s5d done fin">
-      <path d="M 112 354 V 370 H 680 M 325 370 V 364 M 435 370 V 364 M 570 370 V 364 M 680 370 V 364" />
-      <polygon points="320,364 325,354 330,364" />
-      <polygon points="430,364 435,354 440,364" />
-      <polygon points="565,364 570,354 575,364" />
-      <polygon points="675,364 680,354 685,364" />
+      <path d="M 112 354 V 373 H 680 M 325 373 V 362 M 435 373 V 362 M 570 373 V 362 M 680 373 V 362" />
+      <polygon points="320,362 325,354 330,362" />
+      <polygon points="430,362 435,354 440,362" />
+      <polygon points="565,362 570,354 575,362" />
+      <polygon points="675,362 680,354 685,362" />
     </g>
     <text x="112" y="388" class="a l5 lbl fin"><tspan class="k">5</tspan> launch executors</text>
     <g class="a ex fin">
@@ -500,32 +500,24 @@
       <text x="680" y="306" text-anchor="middle" class="muted">Container</text>
       <text x="680" y="323" text-anchor="middle" class="acctext">Executor</text>
     </g>
-    <g class="a s6 accline fin">
-      <path d="M 112 354 V 370 H 680 M 325 370 V 364 M 435 370 V 364 M 570 370 V 364 M 680 370 V 364 M 112 364 V 370" />
-      <polygon points="320,364 325,354 330,364" />
-      <polygon points="430,364 435,354 440,364" />
-      <polygon points="565,364 570,354 575,364" />
-      <polygon points="675,364 680,354 685,364" />
-      <polygon points="107,364 112,354 117,364" />
+    <g class="a s6 accline dash fin">
+      <path d="M 140 364 H 692 M 140 364 V 361 M 337 364 V 361 M 447 364 V 361 M 582 364 V 361 M 692 364 V 361" />
+      <polygon points="135,362 140,354 145,362" />
+      <polygon points="332,362 337,354 342,362" />
+      <polygon points="442,362 447,354 452,362" />
+      <polygon points="577,362 582,354 587,362" />
+      <polygon points="687,362 692,354 697,362" />
     </g>
     <text x="300" y="388" class="a l6 lbl fin"><tspan class="k">6</tspan> <tspan class="acctext">tasks out, results back</tspan></text>
     <g class="a tk fin">
-      <rect x="281" y="331" width="40" height="16" rx="3" class="task" />
-      <text x="301" y="343" text-anchor="middle" class="tasktext">task</text>
-      <rect x="329" y="331" width="40" height="16" rx="3" class="task" />
-      <text x="349" y="343" text-anchor="middle" class="tasktext">task</text>
-      <rect x="391" y="331" width="40" height="16" rx="3" class="task" />
-      <text x="411" y="343" text-anchor="middle" class="tasktext">task</text>
-      <rect x="439" y="331" width="40" height="16" rx="3" class="task" />
-      <text x="459" y="343" text-anchor="middle" class="tasktext">task</text>
-      <rect x="526" y="331" width="40" height="16" rx="3" class="task" />
-      <text x="546" y="343" text-anchor="middle" class="tasktext">task</text>
-      <rect x="574" y="331" width="40" height="16" rx="3" class="task" />
-      <text x="594" y="343" text-anchor="middle" class="tasktext">task</text>
-      <rect x="636" y="331" width="40" height="16" rx="3" class="task" />
-      <text x="656" y="343" text-anchor="middle" class="tasktext">task</text>
-      <rect x="684" y="331" width="40" height="16" rx="3" class="task" />
-      <text x="704" y="343" text-anchor="middle" class="tasktext">task</text>
+      <rect x="305" y="331" width="40" height="16" rx="3" class="task" />
+      <text x="325" y="343" text-anchor="middle" class="tasktext">task</text>
+      <rect x="415" y="331" width="40" height="16" rx="3" class="task" />
+      <text x="435" y="343" text-anchor="middle" class="tasktext">task</text>
+      <rect x="550" y="331" width="40" height="16" rx="3" class="task" />
+      <text x="570" y="343" text-anchor="middle" class="tasktext">task</text>
+      <rect x="660" y="331" width="40" height="16" rx="3" class="task" />
+      <text x="680" y="343" text-anchor="middle" class="tasktext">task</text>
     </g>
     <g class="a nsc cur dash">
       <path d="M 50 262 V 150 H 230 M 480 262 V 166 M 570 262 V 166" />

@@ -3,7 +3,7 @@
   viewBox="0 0 720 395"
   font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
   role="img"
-  aria-label="Animated memory budget: the driver starts with the default 5g memory plus 2g memoryOverhead, then --driver-memory 16g grows it to 16g plus 2g, still well under the 48 GiB safety cap of a 102 GiB container. The executor keeps 16g plus 4g while its cores go from 1 to 4."
+  aria-label="Animated memory budget: the driver starts with the default 5g memory plus 2g memoryOverhead, then --driver-memory 16g grows it to 16g plus 2g, still well under the 48 GiB safety cap of a 102 GiB container. The executor keeps 16g plus 4g."
   width="720"
   height="395"
   data-diagram-width="720"
@@ -93,7 +93,7 @@
       font-weight: 600;
     }
 
-    /* 22.7s loop; steps at 0, 6.0, 9.0, 14.0 s (variable holds); final frame holds to 21.6s, then fades. */
+    /* 22.7s loop; steps at 0, 6.0, 9.0, 15.0 s (variable holds); final frame holds to 21.6s, then fades. */
     .a1 {
       opacity: 0;
       animation: 22.7s linear infinite;
@@ -123,7 +123,12 @@
       opacity: 0;
       animation: 22.7s linear infinite;
       animation-name: a7;
-    } /* defaults (driver 5g + 2g, 1 core): 0s to 9.0s, back in from 22.05s */ /* caption "Defaults": 0s to 6.0s */ /* override flags appear: from 6.0s */ /* driver grows to 16g, executor 4 cores: from 9.0s */ /* caption "Override": 6.0s to 14.0s */ /* check + result caption: from 14.0s */
+    }
+    .a8 {
+      opacity: 0;
+      animation: 22.7s linear infinite;
+      animation-name: a8;
+    } /* defaults (driver 5g + 2g): 0s to 9.0s, back in from 22.05s */ /* caption "Defaults": 0s to 6.0s */ /* override flag appears: from 6.0s */ /* driver grows to 16g: from 9.0s */ /* caption "Override": 6.0s to 9.0s */ /* caption "Driver grows": 9.0s to 15.0s */ /* check + result caption: from 15.0s */
     @keyframes a1 {
       0.00%, 39.65% { opacity: 1; }
       40.31%, 95.15% { opacity: 0; }
@@ -145,12 +150,17 @@
     }
     @keyframes a6 {
       0.00%, 26.43% { opacity: 0; }
-      27.09%, 61.67% { opacity: 1; }
-      62.33%, 100.00% { opacity: 0; }
+      27.09%, 39.65% { opacity: 1; }
+      40.31%, 100.00% { opacity: 0; }
+    }
+    @keyframes a8 {
+      0.00%, 39.65% { opacity: 0; }
+      40.31%, 66.08% { opacity: 1; }
+      66.74%, 100.00% { opacity: 0; }
     }
     @keyframes a7 {
-      0.00%, 61.67% { opacity: 0; }
-      62.33%, 95.15% { opacity: 1; }
+      0.00%, 66.08% { opacity: 0; }
+      66.74%, 95.15% { opacity: 1; }
       97.14%, 100.00% { opacity: 0; }
     }
     @media (prefers-reduced-motion: reduce) {
@@ -163,6 +173,10 @@
         opacity: 0;
       }
       .a6 {
+        animation: none;
+        opacity: 0;
+      }
+      .a8 {
         animation: none;
         opacity: 0;
       }
@@ -202,9 +216,10 @@
   </style>
   <g transform="scale(0.9473684210526315)">
     <text x="20" y="28" class="title type-heading">Memory (GiB)</text>
-    <text x="20" y="52" class="a2">Defaults: driver 5g memory + 2g memoryOverhead, 1 core per executor.</text>
-    <text x="20" y="52" class="a6">Override: <tspan class="hot">--driver-memory 16g</tspan> and <tspan class="hot">--executor-cores 4</tspan>.</text>
-    <text x="20" y="52" class="oktext a7">Driver gets 16g, well under the 48 GiB cap. The OOM errors disappeared.</text>
+    <text x="20" y="52" class="a2">By default, the driver has 5g of memory plus 2g of memoryOverhead.</text>
+    <text x="20" y="52" class="a6">The override sets <tspan class="hot">--driver-memory 16g</tspan>.</text>
+    <text x="20" y="52" class="a8">The driver’s memory grows to 16g.</text>
+    <text x="20" y="52" class="oktext a7">Driver gets 16g, well under the 48 GiB cap.</text>
     <g transform="translate(0 30)">
       <text x="20" y="84" class="row">Container</text>
     </g>
@@ -271,18 +286,6 @@
     </g>
     <g transform="translate(0 30)">
       <text x="258" y="245" class="val">16g + 4g = 20 GiB</text>
-    </g>
-    <g transform="translate(0 30)">
-      <text x="130" y="274" class="muted a1">1 core</text>
-    </g>
-    <g transform="translate(0 30)">
-      <text x="130" y="274" class="muted a4">4 cores, memory unchanged</text>
-    </g>
-    <g transform="translate(0 30)">
-      <g class="a3">
-        <rect x="430" y="226" width="190" height="28" rx="4" class="chip" />
-        <text x="525" y="245" text-anchor="middle" class="cmd">--executor-cores 4</text>
-      </g>
     </g>
     <g transform="translate(0 30)">
       <line x1="130" y1="292" x2="742" y2="292" class="axis" />

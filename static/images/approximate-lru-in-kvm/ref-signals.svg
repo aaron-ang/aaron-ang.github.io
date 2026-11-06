@@ -3,7 +3,7 @@
   viewBox="0 0 720 364"
   font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
   role="img"
-  aria-label="Animated comparison of what sets lru_ref, shown as two panels that run in step. A hot page H, created first, and a cold page C each map one 2 MiB region. Creation sets both bits, and the clock hand clears them. H keeps being used, but most accesses are hits KVM never sees; a first touch faults and KVM installs a mapping. (a) Marked only on creation, H's bit stays 0, and when the hand returns it zaps the older H. (b) Marked on install too, the install sets H's bit again, so the hand keeps H and zaps cold C."
+  aria-label="Animated comparison of what sets lru_ref, shown as two panels that run in step. A hot page H, created first, and a cold page C each map one 2 MiB region. Creation sets both bits, and the clock hand clears them. H keeps being used, but most accesses are hits KVM never sees; a first touch faults and KVM installs a mapping. (a) Marked only on creation, H's bit stays 0, and when the hand returns it zaps the older H and moves on to C. (b) Marked on creation and on install, the install sets H's bit again, so the hand keeps H, zaps cold C and moves on. Marking on install tells hot from cold only while H still faults."
   width="720"
   height="364"
   data-diagram-width="720"
@@ -90,170 +90,170 @@
     .mono {
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     }
-    /* 43.6s loop, 10 steps starting at 0.5, 5.2, 8.6, 12.8, 15.9, 19.9, 24.8, 28.7, 32.6, 36.8 s; final frame holds 6.0s, then fades. */
+    /* 44.3s loop, 10 steps starting at 0.5, 5.18, 9.29, 13.47, 16.63, 20.55, 25.48, 29.4, 33.32, 37.5 s; final frame holds 6.05s, then fades. */
     .a {
       opacity: 0;
-      animation: 43.6s linear infinite;
+      animation: 44.3s linear infinite;
     }
     .w1 {
       animation-name: w1;
-    } /* 5.18s to 8.59s */
+    } /* 5.18s to 9.29s */
     @keyframes w1 {
-      0.00%, 11.87% { opacity: 0; }
-      12.22%, 19.71% { opacity: 1; }
-      20.06%, 100.00% { opacity: 0; }
+      0.00%, 11.69% { opacity: 0; }
+      12.03%, 20.97% { opacity: 1; }
+      21.31%, 100.00% { opacity: 0; }
     }
     .w2 {
       animation-name: w2;
-    } /* 5.18s to 12.77s */
+    } /* 5.18s to 13.47s */
     @keyframes w2 {
-      0.00%, 11.87% { opacity: 0; }
-      12.22%, 29.28% { opacity: 1; }
-      29.63%, 100.00% { opacity: 0; }
+      0.00%, 11.69% { opacity: 0; }
+      12.03%, 30.41% { opacity: 1; }
+      30.74%, 100.00% { opacity: 0; }
     }
     .w3 {
       animation-name: w3;
-    } /* 8.59s to 15.93s */
+    } /* 9.29s to 16.63s */
     @keyframes w3 {
-      0.00%, 19.71% { opacity: 0; }
-      20.06%, 36.54% { opacity: 1; }
-      36.89%, 100.00% { opacity: 0; }
+      0.00%, 20.97% { opacity: 0; }
+      21.31%, 37.54% { opacity: 1; }
+      37.88%, 100.00% { opacity: 0; }
     }
     .w4 {
       animation-name: w4;
-    } /* 8.59s to 12.77s */
+    } /* 9.29s to 13.47s */
     @keyframes w4 {
-      0.00%, 19.71% { opacity: 0; }
-      20.06%, 29.28% { opacity: 1; }
-      29.63%, 100.00% { opacity: 0; }
+      0.00%, 20.97% { opacity: 0; }
+      21.31%, 30.41% { opacity: 1; }
+      30.74%, 100.00% { opacity: 0; }
     }
     .w5 {
       animation-name: w5;
-    } /* 12.77s to 15.93s */
+    } /* 13.47s to 16.63s */
     @keyframes w5 {
-      0.00%, 29.28% { opacity: 0; }
-      29.63%, 36.54% { opacity: 1; }
-      36.89%, 100.00% { opacity: 0; }
+      0.00%, 30.41% { opacity: 0; }
+      30.74%, 37.54% { opacity: 1; }
+      37.88%, 100.00% { opacity: 0; }
     }
     .w6 {
       animation-name: w6;
-    } /* 12.77s to end */
+    } /* 13.47s to end */
     @keyframes w6 {
-      0.00%, 29.28% { opacity: 0; }
-      29.63%, 98.28% { opacity: 1; }
-      98.62%, 100.00% { opacity: 0; }
+      0.00%, 30.41% { opacity: 0; }
+      30.74%, 98.31% { opacity: 1; }
+      98.65%, 100.00% { opacity: 0; }
     }
     .w7 {
       animation-name: w7;
-    } /* 8.59s to end */
+    } /* 9.29s to end */
     @keyframes w7 {
-      0.00%, 19.71% { opacity: 0; }
-      20.06%, 98.28% { opacity: 1; }
-      98.62%, 100.00% { opacity: 0; }
+      0.00%, 20.97% { opacity: 0; }
+      21.31%, 98.31% { opacity: 1; }
+      98.65%, 100.00% { opacity: 0; }
     }
     .w8 {
       animation-name: w8;
-    } /* 15.93s to 19.85s */
+    } /* 16.63s to 20.55s */
     @keyframes w8 {
-      0.00%, 36.54% { opacity: 0; }
-      36.89%, 45.53% { opacity: 1; }
-      45.88%, 100.00% { opacity: 0; }
+      0.00%, 37.54% { opacity: 0; }
+      37.88%, 46.39% { opacity: 1; }
+      46.73%, 100.00% { opacity: 0; }
     }
     .w9 {
       animation-name: w9;
-    } /* 19.85s to end */
+    } /* 20.55s to end */
     @keyframes w9 {
-      0.00%, 45.53% { opacity: 0; }
-      45.88%, 98.28% { opacity: 1; }
-      98.62%, 100.00% { opacity: 0; }
+      0.00%, 46.39% { opacity: 0; }
+      46.73%, 98.31% { opacity: 1; }
+      98.65%, 100.00% { opacity: 0; }
     }
     .w10 {
       animation-name: w10;
-    } /* 19.85s to 28.70s */
+    } /* 20.55s to 29.40s */
     @keyframes w10 {
-      0.00%, 45.53% { opacity: 0; }
-      45.88%, 65.83% { opacity: 1; }
-      66.18%, 100.00% { opacity: 0; }
+      0.00%, 46.39% { opacity: 0; }
+      46.73%, 66.37% { opacity: 1; }
+      66.70%, 100.00% { opacity: 0; }
     }
     .w11 {
       animation-name: w11;
-    } /* 19.85s to 24.78s */
+    } /* 20.55s to 25.48s */
     @keyframes w11 {
-      0.00%, 45.53% { opacity: 0; }
-      45.88%, 56.84% { opacity: 1; }
-      57.18%, 100.00% { opacity: 0; }
+      0.00%, 46.39% { opacity: 0; }
+      46.73%, 57.52% { opacity: 1; }
+      57.86%, 100.00% { opacity: 0; }
     }
     .w12 {
       animation-name: w12;
-    } /* 24.78s to 28.70s */
+    } /* 25.48s to 29.40s */
     @keyframes w12 {
-      0.00%, 56.84% { opacity: 0; }
-      57.18%, 65.83% { opacity: 1; }
-      66.18%, 100.00% { opacity: 0; }
+      0.00%, 57.52% { opacity: 0; }
+      57.86%, 66.37% { opacity: 1; }
+      66.70%, 100.00% { opacity: 0; }
     }
     .w13 {
       animation-name: w13;
-    } /* 28.70s to 32.62s */
+    } /* 29.40s to 33.32s */
     @keyframes w13 {
-      0.00%, 65.83% { opacity: 0; }
-      66.18%, 74.83% { opacity: 1; }
-      75.17%, 100.00% { opacity: 0; }
+      0.00%, 66.37% { opacity: 0; }
+      66.70%, 75.21% { opacity: 1; }
+      75.55%, 100.00% { opacity: 0; }
     }
     .w14 {
       animation-name: w14;
-    } /* 28.70s to end */
+    } /* 29.40s to end */
     @keyframes w14 {
-      0.00%, 65.83% { opacity: 0; }
-      66.18%, 98.28% { opacity: 1; }
-      98.62%, 100.00% { opacity: 0; }
+      0.00%, 66.37% { opacity: 0; }
+      66.70%, 98.31% { opacity: 1; }
+      98.65%, 100.00% { opacity: 0; }
     }
     .w15 {
       animation-name: w15;
-    } /* 12.77s to 32.62s */
+    } /* 13.47s to 33.32s */
     @keyframes w15 {
-      0.00%, 29.28% { opacity: 0; }
-      29.63%, 74.83% { opacity: 1; }
-      75.17%, 100.00% { opacity: 0; }
+      0.00%, 30.41% { opacity: 0; }
+      30.74%, 75.21% { opacity: 1; }
+      75.55%, 100.00% { opacity: 0; }
     }
     .w16 {
       animation-name: w16;
-    } /* 8.59s to 24.78s */
+    } /* 9.29s to 25.48s */
     @keyframes w16 {
-      0.00%, 19.71% { opacity: 0; }
-      20.06%, 56.84% { opacity: 1; }
-      57.18%, 100.00% { opacity: 0; }
+      0.00%, 20.97% { opacity: 0; }
+      21.31%, 57.52% { opacity: 1; }
+      57.86%, 100.00% { opacity: 0; }
     }
     .w17 {
       animation-name: w17;
-    } /* 32.62s to end */
+    } /* 33.32s to end */
     @keyframes w17 {
-      0.00%, 74.83% { opacity: 0; }
-      75.17%, 98.28% { opacity: 1; }
-      98.62%, 100.00% { opacity: 0; }
+      0.00%, 75.21% { opacity: 0; }
+      75.55%, 98.31% { opacity: 1; }
+      98.65%, 100.00% { opacity: 0; }
     }
     .w18 {
       animation-name: w18;
     } /* 0.50s to 5.18s */
     @keyframes w18 {
-      0.00%, 11.87% { opacity: 1; }
-      12.22%, 98.28% { opacity: 0; }
-      98.62%, 100.00% { opacity: 1; }
+      0.00%, 11.69% { opacity: 1; }
+      12.03%, 98.31% { opacity: 0; }
+      98.65%, 100.00% { opacity: 1; }
     }
     .w19 {
       animation-name: w19;
-    } /* 32.62s to 36.80s */
+    } /* 33.32s to 37.50s */
     @keyframes w19 {
-      0.00%, 74.83% { opacity: 0; }
-      75.17%, 84.40% { opacity: 1; }
-      84.74%, 100.00% { opacity: 0; }
+      0.00%, 75.21% { opacity: 0; }
+      75.55%, 84.65% { opacity: 1; }
+      84.99%, 100.00% { opacity: 0; }
     }
     .w20 {
       animation-name: w20;
-    } /* 36.80s to end */
+    } /* 37.50s to end */
     @keyframes w20 {
-      0.00%, 84.40% { opacity: 0; }
-      84.74%, 98.28% { opacity: 1; }
-      98.62%, 100.00% { opacity: 0; }
+      0.00%, 84.65% { opacity: 0; }
+      84.99%, 98.31% { opacity: 1; }
+      98.65%, 100.00% { opacity: 0; }
     }
     @media (prefers-reduced-motion: reduce) {
       .a {
@@ -491,6 +491,9 @@
       <polygon points="6,104 6,122 16,113" style="fill:var(--fg)" class="a w13" />
     </g>
     <g transform="translate(0 20)">
+      <polygon points="6,152 6,170 16,161" style="fill:var(--fg)" class="a w17 fin" />
+    </g>
+    <g transform="translate(0 20)">
       <rect x="136" y="96" width="262" height="34" rx="5" class="ring a w14 fin" />
     </g>
     <g transform="translate(0 20)">
@@ -506,7 +509,7 @@
       <text x="300" y="86" class="num a w14 fin"><tspan class="mvar">H</tspan> and <tspan class="mvar">C</tspan> look alike: FIFO order</text>
     </g>
     <g transform="translate(0 20)">
-      <text x="20" y="216" class="sm b">(b) marked on install too</text>
+      <text x="20" y="216" class="sm b">(b) marked on creation + install</text>
     </g>
     <g transform="translate(0 20)">
       <text x="24" y="242" class="b type-subheading">Hot page <tspan class="mvar">H</tspan></text>
@@ -715,7 +718,10 @@
       <text x="520" y="248" class="oktext a w14 fin">bit 1: cleared, kept</text>
     </g>
     <g transform="translate(0 20)">
-      <polygon points="6,282 6,300 16,291" style="fill:var(--fg)" class="a w17 fin" />
+      <polygon points="6,282 6,300 16,291" style="fill:var(--fg)" class="a w19" />
+    </g>
+    <g transform="translate(0 20)">
+      <polygon points="6,234 6,252 16,243" style="fill:var(--fg)" class="a w20 fin" />
     </g>
     <g transform="translate(0 20)">
       <rect x="136" y="274" width="262" height="34" rx="5" class="ring a w17 fin" />
@@ -739,7 +745,7 @@
       <text x="20" y="346" class="a w18"><tspan class="mvar">H</tspan> and <tspan class="mvar">C</tspan> each map one 2 MiB region. <tspan class="mvar">H</tspan> was created first.</text>
     </g>
     <g transform="translate(0 20)">
-      <text x="20" y="346" class="a w1">Creating a page sets its lru_ref to 1.</text>
+      <text x="20" y="346" class="a w1">When each page was created, its lru_ref was set to 1.</text>
     </g>
     <g transform="translate(0 20)">
       <text x="20" y="346" class="a w4">The hand clears <tspan class="mvar">H</tspan>'s bit and skips it: a second chance.</text>
@@ -763,7 +769,7 @@
       <text x="20" y="346" class="a w19">In (b), the hand moves on and zaps cold <tspan class="mvar">C</tspan> instead.</text>
     </g>
     <g transform="translate(0 20)">
-      <text x="20" y="346" class="b a w20 fin type-subheading">Marking on creation can't tell hot from cold; marking on install can.</text>
+      <text x="20" y="346" class="b a w20 fin type-subheading">Unlike marking on creation, marking on install tells hot from cold while <tspan class="mvar">H</tspan> still faults.</text>
     </g>
     <g aria-label="Diagram key">
       <rect x="20" y="57" width="14" height="12" rx="2" class="full" />

@@ -110,12 +110,12 @@
     @keyframes w1 {
       0.00%, 100.00% { opacity: 1; }
     }
-    .w2 {
-      animation-name: w2;
-    } /* 0.50s to 41.90s */
-    @keyframes w2 {
-      0.00%, 83.63% { opacity: 1; }
-      83.93%, 98.50% { opacity: 0; }
+    .w2b {
+      animation-name: w2b;
+    } /* 0.50s to 38.68s */
+    @keyframes w2b {
+      0.00%, 77.21% { opacity: 1; }
+      77.50%, 98.50% { opacity: 0; }
       98.80%, 100.00% { opacity: 1; }
     }
     .w3 {
@@ -332,7 +332,7 @@
       <path d="M 230 119 h 140 M 265 84 v 140 M 230 154 h 140 M 300 84 v 140 M 230 189 h 140 M 335 84 v 140 M 60 275 h 140 M 95 240 v 140 M 60 310 h 140 M 130 240 v 140 M 60 345 h 140 M 165 240 v 140 M 230 275 h 140 M 265 240 v 140 M 230 310 h 140 M 300 240 v 140 M 230 345 h 140 M 335 240 v 140" stroke="var(--edge)" stroke-width="0.6" stroke-opacity="0.5" />
       <rect x="58.5" y="273.5" width="143" height="38" class="ring a w1 fin" rx="3" />
       <rect x="298.5" y="82.5" width="38" height="143" class="ring a w1 fin" rx="3" />
-      <rect x="298.5" y="273.5" width="38" height="38" class="ring a w2" rx="3" />
+      <rect x="298.5" y="273.5" width="38" height="38" class="ring a w2b" rx="3" />
       <rect x="452" y="72" width="35" height="35" class="empty" />
       <rect x="452" y="148" width="35" height="35" class="empty" />
       <text x="497" y="83.0" class="label">Bₛ</text>
@@ -428,8 +428,8 @@
       <rect x="168" y="278" width="29" height="29" class="full a w15 fin" />
       <rect x="303" y="192" width="29" height="29" class="full a w15 fin" />
       <path d="M 460 280 h 22 v 18 h -22 z M 490 280 h 22 v 18 h -22 z M 520 280 h 22 v 18 h -22 z M 550 280 h 22 v 18 h -22 z M 460 304 h 22 v 18 h -22 z M 490 304 h 22 v 18 h -22 z M 520 304 h 22 v 18 h -22 z M 550 304 h 22 v 18 h -22 z M 460 328 h 22 v 18 h -22 z M 490 328 h 22 v 18 h -22 z M 520 328 h 22 v 18 h -22 z M 550 328 h 22 v 18 h -22 z M 460 352 h 22 v 18 h -22 z M 490 352 h 22 v 18 h -22 z M 520 352 h 22 v 18 h -22 z M 550 352 h 22 v 18 h -22 z" class="new a w15 fin" fill-opacity="1.00" />
-      <rect x="301" y="276" width="33" height="33" class="new a w16 fin" />
-      <rect x="298.5" y="273.5" width="38" height="38" class="okring a w16 fin" rx="3" />
+      <rect x="301" y="276" width="33" height="33" class="new a w15 fin" />
+      <rect x="298.5" y="273.5" width="38" height="38" class="okring a w15 fin" rx="3" />
     </g>
     <text x="20" y="396" class="a w17">One block computes one tile of <tspan class="mvar">C</tspan> from a strip of <tspan class="mvar">A</tspan> and a strip of <tspan class="mvar">B</tspan>.</text>
     <text x="20" y="396" class="a w5">All threads copy the two tiles together, then wait at the barrier.</text>
@@ -440,7 +440,7 @@
     <text x="20" y="396" class="a w10">Same copy and barrier for slice 3.</text>
     <text x="20" y="396" class="a w20">Threads add slice 3.</text>
     <text x="20" y="396" class="a w13">The last slice is copied.</text>
-    <text x="20" y="396" class="a w21">Threads add slice 4: their sums are complete.</text>
+    <text x="20" y="396" class="a w21">Threads add slice 4, then write their finished sums to <tspan class="mvar">C</tspan>.</text>
     <text x="20" y="396" class="b a w16 fin type-subheading">Each value of <tspan class="mvar">A</tspan> and <tspan class="mvar">B</tspan> now leaves global memory once per block, not once per thread.</text>
   </g>
 </svg>

@@ -325,7 +325,7 @@
     <text x="20" y="442" class="a w7">Each thread needs one 4-byte float.</text>
     <text x="20" y="442" class="a w8">The addresses are 8 floats apart.</text>
     <text x="20" y="442" class="a w3">The whole segment is fetched to deliver one float.</text>
-    <text x="20" y="442" class="a w9">Most of every fetched segment goes unused.</text>
+    <text x="20" y="442" class="a w9">Eight segments cost eight transactions, and most of each one goes unused.</text>
     <text x="20" y="442" class="a w10">All 8 floats sit side by side in one segment.</text>
     <text x="20" y="442" class="b a w6 fin type-subheading">Same 8 loads, same instruction: only the address pattern changed the cost.</text>
   </g>

@@ -414,12 +414,13 @@
     <text x="68" y="204" text-anchor="middle" class="code">put(d,5)</text>
     <rect x="20" y="216" width="96" height="22" rx="3" class="chip" />
     <text x="68" y="232" text-anchor="middle" class="code">put(a,6)</text>
-    <path d="M 124 118 L 352 94" class="sarrow" />
-    <polygon points="351,88 362,93 352,99" class="sarrowhead" />
-    <text x="236" y="96" text-anchor="middle" class="muted">insert</text>
-    <path d="M 124 150 Q 150 150 150 180 L 150 224 L 168 224" class="sarrow" />
+    <path d="M 120 76 L 126 76 L 126 238 L 120 238 M 126 157 L 140 157" class="sarrow" />
+    <path d="M 140 157 L 140 108 Q 140 94 154 94 L 352 94" class="sarrow" />
+    <polygon points="352,88 363,94 352,100" class="sarrowhead" />
+    <text x="256" y="87" text-anchor="middle" class="muted">insert</text>
+    <path d="M 140 157 L 140 210 Q 140 224 154 224 L 168 224" class="sarrow" />
     <polygon points="166,218 177,224 166,230" class="sarrowhead" />
-    <text x="128" y="143" class="muted">append</text>
+    <text x="158" y="190" text-anchor="middle" transform="rotate(-90 158 190)" class="muted">append</text>
     <text x="364" y="64" class="title type-heading">Memtable (sorted)</text>
     <rect x="364" y="72" width="158" height="42" rx="5" class="box" />
     <rect x="370" y="78" width="70" height="30" rx="3" class="empty" />

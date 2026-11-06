@@ -3,7 +3,7 @@
   viewBox="0 0 720 345"
   font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
   role="img"
-  aria-label="Animated diagram of the two lru_age modes. A parent page entry points to last-level shadow page sp, and the CPU sets the accessed bit in each entry it walks, at both levels. Leaf mode (lru_age=1) reads the accessed bits of all 512 entries in sp. Parent mode (lru_age=2) reads only the entry that points to sp, usually one. Host reclaim reads the same leaf accessed bits; after leaf mode clears them, host reclaim finds them cleared and the pages look unused. Parent mode leaves the leaf bits to host reclaim."
+  aria-label="Animated diagram of the two lru_age modes on the same page. A parent page entry points to last-level shadow page sp, and the CPU sets the accessed bit in each entry it walks, at both levels. Leaf mode (lru_age=1) reads and clears the accessed bits of all 512 entries in sp; host reclaim then reads the same leaf bits, finds them clear, and the pages look unused. Run instead, parent mode (lru_age=2) reads and clears only the entry that points to sp, usually one, and the leaf bits stay set; host reclaim finds them set, and the pages look recently used. Only leaf mode clears the bits host reclaim reads."
   width="720"
   height="345"
   data-diagram-width="720"
@@ -89,106 +89,115 @@
       stroke: var(--edge);
       stroke-dasharray: 3 4;
     }
-    /* 30.43s loop, 6 steps starting at 0.5, 5.4, 9.9, 14.3, 19.0, 23.6 s; final frame holds 6.0s, then fades. */
+    /* 36.91s loop, 6 steps starting at 0.5, 6.0, 11.6, 17.6, 24.4, 30.2 s; final frame holds 6.0s, then fades.
+       Steps 1-3 follow leaf mode; steps 4-6 rerun the same page under parent mode. */
     .a {
       opacity: 0;
-      animation: 30.43s linear infinite;
+      animation: 36.91s linear infinite;
     }
-    .w1 {
-      animation-name: w1;
-    } /* 0.50s to 18.96s */
-    @keyframes w1 {
-      0.00%, 62.30% { opacity: 1; }
-      62.79%, 97.54% { opacity: 0; }
-      98.03%, 100.00% { opacity: 1; }
+    .leafbits {
+      animation-name: leafbits;
+    } /* steps 1,4,5,6 */
+    @keyframes leafbits {
+      0.00%, 16.34% { opacity: 1; }
+      16.74%, 47.66% { opacity: 0; }
+      48.06%, 100.00% { opacity: 1; }
     }
-    .w2 {
-      animation-name: w2;
-    } /* 5.43s to end */
-    @keyframes w2 {
-      0.00%, 17.84% { opacity: 0; }
-      18.34%, 97.54% { opacity: 1; }
-      98.03%, 100.00% { opacity: 0; }
+    .parentbit {
+      animation-name: parentbit;
+    } /* steps 1,2,3 */
+    @keyframes parentbit {
+      0.00%, 47.66% { opacity: 1; }
+      48.06%, 97.97% { opacity: 0; }
+      98.37%, 100.00% { opacity: 1; }
     }
-    .w3 {
-      animation-name: w3;
-    } /* 5.43s to 18.96s */
-    @keyframes w3 {
-      0.00%, 17.84% { opacity: 0; }
-      18.34%, 62.30% { opacity: 1; }
-      62.79%, 100.00% { opacity: 0; }
+    .leafmode {
+      animation-name: leafmode;
+    } /* steps 2,3 */
+    @keyframes leafmode {
+      0.00%, 16.34% { opacity: 0; }
+      16.74%, 47.66% { opacity: 1; }
+      48.06%, 100.00% { opacity: 0; }
     }
-    .w4 {
-      animation-name: w4;
-    } /* 9.85s to end */
-    @keyframes w4 {
-      0.00%, 32.38% { opacity: 0; }
-      32.88%, 97.54% { opacity: 1; }
-      98.03%, 100.00% { opacity: 0; }
+    .parentmode {
+      animation-name: parentmode;
+    } /* steps 4,5,6 */
+    @keyframes parentmode {
+      0.00%, 47.66% { opacity: 0; }
+      48.06%, 97.97% { opacity: 1; }
+      98.37%, 100.00% { opacity: 0; }
     }
-    .w5 {
-      animation-name: w5;
-    } /* 14.28s to end */
-    @keyframes w5 {
-      0.00%, 46.93% { opacity: 0; }
-      47.42%, 97.54% { opacity: 1; }
-      98.03%, 100.00% { opacity: 0; }
+    .reclaim {
+      animation-name: reclaim;
+    } /* steps 3,4,5,6 */
+    @keyframes reclaim {
+      0.00%, 31.32% { opacity: 0; }
+      31.73%, 97.97% { opacity: 1; }
+      98.37%, 100.00% { opacity: 0; }
     }
-    .w6 {
-      animation-name: w6;
-    } /* 14.28s to 18.96s */
-    @keyframes w6 {
-      0.00%, 46.93% { opacity: 0; }
-      47.42%, 62.30% { opacity: 1; }
-      62.79%, 100.00% { opacity: 0; }
+    .reclaimclear {
+      animation-name: reclaimclear;
+    } /* steps 3 */
+    @keyframes reclaimclear {
+      0.00%, 31.32% { opacity: 0; }
+      31.73%, 47.66% { opacity: 1; }
+      48.06%, 100.00% { opacity: 0; }
     }
-    .w7 {
-      animation-name: w7;
-    } /* 18.96s to end */
-    @keyframes w7 {
-      0.00%, 62.30% { opacity: 0; }
-      62.79%, 97.54% { opacity: 1; }
-      98.03%, 100.00% { opacity: 0; }
+    .reclaimset {
+      animation-name: reclaimset;
+    } /* steps 5,6 */
+    @keyframes reclaimset {
+      0.00%, 66.05% { opacity: 0; }
+      66.46%, 97.97% { opacity: 1; }
+      98.37%, 100.00% { opacity: 0; }
     }
-    .w8 {
-      animation-name: w8;
-    } /* 0.50s to 5.43s */
-    @keyframes w8 {
-      0.00%, 17.84% { opacity: 1; }
-      18.34%, 97.54% { opacity: 0; }
-      98.03%, 100.00% { opacity: 1; }
+    .cap1 {
+      animation-name: cap1;
+    } /* steps 1 */
+    @keyframes cap1 {
+      0.00%, 16.34% { opacity: 1; }
+      16.74%, 97.97% { opacity: 0; }
+      98.37%, 100.00% { opacity: 1; }
     }
-    .w9 {
-      animation-name: w9;
-    } /* 5.43s to 9.85s */
-    @keyframes w9 {
-      0.00%, 17.84% { opacity: 0; }
-      18.34%, 32.38% { opacity: 1; }
-      32.88%, 100.00% { opacity: 0; }
+    .cap2 {
+      animation-name: cap2;
+    } /* steps 2 */
+    @keyframes cap2 {
+      0.00%, 16.34% { opacity: 0; }
+      16.74%, 31.32% { opacity: 1; }
+      31.73%, 100.00% { opacity: 0; }
     }
-    .w10 {
-      animation-name: w10;
-    } /* 9.85s to 14.28s */
-    @keyframes w10 {
-      0.00%, 32.38% { opacity: 0; }
-      32.88%, 46.93% { opacity: 1; }
-      47.42%, 100.00% { opacity: 0; }
+    .cap3 {
+      animation-name: cap3;
+    } /* steps 3 */
+    @keyframes cap3 {
+      0.00%, 31.32% { opacity: 0; }
+      31.73%, 47.66% { opacity: 1; }
+      48.06%, 100.00% { opacity: 0; }
     }
-    .w11 {
-      animation-name: w11;
-    } /* 18.96s to 23.63s */
-    @keyframes w11 {
-      0.00%, 62.30% { opacity: 0; }
-      62.79%, 77.67% { opacity: 1; }
-      78.16%, 100.00% { opacity: 0; }
+    .cap4 {
+      animation-name: cap4;
+    } /* steps 4 */
+    @keyframes cap4 {
+      0.00%, 47.66% { opacity: 0; }
+      48.06%, 66.05% { opacity: 1; }
+      66.46%, 100.00% { opacity: 0; }
     }
-    .w12 {
-      animation-name: w12;
-    } /* 23.63s to end */
-    @keyframes w12 {
-      0.00%, 77.67% { opacity: 0; }
-      78.16%, 97.54% { opacity: 1; }
-      98.03%, 100.00% { opacity: 0; }
+    .cap5 {
+      animation-name: cap5;
+    } /* steps 5 */
+    @keyframes cap5 {
+      0.00%, 66.05% { opacity: 0; }
+      66.46%, 81.71% { opacity: 1; }
+      82.12%, 100.00% { opacity: 0; }
+    }
+    .cap6 {
+      animation-name: cap6;
+    } /* steps 6 */
+    @keyframes cap6 {
+      0.00%, 81.71% { opacity: 0; }
+      82.12%, 97.97% { opacity: 1; }
+      98.37%, 100.00% { opacity: 0; }
     }
     @media (prefers-reduced-motion: reduce) {
       .a {
@@ -294,35 +303,35 @@
     <rect x="286" y="175" width="10" height="7" rx="1" class="empty" />
     <rect x="302" y="175" width="10" height="7" rx="1" class="empty" />
     <rect x="318" y="175" width="10" height="7" rx="1" class="empty" />
-    <path d="M 227.0 122 L 227.0 164" class="link" />
-    <polygon points="227.0,170 222.0,161 232.0,161" class="linkhead" />
-    <rect x="222" y="85" width="10" height="7" rx="1" class="abit" />
-    <rect x="158" y="175" width="10" height="7" rx="1" class="abit a w1" />
-    <rect x="206" y="175" width="10" height="7" rx="1" class="abit a w1" />
-    <rect x="222" y="175" width="10" height="7" rx="1" class="abit a w1" />
-    <rect x="270" y="175" width="10" height="7" rx="1" class="abit a w1" />
-    <rect x="302" y="175" width="10" height="7" rx="1" class="abit a w1" />
-    <rect x="136" y="168" width="262" height="48" rx="5" class="ring a w2 fin" />
-    <text x="520" y="198" class="num a w2 fin">leaf mode (lru_age=1)</text>
-    <text x="520" y="213" class="muted a w3">reads all 512 A bits</text>
-    <rect x="216" y="78" width="22" height="48" rx="5" class="okring a w4 fin" />
-    <text x="520" y="108" class="oktext a w4 fin">parent mode (lru_age=2)</text>
-    <text x="520" y="123" class="muted a w4 fin">reads 1 A bit, usually</text>
-    <g class="a w5 fin">
+    <!-- The parent entry holds sp's base address, so the link ends at the start of the whole page, not at one entry. -->
+    <path d="M 227.0 122 L 227.0 146 L 122 146 L 122 199 L 127 199" class="link" />
+    <polygon points="134,199 125,194 125,204" class="linkhead" />
+    <rect x="222" y="85" width="10" height="7" rx="1" class="abit a parentbit" />
+    <rect x="158" y="175" width="10" height="7" rx="1" class="abit a leafbits fin" />
+    <rect x="206" y="175" width="10" height="7" rx="1" class="abit a leafbits fin" />
+    <rect x="222" y="175" width="10" height="7" rx="1" class="abit a leafbits fin" />
+    <rect x="270" y="175" width="10" height="7" rx="1" class="abit a leafbits fin" />
+    <rect x="302" y="175" width="10" height="7" rx="1" class="abit a leafbits fin" />
+    <rect x="136" y="168" width="262" height="48" rx="5" class="ring a leafmode" />
+    <text x="520" y="198" class="num a leafmode">leaf mode (lru_age=1)</text>
+    <text x="520" y="213" class="muted a leafmode">reads and clears all 512 A bits</text>
+    <rect x="216" y="78" width="22" height="48" rx="5" class="okring a parentmode fin" />
+    <text x="520" y="108" class="oktext a parentmode fin">parent mode (lru_age=2)</text>
+    <text x="520" y="123" class="muted a parentmode fin">reads and clears 1 A bit, usually</text>
+    <g class="a reclaim fin">
       <rect x="136" y="262" width="150" height="34" rx="6" class="chip" />
       <text x="211.0" y="284" text-anchor="middle" class="b sm">host reclaim</text>
       <path d="M 286 279.0 L 326 279.0 L 326 224" class="link" />
       <polygon points="326,218 321,227 331,227" class="linkhead" />
     </g>
-    <text x="338" y="284" class="sm a w6">reads the same leaf A bits</text>
-    <text x="520" y="213" class="muted a w7 fin">reads and clears all 512 A bits</text>
-    <text x="338" y="284" class="num a w7 fin">finds them cleared: pages look unused</text>
+    <text x="338" y="284" class="num a reclaimclear">finds them clear: pages look unused</text>
+    <text x="338" y="284" class="oktext a reclaimset fin">finds them set: pages look recently used</text>
     <line x1="20" y1="318" x2="740" y2="318" class="rule" />
-    <text x="20" y="346" class="a w8">The CPU sets the A bit in each entry it walks, at both levels.</text>
-    <text x="20" y="346" class="a w9">Leaf mode reads the A bits of all 512 entries in sp.</text>
-    <text x="20" y="346" class="a w10">Parent mode reads only the entry that points to sp, usually one.</text>
-    <text x="20" y="346" class="a w6">Host reclaim reads the same leaf A bits to pick memory to free.</text>
-    <text x="20" y="346" class="a w11">After leaf mode clears those bits, host reclaim sees the pages as unused.</text>
-    <text x="20" y="346" class="b a w12 fin type-subheading">Parent mode reads one bit per page and leaves the leaf bits to host reclaim.</text>
+    <text x="20" y="346" class="a cap1">The CPU sets the A bit in each entry it walks, at both levels.</text>
+    <text x="20" y="346" class="a cap2">Leaf mode reads and clears the A bits of all 512 entries in sp.</text>
+    <text x="20" y="346" class="a cap3">Host reclaim reads the same leaf A bits, finds them clear, and the pages look unused.</text>
+    <text x="20" y="346" class="a cap4">Run instead, parent mode reads and clears only the entry that points to sp; the leaf bits stay set.</text>
+    <text x="20" y="346" class="a cap5">Host reclaim finds the leaf A bits still set, and the pages look recently used.</text>
+    <text x="20" y="346" class="b a cap6 fin type-subheading">Only leaf mode clears the bits host reclaim reads; parent mode leaves them set.</text>
   </g>
 </svg>

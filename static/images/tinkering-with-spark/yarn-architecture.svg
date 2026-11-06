@@ -3,7 +3,7 @@
   viewBox="0 0 720 389"
   font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
   role="img"
-  aria-label="Animated YARN architecture: a client submits a job to the ResourceManager, the ApplicationsManager launches an ApplicationMaster in a container, the ApplicationMaster requests resources from the Scheduler, receives containers on NodeManagers, and launches tasks in them."
+  aria-label="Animated YARN architecture: a client submits a job to the ResourceManager, the ApplicationsManager launches an ApplicationMaster in a container, the ApplicationMaster requests resources from the Scheduler, receives containers on NodeManagers, and launches tasks in them, while every NodeManager reports node status to the ResourceManager."
   width="720"
   height="389"
   data-diagram-width="720"

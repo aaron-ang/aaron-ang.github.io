@@ -103,280 +103,328 @@
       stroke: var(--ok);
       stroke-width: 2.5;
     }
-    /* 80.54s loop, 15 steps starting at 0.5, 7.94, 14.22, 20.75, 29.14, 31.94, 38.22, 44.16, 49.02, 53.79, 56.29, 59.3, 62.51, 68.2, 73.21 s; final frame holds 6.58s, then fades. */
+    /* 96.24s loop, 15 steps starting at 0.5, 7.94, 14.22, 20.75, 29.14, 34.94, 41.22, 47.16, 52.02, 59.29, 64.09, 69.9, 75.41, 81.1, 88.91 s; final frame holds 6.58s, then fades. */
     .a {
       opacity: 0;
-      animation: 80.54s linear infinite;
+      animation: 96.24s linear infinite;
     }
     .w1 {
       animation-name: w1;
     } /* 0.50s to 7.94s */
     @keyframes w1 {
-      0.00%, 9.86% { opacity: 1; }
-      10.04%, 99.07% { opacity: 0; }
-      99.26%, 100.00% { opacity: 1; }
+      0.00%, 8.25% { opacity: 1; }
+      8.40%, 99.22% { opacity: 0; }
+      99.38%, 100.00% { opacity: 1; }
     }
     .w2 {
       animation-name: w2;
     } /* 7.94s to end */
     @keyframes w2 {
-      0.00%, 9.86% { opacity: 0; }
-      10.04%, 99.07% { opacity: 1; }
-      99.26%, 100.00% { opacity: 0; }
+      0.00%, 8.25% { opacity: 0; }
+      8.40%, 99.22% { opacity: 1; }
+      99.38%, 100.00% { opacity: 0; }
     }
     .w3 {
       animation-name: w3;
     } /* 0.50s to 29.14s */
     @keyframes w3 {
-      0.00%, 36.18% { opacity: 1; }
-      36.37%, 99.07% { opacity: 0; }
-      99.26%, 100.00% { opacity: 1; }
+      0.00%, 30.28% { opacity: 1; }
+      30.44%, 99.22% { opacity: 0; }
+      99.38%, 100.00% { opacity: 1; }
     }
     .w4 {
       animation-name: w4;
-    } /* 7.94s to 44.16s */
+    } /* 7.94s to 47.16s */
     @keyframes w4 {
-      0.00%, 9.86% { opacity: 0; }
-      10.04%, 54.83% { opacity: 1; }
-      55.02%, 100.00% { opacity: 0; }
+      0.00%, 8.25% { opacity: 0; }
+      8.40%, 49.00% { opacity: 1; }
+      49.16%, 100.00% { opacity: 0; }
     }
     .w5 {
       animation-name: w5;
-    } /* 44.16s to 56.29s */
+    } /* 47.16s to 64.09s */
     @keyframes w5 {
-      0.00%, 54.83% { opacity: 0; }
-      55.02%, 69.89% { opacity: 1; }
-      70.08%, 100.00% { opacity: 0; }
+      0.00%, 49.00% { opacity: 0; }
+      49.16%, 66.59% { opacity: 1; }
+      66.75%, 100.00% { opacity: 0; }
     }
     .w6 {
       animation-name: w6;
-    } /* 56.29s to end */
+    } /* 64.09s to end */
     @keyframes w6 {
-      0.00%, 69.89% { opacity: 0; }
-      70.08%, 99.07% { opacity: 1; }
-      99.26%, 100.00% { opacity: 0; }
+      0.00%, 66.59% { opacity: 0; }
+      66.75%, 99.22% { opacity: 1; }
+      99.38%, 100.00% { opacity: 0; }
     }
     .w7 {
       animation-name: w7;
     } /* 14.22s to end */
     @keyframes w7 {
-      0.00%, 17.66% { opacity: 0; }
-      17.84%, 99.07% { opacity: 1; }
-      99.26%, 100.00% { opacity: 0; }
+      0.00%, 14.78% { opacity: 0; }
+      14.93%, 99.22% { opacity: 1; }
+      99.38%, 100.00% { opacity: 0; }
     }
     .w8 {
       animation-name: w8;
     } /* 7.94s to 14.22s */
     @keyframes w8 {
-      0.00%, 9.86% { opacity: 0; }
-      10.04%, 17.66% { opacity: 1; }
-      17.84%, 100.00% { opacity: 0; }
+      0.00%, 8.25% { opacity: 0; }
+      8.40%, 14.78% { opacity: 1; }
+      14.93%, 100.00% { opacity: 0; }
     }
     .w9 {
       animation-name: w9;
     } /* 29.14s to end */
     @keyframes w9 {
-      0.00%, 36.18% { opacity: 0; }
-      36.37%, 99.07% { opacity: 1; }
-      99.26%, 100.00% { opacity: 0; }
+      0.00%, 30.28% { opacity: 0; }
+      30.44%, 99.22% { opacity: 1; }
+      99.38%, 100.00% { opacity: 0; }
     }
     .w10 {
       animation-name: w10;
-    } /* 14.22s to 44.16s */
+    } /* 14.22s to 47.16s */
     @keyframes w10 {
-      0.00%, 17.66% { opacity: 0; }
-      17.84%, 54.83% { opacity: 1; }
-      55.02%, 100.00% { opacity: 0; }
+      0.00%, 14.78% { opacity: 0; }
+      14.93%, 49.00% { opacity: 1; }
+      49.16%, 100.00% { opacity: 0; }
     }
     .w11 {
       animation-name: w11;
-    } /* 44.16s to end */
+    } /* 47.16s to end */
     @keyframes w11 {
-      0.00%, 54.83% { opacity: 0; }
-      55.02%, 99.07% { opacity: 1; }
-      99.26%, 100.00% { opacity: 0; }
+      0.00%, 49.00% { opacity: 0; }
+      49.16%, 99.22% { opacity: 1; }
+      99.38%, 100.00% { opacity: 0; }
     }
     .w12 {
       animation-name: w12;
     } /* 0.50s to 20.75s */
     @keyframes w12 {
-      0.00%, 25.76% { opacity: 1; }
-      25.95%, 99.07% { opacity: 0; }
-      99.26%, 100.00% { opacity: 1; }
+      0.00%, 21.56% { opacity: 1; }
+      21.72%, 99.22% { opacity: 0; }
+      99.38%, 100.00% { opacity: 1; }
     }
     .w13 {
       animation-name: w13;
-    } /* 20.75s to 49.02s */
+    } /* 20.75s to 52.02s */
     @keyframes w13 {
-      0.00%, 25.76% { opacity: 0; }
-      25.95%, 60.86% { opacity: 1; }
-      61.05%, 100.00% { opacity: 0; }
+      0.00%, 21.56% { opacity: 0; }
+      21.72%, 54.05% { opacity: 1; }
+      54.21%, 100.00% { opacity: 0; }
     }
     .w14 {
       animation-name: w14;
-    } /* 49.02s to end */
+    } /* 52.02s to end */
     @keyframes w14 {
-      0.00%, 60.86% { opacity: 0; }
-      61.05%, 99.07% { opacity: 1; }
-      99.26%, 100.00% { opacity: 0; }
+      0.00%, 54.05% { opacity: 0; }
+      54.21%, 99.22% { opacity: 1; }
+      99.38%, 100.00% { opacity: 0; }
     }
     .w15 {
       animation-name: w15;
-    } /* 20.75s to 31.94s, 49.02s to 59.30s */
+    } /* 20.75s to 34.94s, 52.02s to 69.90s */
     @keyframes w15 {
-      0.00%, 25.76% { opacity: 0; }
-      25.95%, 39.66% { opacity: 1; }
-      39.84%, 60.86% { opacity: 0; }
-      61.05%, 73.63% { opacity: 1; }
-      73.81%, 100.00% { opacity: 0; }
+      0.00%, 21.56% { opacity: 0; }
+      21.72%, 36.31% { opacity: 1; }
+      36.46%, 54.05% { opacity: 0; }
+      54.21%, 72.63% { opacity: 1; }
+      72.78%, 100.00% { opacity: 0; }
     }
     .w16 {
       animation-name: w16;
-    } /* 0.50s to 53.79s */
+    } /* 0.50s to 59.29s */
     @keyframes w16 {
-      0.00%, 66.79% { opacity: 1; }
-      66.97%, 99.07% { opacity: 0; }
-      99.26%, 100.00% { opacity: 1; }
+      0.00%, 61.61% { opacity: 1; }
+      61.76%, 99.22% { opacity: 0; }
+      99.38%, 100.00% { opacity: 1; }
     }
     .w17 {
       animation-name: w17;
-    } /* 53.79s to end */
+    } /* 59.29s to end */
     @keyframes w17 {
-      0.00%, 66.79% { opacity: 0; }
-      66.97%, 99.07% { opacity: 1; }
-      99.26%, 100.00% { opacity: 0; }
+      0.00%, 61.61% { opacity: 0; }
+      61.76%, 99.22% { opacity: 1; }
+      99.38%, 100.00% { opacity: 0; }
     }
     .w18 {
       animation-name: w18;
-    } /* 20.75s to 53.79s */
+    } /* 20.75s to 59.29s */
     @keyframes w18 {
-      0.00%, 25.76% { opacity: 0; }
-      25.95%, 66.79% { opacity: 1; }
-      66.97%, 100.00% { opacity: 0; }
+      0.00%, 21.56% { opacity: 0; }
+      21.72%, 61.61% { opacity: 1; }
+      61.76%, 100.00% { opacity: 0; }
     }
     .w19 {
       animation-name: w19;
-    } /* 20.75s to 29.14s, 49.02s to 56.29s */
+    } /* 20.75s to 29.14s, 52.02s to 64.09s */
     @keyframes w19 {
-      0.00%, 25.76% { opacity: 0; }
-      25.95%, 36.18% { opacity: 1; }
-      36.37%, 60.86% { opacity: 0; }
-      61.05%, 69.89% { opacity: 1; }
-      70.08%, 100.00% { opacity: 0; }
+      0.00%, 21.56% { opacity: 0; }
+      21.72%, 30.28% { opacity: 1; }
+      30.44%, 54.05% { opacity: 0; }
+      54.21%, 66.59% { opacity: 1; }
+      66.75%, 100.00% { opacity: 0; }
     }
     .w20 {
       animation-name: w20;
-    } /* 29.14s to 49.02s */
+    } /* 29.14s to 52.02s */
     @keyframes w20 {
-      0.00%, 36.18% { opacity: 0; }
-      36.37%, 60.86% { opacity: 1; }
-      61.05%, 100.00% { opacity: 0; }
+      0.00%, 30.28% { opacity: 0; }
+      30.44%, 54.05% { opacity: 1; }
+      54.21%, 100.00% { opacity: 0; }
     }
     .w21 {
       animation-name: w21;
-    } /* 31.94s to 49.02s, 59.30s to end */
+    } /* 34.94s to 52.02s, 69.90s to end */
     @keyframes w21 {
-      0.00%, 39.66% { opacity: 0; }
-      39.84%, 60.86% { opacity: 1; }
-      61.05%, 73.63% { opacity: 0; }
-      73.81%, 99.07% { opacity: 1; }
-      99.26%, 100.00% { opacity: 0; }
+      0.00%, 36.31% { opacity: 0; }
+      36.46%, 54.05% { opacity: 1; }
+      54.21%, 72.63% { opacity: 0; }
+      72.78%, 99.22% { opacity: 1; }
+      99.38%, 100.00% { opacity: 0; }
     }
     .w22 {
       animation-name: w22;
-    } /* 31.94s to end */
+    } /* 34.94s to end */
     @keyframes w22 {
-      0.00%, 39.66% { opacity: 0; }
-      39.84%, 99.07% { opacity: 1; }
-      99.26%, 100.00% { opacity: 0; }
+      0.00%, 36.31% { opacity: 0; }
+      36.46%, 99.22% { opacity: 1; }
+      99.38%, 100.00% { opacity: 0; }
     }
     .w23 {
       animation-name: w23;
-    } /* 38.22s to end */
+    } /* 41.22s to end */
     @keyframes w23 {
-      0.00%, 47.45% { opacity: 0; }
-      47.64%, 99.07% { opacity: 1; }
-      99.26%, 100.00% { opacity: 0; }
+      0.00%, 42.83% { opacity: 0; }
+      42.99%, 99.22% { opacity: 1; }
+      99.38%, 100.00% { opacity: 0; }
     }
     .w24 {
       animation-name: w24;
-    } /* 59.30s to end */
+    } /* 69.90s to end */
     @keyframes w24 {
-      0.00%, 73.63% { opacity: 0; }
-      73.81%, 99.07% { opacity: 1; }
-      99.26%, 100.00% { opacity: 0; }
+      0.00%, 72.63% { opacity: 0; }
+      72.78%, 99.22% { opacity: 1; }
+      99.38%, 100.00% { opacity: 0; }
     }
     .w25 {
       animation-name: w25;
-    } /* 62.51s to end */
+    } /* 75.41s to end */
     @keyframes w25 {
-      0.00%, 77.61% { opacity: 0; }
-      77.80%, 99.07% { opacity: 1; }
-      99.26%, 100.00% { opacity: 0; }
+      0.00%, 78.35% { opacity: 0; }
+      78.51%, 99.22% { opacity: 1; }
+      99.38%, 100.00% { opacity: 0; }
     }
     .w26 {
       animation-name: w26;
-    } /* 68.20s to end */
+    } /* 81.10s to end */
     @keyframes w26 {
-      0.00%, 84.68% { opacity: 0; }
-      84.86%, 99.07% { opacity: 1; }
-      99.26%, 100.00% { opacity: 0; }
+      0.00%, 84.27% { opacity: 0; }
+      84.42%, 99.22% { opacity: 1; }
+      99.38%, 100.00% { opacity: 0; }
     }
     .w27 {
       animation-name: w27;
-    } /* 73.21s to end */
+    } /* 88.91s to end */
     @keyframes w27 {
-      0.00%, 90.90% { opacity: 0; }
-      91.09%, 99.07% { opacity: 1; }
-      99.26%, 100.00% { opacity: 0; }
+      0.00%, 92.38% { opacity: 0; }
+      92.54%, 99.22% { opacity: 1; }
+      99.38%, 100.00% { opacity: 0; }
     }
     .w28 {
       animation-name: w28;
     } /* 14.22s to 20.75s */
     @keyframes w28 {
-      0.00%, 17.66% { opacity: 0; }
-      17.84%, 25.76% { opacity: 1; }
-      25.95%, 100.00% { opacity: 0; }
+      0.00%, 14.78% { opacity: 0; }
+      14.93%, 21.56% { opacity: 1; }
+      21.72%, 100.00% { opacity: 0; }
     }
     .w29 {
       animation-name: w29;
     } /* 20.75s to 29.14s */
     @keyframes w29 {
-      0.00%, 25.76% { opacity: 0; }
-      25.95%, 36.18% { opacity: 1; }
-      36.37%, 100.00% { opacity: 0; }
+      0.00%, 21.56% { opacity: 0; }
+      21.72%, 30.28% { opacity: 1; }
+      30.44%, 100.00% { opacity: 0; }
     }
     .w30 {
       animation-name: w30;
-    } /* 31.94s to 38.22s */
+    } /* 34.94s to 41.22s */
     @keyframes w30 {
-      0.00%, 39.66% { opacity: 0; }
-      39.84%, 47.45% { opacity: 1; }
-      47.64%, 100.00% { opacity: 0; }
+      0.00%, 36.31% { opacity: 0; }
+      36.46%, 42.83% { opacity: 1; }
+      42.99%, 100.00% { opacity: 0; }
     }
     .w31 {
       animation-name: w31;
-    } /* 38.22s to 44.16s */
+    } /* 41.22s to 47.16s */
     @keyframes w31 {
-      0.00%, 47.45% { opacity: 0; }
-      47.64%, 54.83% { opacity: 1; }
-      55.02%, 100.00% { opacity: 0; }
+      0.00%, 42.83% { opacity: 0; }
+      42.99%, 49.00% { opacity: 1; }
+      49.16%, 100.00% { opacity: 0; }
     }
     .w32 {
       animation-name: w32;
-    } /* 44.16s to 49.02s */
+    } /* 47.16s to 52.02s */
     @keyframes w32 {
-      0.00%, 54.83% { opacity: 0; }
-      55.02%, 60.86% { opacity: 1; }
-      61.05%, 100.00% { opacity: 0; }
+      0.00%, 49.00% { opacity: 0; }
+      49.16%, 54.05% { opacity: 1; }
+      54.21%, 100.00% { opacity: 0; }
     }
     .w33 {
       animation-name: w33;
-    } /* 62.51s to 68.20s */
+    } /* 75.41s to 81.10s */
     @keyframes w33 {
-      0.00%, 77.61% { opacity: 0; }
-      77.80%, 84.68% { opacity: 1; }
-      84.86%, 100.00% { opacity: 0; }
+      0.00%, 78.35% { opacity: 0; }
+      78.51%, 84.27% { opacity: 1; }
+      84.42%, 100.00% { opacity: 0; }
+    }
+    .w34 {
+      animation-name: w34;
+    } /* 29.14s to 34.94s */
+    @keyframes w34 {
+      0.00%, 30.28% { opacity: 0; }
+      30.43%, 36.31% { opacity: 1; }
+      36.46%, 100.00% { opacity: 0; }
+    }
+    .w35 {
+      animation-name: w35;
+    } /* 52.02s to 59.29s */
+    @keyframes w35 {
+      0.00%, 54.05% { opacity: 0; }
+      54.21%, 61.61% { opacity: 1; }
+      61.76%, 100.00% { opacity: 0; }
+    }
+    .w36 {
+      animation-name: w36;
+    } /* 59.29s to 64.09s */
+    @keyframes w36 {
+      0.00%, 61.61% { opacity: 0; }
+      61.76%, 66.59% { opacity: 1; }
+      66.75%, 100.00% { opacity: 0; }
+    }
+    .w37 {
+      animation-name: w37;
+    } /* 64.09s to 69.90s */
+    @keyframes w37 {
+      0.00%, 66.59% { opacity: 0; }
+      66.75%, 72.63% { opacity: 1; }
+      72.79%, 100.00% { opacity: 0; }
+    }
+    .w38 {
+      animation-name: w38;
+    } /* 69.90s to 75.41s */
+    @keyframes w38 {
+      0.00%, 72.63% { opacity: 0; }
+      72.79%, 78.36% { opacity: 1; }
+      78.51%, 100.00% { opacity: 0; }
+    }
+    .w39 {
+      animation-name: w39;
+    } /* 81.10s to 88.91s */
+    @keyframes w39 {
+      0.00%, 84.27% { opacity: 0; }
+      84.42%, 92.38% { opacity: 1; }
+      92.54%, 100.00% { opacity: 0; }
     }
     @media (prefers-reduced-motion: reduce) {
       .a {
@@ -499,6 +547,12 @@
     <text x="20" y="384" class="a w31">The word limit of 3 still leaves room for a third word.</text>
     <text x="20" y="384" class="a w32">Swapping roles avoids copying chains between buffers.</text>
     <text x="20" y="384" class="a w33">The first level with any solution has the fewest words.</text>
+    <text x="20" y="384" class="a w34">Every linked pair from pass 1 becomes a two-word chain in chains B.</text>
+    <text x="20" y="384" class="a w35">Pass 2 extends each two-word chain by one more word.</text>
+    <text x="20" y="384" class="a w36">Eight chains cover all 12 letters and claim solution slots.</text>
+    <text x="20" y="384" class="a w37">At the word limit of three, pass 2 writes no next chains.</text>
+    <text x="20" y="384" class="a w38">One readback returns the counters and all eight solutions.</text>
+    <text x="20" y="384" class="a w39">The CPU sorts all eight solutions by their total letter count.</text>
     <text x="20" y="384" class="title a w27 fin type-heading">Each extra word costs one more pass and one more readback.</text>
   </g>
 </svg>

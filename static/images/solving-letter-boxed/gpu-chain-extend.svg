@@ -333,8 +333,8 @@
       <rect x="26" y="309" width="338" height="20" rx="4" class="pick" />
       <text x="20" y="414" class="okb">CPU picks the fewest letters</text>
     </g>
-    <text x="20" y="458" class="a w1">A pair links only if the chain ends with the letter the word starts with.</text>
-    <text x="20" y="458" class="a w6">All threads finish in the same dispatch. Partial chains are dropped: they would need a third word.</text>
+    <text x="20" y="458" class="a w1">Each cell is one GPU thread testing one chain and one word.</text>
+    <text x="20" y="458" class="a w6">A pair links only if the word starts with the chain's last letter. Partial chains are dropped at the word limit.</text>
     <text x="20" y="458" class="a w7">atomicAdd hands each thread its own slot, so no two writes collide.</text>
     <text x="20" y="458" class="a w8">With a word limit of 2, pass 1 is the last pass.</text>
     <text x="20" y="458" class="title a w5 fin type-heading">The GPU only extends chains; picking the winner stays on the CPU.</text>

@@ -155,179 +155,206 @@
       stroke: var(--probe);
       stroke-width: 2;
     }
-    /* 64.92s loop, 13 steps starting at 0.5, 6.72, 10.69, 15.85, 21.82, 23.52, 27.74, 31.5, 37.72, 41.74, 46.3, 48.3, 56.74 s; final frame holds 7.43s, then fades. */
+    /* 68.32s loop, 13 steps starting at 0.5, 6.72, 10.69, 15.85, 21.82, 25.12, 29.34, 33.1, 39.32, 43.34, 47.9, 51.7, 60.14 s; final frame holds 7.43s, then fades. */
     .a {
       opacity: 0;
-      animation: 64.92s linear infinite;
+      animation: 68.32s linear infinite;
     }
     .w1 {
       animation-name: w1;
     } /* 0.50s to 15.85s */
     @keyframes w1 {
-      0.00%, 24.41% { opacity: 1; }
-      24.65%, 98.84% { opacity: 0; }
-      99.08%, 100.00% { opacity: 1; }
+      0.00%, 23.20% { opacity: 1; }
+      23.42%, 98.90% { opacity: 0; }
+      99.13%, 100.00% { opacity: 1; }
     }
     .w2 {
       animation-name: w2;
-    } /* 15.85s to 31.50s */
+    } /* 15.85s to 33.10s */
     @keyframes w2 {
-      0.00%, 24.41% { opacity: 0; }
-      24.65%, 48.52% { opacity: 1; }
-      48.75%, 100.00% { opacity: 0; }
+      0.00%, 23.20% { opacity: 0; }
+      23.42%, 48.45% { opacity: 1; }
+      48.67%, 100.00% { opacity: 0; }
     }
     .w3 {
       animation-name: w3;
-    } /* 31.50s to end */
+    } /* 33.10s to end */
     @keyframes w3 {
-      0.00%, 48.52% { opacity: 0; }
-      48.75%, 98.84% { opacity: 1; }
-      99.08%, 100.00% { opacity: 0; }
+      0.00%, 48.45% { opacity: 0; }
+      48.67%, 98.90% { opacity: 1; }
+      99.13%, 100.00% { opacity: 0; }
     }
     .w4 {
       animation-name: w4;
     } /* 6.72s to 15.85s */
     @keyframes w4 {
-      0.00%, 10.35% { opacity: 0; }
-      10.58%, 24.41% { opacity: 1; }
-      24.65%, 100.00% { opacity: 0; }
+      0.00%, 9.83% { opacity: 0; }
+      10.05%, 23.20% { opacity: 1; }
+      23.42%, 100.00% { opacity: 0; }
     }
     .w5 {
       animation-name: w5;
     } /* 10.69s to 15.85s */
     @keyframes w5 {
-      0.00%, 16.47% { opacity: 0; }
-      16.70%, 24.41% { opacity: 1; }
-      24.65%, 100.00% { opacity: 0; }
+      0.00%, 15.65% { opacity: 0; }
+      15.87%, 23.20% { opacity: 1; }
+      23.42%, 100.00% { opacity: 0; }
     }
     .w6 {
       animation-name: w6;
-    } /* 21.82s to 31.50s */
+    } /* 21.82s to 33.10s */
     @keyframes w6 {
-      0.00%, 33.61% { opacity: 0; }
-      33.84%, 48.52% { opacity: 1; }
-      48.75%, 100.00% { opacity: 0; }
+      0.00%, 31.94% { opacity: 0; }
+      32.16%, 48.45% { opacity: 1; }
+      48.67%, 100.00% { opacity: 0; }
     }
     .w7 {
       animation-name: w7;
-    } /* 23.52s to 31.50s */
+    } /* 25.12s to 33.10s */
     @keyframes w7 {
-      0.00%, 36.23% { opacity: 0; }
-      36.46%, 48.52% { opacity: 1; }
-      48.75%, 100.00% { opacity: 0; }
+      0.00%, 36.77% { opacity: 0; }
+      36.99%, 48.45% { opacity: 1; }
+      48.67%, 100.00% { opacity: 0; }
     }
     .w8 {
       animation-name: w8;
-    } /* 27.74s to 31.50s */
+    } /* 29.34s to 33.10s */
     @keyframes w8 {
-      0.00%, 42.73% { opacity: 0; }
-      42.96%, 48.52% { opacity: 1; }
-      48.75%, 100.00% { opacity: 0; }
+      0.00%, 42.95% { opacity: 0; }
+      43.16%, 48.45% { opacity: 1; }
+      48.67%, 100.00% { opacity: 0; }
     }
     .w9 {
       animation-name: w9;
-    } /* 41.74s to end */
+    } /* 43.34s to end */
     @keyframes w9 {
-      0.00%, 64.29% { opacity: 0; }
-      64.53%, 98.84% { opacity: 1; }
-      99.08%, 100.00% { opacity: 0; }
+      0.00%, 63.43% { opacity: 0; }
+      63.66%, 98.90% { opacity: 1; }
+      99.13%, 100.00% { opacity: 0; }
     }
     .w10 {
       animation-name: w10;
-    } /* 46.30s to end */
+    } /* 47.90s to end */
     @keyframes w10 {
-      0.00%, 71.32% { opacity: 0; }
-      71.55%, 98.84% { opacity: 1; }
-      99.08%, 100.00% { opacity: 0; }
+      0.00%, 70.11% { opacity: 0; }
+      70.33%, 98.90% { opacity: 1; }
+      99.13%, 100.00% { opacity: 0; }
     }
     .w11 {
       animation-name: w11;
-    } /* 48.30s to end */
+    } /* 51.70s to end */
     @keyframes w11 {
-      0.00%, 74.40% { opacity: 0; }
-      74.63%, 98.84% { opacity: 1; }
-      99.08%, 100.00% { opacity: 0; }
+      0.00%, 75.67% { opacity: 0; }
+      75.89%, 98.90% { opacity: 1; }
+      99.13%, 100.00% { opacity: 0; }
     }
     .w12 {
       animation-name: w12;
-    } /* 56.74s to end */
+    } /* 60.14s to end */
     @keyframes w12 {
-      0.00%, 87.40% { opacity: 0; }
-      87.63%, 98.84% { opacity: 1; }
-      99.08%, 100.00% { opacity: 0; }
+      0.00%, 88.03% { opacity: 0; }
+      88.25%, 98.90% { opacity: 1; }
+      99.13%, 100.00% { opacity: 0; }
     }
     .w13 {
       animation-name: w13;
-    } /* 37.72s to end */
+    } /* 39.32s to end */
     @keyframes w13 {
-      0.00%, 58.10% { opacity: 0; }
-      58.33%, 98.84% { opacity: 1; }
-      99.08%, 100.00% { opacity: 0; }
+      0.00%, 57.55% { opacity: 0; }
+      57.77%, 98.90% { opacity: 1; }
+      99.13%, 100.00% { opacity: 0; }
     }
     .w14 {
       animation-name: w14;
     } /* 0.50s to 6.72s */
     @keyframes w14 {
-      0.00%, 10.35% { opacity: 1; }
-      10.58%, 98.84% { opacity: 0; }
-      99.08%, 100.00% { opacity: 1; }
+      0.00%, 9.83% { opacity: 1; }
+      10.05%, 98.90% { opacity: 0; }
+      99.13%, 100.00% { opacity: 1; }
     }
     .w15 {
       animation-name: w15;
     } /* 6.72s to 10.69s */
     @keyframes w15 {
-      0.00%, 10.35% { opacity: 0; }
-      10.58%, 16.47% { opacity: 1; }
-      16.70%, 100.00% { opacity: 0; }
+      0.00%, 9.83% { opacity: 0; }
+      10.05%, 15.65% { opacity: 1; }
+      15.87%, 100.00% { opacity: 0; }
     }
     .w16 {
       animation-name: w16;
     } /* 15.85s to 21.82s */
     @keyframes w16 {
-      0.00%, 24.41% { opacity: 0; }
-      24.65%, 33.61% { opacity: 1; }
-      33.84%, 100.00% { opacity: 0; }
+      0.00%, 23.20% { opacity: 0; }
+      23.42%, 31.94% { opacity: 1; }
+      32.16%, 100.00% { opacity: 0; }
     }
     .w17 {
       animation-name: w17;
-    } /* 23.52s to 27.74s */
+    } /* 25.12s to 29.34s */
     @keyframes w17 {
-      0.00%, 36.23% { opacity: 0; }
-      36.46%, 42.73% { opacity: 1; }
-      42.96%, 100.00% { opacity: 0; }
+      0.00%, 36.77% { opacity: 0; }
+      36.99%, 42.95% { opacity: 1; }
+      43.16%, 100.00% { opacity: 0; }
     }
     .w18 {
       animation-name: w18;
-    } /* 31.50s to 37.72s */
+    } /* 33.10s to 39.32s */
     @keyframes w18 {
-      0.00%, 48.52% { opacity: 0; }
-      48.75%, 58.10% { opacity: 1; }
-      58.33%, 100.00% { opacity: 0; }
+      0.00%, 48.45% { opacity: 0; }
+      48.67%, 57.55% { opacity: 1; }
+      57.77%, 100.00% { opacity: 0; }
     }
     .w19 {
       animation-name: w19;
-    } /* 37.72s to 41.74s */
+    } /* 39.32s to 43.34s */
     @keyframes w19 {
-      0.00%, 58.10% { opacity: 0; }
-      58.33%, 64.29% { opacity: 1; }
-      64.53%, 100.00% { opacity: 0; }
+      0.00%, 57.55% { opacity: 0; }
+      57.77%, 63.43% { opacity: 1; }
+      63.66%, 100.00% { opacity: 0; }
     }
     .w20 {
       animation-name: w20;
-    } /* 41.74s to 46.30s */
+    } /* 43.34s to 47.90s */
     @keyframes w20 {
-      0.00%, 64.29% { opacity: 0; }
-      64.53%, 71.32% { opacity: 1; }
-      71.55%, 100.00% { opacity: 0; }
+      0.00%, 63.43% { opacity: 0; }
+      63.66%, 70.11% { opacity: 1; }
+      70.33%, 100.00% { opacity: 0; }
     }
     .w21 {
       animation-name: w21;
-    } /* 48.30s to 56.74s */
+    } /* 51.70s to 60.14s */
     @keyframes w21 {
-      0.00%, 74.40% { opacity: 0; }
-      74.63%, 87.40% { opacity: 1; }
-      87.63%, 100.00% { opacity: 0; }
+      0.00%, 75.67% { opacity: 0; }
+      75.89%, 88.03% { opacity: 1; }
+      88.25%, 100.00% { opacity: 0; }
     }
+    .w22 {
+      animation-name: w22;
+    } /* 10.69s to 15.85s */
+    @keyframes w22 {
+      0.00%, 15.65% { opacity: 0; }
+      15.87%, 23.20% { opacity: 1; }
+      23.42%, 100.00% { opacity: 0; }
+    }
+
+    .w23 {
+      animation-name: w23;
+    } /* 21.82s to 25.12s */
+    @keyframes w23 {
+      0.00%, 31.94% { opacity: 0; }
+      32.16%, 36.77% { opacity: 1; }
+      36.99%, 100.00% { opacity: 0; }
+    }
+
+    .w24 {
+      animation-name: w24;
+    } /* 47.90s to 51.70s */
+    @keyframes w24 {
+      0.00%, 70.11% { opacity: 0; }
+      70.33%, 75.67% { opacity: 1; }
+      75.89%, 100.00% { opacity: 0; }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .a {
         animation: none;
@@ -461,25 +488,25 @@
       <text x="658" y="147.5" text-anchor="middle" class="small">render</text>
     </g>
     <g class="a w13 fin">
-      <line x1="200" y1="161" x2="200" y2="177" class="arr" />
-      <polygon points="200,187 194,177 206,177" class="arrh" />
-      <text x="208" y="180" class="small">Solve</text>
+      <line x1="278" y1="161" x2="278" y2="177" class="arr" />
+      <polygon points="278,187 272,177 284,177" class="arrh" />
+      <text x="286" y="180" class="small">Solve</text>
       <rect x="222" y="193" width="90" height="24" rx="4" class="uichip" />
       <text x="267" y="209.5" text-anchor="middle" class="small">filter words</text>
     </g>
     <g class="a w9 fin">
-      <rect x="320" y="193" width="150" height="24" rx="4" class="work" />
-      <text x="395" y="209.5" text-anchor="middle" class="workt">backtracking</text>
+      <rect x="320" y="193" width="168" height="24" rx="4" class="work" />
+      <text x="404" y="209.5" text-anchor="middle" class="workt">backtracking</text>
     </g>
     <g class="a w10 fin">
-      <line x1="460" y1="187" x2="460" y2="171" class="arrok" />
-      <polygon points="460,161 466,171 454,171" class="arrhok" />
-      <text x="454" y="180" text-anchor="end" class="okt">solution</text>
+      <line x1="480" y1="187" x2="480" y2="171" class="arrok" />
+      <polygon points="480,161 486,171 474,171" class="arrhok" />
+      <text x="474" y="180" text-anchor="end" class="okt">solution</text>
     </g>
     <g class="a w11 fin">
-      <line x1="520" y1="161" x2="520" y2="177" class="arr" />
-      <polygon points="520,187 514,177 526,177" class="arrh" />
-      <text x="528" y="180" class="small">Find Best</text>
+      <line x1="582" y1="161" x2="582" y2="177" class="arr" />
+      <polygon points="582,187 576,177 588,177" class="arrh" />
+      <text x="590" y="180" class="small">Find Best</text>
       <rect x="500" y="193" width="200" height="24" rx="4" class="gpu" />
       <text x="600" y="209.5" text-anchor="middle" class="gput">word-chain search</text>
       <line x1="520" y1="217" x2="520" y2="240" class="arr" />
@@ -488,23 +515,26 @@
       <text x="520" y="269.5" text-anchor="middle" class="gput">WebGPU passes</text>
       <rect x="610" y="250" width="110" height="30" rx="4" class="fb" />
       <text x="665" y="269.5" text-anchor="middle" class="small">CPU fallback</text>
-      <text x="720" y="298" text-anchor="end" class="muted">if WebGPU is missing, fails, or overflows</text>
+      <text x="720" y="298" text-anchor="end" class="muted">if WebGPU is missing or a pass overflows</text>
     </g>
     <g class="a w12 fin">
-      <line x1="690" y1="187" x2="690" y2="171" class="arrok" />
-      <polygon points="690,161 696,171 684,171" class="arrhok" />
-      <text x="684" y="180" text-anchor="end" class="okt">best</text>
+      <line x1="670" y1="187" x2="670" y2="171" class="arrok" />
+      <polygon points="670,161 676,171 664,171" class="arrhok" />
+      <text x="676" y="180" class="okt">best</text>
       <text x="160" y="118" class="okt">UI stays responsive the whole time</text>
     </g>
     <text x="20" y="352" class="a w14">A tab's JavaScript, renders, and clicks all share one thread.</text>
     <text x="20" y="352" class="a w15">The search runs to completion before anything else can.</text>
+    <text x="20" y="352" class="a w22">Until the search returns, the page ignores every input.</text>
     <text x="20" y="352" class="a w16">Moving the work off the device stops the freezing.</text>
     <text x="20" y="352" class="a w17">Cold starts add delay when the function has been idle.</text>
+    <text x="20" y="352" class="a w23">The browser only waits; it does no solving itself.</text>
     <text x="20" y="352" class="a w8">Every solve pays for this round trip.</text>
     <text x="20" y="352" class="a w18">A worker gets its own thread, beside the main thread.</text>
     <text x="20" y="352" class="a w19">The worker filters the dictionary once per puzzle.</text>
     <text x="20" y="352" class="a w20">The main thread keeps handling events meanwhile.</text>
     <text x="20" y="352" class="a w21">Find Best, a separate request, reuses the filtered words.</text>
+    <text x="20" y="352" class="a w24">The main thread draws the solution as soon as it arrives.</text>
     <text x="20" y="352" class="title a w12 fin type-heading">Same Solve algorithm; the search moved off the main thread.</text>
     <text x="20" y="376" class="muted a w12 fin"><tspan class="yr">v1</tspan>: UI blocked · <tspan class="yr">v2</tspan>: network round trip · <tspan class="yr">v3</tspan>: neither</text>
   </g>

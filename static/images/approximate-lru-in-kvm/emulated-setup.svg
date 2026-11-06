@@ -3,7 +3,7 @@
   viewBox="0 0 720 451"
   font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
   role="img"
-  aria-label="Animated test setup, built bottom-up: an Arm NVIDIA GB10 workstation runs QEMU in software emulation (TCG) as an x86 AMD EPYC CPU with SVM. The emulated L1 guest runs our modified KVM with KASAN, lockdep and lockup detectors, tdp_mmu=0 and kvm_amd.npt=0, and its L2 guests are KVM selftest VMs and a Redis guest whose page faults fill L1's shadow MMU cache. Fault counts are exact; timings are meaningless."
+  aria-label="Animated test setup, built bottom-up: an Arm NVIDIA GB10 workstation runs QEMU in software emulation (TCG) as an x86 AMD EPYC CPU with SVM. The emulated L1 guest runs our modified KVM with KASAN, lockdep and lockup detectors, tdp_mmu=0 and kvm_amd.npt=0, and its L2 guests are KVM selftest VMs and a Redis guest whose page faults fill L1's shadow MMU cache. Emulation is slow; the setup checks correctness only: tests pass, fail, crash or hang, with no timing results."
   width="720"
   height="451"
   data-diagram-width="720"
@@ -67,10 +67,10 @@
     .mono {
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     }
-    /* 41.98s loop, 7 steps starting at 0.5, 5.3, 11.9, 19.5, 25.4, 31.7, 34.1 s; final frame holds 7.13s, then fades. */
+    /* 43.58s loop, 7 steps starting at 0.5, 5.3, 11.9, 19.5, 25.4, 31.7, 35.7 s; final frame holds 7.13s, then fades. */
     .a {
       opacity: 0;
-      animation: 41.98s linear infinite;
+      animation: 43.58s linear infinite;
     }
     .w1 {
       animation-name: w1;
@@ -82,97 +82,97 @@
       animation-name: w2;
     } /* 5.30s to end */
     @keyframes w2 {
-      0.00%, 12.63% { opacity: 0; }
-      12.98%, 98.21% { opacity: 1; }
-      98.57%, 100.00% { opacity: 0; }
+      0.00%, 12.17% { opacity: 0; }
+      12.50%, 98.28% { opacity: 1; }
+      98.62%, 100.00% { opacity: 0; }
     }
     .w3 {
       animation-name: w3;
     } /* 11.90s to end */
     @keyframes w3 {
-      0.00%, 28.35% { opacity: 0; }
-      28.70%, 98.21% { opacity: 1; }
-      98.57%, 100.00% { opacity: 0; }
+      0.00%, 27.31% { opacity: 0; }
+      27.65%, 98.28% { opacity: 1; }
+      98.62%, 100.00% { opacity: 0; }
     }
     .w4 {
       animation-name: w4;
     } /* 19.50s to end */
     @keyframes w4 {
-      0.00%, 46.45% { opacity: 0; }
-      46.81%, 98.21% { opacity: 1; }
-      98.57%, 100.00% { opacity: 0; }
+      0.00%, 44.74% { opacity: 0; }
+      45.09%, 98.28% { opacity: 1; }
+      98.62%, 100.00% { opacity: 0; }
     }
     .w5 {
       animation-name: w5;
     } /* 25.40s to end */
     @keyframes w5 {
-      0.00%, 60.51% { opacity: 0; }
-      60.86%, 98.21% { opacity: 1; }
-      98.57%, 100.00% { opacity: 0; }
+      0.00%, 58.29% { opacity: 0; }
+      58.63%, 98.28% { opacity: 1; }
+      98.62%, 100.00% { opacity: 0; }
     }
     .w6 {
       animation-name: w6;
     } /* 31.70s to end */
     @keyframes w6 {
-      0.00%, 75.51% { opacity: 0; }
-      75.87%, 98.21% { opacity: 1; }
-      98.57%, 100.00% { opacity: 0; }
+      0.00%, 72.74% { opacity: 0; }
+      73.08%, 98.28% { opacity: 1; }
+      98.62%, 100.00% { opacity: 0; }
     }
     .w7 {
       animation-name: w7;
-    } /* 34.10s to end */
+    } /* 35.70s to end */
     @keyframes w7 {
-      0.00%, 81.23% { opacity: 0; }
-      81.59%, 98.21% { opacity: 1; }
-      98.57%, 100.00% { opacity: 0; }
+      0.00%, 81.92% { opacity: 0; }
+      82.27%, 98.28% { opacity: 1; }
+      98.62%, 100.00% { opacity: 0; }
     }
     .w8 {
       animation-name: w8;
     } /* 5.30s to 11.90s */
     @keyframes w8 {
-      0.00%, 12.63% { opacity: 0; }
-      12.98%, 28.35% { opacity: 1; }
-      28.70%, 100.00% { opacity: 0; }
+      0.00%, 12.17% { opacity: 0; }
+      12.50%, 27.31% { opacity: 1; }
+      27.65%, 100.00% { opacity: 0; }
     }
     .w9 {
       animation-name: w9;
     } /* 11.90s to 19.50s */
     @keyframes w9 {
-      0.00%, 28.35% { opacity: 0; }
-      28.70%, 46.45% { opacity: 1; }
-      46.81%, 100.00% { opacity: 0; }
+      0.00%, 27.31% { opacity: 0; }
+      27.65%, 44.74% { opacity: 1; }
+      45.09%, 100.00% { opacity: 0; }
     }
     .w10 {
       animation-name: w10;
     } /* 19.50s to 25.40s */
     @keyframes w10 {
-      0.00%, 46.45% { opacity: 0; }
-      46.81%, 60.51% { opacity: 1; }
-      60.86%, 100.00% { opacity: 0; }
+      0.00%, 44.74% { opacity: 0; }
+      45.09%, 58.29% { opacity: 1; }
+      58.63%, 100.00% { opacity: 0; }
     }
     .w11 {
       animation-name: w11;
     } /* 25.40s to 31.70s */
     @keyframes w11 {
-      0.00%, 60.51% { opacity: 0; }
-      60.86%, 75.51% { opacity: 1; }
-      75.87%, 100.00% { opacity: 0; }
+      0.00%, 58.29% { opacity: 0; }
+      58.63%, 72.74% { opacity: 1; }
+      73.08%, 100.00% { opacity: 0; }
     }
     .w12 {
       animation-name: w12;
     } /* 0.50s to 5.30s */
     @keyframes w12 {
-      0.00%, 12.63% { opacity: 1; }
-      12.98%, 98.21% { opacity: 0; }
-      98.57%, 100.00% { opacity: 1; }
+      0.00%, 12.17% { opacity: 1; }
+      12.50%, 98.28% { opacity: 0; }
+      98.62%, 100.00% { opacity: 1; }
     }
     .w13 {
       animation-name: w13;
-    } /* 31.70s to 34.10s */
+    } /* 31.70s to 35.70s */
     @keyframes w13 {
-      0.00%, 75.51% { opacity: 0; }
-      75.87%, 81.23% { opacity: 1; }
-      81.59%, 100.00% { opacity: 0; }
+      0.00%, 72.74% { opacity: 0; }
+      73.08%, 81.92% { opacity: 1; }
+      82.27%, 100.00% { opacity: 0; }
     }
     @media (prefers-reduced-motion: reduce) {
       .a {
@@ -240,7 +240,7 @@
       <rect x="34" y="74" width="44" height="28" rx="4" class="full" />
       <text x="56" y="93" text-anchor="middle" class="b type-subheading">L2</text>
       <text x="96" y="85" class="b type-subheading">KVM selftest VMs and a Redis guest</text>
-      <text x="96" y="105" class="muted">lru_reuse_test, mmu_stress_test, ..., redis-server</text>
+      <text x="96" y="105" class="muted">lru_stress_test, mmu_stress_test, ..., redis-server</text>
     </g>
     <g class="a w6 fin">
       <path d="M 582 100 L 582 176" class="arrow" />
@@ -251,15 +251,15 @@
     </g>
     <g class="a w7 fin">
       <text x="582" y="300" class="b sm">Emulation is slow:</text>
-      <text x="582" y="318" class="muted">fault counts are exact,</text>
-      <text x="582" y="334" class="muted">timings are meaningless</text>
+      <text x="582" y="318" class="muted">pass or fail only,</text>
+      <text x="582" y="334" class="muted">no timing results</text>
     </g>
     <text x="20" y="460" class="a w12">An Arm host cannot run x86 KVM directly.</text>
     <text x="20" y="460" class="a w8">SVM lets the emulated CPU run KVM.</text>
     <text x="20" y="460" class="a w9">Debug checks catch memory and locking bugs in our change.</text>
     <text x="20" y="460" class="a w10">This forces the shadow MMU, the code we changed.</text>
     <text x="20" y="460" class="a w11">Selftests check correctness; Redis adds a realistic load.</text>
-    <text x="20" y="460" class="a w13">Every L2 fault exercises our change.</text>
-    <text x="20" y="460" class="b a w7 fin type-subheading">Every result from this setup is a fault or eviction count.</text>
+    <text x="20" y="460" class="a w13">L2 faults fill L1's shadow cache until our eviction code must zap pages.</text>
+    <text x="20" y="460" class="b a w7 fin type-subheading">This setup checks correctness: tests pass, fail, crash or hang.</text>
   </g>
 </svg>

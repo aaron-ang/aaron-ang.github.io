@@ -3,7 +3,7 @@
   viewBox="0 0 720 234"
   font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
   role="img"
-  aria-label="Animated FIFO eviction: shadow page P is still in use but sits near the tail of active_mmu_pages. When free slots run low, FIFO zaps the two oldest pages, G and P. The next access to P faults and P is rebuilt at the head."
+  aria-label="Animated FIFO eviction: shadow page P is still in use but sits near the tail of active_mmu_pages. When free slots run low, FIFO zaps the two oldest pages, cold G and in-use P. The next access to P faults and P is rebuilt at the head."
   width="720"
   height="234"
   data-diagram-width="720"
@@ -87,138 +87,146 @@
       fill: var(--empty);
       font-weight: 600;
     }
-    /* 35.68s loop, 9 steps starting at 0.5, 3.8, 6.4, 12.2, 15.3, 18.6, 22.4, 25.5, 28.3 s; final frame holds 6.63s, then fades. */
+    /* 38.08s loop, 9 steps starting at 0.5, 3.8, 8.8, 14.6, 17.7, 21, 24.8, 27.9, 30.7 s; final frame holds 6.63s, then fades. */
     .a {
       opacity: 0;
-      animation: 35.68s linear infinite;
+      animation: 38.08s linear infinite;
     }
     .w1 {
       animation-name: w1;
-    } /* 6.40s to 25.50s */
+    } /* 8.80s to 27.90s */
     @keyframes w1 {
-      0.00%, 17.94% { opacity: 0; }
-      18.36%, 71.47% { opacity: 1; }
-      71.89%, 100.00% { opacity: 0; }
+      0.00%, 23.11% { opacity: 0; }
+      23.51%, 73.27% { opacity: 1; }
+      73.66%, 100.00% { opacity: 0; }
     }
     .w2 {
       animation-name: w2;
-    } /* 25.50s to end */
+    } /* 27.90s to end */
     @keyframes w2 {
-      0.00%, 71.47% { opacity: 0; }
-      71.89%, 97.90% { opacity: 1; }
-      98.32%, 100.00% { opacity: 0; }
+      0.00%, 73.27% { opacity: 0; }
+      73.66%, 98.03% { opacity: 1; }
+      98.43%, 100.00% { opacity: 0; }
     }
     .w3 {
       animation-name: w3;
-    } /* 3.80s to 22.40s */
+    } /* 3.80s to 24.80s */
     @keyframes w3 {
-      0.00%, 10.65% { opacity: 0; }
-      11.07%, 62.78% { opacity: 1; }
-      63.20%, 100.00% { opacity: 0; }
+      0.00%, 9.98% { opacity: 0; }
+      10.37%, 65.13% { opacity: 1; }
+      65.52%, 100.00% { opacity: 0; }
     }
     .w4 {
       animation-name: w4;
-    } /* 15.30s to end */
+    } /* 17.70s to end */
     @keyframes w4 {
-      0.00%, 42.88% { opacity: 0; }
-      43.30%, 97.90% { opacity: 1; }
-      98.32%, 100.00% { opacity: 0; }
+      0.00%, 46.48% { opacity: 0; }
+      46.87%, 98.03% { opacity: 1; }
+      98.43%, 100.00% { opacity: 0; }
     }
     .w5 {
       animation-name: w5;
-    } /* 12.20s to end */
+    } /* 14.60s to end */
     @keyframes w5 {
-      0.00%, 34.19% { opacity: 0; }
-      34.61%, 97.90% { opacity: 1; }
-      98.32%, 100.00% { opacity: 0; }
+      0.00%, 38.34% { opacity: 0; }
+      38.73%, 98.03% { opacity: 1; }
+      98.43%, 100.00% { opacity: 0; }
     }
     .w6 {
       animation-name: w6;
-    } /* 22.40s to end */
+    } /* 24.80s to end */
     @keyframes w6 {
-      0.00%, 62.78% { opacity: 0; }
-      63.20%, 97.90% { opacity: 1; }
-      98.32%, 100.00% { opacity: 0; }
+      0.00%, 65.13% { opacity: 0; }
+      65.52%, 98.03% { opacity: 1; }
+      98.43%, 100.00% { opacity: 0; }
     }
     .w7 {
       animation-name: w7;
-    } /* 18.60s to end */
+    } /* 21.00s to end */
     @keyframes w7 {
-      0.00%, 52.13% { opacity: 0; }
-      52.55%, 97.90% { opacity: 1; }
-      98.32%, 100.00% { opacity: 0; }
+      0.00%, 55.15% { opacity: 0; }
+      55.54%, 98.03% { opacity: 1; }
+      98.43%, 100.00% { opacity: 0; }
     }
     .w8 {
       animation-name: w8;
-    } /* 28.30s to end */
+    } /* 30.70s to end */
     @keyframes w8 {
-      0.00%, 79.32% { opacity: 0; }
-      79.74%, 97.90% { opacity: 1; }
-      98.32%, 100.00% { opacity: 0; }
+      0.00%, 80.62% { opacity: 0; }
+      81.02%, 98.03% { opacity: 1; }
+      98.43%, 100.00% { opacity: 0; }
     }
     .w9 {
       animation-name: w9;
     } /* 0.50s to 3.80s */
     @keyframes w9 {
-      0.00%, 10.65% { opacity: 1; }
-      11.07%, 97.90% { opacity: 0; }
-      98.32%, 100.00% { opacity: 1; }
+      0.00%, 9.98% { opacity: 1; }
+      10.37%, 98.03% { opacity: 0; }
+      98.43%, 100.00% { opacity: 1; }
     }
     .w10 {
       animation-name: w10;
-    } /* 3.80s to 6.40s */
+    } /* 3.80s to 8.80s */
     @keyframes w10 {
-      0.00%, 10.65% { opacity: 0; }
-      11.07%, 17.94% { opacity: 1; }
-      18.36%, 100.00% { opacity: 0; }
+      0.00%, 9.98% { opacity: 0; }
+      10.37%, 23.11% { opacity: 1; }
+      23.51%, 100.00% { opacity: 0; }
     }
     .w11 {
       animation-name: w11;
-    } /* 6.40s to 12.20s */
+    } /* 8.80s to 14.60s */
     @keyframes w11 {
-      0.00%, 17.94% { opacity: 0; }
-      18.36%, 34.19% { opacity: 1; }
-      34.61%, 100.00% { opacity: 0; }
+      0.00%, 23.11% { opacity: 0; }
+      23.51%, 38.34% { opacity: 1; }
+      38.73%, 100.00% { opacity: 0; }
     }
     .w12 {
       animation-name: w12;
-    } /* 12.20s to 15.30s */
+    } /* 14.60s to 17.70s */
     @keyframes w12 {
-      0.00%, 34.19% { opacity: 0; }
-      34.61%, 42.88% { opacity: 1; }
-      43.30%, 100.00% { opacity: 0; }
+      0.00%, 38.34% { opacity: 0; }
+      38.73%, 46.48% { opacity: 1; }
+      46.87%, 100.00% { opacity: 0; }
     }
     .w13 {
       animation-name: w13;
-    } /* 15.30s to 18.60s */
+    } /* 17.70s to 21.00s */
     @keyframes w13 {
-      0.00%, 42.88% { opacity: 0; }
-      43.30%, 52.13% { opacity: 1; }
-      52.55%, 100.00% { opacity: 0; }
+      0.00%, 46.48% { opacity: 0; }
+      46.87%, 55.15% { opacity: 1; }
+      55.54%, 100.00% { opacity: 0; }
     }
     .w14 {
       animation-name: w14;
-    } /* 18.60s to 22.40s */
+    } /* 21.00s to 24.80s */
     @keyframes w14 {
-      0.00%, 52.13% { opacity: 0; }
-      52.55%, 62.78% { opacity: 1; }
-      63.20%, 100.00% { opacity: 0; }
+      0.00%, 55.15% { opacity: 0; }
+      55.54%, 65.13% { opacity: 1; }
+      65.52%, 100.00% { opacity: 0; }
     }
     .w15 {
       animation-name: w15;
-    } /* 22.40s to 25.50s */
+    } /* 24.80s to 27.90s */
     @keyframes w15 {
-      0.00%, 62.78% { opacity: 0; }
-      63.20%, 71.47% { opacity: 1; }
-      71.89%, 100.00% { opacity: 0; }
+      0.00%, 65.13% { opacity: 0; }
+      65.52%, 73.27% { opacity: 1; }
+      73.66%, 100.00% { opacity: 0; }
     }
     .w16 {
       animation-name: w16;
-    } /* 25.50s to 28.30s */
+    } /* 27.90s to 30.70s */
     @keyframes w16 {
-      0.00%, 71.47% { opacity: 0; }
-      71.89%, 79.32% { opacity: 1; }
-      79.74%, 100.00% { opacity: 0; }
+      0.00%, 73.27% { opacity: 0; }
+      73.66%, 80.62% { opacity: 1; }
+      81.02%, 100.00% { opacity: 0; }
+    }
+    .w17 {
+      animation-name: w17;
+    } /* 3.80s to 17.70s */
+    @keyframes w17 {
+      0.00%, 9.98% { opacity: 0; }
+      10.37%, 46.48% { opacity: 1; }
+      46.87%, 100.00% { opacity: 0; }
     }
     @media (prefers-reduced-motion: reduce) {
       .a {
@@ -282,6 +290,7 @@
     <rect x="662" y="104" width="64" height="48" rx="4" class="full" />
     <text x="694" y="133" text-anchor="middle" class="b type-subheading"><tspan class="mvar">G</tspan></text>
     <text x="618" y="172" text-anchor="middle" class="tag a w3">in use</text>
+    <text x="694" y="172" text-anchor="middle" class="tag a w17">cold</text>
     <rect x="662" y="104" width="64" height="48" rx="4" class="zapped a w4 fin" />
     <text x="694" y="133" text-anchor="middle" class="ghost a w4 fin"><tspan class="mvar">G</tspan></text>
     <rect x="658" y="100" width="72" height="56" rx="6" class="ring a w5 fin" />
@@ -298,7 +307,7 @@
     <text x="60" y="133" text-anchor="middle" class="onhot a w8 fin"><tspan class="mvar">P</tspan></text>
     <text x="60" y="172" text-anchor="middle" class="oktext a w8 fin">rebuilt</text>
     <text x="20" y="228" class="a w9">Upstream KVM decides by age alone.</text>
-    <text x="20" y="228" class="a w10">Old, but still hot.</text>
+    <text x="20" y="228" class="a w10">Both pages are old, but <tspan class="mvar">P</tspan> is still in use and <tspan class="mvar">G</tspan> is cold.</text>
     <text x="20" y="228" class="a w11">Too few free slots are left, so KVM must make room.</text>
     <text x="20" y="228" class="a w12">The walk starts at the tail.</text>
     <text x="20" y="228" class="a w13">Nothing is lost: <tspan class="mvar">G</tspan> was cold.</text>

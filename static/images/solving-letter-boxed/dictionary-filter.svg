@@ -285,7 +285,7 @@
     <text x="20" y="386" class="a w8">Every word in the dictionary starts at the top.</text>
     <text x="20" y="386" class="a w9">Letter Boxed words need at least three letters.</text>
     <text x="20" y="386" class="a w10">A letter that is not on the square can never be played.</text>
-    <text x="20" y="386" class="a w11">Such a word could never be traced on the square.</text>
+    <text x="20" y="386" class="a w11">Two same-side letters in a row can never be traced.</text>
     <text x="20" y="386" class="a w12">About 2% of the dictionary is left.</text>
     <text x="20" y="386" class="title a w7 fin type-heading">Every rejected word is a dead end the search never has to try.</text>
   </g>

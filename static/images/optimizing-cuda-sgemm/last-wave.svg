@@ -3,7 +3,7 @@
   viewBox="0 0 640 565"
   font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
   role="img"
-  aria-label="Animated timeline of 14 tiles of C on 6 SMs, one lane per SM, time running right. Whole tiles go out in waves of six: two full waves, then a third wave where SMs 1 and 2 compute tiles 13 and 14 while the other four SMs sit idle, so the multiply ends one whole tile after they stop. Below, with stream-K, tiles 13 and 14 are each cut along K into three pieces, and the six pieces run one per SM, so all SMs finish together, earlier. Each tile's three pieces run on neighbouring SMs. For tile 13, SMs 1 and 2 store partial sums in a workspace; SM 3, which holds the last piece, adds them and writes the tile to C; tile 14 works the same way on SMs 4 to 6. All of this happens before the new finish line. Each piece carries a little overhead, so the host estimates the busiest SM's time for two to four pieces per tile before choosing a split."
+  aria-label="Animated timeline of 14 tiles of C on 6 SMs, one lane per SM, time running right. Whole tiles go out in waves of six: two full waves, then a third wave where SMs 1 and 2 compute tiles 13 and 14 while the other four SMs sit idle, so the multiply ends one whole tile after they stop. Below, with stream-K, tiles 13 and 14 are each cut along K into three pieces, and the six pieces run one per SM, so the multiply finishes earlier. Each tile's three pieces run on neighbouring SMs. For tile 13, SMs 1 and 2 store partial sums in a workspace; SM 3, which holds the last piece, adds them and writes the tile to C; tile 14 works the same way on SMs 4 to 6. All of this happens before the new finish line. Each piece carries a little overhead, so the host estimates the busiest SM's time for two to four pieces per tile before choosing a split."
   width="640"
   height="565"
   data-diagram-width="640"
@@ -455,6 +455,6 @@
     <text x="20" y="612" class="a st6-6b"><tspan x="20" dy="0">Tile 13: SM 3, holding the last piece, adds SMs 1 and 2's sums and writes C.</tspan></text>
     <text x="20" y="612" class="a st6b-7"><tspan x="20" dy="0">Tile 14 works the same way: SM 6 adds the sums from SMs 4 and 5.</tspan></text>
     <text x="20" y="612" class="a st7-8"><tspan x="20" dy="0">Every piece carries some overhead. The host estimates the busiest SM's time</tspan><tspan x="20" dy="26">for 2–4 pieces.</tspan></text>
-    <text x="20" y="612" class="b a st8 fin type-subheading"><tspan x="20" dy="0">Splitting only the last wave's tiles along K keeps every SM busy until the</tspan><tspan x="20" dy="26">end.</tspan></text>
+    <text x="20" y="612" class="b a st8 fin type-subheading"><tspan x="20" dy="0">Splitting only the last wave's tiles along K spreads the tail across every</tspan><tspan x="20" dy="26">SM and ends the multiply sooner.</tspan></text>
   </g>
 </svg>

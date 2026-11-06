@@ -8,7 +8,7 @@
   font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif"
 >
   <title id="title">Emulated x86 setup</title>
-  <desc id="desc">An Arm GB10 uses QEMU TCG to emulate an AMD EPYC x86 CPU with SVM. L1 runs debug-enabled modified KVM with shadow paging. L2 runs selftests and Redis. Only fault and eviction counts are meaningful, not emulated timings.</desc>
+  <desc id="desc">An Arm GB10 uses QEMU TCG to emulate an AMD EPYC x86 CPU with SVM. L1 runs debug-enabled modified KVM with shadow paging. L2 runs selftests and Redis. Emulation is slow; the setup checks correctness only, with no timing results.</desc>
   <style>
     /* ONS chart typography: 20px title, 16px subheading, 14px labels/annotations.
     https://service-manual.ons.gov.uk/data-visualisation/build-specifications/typography */
@@ -70,10 +70,10 @@
     </marker>
   </defs>
   <text x="12" y="26" class="title type-heading">Emulated x86 setup</text>
-  <text x="12" y="54" class="note">Shadow paging; counts only.</text>
+  <text x="12" y="54" class="note">Shadow paging; correctness only.</text>
   <rect x="12" y="80" width="256" height="98" rx="2" class="box" />
   <text x="24" y="106" class="sub type-subheading">L2: selftests and Redis</text>
-  <text x="24" y="131" class="">lru_reuse_test</text>
+  <text x="24" y="131" class="">lru_stress_test</text>
   <text x="24" y="151" class="">mmu_stress_test; redis-server</text>
   <line x1="250" y1="178" x2="250" y2="208" class="arrow" marker-end="url(#arrow)" />
   <text x="12" y="199" class="">Faults fill L1’s shadow cache.</text>
@@ -94,7 +94,7 @@
   <text x="24" y="573" class="sub type-subheading">L0: NVIDIA GB10</text>
   <text x="24" y="597" class="">Arm CPU; no hardware</text>
   <text x="24" y="617" class="">x86 virtualization.</text>
-  <text x="12" y="657" class="note">Fault and eviction counts</text>
-  <text x="12" y="677" class="note">are exact; emulated timings</text>
-  <text x="12" y="697" class="note">are not meaningful.</text>
+  <text x="12" y="657" class="note">Emulation is slow: tests</text>
+  <text x="12" y="677" class="note">pass or fail only, with</text>
+  <text x="12" y="697" class="note">no timing results.</text>
 </svg>

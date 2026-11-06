@@ -3,7 +3,7 @@
   viewBox="0 0 720 294"
   font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
   role="img"
-  aria-label="Animated diagram of one last-level shadow page whose 512 entries map the 4 KiB guest pages of one 2 MiB region. The CPU has set the accessed bits of the entries for the hot pages. When the cache is full, the eviction policy zaps the page and its accessed bits are discarded with it. Host reclaim then asks KVM which pages were used recently, finds no shadow entries, sees every page as not used, and may swap out pages, hot ones included."
+  aria-label="Animated diagram of one last-level shadow page whose 512 entries map the 4 KiB guest pages of one 2 MiB region. The CPU has set the accessed bits of the entries for the hot pages. When the cache is full, the eviction policy zaps the page and its accessed bits are discarded with it. Host reclaim then asks KVM which pages were used recently. KVM finds no shadow entries and reports no recent use, and reclaim may swap out pages from the region, hot ones included. Evicting a shadow page erases KVM's record of use, whichever policy picked it."
   width="720"
   height="294"
   data-diagram-width="720"
@@ -79,6 +79,12 @@
     .onhl {
       fill: var(--empty);
       font-weight: 600;
+    }
+    .cand {
+      fill: none;
+      stroke: var(--probe);
+      stroke-width: 2;
+      stroke-dasharray: 3 2;
     }
     .map {
       stroke: var(--edge);
@@ -300,33 +306,26 @@
     </g>
     <g class="a w4 fin">
       <rect x="124" y="190" width="298" height="40" rx="6" class="ring" />
-      <text x="450" y="207" class="num">host reclaim: all “not used”</text>
-      <text x="450" y="223" class="muted">KVM finds no shadow entry</text>
+      <text x="450" y="207" class="num">KVM reports no recent use</text>
+      <text x="450" y="223" class="muted">no shadow entry left to read</text>
     </g>
     <g class="a w6 fin">
-      <rect x="148" y="196" width="16" height="28" rx="2" class="hot" />
-      <text x="156" y="214" text-anchor="middle" class="onhl">H</text>
-      <rect x="166" y="196" width="16" height="28" rx="2" class="hot" />
-      <text x="174" y="214" text-anchor="middle" class="onhl">H</text>
-      <rect x="184" y="196" width="16" height="28" rx="2" class="hot" />
-      <rect x="220" y="196" width="16" height="28" rx="2" class="hot" />
-      <text x="228" y="214" text-anchor="middle" class="onhl">H</text>
-      <rect x="238" y="196" width="16" height="28" rx="2" class="hot" />
-      <text x="246" y="214" text-anchor="middle" class="onhl">H</text>
-      <rect x="274" y="196" width="16" height="28" rx="2" class="hot" />
-      <rect x="292" y="196" width="16" height="28" rx="2" class="hot" />
-      <text x="300" y="214" text-anchor="middle" class="onhl">H</text>
-      <rect x="346" y="196" width="16" height="28" rx="2" class="hot" />
-      <text x="354" y="214" text-anchor="middle" class="onhl">H</text>
-      <rect x="364" y="196" width="16" height="28" rx="2" class="hot" />
-      <text x="372" y="214" text-anchor="middle" class="onhl">H</text>
-      <rect x="382" y="196" width="16" height="28" rx="2" class="hot" />
-      <text x="450" y="245" class="num">swapped out, hot pages too</text>
+      <rect x="149.5" y="197.5" width="13" height="25" rx="2" class="cand" />
+      <rect x="167.5" y="197.5" width="13" height="25" rx="2" class="cand" />
+      <rect x="185.5" y="197.5" width="13" height="25" rx="2" class="cand" />
+      <rect x="221.5" y="197.5" width="13" height="25" rx="2" class="cand" />
+      <rect x="239.5" y="197.5" width="13" height="25" rx="2" class="cand" />
+      <rect x="275.5" y="197.5" width="13" height="25" rx="2" class="cand" />
+      <rect x="293.5" y="197.5" width="13" height="25" rx="2" class="cand" />
+      <rect x="347.5" y="197.5" width="13" height="25" rx="2" class="cand" />
+      <rect x="365.5" y="197.5" width="13" height="25" rx="2" class="cand" />
+      <rect x="383.5" y="197.5" width="13" height="25" rx="2" class="cand" />
+      <text x="450" y="245" class="num">may be swapped out, hot ones too</text>
     </g>
     <text x="20" y="292" class="a w1">The CPU has set the accessed bit on each hot page's entry; cold entries stay clear.</text>
     <text x="20" y="292" class="a w3">The cache is full, and the eviction policy zaps this shadow page. Its accessed bits go with it.</text>
     <text x="20" y="292" class="a w5">Host reclaim asks which pages were used recently. Without entries, KVM reports none as used.</text>
     <text x="20" y="292" class="a w7">Host reclaim may then swap out pages from the region, hot ones included.</text>
-    <text x="20" y="292" class="b a w8 fin type-subheading">Evicting a shadow page erases its record of use, whichever policy picked it.</text>
+    <text x="20" y="292" class="b a w8 fin type-subheading">Evicting a shadow page erases KVM's record of use, whichever policy picked it.</text>
   </g>
 </svg>

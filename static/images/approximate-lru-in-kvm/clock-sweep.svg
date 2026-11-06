@@ -82,122 +82,122 @@
     .arrowhead {
       fill: var(--probe);
     }
-    /* 38.43s loop, 7 steps starting at 0.5, 6.5, 13.1, 16.5, 22.4, 25.8, 31.4 s; final frame holds 6.28s, then fades. */
+    /* 41.23s loop, 7 steps starting at 0.5, 6.5, 13.1, 17.9, 23.8, 28.6, 34.2 s; final frame holds 6.28s, then fades. */
     .a {
       opacity: 0;
-      animation: 38.43s linear infinite;
+      animation: 41.23s linear infinite;
     }
     .w1 {
       animation-name: w1;
     } /* 0.50s to 6.50s */
     @keyframes w1 {
-      0.00%, 16.91% { opacity: 1; }
-      17.30%, 98.05% { opacity: 0; }
-      98.44%, 100.00% { opacity: 1; }
+      0.00%, 15.76% { opacity: 1; }
+      16.13%, 98.18% { opacity: 0; }
+      98.55%, 100.00% { opacity: 1; }
     }
     .w2 {
       animation-name: w2;
     } /* 6.50s to end */
     @keyframes w2 {
-      0.00%, 16.91% { opacity: 0; }
-      17.30%, 98.05% { opacity: 1; }
-      98.44%, 100.00% { opacity: 0; }
+      0.00%, 15.76% { opacity: 0; }
+      16.13%, 98.18% { opacity: 1; }
+      98.55%, 100.00% { opacity: 0; }
     }
     .w3 {
       animation-name: w3;
     } /* 0.50s to 13.10s */
     @keyframes w3 {
-      0.00%, 34.09% { opacity: 1; }
-      34.48%, 98.05% { opacity: 0; }
-      98.44%, 100.00% { opacity: 1; }
+      0.00%, 31.77% { opacity: 1; }
+      32.14%, 98.18% { opacity: 0; }
+      98.55%, 100.00% { opacity: 1; }
     }
     .w4 {
       animation-name: w4;
     } /* 13.10s to end */
     @keyframes w4 {
-      0.00%, 34.09% { opacity: 0; }
-      34.48%, 98.05% { opacity: 1; }
-      98.44%, 100.00% { opacity: 0; }
+      0.00%, 31.77% { opacity: 0; }
+      32.14%, 98.18% { opacity: 1; }
+      98.55%, 100.00% { opacity: 0; }
     }
     .w5 {
       animation-name: w5;
-    } /* 0.50s to 22.40s */
+    } /* 0.50s to 23.80s */
     @keyframes w5 {
-      0.00%, 58.29% { opacity: 1; }
-      58.68%, 98.05% { opacity: 0; }
-      98.44%, 100.00% { opacity: 1; }
+      0.00%, 57.73% { opacity: 1; }
+      58.09%, 98.18% { opacity: 0; }
+      98.55%, 100.00% { opacity: 1; }
     }
     .w6 {
       animation-name: w6;
-    } /* 22.40s to end */
+    } /* 23.80s to end */
     @keyframes w6 {
-      0.00%, 58.29% { opacity: 0; }
-      58.68%, 98.05% { opacity: 1; }
-      98.44%, 100.00% { opacity: 0; }
+      0.00%, 57.73% { opacity: 0; }
+      58.09%, 98.18% { opacity: 1; }
+      98.55%, 100.00% { opacity: 0; }
     }
     .w7 {
       animation-name: w7;
-    } /* 16.50s to end */
+    } /* 17.90s to end */
     @keyframes w7 {
-      0.00%, 42.94% { opacity: 0; }
-      43.33%, 98.05% { opacity: 1; }
-      98.44%, 100.00% { opacity: 0; }
+      0.00%, 43.42% { opacity: 0; }
+      43.78%, 98.18% { opacity: 1; }
+      98.55%, 100.00% { opacity: 0; }
     }
     .w8 {
       animation-name: w8;
-    } /* 25.80s to end */
+    } /* 28.60s to end */
     @keyframes w8 {
-      0.00%, 67.14% { opacity: 0; }
-      67.53%, 98.05% { opacity: 1; }
-      98.44%, 100.00% { opacity: 0; }
+      0.00%, 69.37% { opacity: 0; }
+      69.74%, 98.18% { opacity: 1; }
+      98.55%, 100.00% { opacity: 0; }
     }
     .w9 {
       animation-name: w9;
-    } /* 31.40s to end */
+    } /* 34.20s to end */
     @keyframes w9 {
-      0.00%, 81.71% { opacity: 0; }
-      82.10%, 98.05% { opacity: 1; }
-      98.44%, 100.00% { opacity: 0; }
+      0.00%, 82.95% { opacity: 0; }
+      83.32%, 98.18% { opacity: 1; }
+      98.55%, 100.00% { opacity: 0; }
     }
     .w10 {
       animation-name: w10;
-    } /* 13.10s to 16.50s */
+    } /* 13.10s to 17.90s */
     @keyframes w10 {
-      0.00%, 34.09% { opacity: 0; }
-      34.48%, 42.94% { opacity: 1; }
-      43.33%, 100.00% { opacity: 0; }
+      0.00%, 31.77% { opacity: 0; }
+      32.14%, 43.42% { opacity: 1; }
+      43.78%, 100.00% { opacity: 0; }
     }
     .w11 {
       animation-name: w11;
-    } /* 16.50s to 22.40s */
+    } /* 17.90s to 23.80s */
     @keyframes w11 {
-      0.00%, 42.94% { opacity: 0; }
-      43.33%, 58.29% { opacity: 1; }
-      58.68%, 100.00% { opacity: 0; }
+      0.00%, 43.42% { opacity: 0; }
+      43.78%, 57.73% { opacity: 1; }
+      58.09%, 100.00% { opacity: 0; }
     }
     .w12 {
       animation-name: w12;
-    } /* 22.40s to 25.80s */
+    } /* 23.80s to 28.60s */
     @keyframes w12 {
-      0.00%, 58.29% { opacity: 0; }
-      58.68%, 67.14% { opacity: 1; }
-      67.53%, 100.00% { opacity: 0; }
+      0.00%, 57.73% { opacity: 0; }
+      58.09%, 69.37% { opacity: 1; }
+      69.74%, 100.00% { opacity: 0; }
     }
     .w13 {
       animation-name: w13;
-    } /* 25.80s to 31.40s */
+    } /* 28.60s to 34.20s */
     @keyframes w13 {
-      0.00%, 67.14% { opacity: 0; }
-      67.53%, 81.71% { opacity: 1; }
-      82.10%, 100.00% { opacity: 0; }
+      0.00%, 69.37% { opacity: 0; }
+      69.74%, 82.95% { opacity: 1; }
+      83.32%, 100.00% { opacity: 0; }
     }
     .w14 {
       animation-name: w14;
     } /* 6.50s to 13.10s */
     @keyframes w14 {
-      0.00%, 16.91% { opacity: 0; }
-      17.30%, 34.09% { opacity: 1; }
-      34.48%, 100.00% { opacity: 0; }
+      0.00%, 15.76% { opacity: 0; }
+      16.13%, 31.77% { opacity: 1; }
+      32.14%, 100.00% { opacity: 0; }
     }
     @media (prefers-reduced-motion: reduce) {
       .a {
@@ -332,7 +332,9 @@
     <text x="420" y="372" class="muted">Active roots are always skipped (none shown).</text>
     <text x="20" y="414" class="a w1">Each eviction starts where the last one stopped; here, at the tail.</text>
     <text x="20" y="414" class="a w14"><tspan class="mvar">A</tspan> survives this lap: it was used since the hand last passed.</text>
+    <text x="20" y="414" class="a w10"><tspan class="mvar">B</tspan> gets the same second chance: its bit is cleared.</text>
     <text x="20" y="414" class="a w11"><tspan class="mvar">C</tspan> has bit 0: unused since the hand last passed it.</text>
+    <text x="20" y="414" class="a w12"><tspan class="mvar">D</tspan> is spared as well; its bit drops to 0.</text>
     <text x="20" y="414" class="a w13">Two pages freed. The sweep stops.</text>
     <text x="20" y="414" class="b a w9 fin type-subheading">Only pages unused since the hand last passed get evicted.</text>
   </g>
