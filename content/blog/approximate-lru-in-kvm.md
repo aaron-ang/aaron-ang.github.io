@@ -169,7 +169,7 @@ That setup was [nested](https://docs.kernel.org/virt/kvm/x86/running-nested-gues
 
 We chose nesting because we did not know then that a metal host could boot a custom kernel directly, and we worried that a bug in the modified kernel would take the instance down.
 
-### Correctness Checks on Real Hardware
+### Correctness Checks on a Bare-Metal Host
 
 For the follow-up, I ran the modified KVM directly on a c5n.metal instance, without QEMU or nesting. KVM's test programs and their guests ran under it on the host's Intel CPU, with Intel's extended page tables disabled (`kvm_intel.ept=0`, `kvm.tdp_mmu=0`) so that every guest used true shadow paging. The kernel enabled [KASAN](https://docs.kernel.org/dev-tools/kasan.html) (Kernel Address Sanitizer) for memory errors, [lockdep](https://docs.kernel.org/locking/lockdep-design.html) for locking mistakes, the [lockup detectors](https://docs.kernel.org/admin-guide/lockup-watchdogs.html) for hangs, and KVM's consistency checks for the shadow MMU (`CONFIG_KVM_PROVE_MMU`).
 
