@@ -9,7 +9,7 @@ In [Part 1](/approximate-lru-in-kvm/), I described our UCSD class project replac
 
 CLOCK gives recently used pages a second chance by checking a reference bit, `lru_ref`. _Marking_ a page means setting that bit to 1 to record recent use. The difficulty is knowing when to mark it: most guest accesses use mappings directly in hardware without notifying KVM.
 
-After the class, I continued the work on a bare-metal x86 host.[^setup] Marking shadow pages whenever KVM installed mappings in their entries cut page faults by 61–81% in a reuse test. In Redis and PostgreSQL benchmarks, the policies also changed throughput. Marking on install and parent mode raised Redis’s request rate by 58–134% in the two smallest caches, and every version of CLOCK raised pgbench’s transactions per second by 17–33% with 200 clients at KVM’s default cache size. The [code](https://github.com/aaron-ang/kvm) is based on [Linux 6.14-rc7](https://github.com/torvalds/linux/tree/v6.14-rc7).
+After the class, I continued the work on a bare-metal x86 host.[^setup] In a reuse test, marking pages when KVM installed their mappings cut page faults by 61–81%. With Redis, marking on install alone and parent mode raised request rates by 58–134% between them in the two smallest caches. With pgbench, every version of CLOCK raised transactions per second by 17–33% using 200 clients and KVM’s default cache size. The [code](https://github.com/aaron-ang/kvm) is based on [Linux 6.14-rc7](https://github.com/torvalds/linux/tree/v6.14-rc7).
 
 ## Tracking Recent Use
 
@@ -85,7 +85,9 @@ The table compares page faults at three cache limits, averaging repeated runs wi
 
 At 64 and 128 cache pages, marking on install supplied most of the improvement, reducing faults by 61–81%. Retaining a hot shadow page preserves the translations for its 2 MiB region. Evicting that shadow page forces KVM to reinstall the mapping for each 4 KiB page the guest subsequently touches, making repeated visits to hot regions especially costly in this test.
 
-In the 32-page cache, no form of marking changed evictions: every policy evicted exactly as many shadow pages as FIFO on every seed, and all but leaf mode took exactly as many faults. Leaf mode took 0.2% more, about 380 faults per run. Each eviction call restores 25 free slots, which at this size requires zapping about 20 shadow pages, most of the cache. By the next call, nearly every shadow page still in the cache has received new mappings through faults and been marked again. As a result, the sweep clears every bit before it can zap anything, and then zaps the oldest pages first, as FIFO does. The figure below shows one call at that size with only `lru_ref` in use:
+In the 32-page cache, every policy evicted as many shadow pages as FIFO on every seed. Fault counts also matched FIFO, except under leaf mode, which took 0.2% more, or about 380 extra faults per run.
+
+Each eviction call runs until 25 slots are free. Because a call starts with fewer than 5 free slots, it zaps about 20 pages, most of the 32-page cache. Before the next call, faults install new mappings in nearly every page left in the cache and mark it again. The sweep's first lap therefore clears every bit and zaps nothing; its second lap zaps the oldest pages first, as FIFO does. The figure shows one such call with only `lru_ref` in use:
 
 ![Eight pages of the 32-page cache, all with bit 1, drawn from head to tail. In one eviction call, the hand's first lap clears every bit and zaps nothing; its second lap zaps from the tail, oldest page first.](/images/approximate-lru-in-kvm/small-cache.svg "The two-lap bound described in [Part 1](/approximate-lru-in-kvm/#invariant-2-bound-each-sweep) lets one call clear every bit and still zap pages. With accessed bits enabled, the hand spends its second lap clearing those bits and zaps on its third.")
 
