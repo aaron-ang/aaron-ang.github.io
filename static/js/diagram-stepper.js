@@ -12,8 +12,9 @@ const isEqualKeyframe = (a, b) =>
     (key) => ["offset", "computedOffset", "easing", "composite"].includes(key) || a[key] === b[key],
   );
 
-// Returns the settled end time of each step, in loop order, starting with the
-// state shown when the loop begins.
+// Returns, for each step in loop order, the time its hold starts (holdStarts)
+// and its settled end time (stepTimes), starting with the state shown when the
+// loop begins.
 function findStepTimes(animations) {
   const loopMs = Math.max(
     ...animations.map((a) => {
@@ -37,7 +38,7 @@ function findStepTimes(animations) {
     }
   }
 
-  if (!changes.length) return { loopMs, stepTimes: [] };
+  if (!changes.length) return { loopMs, stepTimes: [], holdStarts: [] };
 
   changes.sort((a, b) => a[0] - b[0]);
   const merged = [changes[0].slice()];
@@ -51,7 +52,7 @@ function findStepTimes(animations) {
 
   // The quiet stretch after the last change runs into the one before the first
   // change, because the loop repeats.
-  const stepTimes = [];
+  const steps = [];
 
   for (let i = 0; i < merged.length; i++) {
     const quietStart = merged[i][1];
@@ -59,14 +60,18 @@ function findStepTimes(animations) {
 
     if (quietEnd - quietStart < MIN_STEP_MS) continue;
 
-    stepTimes.push((quietEnd - SETTLE_MS) % loopMs);
+    steps.push({ end: (quietEnd - SETTLE_MS) % loopMs, holdStart: quietStart % loopMs });
   }
 
-  stepTimes.sort((a, b) => a - b);
+  steps.sort((a, b) => a.end - b.end);
 
-  if (stepTimes.length < 2) return { loopMs, stepTimes: findJoints(changes, loopMs) };
+  if (steps.length < 2) {
+    // Continuous motion has no holds: playing from a joint starts there.
+    const joints = findJoints(changes, loopMs);
+    return { loopMs, stepTimes: joints, holdStarts: joints };
+  }
 
-  return { loopMs, stepTimes };
+  return { loopMs, stepTimes: steps.map((step) => step.end), holdStarts: steps.map((step) => step.holdStart) };
 }
 
 // For diagrams in continuous motion: the keyframe times where one movement
@@ -158,7 +163,10 @@ class DiagramStepper {
     this.object = null;
     this.animations = [];
     this.stepTimes = [];
+    this.holdStarts = [];
     this.loopMs = 0;
+    // True while the animation sits at a step's settled end after a seek.
+    this.parked = false;
     this.step = 0;
     this.playing = false;
     this.frame = 0;
@@ -203,7 +211,7 @@ class DiagramStepper {
     }
 
     const animations = doc.getAnimations();
-    const { loopMs, stepTimes } = findStepTimes(animations);
+    const { loopMs, stepTimes, holdStarts } = findStepTimes(animations);
 
     // Reduced motion turns the animations off; keep the plain image then.
     if (stepTimes.length < 2) {
@@ -219,6 +227,7 @@ class DiagramStepper {
     this.animations = animations;
     this.loopMs = loopMs;
     this.stepTimes = stepTimes;
+    this.holdStarts = holdStarts;
     this.step = Math.min(this.step, stepTimes.length - 1);
     this.renderBar();
 
@@ -320,11 +329,19 @@ class DiagramStepper {
 
     for (const animation of this.animations) animation.currentTime = this.stepTimes[step];
 
+    this.parked = true;
     this.updateCounter();
   }
 
   play() {
     this.playing = true;
+
+    // A seek parks at the end of the step's hold, just before the next change.
+    // Playing from there would leave the step at once, so start its hold again.
+    if (this.parked) {
+      for (const animation of this.animations) animation.currentTime = this.holdStarts[this.step];
+      this.parked = false;
+    }
 
     for (const animation of this.animations) animation.play();
 
