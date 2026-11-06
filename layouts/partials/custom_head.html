@@ -26,6 +26,12 @@
   }
   .diagram-stepper button:hover { color: var(--link-color); }
   .diagram-stepper button:focus-visible { outline: 2px solid var(--link-color); outline-offset: 2px; }
+  /* Fixed-size transport buttons: the play/pause swap never moves a neighbor, and each 32px target clears the 24px minimum. */
+  .diagram-stepper-transport { display: inline-flex; align-items: center; }
+  .diagram-stepper .diagram-stepper-transport button {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 2rem; height: 2rem; padding: 0; line-height: 1; border-radius: 50%;
+  }
   .diagram-stepper-timeline { display: flex; gap: 2px; flex: 1 1 8rem; min-width: 6rem; }
   .diagram-stepper .diagram-stepper-segment {
     --fill: 0%;
@@ -37,7 +43,6 @@
   }
   .diagram-stepper .diagram-stepper-segment:hover { opacity: 1; filter: brightness(0.85); }
   .diagram-stepper-count { min-width: 3.2em; }
-  .diagram-stepper-play { min-width: 3.4em; text-align: left; }
   figcaption { font-size: 0.85em; color: #666; margin-top: 0.4rem; }
   @media (prefers-color-scheme: dark) { figcaption { color: #9fb3ba; } }
   /* Wide tables and display math scroll inside their own box on narrow screens. */

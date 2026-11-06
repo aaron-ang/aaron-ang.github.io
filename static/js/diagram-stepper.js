@@ -125,11 +125,25 @@ function svgAspectRatio(doc) {
   return width && height ? `${width} / ${height}` : "";
 }
 
-function button(label, text) {
+// Transport icons share one 16-unit grid and fill the same visual box (about 10 units tall),
+// so no icon looks larger or heavier than its neighbors. Font glyphs vary by platform:
+// iOS draws the play triangle as an emoji, and pause bars render heavier than arrows.
+const ICONS = {
+  prev: '<path d="M13 8H3.5M7.5 3.5 3 8l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>',
+  next: '<path d="M3 8h9.5M8.5 3.5 13 8l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>',
+  play: '<path d="M5 3.2v9.6a.6.6 0 0 0 .9.5l7.4-4.8a.6.6 0 0 0 0-1L5.9 2.7a.6.6 0 0 0-.9.5z" fill="currentColor"/>',
+  pause: '<rect x="4" y="3" width="3" height="10" rx="0.75" fill="currentColor"/><rect x="9" y="3" width="3" height="10" rx="0.75" fill="currentColor"/>',
+};
+
+function setIcon(element, name) {
+  element.innerHTML = `<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false">${ICONS[name]}</svg>`;
+}
+
+function button(label, icon) {
   const element = document.createElement("button");
   element.type = "button";
   element.setAttribute("aria-label", label);
-  element.textContent = text;
+  setIcon(element, icon);
 
   return element;
 }
@@ -236,14 +250,13 @@ class DiagramStepper {
       this.bar.setAttribute("role", "group");
       this.bar.setAttribute("aria-label", "Diagram steps");
 
-      this.prevButton = button("Previous step", "←");
+      this.prevButton = button("Previous step", "prev");
       this.timeline = document.createElement("div");
       this.timeline.className = "diagram-stepper-timeline";
-      this.nextButton = button("Next step", "→");
+      this.nextButton = button("Next step", "next");
       this.counter = document.createElement("span");
       this.counter.className = "diagram-stepper-count";
-      this.playButton = button("Play", "Play");
-      this.playButton.classList.add("diagram-stepper-play");
+      this.playButton = button("Play", "play");
 
       this.prevButton.addEventListener("click", () => this.go(this.step - 1));
       this.nextButton.addEventListener("click", () => this.go(this.step + 1));
@@ -256,7 +269,12 @@ class DiagramStepper {
         event.preventDefault();
       });
 
-      this.bar.append(this.playButton, this.prevButton, this.timeline, this.nextButton, this.counter);
+      // Back, play and forward form one group, as in a media player, and stay together when the bar wraps.
+      const transport = document.createElement("span");
+      transport.className = "diagram-stepper-transport";
+      transport.append(this.prevButton, this.playButton, this.nextButton);
+
+      this.bar.append(transport, this.timeline, this.counter);
       const caption = this.figure.querySelector("figcaption");
       this.figure.insertBefore(this.bar, caption);
     }
@@ -310,7 +328,7 @@ class DiagramStepper {
 
     for (const animation of this.animations) animation.play();
 
-    this.playButton.textContent = "Pause";
+    setIcon(this.playButton, "pause");
     this.playButton.setAttribute("aria-label", "Pause");
     // Announcing every step while it plays would flood screen readers.
     this.counter.setAttribute("aria-live", "off");
@@ -323,7 +341,7 @@ class DiagramStepper {
     for (const animation of this.animations) animation.pause();
 
     cancelAnimationFrame(this.frame);
-    this.playButton.textContent = "Play";
+    setIcon(this.playButton, "play");
     this.playButton.setAttribute("aria-label", "Play");
     this.counter.setAttribute("aria-live", "polite");
   }
