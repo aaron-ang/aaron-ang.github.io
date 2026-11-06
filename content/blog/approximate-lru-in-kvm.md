@@ -23,9 +23,9 @@ In a VM there are two of these lookups. The guest OS keeps its own page tables, 
 
 Modern CPUs support both translations in hardware through Intel’s [EPT](https://en.wikipedia.org/wiki/Second_Level_Address_Translation#Extended_Page_Tables) (Extended Page Tables) or AMD’s NPT (Nested Page Tables). Without that support, KVM uses _shadow paging_: it builds tables that combine the guest and host mappings, translating guest virtual addresses directly to host physical addresses. The CPU walks these _shadow page tables_, while KVM tracks changes to the guest’s page tables and updates the corresponding shadow mappings.
 
-A [_shadow page_](https://docs.kernel.org/virt/kvm/x86/mmu.html#shadow-pages) is one memory page holding entries from these shadow page tables. KVM fills an entry on the guest’s first access to the page it maps. Once filled, that entry supplies the result of both lookups in one translation:
+A [_shadow page_](https://docs.kernel.org/virt/kvm/x86/mmu.html#shadow-pages) is one memory page holding entries from these shadow page tables. In this setup, a 4 KiB shadow page holds 512 entries; each last-level entry can map a separate 4 KiB page of guest memory. An entry is _present_ when its present bit is set, allowing the CPU to use its mapping. If a guest access finds no present entry, it faults into KVM, which installs the missing mapping. The resulting entry combines both lookups in one translation:
 
-![Three tables: the guest page table, KVM's memslots, and the shadow page table the CPU walks. The filled entry 0x5000 takes one lookup. Touching unfilled 0x4000 faults, and KVM resolves it through both tables to 0x79000 and stores it.](/images/approximate-lru-in-kvm/two-level-translation.svg "Each page table tree is drawn as a flat list of mappings.")
+![Three tables: the guest page table, KVM's memslots, and the shadow page table the CPU walks. The present entry for 0x5000 supplies the translation. Accessing 0x4000, whose shadow entry is not present, faults, and KVM resolves it through both tables to 0x79000 and stores it.](/images/approximate-lru-in-kvm/two-level-translation.svg "Each page table tree is drawn as a flat list of mappings.")
 
 ### Which KVM Path the Patch Changes
 
@@ -35,7 +35,7 @@ Selecting the legacy MMU is a separate choice from disabling hardware translatio
 
 ### Cache Limits and Zapping
 
-For each shadow page, KVM allocates a small `struct kvm_mmu_page` and puts it on a linked list called `active_mmu_pages`, with new pages going at the head.
+For each shadow page, KVM allocates a small `struct kvm_mmu_page` to hold its metadata and puts that structure on a linked list called `active_mmu_pages`, with new pages going at the head. In the code, `sp` (“shadow page”) is a pointer to this metadata.
 
 Before handling a fault, KVM checks how much space remains in the shadow-page cache. If fewer than 5 slots are free, it evicts pages until 25 slots are available. Choosing and removing those pages happens while `mmu_lock`, a [reader-writer lock](https://en.wikipedia.org/wiki/Readers%E2%80%93writer_lock), is held for writing. Time spent choosing victims therefore also delays work that needs conflicting access to the page tables.
 
@@ -79,7 +79,7 @@ The implementation adds a bool (`lru_ref`) to `struct kvm_mmu_page` to serve as 
 
 In the first version there were two callers. One, in `__kvm_mmu_get_shadow_page`, runs when KVM looks up or creates a shadow page while handling a fault. The other, in `fast_page_fault`, runs when the _fast path_ for page faults succeeds. That path is for faults where the shadow entry exists but has the wrong permission, e.g. a write to a page KVM made read-only deliberately, to detect changes. It patches the entry with a single atomic update and never takes `mmu_lock` (hence "lock-free").
 
-The eviction loop below sweeps the clock hand instead of walking from the tail as FIFO does:
+The eviction loop below sweeps the clock hand instead of walking from the tail as FIFO does. It is shown without the accessed-bit checks that Part 2 adds; with them, the sweep runs up to three laps instead of two:
 
 ```c
 unsigned long budget = 2 * kvm->arch.n_used_mmu_pages;
@@ -106,7 +106,7 @@ while (budget-- && (sp = kvm->arch.clock_hand)) {
 }
 ```
 
-`kvm_mmu_clock_next` returns the page before `sp`, wrapping from the head back to the tail; that wrap is what makes the list a circle. `budget` limits the sweep to two laps (the next section explains why).
+`kvm_mmu_clock_next` returns the page before `sp`, wrapping from the head back to the tail; that wrap is what makes the list a circle. `budget` limits this sweep to two laps, as the next section explains.
 
 CLOCK also fits an existing constraint: other KVM code relies on `active_mmu_pages` remaining in creation order. Setting `lru_ref` leaves that order intact, while `list_move()` on each observed use would change it. The fault path can therefore mark a page with a single store, and the fast fault path needs no additional lock for list manipulation.
 
@@ -140,7 +140,7 @@ FIFO can stop at the head of the list, whereas CLOCK’s hand wraps around and c
 
 ### Invariant 3: Free an Eligible Page When One Exists
 
-The two-lap argument assumes that nothing re-marks pages behind the hand, an assumption the lock-free fast fault path can violate by setting those bits at any time. In the worst case, every page is re-marked before the hand returns, the sweep frees nothing, and KVM fails the guest's page fault with `ENOSPC` (out of space), which stops the VM. When the sweep zaps nothing, the code now falls back to FIFO order, and a new counter, `lru_fifo_fallbacks`, records each fallback:
+The two-lap argument assumes that nothing re-marks pages behind the hand, an assumption the lock-free fast fault path can violate by setting those bits at any time. In the worst case, every page is re-marked before the hand returns, the sweep frees nothing, and KVM fails the guest's page fault with `ENOSPC` (out of space), which stops the VM. When the sweep zaps nothing, the code falls back to FIFO order, and a new counter, `lru_fifo_fallbacks`, records each fallback:
 
 ```c
 total_zapped = kvm_mmu_clock_zap_pages(kvm, nr_to_zap,
@@ -167,29 +167,31 @@ That setup was [nested](https://docs.kernel.org/virt/kvm/x86/running-nested-gues
 
 ![Three layers, bottom up. L0 is the AWS c5n.metal host, L1 is a QEMU guest running our modified KVM, and L2 is a nested guest running redis-server under redis-benchmark. L2's page faults are handled by L1's KVM MMU.](/images/approximate-lru-in-kvm/nested-setup.svg "L0, L1 and L2 are the usual names for the physical host, the guest hypervisor, and the nested guest.")
 
-### Follow-Up on an Emulated x86 Machine
+We chose nesting because we did not know then that a metal host could boot a custom kernel directly, and we worried that a bug in the modified kernel would take the instance down.
 
-For the follow-up, I used an x86 machine emulated by QEMU on an Arm workstation.
+### Correctness Checks on a Bare-Metal Host
 
-QEMU’s [Tiny Code Generator](https://www.qemu.org/docs/master/devel/tcg.html) (TCG) translates x86 instructions into Arm instructions as the guest runs. It emulates an AMD x86 CPU and [Secure Virtual Machine](<https://en.wikipedia.org/wiki/X86_virtualization#AMD_virtualization_(AMD-V)>) (SVM), AMD’s hardware virtualization support. Inside that machine, the modified KVM runs nested guests:
+For the follow-up, I ran the modified KVM directly on a c5n.metal instance, without QEMU or nesting. KVM's test programs and their guests ran under it on the host's Intel CPU, with Intel's extended page tables disabled (`kvm_intel.ept=0`, `kvm.tdp_mmu=0`) so that every guest used true shadow paging. The kernel enabled [KASAN](https://docs.kernel.org/dev-tools/kasan.html) (Kernel Address Sanitizer) for memory errors, [lockdep](https://docs.kernel.org/locking/lockdep-design.html) for locking mistakes, the [lockup detectors](https://docs.kernel.org/admin-guide/lockup-watchdogs.html) for hangs, and KVM's consistency checks for the shadow MMU (`CONFIG_KVM_PROVE_MMU`).
 
-![L0 is an Arm-based NVIDIA GB10 workstation, where QEMU emulates an x86 AMD EPYC CPU in software. L1 runs our modified KVM with nested paging off. L2 holds the selftest VMs and a Redis guest, whose faults fill L1's shadow MMU cache.](/images/approximate-lru-in-kvm/emulated-setup.svg "Layers L0 to L2 are numbered as in the c5n.metal setup above; compare the two stacks row by row.")
-
-This setup used true shadow paging, with AMD’s nested page tables disabled (`kvm_amd.npt=0`). Its own [test programs](https://docs.kernel.org/dev-tools/kselftest.html) passed under CLOCK, under FIFO, and while switching policies with VMs running. We enabled [KASAN](https://docs.kernel.org/dev-tools/kasan.html) (Kernel Address Sanitizer) for memory errors, [lockdep](https://docs.kernel.org/locking/lockdep-design.html) for locking mistakes, and the [lockup detectors](https://docs.kernel.org/admin-guide/lockup-watchdogs.html) for hangs.
-
-### Stressing Eviction During Memory Changes
+In one boot, KVM's [test programs](https://docs.kernel.org/dev-tools/kselftest.html) ran under FIFO, CLOCK, and CLOCK with each of the two [accessed-bit modes from Part 2](/approximate-lru-in-kvm-evaluation/#reading-hardware-accessed-bits). Under every policy, 59 programs passed and 12 were skipped because they require AMD's SVM, the TDP MMU, or features this host does not provide.[^metal-tests]
 
 I also added `lru_stress_test` to check eviction while the VM’s memory configuration was changing. Four virtual CPUs read and write guest pages as host threads change the memory layout, toggle dirty-page logging, and resize the cache between 64 and 1,024 pages. Each guest page holds a value derived from its address, which the guest checks on every read. If a stale translation directs a read to the wrong page, that value no longer matches and the test fails.
 
-This test caught the `ENOSPC` failure from invariant 3. Before the FIFO fallback existed, one version of CLOCK stopped the VM 71 seconds into a run. With the fallback in place, every run passed under every policy.
+The stress test ran under each policy with three seeds in parallel, and once more while a host process switched policies every 0.1–0.9 seconds. The first boot ran each group for 10 minutes; three later boots repeated them for 12 minutes with new seeds. All 60 runs across the four boots passed. The kernel logged no KASAN, lockdep or lockup reports, lockdep remained enabled through the last run of each boot, and the FIFO fallback was never needed. Each virtual CPU completed 26–34 million iterations of the stress loop in a 10-minute run and 32–42 million in a 12-minute run. Four boots without a failure make a common race in the eviction code unlikely, but they cannot rule out a rare one.
 
-The follow-up also records whether the reference marks affect eviction directly. The `lru_ref_skips` counter records each page spared because its referenced bit was set. If it stays at zero, none of the marks has caused the sweep to spare a page; we need to understand that before attributing a benchmark difference to CLOCK's reference tracking.
+### Earlier Checks on an Emulated x86 Machine
+
+Before I had a metal instance for the follow-up, I ran the same checks on an x86 machine emulated by QEMU 8.2.2 on an Arm workstation, with the modified KVM running nested guests inside it. QEMU’s software emulation supports AMD’s virtualization extensions but not Intel’s VMX, so the emulated CPU had to be AMD for the modified KVM to run guests:
+
+![L0 is an Arm-based NVIDIA GB10 workstation, where QEMU emulates an x86 AMD EPYC CPU in software. L1 runs our modified KVM with nested paging off. L2 holds the selftest VMs and a Redis guest, whose faults fill L1's shadow MMU cache.](/images/approximate-lru-in-kvm/emulated-setup.svg "Layers L0 to L2 are numbered as in the c5n.metal setup above; compare the two stacks row by row.")
+
+Emulation was slow: each virtual CPU completed at most about 100,000 iterations of the stress loop per run. When QEMU emulated the virtual CPUs one at a time, KVM's test programs and the stress tests passed. Under parallel emulation, all 14 boots running KVM’s test programs failed, including four with upstream Linux and no eviction changes. Two of 29 completed stress-test runs failed; one crashed on a corrupted shadow entry while switching policies. The nested Redis guest also hung during boot, with or without the eviction changes, because QEMU’s emulation of AMD's virtualization extensions could deliver the same interrupt twice. A one-line change to QEMU fixed the hang.[^qemu-interrupt-fix] None of these failures appeared on real hardware, though the corrupted-entry crash has not been traced to its cause.
 
 ## Looking Back
 
 This was my first time changing a real operating system kernel. The CLOCK loop itself was small; much of the class project went into finding hardware that could boot our modified kernel and building the nested setup. Continuing the work afterward gave me a way to investigate the policy more closely, especially whether our reference marks were giving frequently used pages second chances.
 
-The kernel integration also changed how I approached the implementation. Reasoning about the eviction loop alone was not enough, because other paths could remove the page saved in the hand. Writing down the invariants and identifying the shared removal path made it possible to cover those cases without adding a separate lock.
+The kernel integration also changed how we approached the implementation. Reasoning about the eviction loop alone was not enough, because other paths could remove the page saved in the hand. Writing down the invariants and identifying the shared removal path made it possible to cover those cases without adding a separate lock.
 
 We also tried extending CLOCK to the TDP MMU but did not complete that work. In the kernel version we used, it does not use the legacy MMU’s bounded cache and FIFO recycling loop, making this more than a replacement-policy change. Whether adding a similar memory limit and eviction policy would benefit the TDP MMU is a separate question we did not evaluate.
 
@@ -197,4 +199,8 @@ We also tried extending CLOCK to the TDP MMU but did not complete that work. In 
 
 The implementation gave us a way to give shadow pages second chances without changing the list’s creation order, while bounding each sweep and guaranteeing progress when an eligible page exists. Its usefulness still depended on whether KVM could observe enough accesses to distinguish hot pages from cold ones.
 
-In [Part 2: Tracking Page Use](/approximate-lru-in-kvm-evaluation/), I investigate that problem on the emulated x86 machine. Marking pages while their entries were filled reduced faults by 61–81% compared with FIFO in the reuse test’s 64- and 128-page caches. Hardware accessed bits and the Redis workload gave more mixed results. Those measurements establish changes in counts, with timings on real hardware still left to do.
+In [Part 2: Tracking Page Use](/approximate-lru-in-kvm-evaluation/), I test how well KVM can track page use on a bare-metal Intel host. Marking a shadow page whenever KVM installs a mapping in it cut faults in the reuse test and raised throughput with Redis and pgbench. Reading every entry’s accessed bit proved costly: leaf mode reduced Redis throughput in the smallest cache and made some hot pages appear idle to host reclaim. In the swap test, reclaim swapped out a larger share of hot pages under leaf mode than under the other policies.
+
+[^qemu-interrupt-fix]: QEMU delivered an injected interrupt as it entered the nested guest but left it recorded as pending. If QEMU paused the emulated CPU before that record was cleared, it delivered the interrupt again on resuming, without checking whether the nested guest had disabled interrupts. With the change, which clears the record after delivery, all 4 single-threaded runs finished the Redis benchmark, whereas both runs without it hung; two of the runs with it logged soft-lockup warnings of about 20 seconds each. The test built QEMU 8.2.2 from the official source, with and without the change. As of writing, QEMU’s development branch does not include it.
+
+[^metal-tests]: Two test programs were left out. `lru_reclaim_test` formats a disk device as swap space by default. In an earlier boot, `xen_shinfo_test` triggered a lockdep report in KVM's Xen emulation, which the eviction changes do not modify. Lockdep disables itself after its first report, so the rest of that boot ran without lock checking. In that boot, `apic_bus_clock_test` also failed under every policy after measuring a timer frequency more than 1,000 times too high; in the rerun, it passed under every policy.

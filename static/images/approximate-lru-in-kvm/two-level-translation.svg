@@ -3,7 +3,7 @@
   viewBox="0 0 720 398"
   font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
   role="img"
-  aria-label="Animated shadow paging: the guest page table maps guest virtual to guest physical pages, and KVM's memslots map guest physical pages to host memory. The shadow page table holds the combined result and is the only table the CPU walks. Touching 0x5000 hits a filled entry. Touching 0x4000 faults; KVM looks up 0x4000 to 0x9000 in the guest table, then 0x9000 to 0x79000 in its memslots, and stores 0x79000 in the shadow entry."
+  aria-label="Animated shadow paging: the guest page table maps guest virtual to guest physical pages, and KVM's memslots map guest physical pages to host memory. The shadow page table holds the combined result and is the only table the CPU walks. Touching 0x5000 hits a present entry. Touching 0x4000 faults; KVM looks up 0x4000 to 0x9000 in the guest table, then 0x9000 to 0x79000 in its memslots, and stores 0x79000 in the shadow entry."
   width="720"
   height="398"
   data-diagram-width="720"
@@ -354,7 +354,7 @@
     <rect x="255" y="286" width="250" height="26" class="ring a w8" />
     <text x="243" y="304" text-anchor="end" class="num a w9">page fault</text>
     <rect x="255" y="286" width="250" height="26" class="okring a w10 fin" />
-    <text x="243" y="304" text-anchor="end" class="oktext a w10 fin">filled on fault</text>
+    <text x="243" y="304" text-anchor="end" class="oktext a w10 fin">installed on fault</text>
     <rect x="60" y="114" width="220" height="26" class="ring a w11 fin" />
     <g class="a w12 fin">
       <rect x="480" y="114" width="220" height="26" class="ring" />
@@ -370,9 +370,9 @@
     <text x="20" y="404" class="a w13">The guest never sees real memory addresses.</text>
     <text x="20" y="404" class="a w14">The CPU walks only one table, so KVM combines the two.</text>
     <text x="20" y="404" class="a w6">The guest touches 0x5000.</text>
-    <text x="20" y="404" class="a w15">With its entry filled, the CPU needs one lookup.</text>
+    <text x="20" y="404" class="a w15">With its entry present, the CPU needs one lookup.</text>
     <text x="20" y="404" class="a w16">Now the guest touches 0x4000.</text>
-    <text x="20" y="404" class="a w17">KVM fills entries only on first use.</text>
+    <text x="20" y="404" class="a w17">Its shadow entry is not present, so the access faults.</text>
     <text x="20" y="404" class="a w18">First, the guest's table.</text>
     <text x="20" y="404" class="a w19">Then its memslots.</text>
     <text x="20" y="404" class="a w20">KVM stores the combined result.</text>

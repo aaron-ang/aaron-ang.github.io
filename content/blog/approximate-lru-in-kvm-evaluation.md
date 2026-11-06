@@ -9,35 +9,37 @@ In [Part 1](/approximate-lru-in-kvm/), I described our UCSD class project replac
 
 CLOCK gives recently used pages a second chance by checking a reference bit, `lru_ref`. _Marking_ a page means setting that bit to 1 to record recent use. The difficulty is knowing when to mark it: most guest accesses use mappings directly in hardware without notifying KVM.
 
-After the class, I continued the work on an x86 machine emulated by QEMU on an Arm workstation. Marking pages as KVM filled their entries helped considerably in a reuse test, but the improvement was much smaller with Redis. These experiments compare page faults and evictions; performance still needs to be measured on real hardware.[^setup] The [code](https://github.com/aaron-ang/kvm) is based on [Linux 6.14-rc7](https://github.com/torvalds/linux/tree/v6.14-rc7).
+After the class, I continued the work on a bare-metal x86 host.[^setup] In a reuse test, marking pages when KVM installed their mappings cut page faults by 61–81%. With Redis, the two best policies raised request rates by 58–134% in the two smallest caches: marking on install alone, and marking on install while reading accessed bits from parent entries. With pgbench, every version of CLOCK raised transactions per second by 17–33% using 200 clients and KVM’s default cache size. The [code](https://github.com/aaron-ang/kvm) is based on [Linux 6.14-rc7](https://github.com/torvalds/linux/tree/v6.14-rc7).
 
 ## Tracking Recent Use
 
 ### Testing the Initial CLOCK Implementation
 
-To test whether CLOCK could retain frequently used pages, I wrote `lru_reuse_test`. The guest accesses 256 memory regions, directing 90% of its accesses to a hot set of 16 regions. Each region is covered by one last-level shadow page, letting us check whether the eviction policy retains the mappings used most often.
+The selftest `lru_reuse_test` checks whether CLOCK retains frequently used pages. The guest accesses 256 memory regions, directing 90% of its accesses to a hot set of 16 regions. Each region is covered by one last-level shadow page. Whether the policy keeps a region’s mappings comes down to whether it keeps that one page.
 
 The remaining accesses go to cold regions. The _random_ workload chooses these regions pseudorandomly; the _scan_ workload visits them in order. Both choose pages within each region pseudorandomly. A fixed seed makes either workload repeatable, and every policy receives the same access sequence.
 
-Even with 90% of accesses returning to the hot regions, the original CLOCK was barely better than FIFO. At 32 pages, the two policies produced identical counters on every seed; in the larger caches, CLOCK reduced faults by at most 22%.
+Even with 90% of accesses returning to the hot regions, the original CLOCK was barely better than FIFO. At 32 pages, the two policies produced identical fault and eviction counts on every seed. In the larger caches, the original CLOCK reduced faults by at most 22%. In the random workload at 128 pages, it produced about 3% more faults than FIFO.[^paired-comparisons]
 
 Marking on creation gave CLOCK little information about continued use. Once KVM had linked a shadow page into the page tables, hardware could keep using it without returning to KVM. Rebuilding that link could mark the page again, but this happened infrequently for both hot and cold pages.[^initial-marking] After clearing the initial reference bits, the hand therefore tended to evict in FIFO order.
 
-### Marking Entries as They Are Filled
+### Marking on Entry Installation
 
-A newly created last-level shadow page still has most of its 512 entries to fill, each mapping a 4 KiB page within the same 2 MiB region. The guest's first access to each unmapped page faults into `mmu_set_spte()`. This gave us a place to mark the containing shadow page again while handling work KVM already had to do, with one added call:
+A newly created last-level shadow page initially has mostly non-present entries. Each entry can map a 4 KiB guest page within the same 2 MiB region. When the guest accesses a page whose shadow entry is not present, KVM installs the missing mapping through `mmu_set_spte()`. Adding one call here records recent use by setting the containing shadow page’s `lru_ref` bit. This change is called _marking on install_. The `sp` argument below points to the shadow page’s metadata (`struct kvm_mmu_page`):
 
 ```c
-/* in mmu_set_spte(), when a fault fills an entry of sp */
+/* in mmu_set_spte(), when a fault installs or updates an entry of sp */
 if (!prefetch)
-	mark_kvm_page_accessed(sp);
+    mark_kvm_page_accessed(sp);
 ```
 
-While the guest first accesses the 4 KiB pages of a hot region, each missing mapping causes a fault that fills a shadow entry and re-marks the containing shadow page. If one of these faults occurs after the clock hand has cleared `lru_ref`, it sets the bit again, giving the page a second chance when the hand returns. With fewer accesses, a cold region is less likely to have its shadow page re-marked before the hand returns.
+The same call also marks the page when a fault updates an entry that is already present. One example is a first write, which KVM must record by setting the dirty bit in the guest’s own page table.
 
-This marking stops once all 512 entries are filled, because subsequent accesses use the existing translations in hardware without reaching KVM. A region can therefore remain hot without its shadow page being re-marked. If the shadow page is zapped, later accesses have to rebuild its entries and mark it again as they do so. The figure below compares one hot page and one cold page with marking on creation only and with marking on fill:
+While the guest first accesses the 4 KiB pages of a hot region, each missing mapping causes a fault, during which KVM installs the mapping and re-marks the containing shadow page. If one of these faults occurs after the clock hand has cleared `lru_ref`, it sets the bit again, giving the page a second chance when the hand returns. With fewer accesses, a cold region is less likely to have its shadow page re-marked before the hand returns.
 
-![Hot page H and cold page C each map one 2 MiB region. In panel (a), both bits are 0 when the hand returns, and it zaps the older H. In panel (b), a fill re-marks H first, so C is zapped.](/images/approximate-lru-in-kvm/ref-signals.svg "Only two of the cache's shadow pages are shown, and the clock hand's trips around the rest of the ring are skipped.")
+Once all 512 entries are present and permit the guest’s reads and writes, those accesses proceed in hardware without reaching KVM, so they no longer re-mark the shadow page. A region can therefore remain hot without its shadow page being re-marked. If the shadow page is zapped, later accesses have to rebuild its entries and mark it again as they do so. The figure below compares one hot page and one cold page with marking on creation only and with marking on install:
+
+![Hot shadow page H and cold shadow page C each map one 2 MiB region. In panel (a), both bits are 0 when the hand returns, and it zaps the older H. In panel (b), installing a mapping re-marks H first, so C is zapped.](/images/approximate-lru-in-kvm/ref-signals.svg "Only two of the cache's shadow pages are shown, and the clock hand's trips around the rest of the ring are skipped.")
 
 ### Reading Hardware Accessed Bits
 
@@ -47,106 +49,146 @@ Hardware _accessed_ bits provide information about uses that do not fault into K
 
 `lru_age` has two modes, which differ in which entries the sweep reads:
 
-- **Leaf:** all 512 of the page's own entries.
-- **Parent:** the one entry a level up that points to the page.
+- **Leaf:** all 512 of the page's own entries. In a last-level page, these are _leaf_ entries: the bottom level of the shadow page table, where each present entry maps guest memory directly.
+- **Parent:** the entry in the next level up that points to the page; a shadow page usually has only one. The CPU sets that entry's accessed bit whenever it walks through it to reach any of the page's entries.
 
-The CPU can set hardware accessed bits again while the sweep is running. These concurrent updates can keep pages looking recently used, making [Part 1’s FIFO fallback](/approximate-lru-in-kvm/#invariant-3-free-an-eligible-page-when-one-exists) necessary when CLOCK frees nothing.[^fallback]
-
-There is one more difference between the modes. Leaf mode reads the same bits as _host reclaim_, the host kernel's search for guest memory it can take back. Parent mode reads none of them:
+The modes also differ in whether they share bits with _host reclaim_, the host kernel's search for guest memory it can take back. Reclaim reads the leaf accessed bits to judge which guest pages were used recently. Leaf mode reads and clears those same bits, while parent mode leaves them untouched:
 
 ![One parent entry points to shadow page sp, which holds 512 leaf entries. Leaf mode (lru_age=1) reads and clears all 512 leaf accessed bits, the same bits host reclaim ages. Parent mode (lru_age=2) reads only the parent entry.](/images/approximate-lru-in-kvm/leaf-vs-parent.svg "`kvm_age_gfn` and `kvm_test_age_gfn` are the KVM functions that host reclaim calls to read and age the leaf bits.")
+
+Consulting accessed bits lets a page survive one more visit from the clock hand. Consider a page whose reference bit and accessed bits are both set. On the hand’s first visit, the sweep clears `lru_ref` and spares the page. On the second, it clears the accessed bits and spares the page again. The third visit zaps the page if nothing has set a bit in the meantime. If every page starts in that state, the sweep reaches [Part 1’s two-lap limit](/approximate-lru-in-kvm/#invariant-2-bound-each-sweep) having cleared bits but freed no page. Enabling `lru_age` therefore extends the budget to a third lap, letting the hand return to pages whose bits it has cleared:
+
+```c
+uint age = shadow_accessed_mask ? READ_ONCE(lru_age) : LRU_AGE_OFF;
+unsigned long budget = (age ? 3 : 2) * kvm->arch.n_used_mmu_pages;
+```
+
+Running vCPUs can still set accessed bits again after the hand clears them. Whenever the bounded sweep frees nothing, [Part 1’s FIFO fallback](/approximate-lru-in-kvm/#invariant-3-free-an-eligible-page-when-one-exists) zaps the oldest pages instead.[^fallback]
 
 ## Measuring Faults and Evictions
 
 ### Reuse-Test Results
 
-The table compares page faults at three cache limits, averaging repeated runs with the same access sequences under every policy.[^reuse-method] Its columns show the original marking, marking on fill, and marking on fill with leaf or parent accessed bits. A reported 0% is an exact tie:
+The table compares page faults at three cache limits, averaging repeated runs with the same access sequences under every policy.[^reuse-method] Its columns show the original marking, marking on install, and marking on install with leaf or parent accessed bits. A reported 0% is an exact tie:
 
-{{< table title="Change in page faults vs FIFO in lru_reuse_test" caption="Negative values mean fewer faults than FIFO. Best result per row is bold." >}}
-| Workload | Cache pages | FIFO faults | on creation | on fill | fill + leaf bits | fill + parent bits |
-|---|--:|--:|--:|--:|--:|--:|
-| random | 32 | 212,865 | 0% | 0% | −4% | **−5%** |
-| random | 64 | 175,209 | −10% | −61% | −56% | **−82%** |
-| random | 128 | 118,952 | +3% | −65% | **−74%** | −61% |
-| scan | 32 | 213,146 | 0% | 0% | −4% | **−5%** |
-| scan | 64 | 179,096 | −11% | −81% | **−83%** | −75% |
-| scan | 128 | 143,016 | −22% | −81% | −79% | **−83%** |
+{{< table title="Change in page faults vs FIFO in lru_reuse_test" caption="Negative values mean fewer faults than FIFO. Best result per row is bold; rows where no policy beats FIFO have no bold entry." >}}
+
+| Workload | Cache pages | FIFO faults | on creation | on install | install + leaf bits | install + parent bits |
+| --- | --: | --: | --: | --: | --: | --: |
+| random | 32 | 208,396 | 0% | 0% | +0.2% | 0% |
+| random | 64 | 174,454 | −8% | −61% | −62% | **−81%** |
+| random | 128 | 118,977 | +3% | −65% | **−74%** | −61% |
+| scan | 32 | 208,644 | 0% | 0% | +0.2% | 0% |
+| scan | 64 | 178,357 | −10% | **−81%** | **−81%** | **−81%** |
+| scan | 128 | 142,826 | −22% | **−81%** | **−81%** | **−81%** |
 {{< /table >}}
 
-At 64 and 128 cache pages, marking on fill supplied most of the improvement, reducing faults by 61–81%. Retaining a hot shadow page preserves the translations for its 2 MiB region. Evicting that shadow page forces KVM to refill the mapping for each 4 KiB page the guest subsequently touches, making repeated visits to hot regions especially costly in this test.
+At 64 and 128 cache pages, marking on install supplied most of the improvement, reducing faults by 61–81%. Retaining a hot shadow page preserves the translations for its 2 MiB region. Evicting that shadow page forces KVM to reinstall the mapping for each 4 KiB page the guest subsequently touches, making repeated visits to hot regions especially costly in this test.
 
-In the 32-page cache, marking on fill had no effect. Each eviction call zaps about 20 of the 32 pages, enough to restore 25 free slots. By the next call, nearly every page still in the cache has faulted in new entries and been marked again. Only the accessed bits reduced faults, by 4–5%. The figure below shows how one call at that size spends its first lap clearing bits and its second zapping in FIFO order:
+In the 32-page cache, every policy evicted as many shadow pages as FIFO on every seed. Fault counts also matched FIFO, except under leaf mode, which took 0.2% more, or about 380 extra faults per run.
 
-![Eight pages of the 32-page cache, all with bit 1, drawn from head to tail. In one eviction call, the hand's first lap clears every bit and zaps nothing; its second lap zaps from the tail, oldest page first.](/images/approximate-lru-in-kvm/small-cache.svg "The two-lap bound described in [Part 1](/approximate-lru-in-kvm/#invariant-2-bound-each-sweep) lets one call clear every bit and still zap pages.")
+Each eviction call runs until the cache has room for 25 more shadow pages. Because a call starts with room for fewer than 5, it zaps about 20 pages, most of the cache. Before the next call, faults install new mappings in nearly every page left in the cache and mark it again. The sweep's first lap therefore clears every bit and zaps nothing; its second lap zaps the oldest pages first, as FIFO does. The figure shows one such call with only `lru_ref` in use:
 
-Reading accessed bits did not consistently improve on marking on fill. Both modes had rows where they were best, but they also took more faults than plain CLOCK in others: up to 28% more in parent mode and 16% more in leaf mode. These fault counts give me no clear reason to make either mode the default, even before measuring the cost of reading the bits on real hardware.
+![Eight pages of the 32-page cache, all with bit 1, drawn from head to tail. In one eviction call, the hand's first lap clears every bit and zaps nothing; its second lap zaps from the tail, oldest page first.](/images/approximate-lru-in-kvm/small-cache.svg "The two-lap bound described in [Part 1](/approximate-lru-in-kvm/#invariant-2-bound-each-sweep) lets one call clear every bit and still zap pages. With accessed bits enabled, the hand spends its second lap clearing those bits and zaps on its third.")
+
+Reading accessed bits improved fault counts only in the random workload; in the scan workload at 64 and 128 pages, both modes matched marking on install alone on every seed. Apart from the 32-page cache, leaf mode averaged no more faults than marking on install in every configuration. Relative to marking on install, its largest reduction was 25%, in the 128-page random test. Parent mode had a larger benefit in the 64-page random test, where it roughly halved faults. At 128 pages, it incurred 12% more faults.[^paired-comparisons] The fault counts favor different modes at different cache sizes. They leave out the cost of reading accessed bits, which the Redis measurements below show.
 
 ### Redis Results
 
-The reuse test deliberately favors repeated visits to a hot set. To see whether CLOCK would help an application as well, I ran [Redis](https://redis.io/) in a nested guest, using [`redis-benchmark`](https://redis.io/docs/latest/operate/oss_and_stack/management/optimization/benchmarks/) for SET, GET, LPUSH, and LPOP. The workload needed a little over 128 shadow pages.
+The reuse test deliberately favors repeated visits to a hot set. To test CLOCK with an application workload, I ran [Redis](https://redis.io/) in a guest, using [`redis-benchmark`](https://redis.io/docs/latest/operate/oss_and_stack/management/optimization/benchmarks/) for SET, GET, LPUSH, and LPOP. The workload needed a little over 128 shadow pages.
 
-Results varied enough that a single run could change the apparent ranking. I repeated the measurements and shuffled the policy order to spread changes in host load across the policies.[^redis-method] The table reports median shadow-page evictions and their median percentage change relative to FIFO:
+In this kernel version, KVM’s default cache limit is 2% of the guest memory pages it tracks, with a minimum of 64. KVM tracks guest memory twice, once for normal operation and once for [System Management Mode](https://en.wikipedia.org/wiki/System_Management_Mode), so for the 1 GiB guest used here the limit is about 10,500 shadow pages. The test limits of 80–128 pages are deliberately small by comparison.
 
-{{< table title="Redis in a nested guest: shadow pages evicted, by policy" caption="Median shadow pages evicted; percentages show the change relative to FIFO." >}}
-| Cache pages | FIFO | on fill | fill + leaf bits | fill + parent bits |
-|---|---|---|---|---|
-| 80 | 1,251 | 1,176 (−6%) | 982 (−22%) | 908 (−27%) |
-| 96 | 360 | 282 (−22%) | 254 (−29%) | 254 (−29%) |
-| 128 | 63 | 42 | 47 | 42 |
-| KVM's default | 0 | 0 | 0 | 0 |
+Results varied enough that a single run could change the apparent ranking. To reduce that variation, each measurement was repeated 16 times, with the policy order shuffled to spread changes in host load across the policies.[^redis-method]
+
+{{< table title="Redis: evictions and throughput by policy" caption="Medians of 16 runs per policy and cache size. Throughput is the mean requests per second across the four benchmark tests. Percentages show the change in each median relative to FIFO." >}}
+
+| Cache pages | Measure | FIFO | on install | install + leaf bits | install + parent bits |
+| --- | --- | --- | --- | --- | --- |
+| 80 | evictions | 982,858 | −47% | +1% | −53% |
+| 80 | requests/s | 5,006 | +107% | −27% | +134% |
+| 96 | evictions | 139,095 | −39% | −28% | −64% |
+| 96 | requests/s | 27,930 | +58% | +1% | +121% |
+| 128 | evictions | 1,929 | −19% | −35% | −36% |
+| 128 | requests/s | 179,399 | +0.6% | +0.6% | +0.9% |
+| KVM’s default | evictions | 0 | 0 | 0 | 0 |
+| KVM’s default | requests/s | 182,967 | +0.2% | +0.1% | +0.1% |
 {{< /table >}}
 
-At 96 pages, every version of CLOCK evicted fewer pages than FIFO. At 80 pages, only the accessed-bit modes showed a clear reduction, evicting 22–27% fewer pages. The measurements did not distinguish leaf mode from parent mode.[^redis-intervals]
+At 80 and 96 pages, the cache was far too small for the workload. FIFO’s request rate fell to 3–15% of its rate at KVM’s default size. Marking on install and parent mode cut evictions by 39–64% and faults by 41–60%. They raised throughput by 58–134%, and every confidence interval excluded zero. Parent mode also outperformed marking on install alone in both caches, in evictions as well as throughput.[^redis-intervals]
 
-At 128 pages, each run evicted only a few dozen shadow pages, too few to rank the policies.
+Leaf mode behaved differently. At 80 pages, it evicted as many shadow pages as FIFO and handled 27% fewer requests per second, although it took 25% fewer faults. In that cache, it scanned a median of 1.4 billion leaf entries per run, compared with about 1.1 million parent entries for parent mode. A CPU profile of the two host cores running the guest showed the cost of those scans: under leaf mode, 34–37% of samples fell in the two functions that read and clear accessed bits, against 0.3% under parent mode.[^profile] At 96 pages, where the sweep ran less often, leaf mode matched FIFO’s throughput while evicting 28% fewer pages.
 
-Fewer evictions translated into a much smaller reduction in faults: 2–6% at 80 and 96 cache pages. At KVM’s default size, Redis still took about 35,000 faults despite evicting no shadow pages. This suggests that first touches account for most of its faults, leaving a smaller share for eviction policy to affect than in the reuse test.
+At 128 pages, every version of CLOCK reduced evictions by 19–36%. Faults fell by 4–7%, but throughput changed by less than 1%. At KVM’s default size, Redis evicted nothing and took about 100,000 faults under every policy, and the policies performed alike. Those faults occurred without shadow-page eviction, leaving no eviction-related faults for CLOCK to prevent. A second set of runs with 1,000,000 requests per test showed the same pattern.[^metal-long]
 
-These results exclude nine runs that did not finish, which were replaced with runs of the same policy. The failures and the checks for an eviction-code regression are recorded in the notes.[^redis-failures]
+### pgbench Results
+
+Each PostgreSQL client is a separate process with its own address space and therefore its own shadow pages. With 16 clients, the guest needed fewer shadow pages than KVM’s default limit allows, and nothing was evicted. With 200 clients, it needed more than the limit, and KVM had to evict shadow pages to make room for new ones. No run crashed or hung under any policy.[^pgbench-method]
+
+{{< table title="pgbench at KVM’s default cache size" caption="Medians of 8 runs per policy. Counts cover only the benchmark. Percentages show the change in each median relative to FIFO." >}}
+
+| Clients | Measure | FIFO | on install | install + leaf bits | install + parent bits |
+| --- | --- | --- | --- | --- | --- |
+| 16 | evictions | 0 | 0 | 0 | 0 |
+| 16 | transactions/s | 7,070 | +0.1% | −0.1% | +0.2% |
+| 200 | evictions | 521,552 | −18% | −44% | −45% |
+| 200 | transactions/s | 3,452 | +17% | +18% | +33% |
+{{< /table >}}
+
+With 200 clients, every version of CLOCK evicted fewer shadow pages and processed more transactions per second than FIFO. No run of any CLOCK version was as slow as the fastest FIFO run. FIFO’s runs ranged from 3,418 to 3,519 transactions per second. Parent mode’s runs ranged from 4,500 to 4,624. Leaf and parent mode evicted about the same number of pages, but parent mode was 12% faster, again consistent with the cost of leaf mode’s scans. For comparison, a single run with a cache large enough that KVM never evicted reached 4,807 transactions per second. FIFO ran about 1,350 transactions per second below that reference run, and parent mode closed more than 80% of the gap. The comparison rests on one run and is approximate.
 
 ## Accessed Bits and Host Reclaim
 
-The accessed bits matter outside the shadow-page cache as well. Under memory pressure, the host can reclaim guest memory, using the leaf accessed bits to help judge which pages have been used recently. Since leaf mode clears those same bits, it could make a hot guest page appear idle. I used two selftests, reusing the hot and cold regions from `lru_reuse_test`, to examine that possible interaction.
+The accessed bits matter outside the shadow-page cache as well. Under memory pressure, the host can reclaim guest memory by swapping it to disk, and it reads the leaf accessed bits to judge which pages were used recently. The eviction policy can erase that record in two ways. Leaf mode clears the bits during its sweep, and every policy discards them when it zaps a shadow page. Either way, a hot guest page could look unused to host reclaim. The selftests below examine both effects, reusing the hot and cold regions from `lru_reuse_test`.[^reclaim-lists]
 
-The first test uses the kernel's [idle-page tracking](https://docs.kernel.org/admin-guide/mm/idle_page_tracking.html), which queries KVM as host reclaim does but swaps nothing. In a 128-page cache, leaf mode reported about 6% of hot pages as idle after the guest had used them. FIFO, plain CLOCK, and parent mode reported none.
+### Clearing Accessed Bits
 
-The second test forces host reclaim to swap a fixed amount of guest memory to disk and records which pages it chooses. Since leaf mode clears the bits reclaim uses, I expected it to lose more hot pages in the 128-page cache. Instead, leaf mode lost 10% and FIFO lost 18%. The policy differences were within the variation across five seeds, leaving this test unable to establish the expected disadvantage for leaf mode.
+The first test uses the kernel's [idle-page tracking](https://docs.kernel.org/admin-guide/mm/idle_page_tracking.html), which asks KVM about recent use the same way host reclaim does but swaps nothing. In a 128-page cache under leaf mode, idle-page tracking reported about 8% of hot pages as idle after the guest had used them, and every seed produced some of these reports. Under FIFO and marking on install alone, it reported none. Under parent mode, only one of ten seeds produced such reports, and that seed reported two pages.
 
-The clearer difference was between cache sizes. A 2,048-page cache never evicted and rarely lost hot pages to swap, whereas every policy in the 128-page cache lost about 12 percentage points more hot pages. Although the cache-size difference was larger, it came from a comparison I had not planned in advance and offers weaker evidence than the planned policy comparison.
+The second test checks whether those false reports lead host reclaim to swap out hot pages. It boots the host with 8 GiB of memory, forces reclaim to swap a fixed amount of guest memory to a dedicated disk, and records which pages reclaim picks. In the 128-page cache, leaf mode lost an average of 1.4% of hot pages to swap. FIFO, marking on install alone, and parent mode lost 0.0–0.2%. For each of those three policies, the interval for leaf mode's excess lay entirely above zero. Nearly all the hot pages that leaf mode lost still had shadow entries: reclaim found their accessed bits cleared, not missing.[^swap-intervals]
 
-My best explanation is that eviction itself discards the access history. A set accessed bit lets KVM report recent use of the guest page mapped by that shadow entry. Zapping a last-level shadow page removes both the entries for its 2 MiB region and the accessed bits that record recent use, depriving host reclaim of that history even for hot pages. This would affect all the eviction policies and could explain why cache size mattered more than leaf versus parent mode. The figure illustrates this proposed mechanism:
+That result does not show that clearing the bits caused the extra swapping. Leaf mode also changes which shadow pages CLOCK evicts, and either change could explain it. A test variant of marking on install separates the two effects. Whenever the hand spares a shadow page because its reference bit is set, the variant also clears that page's leaf accessed bits, but it never uses those bits to choose what to evict. Without host reclaim, its eviction counts matched those of marking on install alone exactly.
 
-![One last-level shadow page maps the 4 KiB guest pages of one 2 MiB region, and the CPU has set the accessed bits of the hot pages' entries. The eviction policy zaps the page, and its accessed bits go with it. Host reclaim then finds no shadow entries, treats every page as unused, and swaps out pages, hot ones included.](/images/approximate-lru-in-kvm/eviction-drops-abits.svg "Only 16 of the shadow page's 512 entries are drawn, and which pages host reclaim swaps out is illustrative.")
+Under host reclaim, the variant swapped out 0.1% of hot pages, no more than marking on install alone. Clearing the bits of pages the hand spares therefore did not reproduce leaf mode's effect. The two policies clear bits on different pages. The variant clears them while a page's reference bit is set. Leaf mode reaches them only after the bit has lapsed, meaning nothing has marked the page since the hand last passed it. The bits on those lapsed pages appear to be the ones reclaim relies on. By KVM's counter of scanned entries, the variant also reads about half as many entries as leaf mode.
+
+### Eviction and Access History
+
+Eviction removes accessed bits too. A set accessed bit lets KVM report recent use of the guest page that its shadow entry maps. Zapping a last-level shadow page removes the entries for its 2 MiB region along with their accessed bits. KVM is then left without a record of use for that region, even for its hot pages:
+
+![One last-level shadow page maps the 4 KiB guest pages of one 2 MiB region, and the CPU has set the accessed bits of the hot pages' entries. The eviction policy zaps the page, and its accessed bits go with it. KVM then reports no recent use for the region, and host reclaim may swap out some of its pages, hot ones included.](/images/approximate-lru-in-kvm/eviction-drops-abits.svg "Only 16 of the shadow page's 512 entries are drawn, and which pages host reclaim swaps out is illustrative.")
+
+The swap test found no sign of this effect. Under FIFO in the 128-page cache, 27% of hot pages had no shadow entry at the end of a test interval. Even so, reclaim swapped out hot pages in only one of 64 runs, and that run lost 8 of them. A 2,048-page cache, which never evicted, lost hot pages about as rarely.
+
+One likely reason is that KVM marks the host page accessed, through `mark_page_accessed()`, each time it handles a fault on that page. A hot page whose entry is zapped is soon used again, and the fault that rebuilds the entry records the use that the zap erased. Two more variants restored that record at zap time instead of waiting for the next fault, either by marking the page accessed or by setting its young flag. Under FIFO and marking on install alone, neither variant changed the share of hot pages swapped out by more than 0.2 percentage points.
 
 ## What the Measurements Show
 
-Marking on fill supplied most of the improvement in the reuse test without requiring KVM to inspect hardware accessed bits. Redis showed why that result does not imply a comparable benefit for every workload: a policy can avoid rebuilding mappings yet have little effect on faults caused by first accesses.
+Marking on install supplied most of the improvement in the reuse test without requiring KVM to inspect hardware accessed bits. In Redis and pgbench, it reduced evictions and raised throughput wherever the cache was too small for the workload. Retaining mappings avoids the faults needed to rebuild them. At KVM’s default cache size, Redis had no evictions and therefore no eviction-related faults for CLOCK to prevent.
 
-Accessed bits let CLOCK recognize uses that KVM’s fault handling cannot see, but neither mode consistently improved on marking on fill. Reading them adds work while holding the MMU lock, and clearing leaf bits can remove information used by host reclaim. A better record of recent use therefore does not by itself establish a better eviction policy; the cost of collecting it and its effects elsewhere still matter.
+Accessed bits let CLOCK recognize uses that KVM’s fault handling cannot see, but the two modes differ sharply in cost. Parent mode reads one entry per page and leaf mode reads 512. Parent mode was the fastest policy, or tied for fastest, in every Redis and pgbench configuration that evicted. In the smallest Redis cache, leaf mode’s scans accounted for 34–37% of samples on the two cores running the guest, and leaf mode fell below FIFO’s throughput. Leaf mode also clears the bits that host reclaim reads: it made about 8% of hot pages look idle to the host and was the only policy that measurably raised the share of hot pages host reclaim swapped out. Across the configurations measured here, parent mode offered the strongest throughput results, with much lower scanning overhead than leaf mode and no measured increase in hot-page swapping.
 
-These results concern KVM’s legacy MMU, rather than the TDP MMU used for ordinary VMs on modern hosts. The small caches deliberately force evictions; Redis evicted nothing at KVM’s default cache size. Establishing a practical benefit will require a workload that exceeds that default and measurements of execution time on real hardware.
+These results concern KVM’s legacy MMU, rather than the TDP MMU used for ordinary VMs on modern hosts, and they come from one Intel host. The small caches deliberately force evictions; Redis evicted nothing at KVM’s default cache size. pgbench with 200 clients did exceed that default, and every version of CLOCK raised its throughput.
 
-## Next Steps
+[^setup]: The host was an AWS c5n.metal instance with two 18-core Intel Xeon Platinum 8124M CPUs. All measurements use the legacy MMU under true shadow paging, with Intel’s extended page tables disabled (`kvm_intel.ept=0`, `kvm.tdp_mmu=0`). Selecting the legacy MMU alone does not disable hardware translation; [Part 1 explains the distinction](/approximate-lru-in-kvm/#which-kvm-path-the-patch-changes) and [reports correctness checks on the same host](/approximate-lru-in-kvm/#correctness-checks-on-a-bare-metal-host). The selftests used a test build of the published code without debugging options. Its extra module parameters select marking on creation only, disable the FIFO fallback, or enable the test variants described below. The Redis and pgbench runs used the published code, which behaves like the test build for the four policies they compare. Each selftest and guest ran with one vCPU, pinned to two physical cores on one NUMA node.
 
-- **Measure performance on real hardware.** Fault counts show how much rebuilding CLOCK avoids, but not whether the saved work outweighs the sweep and accessed-bit scans. I would start with Redis under true shadow paging, with EPT or NPT disabled, using repeated runs pinned to the same core.
-- **Preserve access history during eviction.** Before removing a shadow page, KVM could record its accessed bits in the host’s tracking data. An emulated test could check whether this helps retain hot guest pages; real hardware would be needed to measure the cost of scanning up to 512 entries while holding the MMU lock.
-- **Test workloads that exceed the default cache.** I tried the PostgreSQL benchmark [pgbench](https://www.postgresql.org/docs/current/pgbench.html), but it either evicted nothing or hung the nested guest, even with a cache too large to require eviction. Running it on real hardware would let us investigate without relying on QEMU’s x86 emulation.
+[^initial-marking]: `__kvm_mmu_get_shadow_page` marks a page when it is looked up or created while KVM builds a parent link. The initial implementation also marks successful `fast_page_fault` operations, which update permissions without taking `mmu_lock`. The `lru_ref_skips` counter records each page the hand spares because its reference bit is set. With marking on creation only, it recorded a median of about 1.1 skips per shadow page created in every reuse-test configuration, consistent with one skip for each creation mark and few afterward. [Part 1 covers the marking paths and their interaction with the sweep](/approximate-lru-in-kvm/#implementing-clock).
 
-[^setup]: All measurements use the legacy MMU under true shadow paging, with hardware nested paging disabled (`npt=0`, `tdp_mmu=0`). Selecting the legacy MMU alone does not disable hardware translation; [Part 1 explains the distinction and test setup](/approximate-lru-in-kvm/#which-kvm-path-the-patch-changes). QEMU’s emulated CPU provides fault and eviction counts, not timings representative of a physical x86 CPU.
+[^fallback]: The `lru_fifo_fallbacks` counter stayed at zero in every run of the reuse and swap tests, and in every `lru_stress_test` run [reported in Part 1](/approximate-lru-in-kvm/#correctness-checks-on-a-bare-metal-host), under both accessed-bit modes.
 
-[^initial-marking]: `__kvm_mmu_get_shadow_page` marks a page when it is looked up or created while KVM builds a parent link. The initial implementation also marks successful `fast_page_fault` operations, which update permissions without taking `mmu_lock`. The `lru_ref_skips` counter records pages spared because their reference bits were set; a zero count would mean that no mark had affected eviction. [Part 1 covers the marking paths and their interaction with the sweep](/approximate-lru-in-kvm/#implementing-clock).
+[^reuse-method]: Each seed generates a sequence of 200,000 accesses, and rows average 20 seeds each. The exceptions are the random row at 128 pages and the two larger scan rows, which average 35. All seed counts were fixed before the runs. Every policy replays the same seeds, each in a fresh VM. The guest has 256 regions of 2 MiB each. A hot set of 16 regions receives 90% of accesses.
 
-[^fallback]: With either accessed-bit mode, a two-minute `lru_stress_test` run fell back to FIFO a few hundred times; plain CLOCK never did. The fallback guarantees progress when concurrent updates prevent the bounded sweep from freeing an eligible page.
+[^paired-comparisons]: Percentage changes are calculated within each seed and then averaged, rather than reconstructed from the table’s rounded percentages. Each interval is an unadjusted 95% t-interval over the seeds of its row. In the random workload at 128 pages (random/128), the interval for creation-only CLOCK ran from 2.5% to 3.0% more faults than FIFO. Relative to marking on install alone, leaf mode’s interval ran from 23% to 28% fewer faults in random/128. In random/64, leaf mode’s interval ran from 0.1% to 2.6% fewer. For parent mode, the interval ran from 48% to 54% fewer faults in random/64. In random/128, it ran from 6% to 18% more.
 
-[^reuse-method]: Each row averages 10 to 25 seeds of 200,000 accesses. Every policy replays the same seeds under shadow paging on the emulated x86 CPU. Each of the guest’s 256 regions spans 2 MiB, with 16 hot regions receiving 90% of accesses. Seeds were added in batches fixed in advance until the nonzero comparisons’ 95% confidence intervals excluded zero. Checking the intervals after each batch makes the reported uncertainty optimistic; the intervals should be interpreted with that limitation.
+[^redis-method]: Each policy ran 16 times per cache size, and each benchmark test within a run sent 20,000 requests. The guest ran Ubuntu’s 6.8 kernel with 1 GiB of memory. Each run booted a fresh guest, and cache-size order and policy order were shuffled within each round after one discarded warm-up run. Counts cover the whole run, including the guest’s boot. The eviction counter is `mmu_recycled`. No run crashed or hung.
 
-[^redis-method]: For each cache size, each policy ran 16 times, or 8 at KVM’s default size, with 20,000 requests per test. Policy order was shuffled. The eviction counter is `mmu_recycled`; the table shows its median and the median percentage change relative to FIFO.
+[^redis-intervals]: Each interval is a 95% percentile bootstrap interval for the change in a median, not adjusted for multiple comparisons. Relative to marking on install alone, parent mode’s throughput was 13% higher at 80 pages (interval 1% to 23%) and 40% higher at 96 pages (34% to 44%). It evicted 13% fewer pages at 80 pages (3% to 22%) and 40% fewer at 96 pages (35% to 42%).
 
-[^redis-intervals]: At 80 and 96 cache pages, the 95% confidence intervals for every percentage change excluded zero except the −6% for marking on fill at 80 pages. Leaf and parent mode did not separate from each other. At 128 pages, evictions were too few to rank the policies.
+[^profile]: `perf` sampled both cores for the whole of three runs per mode. The two functions are `kvm_mmu_sp_test_and_clear_young`, which walks a shadow page’s entries, and `spte_test_and_clear_young`, which tests and clears one entry. Under both modes, zapping shadow pages took another 17–24% of samples.
 
-[^redis-failures]:
-    Nine of 233 Redis runs did not finish and were replaced with extra runs of the same policy. Eight failed under heavy host load, across all four policies. Repeated test boots point to QEMU’s multi-threaded emulation, which failed as often under an unmodified upstream kernel as under the modified one. The ninth run hit a pair of upstream bugs outside the eviction code.[^svm]
+[^metal-long]: These runs used eight runs per policy and cache size. Relative to FIFO, marking on install raised throughput by 60% at 80 pages and 48% at 96 pages, and parent mode by 85% and 94%. Leaf mode changed it by −29% and −4%. At 128 pages and at KVM’s default size, throughput differed by less than 1%.
 
-    To check whether the new eviction code caused these failures, the emulated machine was booted 20 times under each of five kernels, upstream included. Every boot passed KVM’s MMU stress test, though 20 passing boots per kernel still leave room for a failure rate of up to 17%.
+[^pgbench-method]: The guest had 2 GiB of memory and ran PostgreSQL 16 with 512 MB of shared buffers, a scale-40 database prewarmed into those buffers, and the read-only `pgbench -S` workload with one pgbench thread. Each run used a fresh copy of the database. Runs processed 12,000 transactions per client with 16 clients and 1,000 with 200, lasting about 30 and 60 seconds. In a pilot run with 100 clients and a cache too large to require eviction, the highest sample showed about 22,000 shadow pages in use, only slightly above the default limit, so the main runs used 200 clients. Policy order was shuffled within each of 8 rounds.
 
-[^svm]: QEMU's emulated AMD CPU clears only the valid bit of the field that reports interrupted event delivery, and stale data stays behind. KVM's AMD code reads that field without checking the valid bit and decides that an ordinary write to a guest page table cannot be emulated. As of writing, neither bug is fixed upstream. In later database-benchmark runs on the same machine, a one-line KVM change that tests the valid bit made these errors go away.
+[^reclaim-lists]: Both tests ran with the host’s [multi-generational LRU](https://docs.kernel.org/admin-guide/mm/multigen_lru.html) disabled, so reclaim used the classic active and inactive lists. With it enabled, idle-page tracking also reported about 6% of hot pages as idle under FIFO. That LRU’s version of `folio_mark_accessed()` does not clear a page’s idle flag. As a result, a use recorded through a fault does not count once the page’s shadow entry has been zapped.
+
+[^swap-intervals]: Each policy ran the same 64 seeds. After a warm-up, each run turned swap on and locked host memory until only 40 MiB remained available, then kept locking more during six test intervals until 24 MiB in total had been swapped out, while the guest kept accessing its hot regions. At the end of each interval, the test read the host's page map to see which hot and cold guest pages were swapped out. Percentages are means over seeds. Each interval is a 95% percentile bootstrap interval over seeds, paired by seed for comparisons between policies and not adjusted for multiple comparisons. Swap went to a dedicated 2 GiB EBS volume, the host used the classic LRU lists, and proactive memory compaction was off. A 2,048-page cache, large enough that nothing was evicted, served as a no-eviction baseline. The host's out-of-memory killer ended six runs early; each was rerun with the same seed. Before the main runs, one run per policy without reclaim confirmed that no hot pages were swapped out.

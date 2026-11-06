@@ -3,7 +3,7 @@
   viewBox="0 0 720 264"
   font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
   role="img"
-  aria-label="Animated CLOCK sweep with a 32-page cache, pages marked on creation or on fill. Every page is marked again between evictions, so in one eviction call the hand clears every bit on the first lap without zapping, then keeps going and zaps from the tail in FIFO order."
+  aria-label="Animated CLOCK sweep with a 32-page cache, pages marked on creation or on install. Every page is marked again between evictions, so in one eviction call the hand clears every bit on the first lap without zapping, then keeps going and zaps from the tail in FIFO order."
   width="720"
   height="264"
   data-diagram-width="720"
@@ -468,10 +468,10 @@
     <text x="60" y="204" class="oktext a w16">every page marked since the last lap</text>
     <text x="60" y="204" class="num a w17 fin">lap 1: clear each bit, zap nothing</text>
     <text x="60" y="224" class="num a w28 fin">lap 2, same call: zap from the tail, oldest first</text>
-    <text x="20" y="260" class="a w1">Pages are marked when they are created or filled.</text>
+    <text x="20" y="260" class="a w1">Pages are marked on creation and when KVM installs a mapping.</text>
     <text x="20" y="260" class="a w16">With so few pages, the guest touches all of them between evictions.</text>
     <text x="20" y="260" class="a w25">One eviction call: lap 1 clears, then it keeps going.</text>
-    <text x="20" y="260" class="a w26">The same call holds mmu_lock, so nothing marks a page between laps.</text>
-    <text x="20" y="260" class="b a w29 fin type-subheading">When every page looks recently used, CLOCK falls back to FIFO order.</text>
+    <text x="20" y="260" class="a w26">Faults wait for mmu_lock, so no install re-marks a page between laps.</text>
+    <text x="20" y="260" class="b a w29 fin type-subheading">When every page looks recently used, CLOCK zaps in FIFO order.</text>
   </g>
 </svg>

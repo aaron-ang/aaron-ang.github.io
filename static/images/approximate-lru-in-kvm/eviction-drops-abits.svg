@@ -3,7 +3,7 @@
   viewBox="0 0 720 294"
   font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
   role="img"
-  aria-label="Animated diagram of one last-level shadow page whose 512 entries map the 4 KiB guest pages of one 2 MiB region. The CPU has set the accessed bits of the entries for the hot pages. When the cache is full, the eviction policy zaps the page and its accessed bits are discarded with it. Host reclaim then asks KVM which pages were used recently, finds no shadow entries, sees every page as not used, and swaps out pages including the hot ones."
+  aria-label="Animated diagram of one last-level shadow page whose 512 entries map the 4 KiB guest pages of one 2 MiB region. The CPU has set the accessed bits of the entries for the hot pages. When the cache is full, the eviction policy zaps the page and its accessed bits are discarded with it. Host reclaim then asks KVM which pages were used recently, finds no shadow entries, sees every page as not used, and may swap out pages, hot ones included."
   width="720"
   height="294"
   data-diagram-width="720"
@@ -326,7 +326,7 @@
     <text x="20" y="292" class="a w1">The CPU has set the accessed bit on each hot page's entry; cold entries stay clear.</text>
     <text x="20" y="292" class="a w3">The cache is full, and the eviction policy zaps this shadow page. Its accessed bits go with it.</text>
     <text x="20" y="292" class="a w5">Host reclaim asks which pages were used recently. Without entries, KVM reports none as used.</text>
-    <text x="20" y="292" class="a w7">Host reclaim swaps out pages from the region, hot ones included.</text>
+    <text x="20" y="292" class="a w7">Host reclaim may then swap out pages from the region, hot ones included.</text>
     <text x="20" y="292" class="b a w8 fin type-subheading">Evicting a shadow page erases its record of use, whichever policy picked it.</text>
   </g>
 </svg>

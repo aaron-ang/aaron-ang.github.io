@@ -3,7 +3,7 @@
   viewBox="0 0 720 364"
   font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
   role="img"
-  aria-label="Animated comparison of what sets lru_ref, shown as two panels that run in step. A hot page H, created first, and a cold page C each map one 2 MiB region. Creation sets both bits, and the clock hand clears them. H keeps being used, but most accesses are hits KVM never sees; a first touch faults and fills an entry. (a) Marked only on creation, H's bit stays 0, and when the hand returns it zaps the older H. (b) Marked on fill too, the fill sets H's bit again, so the hand keeps H and zaps cold C."
+  aria-label="Animated comparison of what sets lru_ref, shown as two panels that run in step. A hot page H, created first, and a cold page C each map one 2 MiB region. Creation sets both bits, and the clock hand clears them. H keeps being used, but most accesses are hits KVM never sees; a first touch faults and KVM installs a mapping. (a) Marked only on creation, H's bit stays 0, and when the hand returns it zaps the older H. (b) Marked on install too, the install sets H's bit again, so the hand keeps H and zaps cold C."
   width="720"
   height="364"
   data-diagram-width="720"
@@ -482,10 +482,10 @@
       <rect x="296" y="96" width="22" height="34" rx="4" class="ring a w10" />
     </g>
     <g transform="translate(0 20)">
-      <text x="520" y="118" class="num a w11">fault: KVM fills an entry</text>
+      <text x="520" y="118" class="num a w11">fault: mapping installed</text>
     </g>
     <g transform="translate(0 20)">
-      <text x="520" y="118" class="sm a w12">fill: not marked, still 0</text>
+      <text x="520" y="118" class="sm a w12">install: not marked, still 0</text>
     </g>
     <g transform="translate(0 20)">
       <polygon points="6,104 6,122 16,113" style="fill:var(--fg)" class="a w13" />
@@ -506,7 +506,7 @@
       <text x="300" y="86" class="num a w14 fin"><tspan class="mvar">H</tspan> and <tspan class="mvar">C</tspan> look alike: FIFO order</text>
     </g>
     <g transform="translate(0 20)">
-      <text x="20" y="216" class="sm b">(b) marked on fill too</text>
+      <text x="20" y="216" class="sm b">(b) marked on install too</text>
     </g>
     <g transform="translate(0 20)">
       <text x="24" y="242" class="b type-subheading">Hot page <tspan class="mvar">H</tspan></text>
@@ -697,13 +697,13 @@
       <rect x="296" y="226" width="22" height="34" rx="4" class="ring a w10" />
     </g>
     <g transform="translate(0 20)">
-      <text x="520" y="248" class="num a w11">fault: KVM fills an entry</text>
+      <text x="520" y="248" class="num a w11">fault: mapping installed</text>
     </g>
     <g transform="translate(0 20)">
       <rect x="472" y="226" width="34" height="34" rx="5" class="okring a w12" />
     </g>
     <g transform="translate(0 20)">
-      <text x="520" y="248" class="oktext a w12">fill: lru_ref = 1</text>
+      <text x="520" y="248" class="oktext a w12">install: lru_ref = 1</text>
     </g>
     <g transform="translate(0 20)">
       <polygon points="6,234 6,252 16,243" style="fill:var(--fg)" class="a w13" />
@@ -751,10 +751,10 @@
       <text x="20" y="346" class="a w8">Most of <tspan class="mvar">H</tspan>'s accesses are hits, which KVM never sees.</text>
     </g>
     <g transform="translate(0 20)">
-      <text x="20" y="346" class="a w11">A first touch of a 4 KiB page faults, and KVM fills an entry.</text>
+      <text x="20" y="346" class="a w11">A first touch of a 4 KiB page faults, and KVM installs a mapping.</text>
     </g>
     <g transform="translate(0 20)">
-      <text x="20" y="346" class="a w12">Only (b) marks the page when it fills an entry.</text>
+      <text x="20" y="346" class="a w12">Only (b) marks the page when KVM installs a mapping.</text>
     </g>
     <g transform="translate(0 20)">
       <text x="20" y="346" class="a w13">The hand returns to <tspan class="mvar">H</tspan> first, since <tspan class="mvar">H</tspan> is older.</text>
@@ -763,13 +763,13 @@
       <text x="20" y="346" class="a w19">In (b), the hand moves on and zaps cold <tspan class="mvar">C</tspan> instead.</text>
     </g>
     <g transform="translate(0 20)">
-      <text x="20" y="346" class="b a w20 fin type-subheading">Marking on creation can't tell hot from cold; marking on fill can.</text>
+      <text x="20" y="346" class="b a w20 fin type-subheading">Marking on creation can't tell hot from cold; marking on install can.</text>
     </g>
     <g aria-label="Diagram key">
       <rect x="20" y="57" width="14" height="12" rx="2" class="full" />
-      <text x="40" y="68" class="muted">Filled</text>
+      <text x="40" y="68" class="muted">Present</text>
       <rect x="100" y="57" width="14" height="12" rx="2" class="empty" />
-      <text x="120" y="68" class="muted">Untouched</text>
+      <text x="120" y="68" class="muted">Not present</text>
       <polygon points="225,58 225,70 235,64" fill="var(--fg)" />
       <text x="242" y="68" class="muted">Clock hand</text>
     </g>
